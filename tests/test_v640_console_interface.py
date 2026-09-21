@@ -93,3 +93,37 @@ def test_v640_accessibility_focus_and_mobile_contracts():
     assert 'focus-visible' in css
     assert '.case-row:focus-visible' in css
     assert '@media(max-width:760px)' in css
+
+
+def test_v640_block1_has_complete_design_foundation_tokens():
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in [
+        '--bg:','--surface:','--surface-raised:','--surface-soft:',
+        '--line-subtle:','--line-strong:','--text:','--text-soft:',
+        '--muted-strong:','--accent-strong:','--focus:','--shadow-sm:',
+        '--shadow-md:','--shadow-lg:','--radius-sm:','--radius-md:',
+        '--radius-lg:','--radius-xl:','--space-1:','--space-8:','--ease:'
+    ]:
+        assert token in css
+
+
+def test_v640_block1_has_foundation_interactions_and_accessibility():
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in [
+        'focus-visible','prefers-reduced-motion','::placeholder',
+        'surface-raised','sr-only','select{','button:active',
+        'box-shadow:var(--focus)'
+    ]:
+        assert token in css
+
+
+def test_v640_block1_has_consistent_surface_and_control_primitives():
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in [
+        '.card,.panel,.hero-card',
+        '.primary:hover',
+        '.ghost,.link-btn,.icon-btn,.command-btn',
+        'transition:',
+        'border-radius:var(--radius'
+    ]:
+        assert token in css
