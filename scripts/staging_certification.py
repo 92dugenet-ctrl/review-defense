@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "6.39"
+VERSION = "6.40"
 
 
 def contract_checks() -> dict[str, bool]:
