@@ -49,6 +49,7 @@ from .mfa import generate_secret, verify_totp, otpauth_uri, encrypt_secret, decr
 from .recovery_email import SMTPConfig, send_recovery_email, send_verification_email, RecoveryEmailError
 from .deployment import DeploymentConfig, security_headers
 from .observability import InMemoryTelemetry, TraceContext, health_check
+from .seo_renderer import is_seo_path, render_page, sitemap, robots
 
 
 class APIError(Exception):
