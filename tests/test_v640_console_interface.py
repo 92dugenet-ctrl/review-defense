@@ -386,3 +386,28 @@ def test_v640_block12_organization_has_responsive_contract():
     css=(ROOT/'frontend/assets/app.css').read_text()
     for token in ['.org-kpis','.org-member','.org-bottom-grid','.org-calendar','@media(max-width:900px)','@media(max-width:600px)']:
         assert token in css
+
+def test_v640_block13_authentication_has_secure_login_surface():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['auth-shell-premium','auth-brand-lockup','auth-trust-row','auth-form','password-field','auth-boundary']:
+        assert token in js or token in css
+    for token in ['IDENTITY & ACCESS','Connexion','RBAC serveur','MFA disponible','Contrôle humain & serveur']:
+        assert token in js
+
+
+def test_v640_block13_authentication_preserves_mfa_and_recovery_flows():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    for token in ["/v1/auth/login","mfa_code","/v1/auth/recovery/request","/v1/auth/recovery/reset","/v1/auth/email-verification/verify"]:
+        assert token in js
+    assert 'usage unique' in js
+    assert 'Aucune information sur l’existence d’un compte ne sera révélée' in js or 'ne pas révéler l’existence d’un compte' in js
+
+
+def test_v640_block13_authentication_has_accessibility_and_responsive_contract():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    assert 'aria-label="Afficher le mot de passe"' in js
+    assert 'autocomplete="one-time-code"' in js
+    for token in ['.auth-shell-premium','.password-field','.auth-boundary','@media(max-width:600px)']:
+        assert token in css
