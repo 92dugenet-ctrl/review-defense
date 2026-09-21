@@ -37,5 +37,14 @@ function showPasswordChange(){modal('Changer le mot de passe',`<form id="pw" cla
 async function showMfa(){try{const d=await api('/v1/auth/mfa/enroll',{method:'POST',body:'{}'});modal('Configurer MFA',`<div class="stack"><p>Ajoutez cette entrée dans votre application d’authentification.</p><code class="secret">${esc(d.secret)}</code><label>Code de confirmation<input id="mfa-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></label><button class="primary" onclick="confirmMfa()">Activer MFA</button></div>`)}catch(e){toast(e.message,'error')}}
 async function confirmMfa(){try{await api('/v1/auth/mfa/confirm',{method:'POST',body:JSON.stringify({code:document.getElementById('mfa-code').value})});closeModal();toast('MFA activé','success')}catch(e){toast(e.message,'error')}}
 function modal(title,body){const old=document.getElementById('modal');if(old)old.remove();document.body.insertAdjacentHTML('beforeend',`<div id="modal" class="modal-backdrop"><div class="modal"><button class="modal-close" onclick="closeModal()">×</button><h2>${esc(title)}</h2>${body}</div></div>`)}function closeModal(){document.getElementById('modal')?.remove()}
-async function boot(){if(location.pathname==='/reset-password'){renderReset();return}if(location.pathname==='/verify-email'){renderVerify();return}if(!state.token){renderLogin();return}shell();try{state.me=await api('/v1/me');document.getElementById('role').textContent=state.me.role;document.getElementById('tenant').textContent=`Organisation ${state.me.organization_id}`;document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{state.view=b.dataset.view;render()});document.getElementById('logout').onclick=async()=>{try{await api('/v1/logout',{method:'POST'})}finally{state.token=null;localStorage.removeItem('rd_token');location.reload()}};await render()}catch(e){if(e.message!=='AUTH')renderLogin(e.message)}}
+async function boot(){
+ if(location.pathname==='/reset-password'){renderReset();return}
+ if(location.pathname==='/verify-email'){renderVerify();return}
+ if(location.pathname==='/app'||location.pathname==='/app/'){
+  if(!state.token){renderLogin();return}
+  shell();try{state.me=await api('/v1/me');document.getElementById('role').textContent=state.me.role;document.getElementById('tenant').textContent='Organisation '+state.me.organization_id;document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{state.view=b.dataset.view;render()});document.getElementById('logout').onclick=async()=>{try{await api('/v1/logout',{method:'POST'})}finally{state.token=null;localStorage.removeItem('rd_token');location.href='/'}};await render()}catch(e){state.token=null;localStorage.removeItem('rd_token');renderLogin(e.message)}return
+ }
+ const page=new URLSearchParams(location.search).get('page')||'home';
+ if(typeof showPublicPage==='function')showPublicPage(page);else renderLogin();
+}
 boot();
