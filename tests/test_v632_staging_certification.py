@@ -30,7 +30,7 @@ def test_live_metrics_are_not_public_contract(monkeypatch):
     calls = []
     def fake_fetch(base, path):
         calls.append(path)
-        if path == "/health": return 200, {"version": "6.39", "service": "review-defense"}, {"content-security-policy":"x", "x-content-type-options":"nosniff", "x-frame-options":"DENY", "referrer-policy":"no-referrer"}
+        if path == "/health": return 200, {"version": "6.40", "service": "review-defense"}, {"content-security-policy":"x", "x-content-type-options":"nosniff", "x-frame-options":"DENY", "referrer-policy":"no-referrer"}
         if path == "/ready": return 200, {"status":"ready"}, {}
         raise RuntimeError("metrics should be represented by HTTPError in real runtime")
     monkeypatch.setattr(mod, "fetch", fake_fetch)

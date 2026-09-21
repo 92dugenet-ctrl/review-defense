@@ -4,6 +4,8 @@
 Non-destructive: validates the complete V6.40 console contract, runs the full
 regression suite and compile checks, and writes an auditable report. It never
 deploys, calls Google, changes production data, or bypasses human approval.
+The gate itself performs no deployment, makes no Google API call, and requires
+the human approval boundary to remain explicit before any controlled submission.
 """
 from __future__ import annotations
 import argparse, hashlib, json, subprocess, sys

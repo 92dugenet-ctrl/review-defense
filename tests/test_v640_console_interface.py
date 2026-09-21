@@ -142,7 +142,7 @@ def test_v640_block2_navigation_has_desktop_and_mobile_surface_contract():
     js=(ROOT/'frontend/assets/app.js').read_text()
     css=(ROOT/'frontend/assets/app.css').read_text()
     assert 'data-view="${id}"' in js
-    assert "onclick=\"navigateTo('\\${id}')\"" in js
+    assert 'onclick="navigateTo(\'${id}\')"' in js
     assert 'Navigation rapide' in js
     assert '⌘K' in js
     assert 'nav button.active' in css
@@ -160,7 +160,7 @@ def test_v640_block2_navigation_preserves_keyboard_escape_behavior():
 def test_v640_block3_dashboard_visual_contract():
     js=(ROOT/'frontend/assets/app.js').read_text()
     css=(ROOT/'frontend/assets/app.css').read_text()
-    assert 'dashboard:async=>' in js
+    assert 'dashboard:async()=>{' in js
     for token in ['.dashboard-hero','.dashboard-health','.dashboard-kpis','.kpi-card','.dashboard-grid','.pipeline-large','.pipeline-step','.priority-stack','.activity-list','.activity-item','.guardrail-list']:
         assert token in css
     for token in ['@media(max-width:1100px)','@media(max-width:760px)','@media(max-width:480px)']:
