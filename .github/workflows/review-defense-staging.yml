@@ -54,11 +54,10 @@ jobs:
       - name: Package V6.37 release archive
         run: |
           mkdir -p artifacts/review-defense-v6.37
-          cp -a src migrations scripts tests frontend wsgi.py requirements.txt README.md artifacts/review-defense-v6.37/ 2>/dev/null || true
-          if [ -f LICENSE ]; then cp LICENSE artifacts/review-defense-v6.37/; fi
-          cd artifacts
-          zip -qr review-defense-v6.37.zip review-defense-v6.37
-          sha256sum review-defense-v6.37.zip > review-defense-v6.37.sha256
+          zip -qr artifacts/review-defense-v6.37.zip . \
+            -x '.git/*' '__pycache__/*' '*/__pycache__/*' '*.pyc' \
+            'artifacts/*'
+          sha256sum artifacts/review-defense-v6.37.zip > artifacts/review-defense-v6.37.sha256
       - name: Upload V6.37 release archive
         uses: actions/upload-artifact@v4
         with:
