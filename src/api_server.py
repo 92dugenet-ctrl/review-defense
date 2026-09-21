@@ -356,20 +356,71 @@ class ReviewDefenseAPI:
         body = ("\n".join(lines) + "\n").encode()
         return 200, {"Content-Type": "text/plain; version=0.0.4; charset=utf-8"}, body
 
-    def handle(self, environ):
+    def __call__(self, environ, start_response):
+        import time as _time
+        started = _time.perf_counter()
+        trace_id = environ.get("HTTP_X_REQUEST_ID") or secrets.token_hex(16)
+        environ["review_defense.trace_id"] = trace_id
         path = urlsplit(environ.get("PATH_INFO", "/")).path
-        if path == "/sitemap.xml":
-            body = sitemap()
-            start_response("200 OK", [("Content-Type","application/xml; charset=utf-8"),("Content-Length",str(len(body))),("X-Request-ID",trace_id)])
+        if environ.get("REQUEST_METHOD") == "GET" and is_seo_path(path):
+            body = render_page(path)
+            self.telemetry.increment("http_requests_total", labels={"method":"GET","path":path,"status":"200"})
+            self.telemetry.observe_ms("http_request_duration_ms", (_time.perf_counter()-started)*1000, labels={"method":"GET","path":path})
+            start_response("200 OK", [("Content-Type","text/html; charset=utf-8"),("Content-Length",str(len(body))),("X-Request-ID",trace_id)])
             return [body]
-        if path == "/robots.txt":
+        if path == "/robots.txt" and environ.get("REQUEST_METHOD") == "GET":
             body = robots()
             start_response("200 OK", [("Content-Type","text/plain; charset=utf-8"),("Content-Length",str(len(body))),("X-Request-ID",trace_id)])
             return [body]
-        if path.startswith("/") and is_seo_path(path) and environ.get("REQUEST_METHOD") == "GET":
-            body = render_page(path)
-            start_response("200 OK", [("Content-Type","text/html; charset=utf-8"),("Content-Length",str(len(body))),("X-Request-ID",trace_id)])
+        if path == "/sitemap.xml" and environ.get("REQUEST_METHOD") == "GET":
+            body = sitemap()
+            start_response("200 OK", [("Content-Type","application/xml; charset=utf-8"),("Content-Length",str(len(body))),("X-Request-ID",trace_id)])
             return [body]
+        public_path = path
+        if public_path == "/" or public_path == "/app" or public_path == "/app/":
+            public_path = "/index.html"
+        if public_path == "/index.html" or public_path.startswith("/assets/"):
+            from pathlib import Path
+            import mimetypes
+            root = Path(__file__).resolve().parents[1] / "frontend"
+            rel = public_path.lstrip("/")
+            target = (root / rel).resolve()
+            try:
+                target.relative_to(root.resolve())
+            except ValueError:
+                target = None
+            if target and target.is_file():
+                body = target.read_bytes()
+                ctype = mimetypes.guess_type(str(target))[0] or "application/octet-stream"
+                self.telemetry.increment("http_requests_total", labels={"method":environ.get("REQUEST_METHOD","GET"),"path":path,"status":"200"})
+                self.telemetry.observe_ms("http_request_duration_ms", (_time.perf_counter()-started)*1000, labels={"method":environ.get("REQUEST_METHOD","GET"),"path":path})
+                headers=[("Content-Type",ctype),("Content-Length",str(len(body))),("X-Request-ID",trace_id)]
+                if self.config.secure_headers:
+                    headers.extend(list(security_headers(production=self.config.production).items()))
+                    headers.append(("Cache-Control","no-store"))
+                start_response("200 OK", headers)
+                return [body]
+        try:
+            status, headers, body = self.handle(environ)
+        except APIError as exc:
+            status, headers, body = self._json(exc.status, {"error":{"code":exc.code,"message":exc.message,"details":exc.details}})
+        except Exception:
+            status, headers, body = self._json(500, {"error":{"code":"INTERNAL_ERROR","message":"internal server error"}})
+        phrase={200:"OK",201:"Created",400:"Bad Request",401:"Unauthorized",403:"Forbidden",404:"Not Found",409:"Conflict",413:"Payload Too Large",422:"Unprocessable Entity",429:"Too Many Requests",500:"Internal Server Error"}.get(status,"Error")
+        elapsed=(_time.perf_counter()-started)*1000
+        self.telemetry.increment("http_requests_total", labels={"method":environ.get("REQUEST_METHOD","GET"),"path":path,"status":str(status)})
+        self.telemetry.observe_ms("http_request_duration_ms", elapsed, labels={"method":environ.get("REQUEST_METHOD","GET"),"path":path})
+        if status >= 500:
+            self.telemetry.increment("http_errors_total", labels={"path":path,"status":str(status)})
+        response_headers=[(k,v) for k,v in headers.items()]+[("Content-Length",str(len(body))),("X-Request-ID",trace_id)]
+        if self.config.secure_headers:
+            response_headers.extend(list(security_headers(production=self.config.production).items()))
+            response_headers.append(("Cache-Control","no-store"))
+        start_response(f"{status} {phrase}", response_headers)
+        return [body]
+
+    def handle(self, environ):
+        path = urlsplit(environ.get("PATH_INFO", "/")).path
         if path == "/" or path == "/app" or path == "/app/":
             path = "/index.html"
         if path == "/index.html" or path.startswith("/assets/"):
