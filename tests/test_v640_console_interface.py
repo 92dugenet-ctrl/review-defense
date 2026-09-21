@@ -343,3 +343,23 @@ def test_v640_block10_submissions_preserves_no_external_execution_boundary():
     assert 'Aucune exécution externe' in js
     assert 'La préparation ne déclenche ni publication, ni suppression, ni réponse automatique sur Google.' in js
     assert 'openSubmissionCase(' in js
+
+def test_v640_block11_alerts_has_operational_observability_center():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['alert-overview','alert-hero','alert-kpis','alerts-panel','alert-toolbar','alert-list','alert-card','alert-state','alert-guardrail']:
+        assert token in js or token in css
+    for token in ['ALERT & AUDIT CONTROL','Alertes opérationnelles','Centre d’alertes','Observabilité uniquement']:
+        assert token in js
+
+
+def test_v640_block11_alerts_has_responsive_contract():
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['.alert-overview','.alert-kpis','.alert-toolbar','.alert-card','@media(max-width:900px)','@media(max-width:600px)']:
+        assert token in css
+
+
+def test_v640_block11_alerts_preserves_observability_only_boundary():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    assert "api('/v1/notifications')" in js
+    assert 'Cette interface ne supprime, ne publie et ne répond à aucun avis Google automatiquement.' in js
