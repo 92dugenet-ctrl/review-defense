@@ -55,7 +55,7 @@ jobs:
         run: python scripts/deploy_staging.py
       - name: Repository-only staging certification
         run: python scripts/staging_certification.py
-      - name: Package V6.38 release archive
+      - name: Package V6.40 release archive
         run: |
           mkdir -p artifacts/review-defense-v6.38
           zip -qr artifacts/review-defense-v6.38.zip . \
