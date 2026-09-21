@@ -32,7 +32,7 @@ def checks() -> dict[str, bool]:
     workflow = (ROOT / ".github/workflows/review-defense-staging.yml").read_text()
     compose = (ROOT / "docker-compose.staging.yml").read_text()
     return {
-        "version": VERSION == "6.36",
+        "version": VERSION == "6.40",
         "workflow_present": (ROOT / REQUIRED[0]).is_file(),
         "required_artifacts": all((ROOT / p).is_file() for p in REQUIRED),
         "workflow_read_only_permissions": "contents: read" in workflow,
