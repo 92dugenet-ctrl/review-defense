@@ -1,7 +1,7 @@
 -- V6.18: explicit human disposition of contradiction findings.
 CREATE TABLE IF NOT EXISTS contradiction_dispositions (
   disposition_id UUID PRIMARY KEY,
-  organization_id UUID NOT NULL REFERENCES organizations(organization_id) ON DELETE CASCADE,
+  organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   case_id UUID NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
   contradiction_id TEXT NOT NULL,
   status TEXT NOT NULL CHECK (status IN ('CONFIRMED_CONTRADICTION','EXPLAINED','FALSE_POSITIVE','NEEDS_MORE_EVIDENCE')),
