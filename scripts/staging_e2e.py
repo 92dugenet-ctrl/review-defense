@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""V6.36 live HTTPS/auth/MFA/browser certification for a dedicated staging account."""
+"""V6.40 live HTTPS/auth/MFA/browser certification for a dedicated staging account."""
 from __future__ import annotations
 import argparse, json, os, sys, urllib.request, urllib.error
 from pathlib import Path
@@ -23,19 +23,18 @@ def api_login(base: str, email: str, org: str, password: str, mfa_code: str | No
 def main() -> int:
     ap=argparse.ArgumentParser()
     ap.add_argument('--base-url', default=os.getenv('STAGING_BASE_URL',''))
-    ap.add_argument('--output', type=Path, default=ROOT/'artifacts/v6.36-live-e2e.json')
+    ap.add_argument('--output', type=Path, default=ROOT/'artifacts/v6.40-live-e2e.json')
     args=ap.parse_args()
     base=args.base_url.rstrip('/')
     required=['E2E_EMAIL','E2E_PASSWORD','E2E_ORGANIZATION_ID']
     missing=[x for x in required if not os.getenv(x)]
-    report={'version':'6.36','started_at':datetime.now(timezone.utc).isoformat(),'status':'NO-GO','base_url':base}
+    report={'version':'6.40','started_at':datetime.now(timezone.utc).isoformat(),'status':'NO-GO','base_url':base}
     if not base.startswith('https://'):
         report['error']='STAGING_BASE_URL must use HTTPS'
     elif missing:
         report['error']='missing required E2E secrets: '+', '.join(missing)
     else:
         email=os.environ['E2E_EMAIL']; password=os.environ['E2E_PASSWORD']; org=os.environ['E2E_ORGANIZATION_ID']; mfa_secret=os.getenv('E2E_MFA_SECRET','')
-        # A dedicated MFA-enabled account must reject a password-only login.
         if mfa_secret:
             status,payload=api_login(base,email,org,password)
             report['mfa_enforcement_without_code']={'status':status,'error':payload.get('error')}
