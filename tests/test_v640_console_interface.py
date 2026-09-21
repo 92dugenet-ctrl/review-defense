@@ -155,3 +155,27 @@ def test_v640_block2_navigation_preserves_keyboard_escape_behavior():
     assert "e.key==='Escape'" in js
     assert "e.metaKey||e.ctrlKey" in js
     assert 'openCommandPalette()' in js
+
+
+def test_v640_block3_dashboard_visual_contract():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    assert 'dashboard:async=>' in js
+    for token in ['.dashboard-hero','.dashboard-health','.dashboard-kpis','.kpi-card','.dashboard-grid','.pipeline-large','.pipeline-step','.priority-stack','.activity-list','.activity-item','.guardrail-list']:
+        assert token in css
+    for token in ['@media(max-width:1100px)','@media(max-width:760px)','@media(max-width:480px)']:
+        assert token in css
+
+
+def test_v640_block3_dashboard_preserves_operational_guardrails():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    for marker in ['Décider avec des preuves','Revue humaine requise','RLS','SHA-256','aucune action Google autonome']:
+        assert marker in js
+    assert "state.view='cases'" in js
+    assert "state.view='approvals'" in js
+
+
+def test_v640_block3_dashboard_has_operational_metrics_sources():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    for endpoint in ['/v1/reviews','/v1/cases','/v1/approvals','/v1/notifications/metrics']:
+        assert endpoint in js
