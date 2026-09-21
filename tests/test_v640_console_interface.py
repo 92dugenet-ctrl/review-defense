@@ -52,3 +52,20 @@ def test_v640_demo_has_each_major_domain_state():
     js=(ROOT/'frontend/assets/app.js').read_text()
     for marker in ['HIGH','CRITICAL','MEDIUM','PENDING','DELIVERED','OPEN','VERIFIED','READY_FOR_HUMAN_ACTION']:
         assert marker in js
+
+
+def test_v640_page_hierarchy_and_state_system_are_explicit():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for page in ['dashboard','reviews','cases','workload','escalations','evidence','approvals','submissions','alerts','audit','settings']:
+        assert page in js
+    for token in ['viewMeta','pageHead','stateCard','loading-state','Impossible de charger cette vue']:
+        assert token in js
+    for token in ['.page-head','.state-card','.loading-state','.loading-bar','@keyframes rd-shimmer']:
+        assert token in css
+
+
+def test_v640_human_gate_copy_remains_visible_in_console():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    for marker in ['Revue humaine requise','Aucune action externe ne sera exécutée','Aucune de ces actions n’envoie ou ne supprime automatiquement un avis Google']:
+        assert marker in js
