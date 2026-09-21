@@ -57,7 +57,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .card:hover,.panel:hover{border-color:var(--line-strong)}
 .primary{transition:transform .15s var(--ease),box-shadow .15s var(--ease),opacity .15s var(--ease)}
 .primary:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm)}
-.primary:active{transform:translateY(0);box-shadow:none}
+.primary:active{transform:translateY(0);box-shadow:none}.button:active,button:active{transform:translateY(0);filter:brightness(.96)}
 .ghost,.link-btn,.icon-btn,.command-btn{transition:background .15s var(--ease),border-color .15s var(--ease),color .15s var(--ease)}
 input::placeholder,textarea::placeholder{color:#5f6d7e}
 select{background:#0d131b;color:var(--text);border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px 11px}
