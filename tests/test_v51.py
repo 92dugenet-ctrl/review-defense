@@ -29,7 +29,7 @@ def test_transaction_sets_tenant_context_and_closes():
     conn=FakeConn(); repo=PostgresRepository('dsn', lambda dsn: conn)
     with repo.transaction('org1'):
         pass
-    assert any('SET LOCAL app.organization_id' in sql for sql,_ in conn.cur.calls)
+    assert any("set_config('app.organization_id', %s, true)" in sql for sql,_ in conn.cur.calls)
     assert conn.closed if hasattr(conn,'closed') else True
 
 def test_transaction_requires_org():
