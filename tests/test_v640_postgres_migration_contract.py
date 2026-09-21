@@ -22,6 +22,5 @@ def test_organizations_primary_key_is_created_before_tenant_migrations():
 def test_updated_at_trigger_function_uses_valid_postgresql_dollar_quoting():
     sql = (MIGRATIONS / "020_v622_data_reliability.sql").read_text(encoding="utf-8")
     assert "LANGUAGE plpgsql AS $fn$" in sql
-    assert "END;
-$fn$;" in sql
+    assert "END;\n$fn$;" in sql
     assert "AS $$fn$$" not in sql
