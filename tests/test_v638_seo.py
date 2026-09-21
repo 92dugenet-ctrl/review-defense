@@ -2,7 +2,7 @@ from src.seo_content import PAGES
 from src.seo_renderer import is_seo_path, render_page, sitemap, robots
 
 def test_v638_seo_index_contains_full_pack():
-    assert len(PAGES) == 63
+    assert len(PAGES) == 62
     assert any(slug == "suppression-avis-google" for slug, _, _ in PAGES)
     assert any(slug == "analyse-avis-google" for slug, _, _ in PAGES)
 
