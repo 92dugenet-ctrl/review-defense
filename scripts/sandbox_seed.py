@@ -251,6 +251,10 @@ def main() -> int:
                         "DELETE FROM organizations WHERE name LIKE %s",
                         (PREFIX + " %",),
                     )
+                    cur.execute(
+                        "DELETE FROM users WHERE email::text LIKE %s",
+                        ("%.%\u0040demo.review-defense.invalid",),
+                    )
                     result_a = seed_tenant(cur, f"{PREFIX} Alpha", "alpha")
                     result_b = seed_tenant(cur, f"{PREFIX} Beta", "beta")
         finally:
