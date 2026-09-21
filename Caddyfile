@@ -1,0 +1,13 @@
+{
+    email {$TLS_ADMIN_EMAIL}
+    auto_https on
+}
+
+{$REVIEW_DEFENSE_DOMAIN} {
+    encode gzip
+    reverse_proxy app:8080
+    header {
+        -Server
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    }
+}

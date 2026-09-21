@@ -1,0 +1,17 @@
+groups:
+  - name: review-defense
+    rules:
+      - alert: ReviewDefenseDown
+        expr: up{job="review-defense"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: Review Defense is unreachable
+      - alert: ReviewDefenseHigh5xx
+        expr: sum(rate(review_defense_requests_total{status=~"5.."}[5m])) / clamp_min(sum(rate(review_defense_requests_total[5m])), 1) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Review Defense HTTP 5xx rate is above 5%

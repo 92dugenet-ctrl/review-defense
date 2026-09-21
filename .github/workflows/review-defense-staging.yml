@@ -1,0 +1,248 @@
+name: Review Defense staging
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Deploy to the configured HTTPS staging host'
+        required: true
+        default: true
+        type: boolean
+      staging_url:
+        description: 'Optional deployed HTTPS staging URL to certify (defaults to STAGING_BASE_URL secret)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: review-defense-staging-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: '3.12'
+
+jobs:
+  contract-and-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+      - name: Install test dependencies
+        run: pip install -r requirements.txt pytest
+      - name: Compile Python sources
+        run: python -m compileall -q src scripts wsgi.py
+      - name: Full regression suite
+        run: pytest -q
+      - name: Release contract
+        run: python scripts/release_check.py
+      - name: GitHub staging contract
+        run: python scripts/github_staging_contract.py
+      - name: Deployment preflight contract
+        run: python scripts/deploy_staging.py
+      - name: Repository-only staging certification
+        run: python scripts/staging_certification.py
+      - name: Upload certification report
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-defense-staging-contract
+          path: artifacts/v6.36-staging-certification.json
+
+  postgres-integration:
+    needs: contract-and-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: review_defense_ci
+          POSTGRES_USER: review_defense
+          POSTGRES_PASSWORD: ci_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U review_defense -d review_defense_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      REVIEW_DEFENSE_TEST_DATABASE_URL: postgresql://review_defense:ci_password@127.0.0.1:5432/review_defense_ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install PostgreSQL integration dependencies
+        run: pip install -r requirements.txt pytest
+      - name: PostgreSQL migration and RLS certification
+        run: python scripts/postgres_certification.py
+      - name: PostgreSQL application smoke test
+        run: python scripts/postgres_smoke.py
+
+  deploy-staging:
+    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.deploy) }}
+    needs: contract-and-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate required deployment secrets
+        env:
+          STAGING_SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
+          STAGING_SSH_USER: ${{ secrets.STAGING_SSH_USER }}
+          STAGING_SSH_PRIVATE_KEY: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+          STAGING_SSH_KNOWN_HOSTS: ${{ secrets.STAGING_SSH_KNOWN_HOSTS }}
+          STAGING_ENV_FILE: ${{ secrets.STAGING_ENV_FILE }}
+          STAGING_BASE_URL: ${{ secrets.STAGING_BASE_URL }}
+        run: |
+          test -n "$STAGING_SSH_HOST"
+          test -n "$STAGING_SSH_USER"
+          test -n "$STAGING_SSH_PRIVATE_KEY"
+          test -n "$STAGING_SSH_KNOWN_HOSTS"
+          test -n "$STAGING_ENV_FILE"
+          test -n "$STAGING_BASE_URL"
+          case "$STAGING_BASE_URL" in https://*) ;; *) echo 'STAGING_BASE_URL must use HTTPS'; exit 1 ;; esac
+      - name: Configure SSH
+        env:
+          STAGING_SSH_PRIVATE_KEY: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+          STAGING_SSH_KNOWN_HOSTS: ${{ secrets.STAGING_SSH_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$STAGING_SSH_PRIVATE_KEY" > ~/.ssh/review-defense-staging
+          chmod 600 ~/.ssh/review-defense-staging
+          printf '%s\n' "$STAGING_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+      - name: Package release
+        run: |
+          tar --exclude='.git' --exclude='__pycache__' --exclude='*.pyc' -czf /tmp/review-defense-release.tgz .
+      - name: Upload release bundle and environment
+        env:
+          STAGING_SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
+          STAGING_SSH_USER: ${{ secrets.STAGING_SSH_USER }}
+          STAGING_SSH_PORT: ${{ secrets.STAGING_SSH_PORT }}
+          STAGING_ENV_FILE: ${{ secrets.STAGING_ENV_FILE }}
+        run: |
+          SSH_PORT="${STAGING_SSH_PORT:-22}"
+          TARGET="${STAGING_SSH_USER}@${STAGING_SSH_HOST}"
+          ssh -i ~/.ssh/review-defense-staging -p "$SSH_PORT" "$TARGET" 'mkdir -p ~/review-defense/staging_previous ~/review-defense/staging_current'
+          scp -i ~/.ssh/review-defense-staging -P "$SSH_PORT" /tmp/review-defense-release.tgz "$TARGET":~/review-defense/release.tgz
+          printf '%s\n' "$STAGING_ENV_FILE" | ssh -i ~/.ssh/review-defense-staging -p "$SSH_PORT" "$TARGET" 'umask 077; cat > ~/review-defense/staging.env'
+      - name: Deploy atomically and keep previous release
+        env:
+          STAGING_SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
+          STAGING_SSH_USER: ${{ secrets.STAGING_SSH_USER }}
+          STAGING_SSH_PORT: ${{ secrets.STAGING_SSH_PORT }}
+        run: |
+          SSH_PORT="${STAGING_SSH_PORT:-22}"
+          TARGET="${STAGING_SSH_USER}@${STAGING_SSH_HOST}"
+          ssh -i ~/.ssh/review-defense-staging -p "$SSH_PORT" "$TARGET" 'bash -se' <<'REMOTE'
+          set -eu
+          cd ~/review-defense
+          if [ -f staging_current/docker-compose.staging.yml ]; then
+            rm -rf staging_previous
+            mkdir -p staging_previous
+            cp -a staging_current/. staging_previous/
+          fi
+          rm -rf staging_current.new
+          mkdir staging_current.new
+          tar -xzf release.tgz -C staging_current.new
+          mv staging_current.new staging_current.next
+          rm -rf staging_current
+          mv staging_current.next staging_current
+          cp staging.env staging_current/.env
+          cd staging_current
+          docker compose --env-file .env -f docker-compose.staging.yml up -d --build
+          docker compose --env-file .env -f docker-compose.staging.yml ps
+          REMOTE
+      - name: Live HTTPS certification
+        env:
+          STAGING_BASE_URL: ${{ inputs.staging_url || secrets.STAGING_BASE_URL }}
+        run: |
+          python scripts/staging_certification.py --live --output artifacts/v6.36-live-certification.json
+      - name: Upload live certification
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-defense-live-certification
+          path: artifacts/v6.36-live-certification.json
+
+  staging-e2e:
+    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.deploy) }}
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install E2E dependencies
+        run: |
+          pip install -r requirements.txt pytest playwright
+          playwright install --with-deps chromium
+      - name: Run live HTTPS authentication, MFA and browser certification
+        env:
+          STAGING_BASE_URL: ${{ secrets.STAGING_BASE_URL }}
+          E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+          E2E_ORGANIZATION_ID: ${{ secrets.E2E_ORGANIZATION_ID }}
+          E2E_MFA_SECRET: ${{ secrets.E2E_MFA_SECRET }}
+        run: python scripts/staging_e2e.py --output artifacts/v6.36-live-e2e.json
+      - name: Upload live E2E certification
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-defense-live-e2e
+          path: artifacts/v6.36-live-e2e.json
+
+  rollback-staging:
+    if: ${{ failure() && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.deploy)) }}
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: staging
+    steps:
+      - name: Validate rollback secret
+        env:
+          STAGING_SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
+          STAGING_SSH_USER: ${{ secrets.STAGING_SSH_USER }}
+          STAGING_SSH_PORT: ${{ secrets.STAGING_SSH_PORT }}
+        run: test -n "$STAGING_SSH_HOST" && test -n "$STAGING_SSH_USER"
+      - name: Configure SSH
+        env:
+          STAGING_SSH_PRIVATE_KEY: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+          STAGING_SSH_KNOWN_HOSTS: ${{ secrets.STAGING_SSH_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$STAGING_SSH_PRIVATE_KEY" > ~/.ssh/review-defense-staging
+          chmod 600 ~/.ssh/review-defense-staging
+          printf '%s\n' "$STAGING_SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+      - name: Restore previous release
+        env:
+          STAGING_SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
+          STAGING_SSH_USER: ${{ secrets.STAGING_SSH_USER }}
+          STAGING_SSH_PORT: ${{ secrets.STAGING_SSH_PORT }}
+        run: |
+          SSH_PORT="${STAGING_SSH_PORT:-22}"
+          TARGET="${STAGING_SSH_USER}@${STAGING_SSH_HOST}"
+          ssh -i ~/.ssh/review-defense-staging -p "$SSH_PORT" "$TARGET" 'bash -se' <<'REMOTE'
+          set -eu
+          cd ~/review-defense
+          test -f staging_previous/docker-compose.staging.yml
+          rm -rf staging_rollback
+          cp -a staging_previous staging_rollback
+          cp staging.env staging_rollback/.env
+          cd staging_rollback
+          docker compose --env-file .env -f docker-compose.staging.yml up -d --build
+          REMOTE

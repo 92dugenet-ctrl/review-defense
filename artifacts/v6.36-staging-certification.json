@@ -1,0 +1,27 @@
+{
+  "completed_at": "2026-09-21T09:51:56.688289+00:00",
+  "contracts": {
+    "all": true,
+    "browser_e2e": true,
+    "caddyfile": true,
+    "dockerfile": true,
+    "dr_validator": true,
+    "https_only_smoke": true,
+    "mfa_key_required": true,
+    "migrations_before_app": true,
+    "no_google_frontend": true,
+    "postgres_healthcheck": true,
+    "public_base_url_required": true,
+    "secure_headers": true,
+    "staging_compose": true,
+    "staging_smoke": true,
+    "tls_caddy": true,
+    "trust_proxy": true,
+    "two_workers": true,
+    "version": true
+  },
+  "limitation": "no STAGING_BASE_URL was supplied; no live infrastructure was exercised",
+  "started_at": "2026-09-21T09:51:56.687888+00:00",
+  "status": "CONTRACT-PASS-NOT-LIVE-CERTIFIED",
+  "version": "6.36"
+}

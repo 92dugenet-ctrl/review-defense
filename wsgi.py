@@ -1,3 +1,4 @@
-from src.api_server import ReviewDefenseAPI
+"""Production WSGI entrypoint."""
+from src.api_server import create_app
 
-app = ReviewDefenseAPI()
+app = create_app()

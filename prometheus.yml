@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 15s
+scrape_configs:
+  - job_name: review-defense
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['app:8080']
+    authorization:
+      credentials: '${REVIEW_DEFENSE_METRICS_TOKEN}'
