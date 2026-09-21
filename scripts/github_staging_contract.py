@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""V6.36 GitHub-hosted staging contract validation.
+"""V6.40 GitHub-hosted staging contract validation.
 
 This does not deploy anything and does not require GitHub secrets. It verifies
 that GitHub Actions can run the release/staging validation safely and that no
@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "6.36"
+VERSION = "6.40"
 
 REQUIRED = [
     ".github/workflows/review-defense-staging.yml",
