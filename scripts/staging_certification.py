@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""V6.34 staging deployment verification and certification.
+"""V6.40 staging deployment verification and certification.
 
 Contract-first and non-destructive. With STAGING_BASE_URL it performs bounded
 live HTTPS checks. Without it, it validates that the repository contains the
@@ -20,7 +20,7 @@ def contract_checks() -> dict[str, bool]:
     env = (ROOT / ".env.example").read_text()
     api = (ROOT / "src/api_server.py").read_text()
     checks = {
-        "version": '"6.39"' in api,
+        "version": '"6.40"' in api,
         "staging_compose": (ROOT / "docker-compose.staging.yml").is_file(),
         "dockerfile": (ROOT / "Dockerfile").is_file(),
         "caddyfile": (ROOT / "Caddyfile").is_file(),
@@ -85,7 +85,7 @@ def live_checks(base: str) -> dict[str, object]:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--output", type=Path, default=Path("artifacts/v6.34-staging-certification.json"))
+    ap.add_argument("--output", type=Path, default=Path("artifacts/v6.40-staging-certification.json"))
     ap.add_argument("--live", action="store_true", help="require live STAGING_BASE_URL certification")
     args = ap.parse_args()
     output = args.output if args.output.is_absolute() else ROOT / args.output
