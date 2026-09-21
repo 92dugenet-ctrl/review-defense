@@ -1448,12 +1448,24 @@ class ReviewDefenseAPI:
         path = urlsplit(environ.get("PATH_INFO", "/")).path
         if path == "/app" or path == "/app/":
             path = "/index.html"
-        if path == "/index.html" or path.startswith("/assets/"):
+        # V6.39: serve crawlable SEO documents (articles, robots.txt and sitemap.xml)
+        # as static files while keeping the authenticated /app console separate.
+        seo_path = path.lstrip("/")
+        if path == "/robots.txt" or path == "/sitemap.xml" or path.startswith("/assets/") or path == "/index.html" or path.startswith("/seo/"):
             from pathlib import Path
             import mimetypes
             root = Path(__file__).resolve().parents[1] / "frontend"
-            rel = path.lstrip("/")
+            rel = seo_path
             target = (root / rel).resolve()
+        elif path not in {"/", "/app", "/app/"} and not path.startswith("/v1/") and environ.get("REQUEST_METHOD") == "GET":
+            from pathlib import Path
+            import mimetypes
+            root = Path(__file__).resolve().parents[1] / "frontend" / "seo"
+            slug = path.strip("/")
+            target = (root / slug / "index.html").resolve()
+        else:
+            target = None
+        if target is not None:
             try:
                 target.relative_to(root.resolve())
             except ValueError:
