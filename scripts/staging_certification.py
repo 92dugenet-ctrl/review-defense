@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "6.36"
+VERSION = "6.39"
 
 
 def contract_checks() -> dict[str, bool]:
@@ -20,7 +20,7 @@ def contract_checks() -> dict[str, bool]:
     env = (ROOT / ".env.example").read_text()
     api = (ROOT / "src/api_server.py").read_text()
     checks = {
-        "version": '"6.36"' in api,
+        "version": '"6.39"' in api,
         "staging_compose": (ROOT / "docker-compose.staging.yml").is_file(),
         "dockerfile": (ROOT / "Dockerfile").is_file(),
         "caddyfile": (ROOT / "Caddyfile").is_file(),
