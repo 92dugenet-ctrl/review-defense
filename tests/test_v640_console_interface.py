@@ -284,3 +284,25 @@ def test_v640_block8_evidence_preserves_sha256_integrity_boundary():
     assert "api('/v1/evidence')" in js
     assert 'x.sha256' in js
     assert 'La présentation ne modifie jamais le contenu source.' in js
+
+def test_v640_block9_approvals_has_human_gate_and_review_queue():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['approval-overview','approval-hero','approval-kpis','approvals-panel','approval-toolbar','approval-list','approval-card','approval-gate','approval-guardrail']:
+        assert token in js or token in css
+    for token in ['HUMAN APPROVAL GATE','Centre de validation','File de validation','Validation explicite obligatoire']:
+        assert token in js
+
+
+def test_v640_block9_approvals_has_responsive_contract():
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['.approval-overview','.approval-kpis','.approval-toolbar','.approval-card','@media(max-width:900px)','@media(max-width:600px)']:
+        assert token in css
+
+
+def test_v640_block9_approvals_preserves_human_action_boundary():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    assert "api('/v1/approvals')" in js
+    assert 'Aucune action externe automatique' in js
+    assert 'Une approbation n’exécute pas une action Google.' in js
+    assert 'openApprovalCase(' in js
