@@ -15,7 +15,7 @@ def test_v623_smoke_script_refuses_production_database_fallback():
     text = (ROOT / "scripts/postgres_smoke.py").read_text(encoding="utf-8")
     assert "refusing DATABASE_URL fallback" in text
     assert "apply_migrations" in text
-    assert "V623_ROLLBACK" in text
+    assert "V640_ROLLBACK" in text
 
 
 def test_v623_backup_and_restore_are_explicit():
@@ -34,7 +34,6 @@ def test_v623_live_database_marker():
 
 
 def test_v623_backup_strips_password_from_command_argument():
-    namespace = {}
     source = (ROOT / "scripts/postgres_backup.py").read_text(encoding="utf-8")
     assert "PGPASSWORD" in source
     assert "_dsn_without_password" in source
