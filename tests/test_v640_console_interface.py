@@ -127,3 +127,31 @@ def test_v640_block1_has_consistent_surface_and_control_primitives():
         'border-radius:var(--radius'
     ]:
         assert token in css
+
+
+def test_v640_block2_navigation_has_accessible_mobile_contract():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['console-sidebar','aria-label="Navigation principale"','aria-expanded','aria-controls="console-sidebar"','navigateTo(id)','closeMobileNav()','window.addEventListener']:
+        assert token in js
+    for token in ['.mobile-nav-scrim','body:has(.sidebar.mobile-open)','backdrop-filter','position:sticky','z-index:10']:
+        assert token in css
+
+
+def test_v640_block2_navigation_has_desktop_and_mobile_surface_contract():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    assert 'data-view="${id}"' in js
+    assert "onclick=\"navigateTo('\\${id}')\"" in js
+    assert 'Navigation rapide' in js
+    assert '⌘K' in js
+    assert 'nav button.active' in css
+    assert 'sidebar.mobile-open' in css
+    assert '@media(max-width:760px)' in css
+
+
+def test_v640_block2_navigation_preserves_keyboard_escape_behavior():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    assert "e.key==='Escape'" in js
+    assert "e.metaKey||e.ctrlKey" in js
+    assert 'openCommandPalette()' in js
