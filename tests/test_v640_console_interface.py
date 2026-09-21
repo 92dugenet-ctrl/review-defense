@@ -363,3 +363,26 @@ def test_v640_block11_alerts_preserves_observability_only_boundary():
     js=(ROOT/'frontend/assets/app.js').read_text()
     assert "api('/v1/notifications')" in js
     assert 'Cette interface ne supprime, ne publie et ne répond à aucun avis Google automatiquement.' in js
+
+def test_v640_block12_organization_has_member_and_access_center():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['org-overview','org-hero','org-kpis','org-members','org-member-list','org-bottom-grid','org-calendar','org-guardrail']:
+        assert token in js or token in css
+    for token in ['Membres & rôles','Calendrier SLA','Contrôles d’accès','Isolation organisationnelle']:
+        assert token in js
+
+
+def test_v640_block12_organization_preserves_server_rbac_and_tenant_boundary():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    assert "api('/v1/organization/members')" in js
+    assert "api('/v1/organization/sla-calendar')" in js
+    assert '/v1/organization/members/' in js
+    assert '/v1/organization/invitations' in js
+    assert 'Les membres affichés appartiennent uniquement à votre organisation' in js
+
+
+def test_v640_block12_organization_has_responsive_contract():
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['.org-kpis','.org-member','.org-bottom-grid','.org-calendar','@media(max-width:900px)','@media(max-width:600px)']:
+        assert token in css
