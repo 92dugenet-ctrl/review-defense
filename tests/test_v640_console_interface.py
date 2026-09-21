@@ -306,3 +306,18 @@ def test_v640_block9_approvals_preserves_human_action_boundary():
     assert 'Aucune action externe automatique' in js
     assert 'Une approbation n’exécute pas une action Google.' in js
     assert 'openApprovalCase(' in js
+
+def test_v640_block9_approvals_exposes_decision_chain_steps():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['approval-steps','Décision','Gel','Approbation','Soumission']:
+        assert token in js
+    for token in ['.approval-steps','.approval-steps .done','.approval-steps .current','.approval-steps .locked']:
+        assert token in css
+
+
+def test_v640_block9_approvals_does_not_add_external_action():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    assert 'api(\'/v1/approvals\')' in js
+    assert 'openApprovalCase(' in js
+    assert 'Aucune action externe automatique' in js
