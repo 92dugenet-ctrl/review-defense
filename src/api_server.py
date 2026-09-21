@@ -362,7 +362,7 @@ class ReviewDefenseAPI:
             raise APIError(429, "RATE_LIMITED", "rate limit exceeded")
         if method == "GET" and path == "/health":
             result = health_check(checks={"store": lambda: self.store is not None})
-            return self._json(200 if result.status == "ok" else 503, {"status": result.status, "service": "review-defense", "version": "6.36", "checks": result.checks, "checked_at": result.checked_at})
+            return self._json(200 if result.status == "ok" else 503, {"status": result.status, "service": "review-defense", "version": "6.37", "checks": result.checks, "checked_at": result.checked_at})
         if method == "GET" and path == "/metrics":
             # Prometheus-compatible metrics contain only aggregate operational data.
             import os
