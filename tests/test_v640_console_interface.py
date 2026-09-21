@@ -411,3 +411,27 @@ def test_v640_block13_authentication_has_accessibility_and_responsive_contract()
     assert 'autocomplete="one-time-code"' in js
     for token in ['.auth-shell-premium','.password-field','.auth-boundary','@media(max-width:600px)']:
         assert token in css
+
+def test_v640_block14_final_certification_gate_is_present_and_non_destructive():
+    script=(ROOT/'scripts/v640_final_certification.py').read_text()
+    for token in ['VERSION="6.40"','pytest','compileall','v6.40-final-certification.json','NO-GO','PASS']:
+        assert token in script
+    for token in ['never deploys','calls Google','human approval']:
+        assert token in script
+
+
+def test_v640_block14_release_workflow_is_version_aligned():
+    wf=(ROOT/'.github/workflows/review-defense-staging.yml').read_text()
+    assert 'review-defense-v6.40' in wf
+    assert 'v6.40-staging-certification.json' in wf
+    assert 'v6.40-live-certification.json' in wf
+    assert 'v6.40-live-e2e.json' in wf
+
+
+def test_v640_block14_final_guardrails_remain_intact():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    api=(ROOT/'src/api_server.py').read_text().lower()
+    assert 'Confirmer l’approbation humaine' in js
+    assert 'Aucune exécution externe' in js
+    assert 'googleapis.com' not in js
+    assert not any(x in api for x in ['delete review','report review','reply review'])
