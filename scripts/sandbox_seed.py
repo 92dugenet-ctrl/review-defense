@@ -45,6 +45,7 @@ def seed_tenant(cur, org_name: str, slug: str) -> dict[str, str]:
         (org_name,),
     )
     org_id = str(cur.fetchone()[0])
+    cur.execute("SET LOCAL app.organization_id = %s", (org_id,))
 
     users: dict[str, str] = {}
     roles = [
