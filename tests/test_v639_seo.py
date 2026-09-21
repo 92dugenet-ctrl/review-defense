@@ -1,7 +1,7 @@
 from src import seo_site
 
 
-def test_v639_seo_pack_has_all_indexable_pages():
+def test_v640_seo_pack_has_all_indexable_pages():
     pages=seo_site._pages()
     assert len(pages)==63
     assert any(p["path"]=="/suppression-avis-google/" for p in pages)
