@@ -1451,7 +1451,7 @@ class ReviewDefenseAPI:
         # V6.39: serve crawlable SEO documents (articles, robots.txt and sitemap.xml)
         # as static files while keeping the authenticated /app console separate.
         seo_path = path.lstrip("/")
-        if path == "/robots.txt" or path == "/sitemap.xml" or path.startswith("/assets/") or path == "/index.html" or path.startswith("/seo/"):
+        if path == "/" or path == "/robots.txt" or path == "/sitemap.xml" or path.startswith("/assets/") or path == "/index.html" or path.startswith("/seo/"):
             from pathlib import Path
             import mimetypes
             root = Path(__file__).resolve().parents[1] / "frontend"
