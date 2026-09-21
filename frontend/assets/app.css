@@ -72,3 +72,26 @@ hr{border:0;border-top:1px solid var(--line);margin:var(--space-6) 0}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+/* V6.40 Block 2 — navigation foundation */
+.sidebar{backdrop-filter:blur(18px);box-shadow:12px 0 40px rgba(0,0,0,.12)}
+.sidebar nav{min-height:0;overflow:auto;padding-right:2px;scrollbar-width:thin}
+.sidebar nav button{position:relative;display:flex;align-items:center;min-height:40px}
+.sidebar nav button.active{background:linear-gradient(90deg,#172331,#131c27);box-shadow:inset 2px 0 0 var(--accent-strong)}
+.workspace-switcher{flex:none}
+.header-actions{min-width:0}
+.header-actions .pill{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mobile-nav-scrim{display:none}
+@media(max-width:760px){
+  body:has(.sidebar.mobile-open){overflow:hidden}
+  .mobile-nav-scrim{display:block;position:fixed;inset:0;background:rgba(0,0,0,.58);backdrop-filter:blur(2px);z-index:4}
+  .sidebar{z-index:10;box-shadow:24px 0 70px rgba(0,0,0,.48)}
+  main{position:relative;z-index:1}
+  header{position:sticky;top:0;z-index:3;padding:8px 0;background:linear-gradient(#0b0f14 75%,rgba(11,15,20,0))}
+  .header-actions{gap:7px}
+  .header-actions .pill{max-width:120px}
+  .workspace-switcher{font-size:11px}
+}
+@media(min-width:761px){
+  .mobile-nav-scrim{display:none!important}
+}
