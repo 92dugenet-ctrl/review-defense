@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""V6.34 deterministic staging deployment preflight.
+"""V6.40 deterministic staging deployment preflight.
 
 This module validates the environment used by the GitHub Actions deployment
 workflow. It never contacts a remote host and never executes a deployment.
@@ -12,7 +12,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "6.36"
+VERSION = "6.40"
 
 REQUIRED_FILES = [
     ".github/workflows/review-defense-staging.yml",
