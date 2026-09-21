@@ -1,6 +1,6 @@
 -- V6.14 tenant-scoped notification policy.
 CREATE TABLE IF NOT EXISTS organization_notification_policies (
-  organization_id UUID PRIMARY KEY REFERENCES organizations(organization_id) ON DELETE CASCADE,
+  organization_id UUID PRIMARY KEY REFERENCES organizations(id) ON DELETE CASCADE,
   enabled BOOLEAN NOT NULL DEFAULT TRUE,
   levels TEXT[] NOT NULL DEFAULT ARRAY['DUE','CRITICAL'],
   channels TEXT[] NOT NULL DEFAULT ARRAY['IN_APP','EMAIL','WEBHOOK'],
