@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_v627_health_and_security_headers():
     app = create_app(config=ProductionConfig(environment="development", host="127.0.0.1"))
     status, data = call(app, "GET", "/health")
-    assert status == 200 and data["version"] == "6.36"
+    assert status == 200 and data["version"] == "6.39"
 
 
 def test_v627_security_headers_include_browser_isolation():
