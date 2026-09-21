@@ -321,3 +321,25 @@ def test_v640_block9_approvals_does_not_add_external_action():
     assert 'api(\'/v1/approvals\')' in js
     assert 'openApprovalCase(' in js
     assert 'Aucune action externe automatique' in js
+
+def test_v640_block10_submissions_has_controlled_registry_and_chain():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['submission-overview','submission-hero','submission-kpis','submissions-panel','submission-toolbar','submission-list','submission-card','submission-chain','submission-guardrail']:
+        assert token in js or token in css
+    for token in ['CONTROLLED SUBMISSION','Préparation des soumissions','Registre des soumissions','Exécution désactivée']:
+        assert token in js
+
+
+def test_v640_block10_submissions_has_responsive_contract():
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['.submission-overview','.submission-kpis','.submission-toolbar','.submission-card','.submission-chain','@media(max-width:900px)','@media(max-width:600px)']:
+        assert token in css
+
+
+def test_v640_block10_submissions_preserves_no_external_execution_boundary():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    assert "api('/v1/submissions')" in js
+    assert 'Aucune exécution externe' in js
+    assert 'La préparation ne déclenche ni publication, ni suppression, ni réponse automatique sur Google.' in js
+    assert 'openSubmissionCase(' in js
