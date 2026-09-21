@@ -29,7 +29,10 @@ class PostgresRepository:
         try:
             with conn.transaction():
                 with conn.cursor() as cur:
-                    cur.execute("SET LOCAL app.organization_id = %s", (organization_id,))
+                    cur.execute(
+                        "SELECT set_config('app.organization_id', %s, true)",
+                        (organization_id,),
+                    )
                     yield conn
         finally:
             conn.close()
