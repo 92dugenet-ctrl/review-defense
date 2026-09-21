@@ -11,7 +11,7 @@ import sys
 
 
 def build_gunicorn_command(port: str | None = None) -> list[str]:
-    selected_port = port or os.environ.get("PORT") or "8080"
+    selected_port = port or os.environ.get("PORT") or "25875"
     return [
         sys.executable,
         "-m",
