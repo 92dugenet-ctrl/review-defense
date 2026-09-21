@@ -68,4 +68,4 @@ def test_authenticated_requests_touch_persistent_session_metadata():
 def test_health_version_is_v621():
     app = create_app(config=ProductionConfig(environment="development"))
     status, data = call(app, "GET", "/health")
-    assert status == 200 and data["version"] == "6.36"
+    assert status == 200 and data["version"] == "6.39"
