@@ -27,12 +27,12 @@ CREATE INDEX IF NOT EXISTS idx_case_events_org_created ON case_events(organizati
 CREATE INDEX IF NOT EXISTS idx_api_evidence_case_created ON api_evidence(organization_id, case_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_api_idempotency_created ON api_idempotency(organization_id, created_at DESC);
 
-CREATE OR REPLACE FUNCTION touch_updated_at() RETURNS trigger LANGUAGE plpgsql AS $$fn$$
+CREATE OR REPLACE FUNCTION touch_updated_at() RETURNS trigger LANGUAGE plpgsql AS $fn$
 BEGIN
   NEW.updated_at = now();
   RETURN NEW;
 END;
-$$fn$$;
+$fn$;
 
 DROP TRIGGER IF EXISTS trg_cases_updated_at ON cases;
 CREATE TRIGGER trg_cases_updated_at BEFORE UPDATE ON cases FOR EACH ROW EXECUTE FUNCTION touch_updated_at();
