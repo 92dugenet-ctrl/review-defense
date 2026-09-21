@@ -200,3 +200,25 @@ def test_v640_block4_reviews_keeps_read_only_human_control_boundary():
     js=(ROOT/'frontend/assets/app.js').read_text()
     assert 'sans déclencher d’action externe automatique' in js
     assert '/v1/reviews' in js
+
+def test_v640_block5_cases_has_management_queue_and_filters():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['case-overview','case-summary','case-mini-grid','cases-panel','case-toolbar','case-card','filterCaseCards','case-guardrail']:
+        assert token in js or token in css
+    for token in ['Rechercher un dossier','Filtrer les dossiers','File des dossiers','Centre des dossiers']:
+        assert token in js
+
+
+def test_v640_block5_cases_has_responsive_visual_contract():
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['.case-overview','.case-list','.case-row','.case-toolbar','@media(max-width:900px)','@media(max-width:600px)']:
+        assert token in css
+
+
+def test_v640_block5_cases_preserves_case_detail_boundary_and_human_guardrail():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    assert "api('/v1/cases')" in js
+    assert 'openCase(' in js
+    assert 'Traçabilité conservée' in js
+    assert 'contrôles humains' in js
