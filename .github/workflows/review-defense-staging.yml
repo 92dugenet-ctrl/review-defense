@@ -106,6 +106,10 @@ jobs:
         run: python scripts/postgres_certification.py
       - name: PostgreSQL application smoke test
         run: python scripts/postgres_smoke.py
+      - name: V6.40 demonstration sandbox seed
+        run: python scripts/sandbox_seed.py
+      - name: V6.40 demonstration sandbox certification
+        run: python scripts/sandbox_certification.py
 
   deploy-staging:
     if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.deploy) }}
