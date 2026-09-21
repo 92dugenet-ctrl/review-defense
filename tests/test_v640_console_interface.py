@@ -222,3 +222,24 @@ def test_v640_block5_cases_preserves_case_detail_boundary_and_human_guardrail():
     assert 'openCase(' in js
     assert 'Traçabilité conservée' in js
     assert 'contrôles humains' in js
+
+def test_v640_block6_case_workspace_has_operational_sections():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['caseWorkspace','workspace-header','workspace-stats','workspace-main-grid','workspace-review','workspace-items','evidence-stack','matrix-grid','workspace-timeline','decision-card','workspace-guardrail']:
+        assert token in js or token in css
+    for token in ['Claims','Preuves liées','Matrice preuves ↔ claims','Timeline','Décision','Readiness']:
+        assert token in js
+
+
+def test_v640_block6_case_workspace_has_responsive_contract():
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['.workspace-main-grid','.workspace-sidebar','.workspace-bottom-grid','@media(max-width:1000px)','@media(max-width:700px)','@media(max-width:480px)']:
+        assert token in css
+
+
+def test_v640_block6_case_workspace_preserves_decision_freeze_approval_submission_chain():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    for token in ['createDecision(','freezeCase(','approveCase(','prepareSubmission(','Décision → gel → approbation → préparation de soumission']:
+        assert token in js
+    assert 'Aucune action Google externe automatique' in js
