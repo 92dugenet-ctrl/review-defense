@@ -69,4 +69,4 @@ def test_v625_production_email_configuration_is_validated():
 def test_v625_health_version():
     app=create_app(config=ProductionConfig(environment="development"))
     status,data=call(app,"GET","/health")
-    assert status==200 and data["version"]=="6.36"
+    assert status==200 and data["version"]=="6.39"
