@@ -243,3 +243,23 @@ def test_v640_block6_case_workspace_preserves_decision_freeze_approval_submissio
     for token in ['createDecision(','freezeCase(','approveCase(','prepareSubmission(','Décision → gel → approbation → préparation de soumission']:
         assert token in js
     assert 'Aucune action Google externe automatique' in js
+
+def test_v640_block7_sla_workload_has_operational_center():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['sla-overview','sla-hero','sla-kpis','sla-health','workload-panel','workload-list','workload-row','workload-track','sla-note']:
+        assert token in js or token in css
+    for token in ['SLA CONTROL CENTER','Charge & délais','Charge par analyste','Contrôle humain']:
+        assert token in js
+
+
+def test_v640_block7_sla_workload_has_responsive_contract():
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['.sla-overview','.workload-row','.sla-kpis','.sla-note','@media(max-width:900px)','@media(max-width:600px)']:
+        assert token in css
+
+
+def test_v640_block7_sla_workload_preserves_server_control_boundary():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    assert "api('/v1/review-queue/workload')" in js
+    assert 'Les affectations et escalades restent régies par les contrôles serveur' in js
