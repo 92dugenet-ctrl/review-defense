@@ -21,7 +21,7 @@ def test_v639_structured_data_and_faq_are_visible():
     assert 'FAQPage' in html
     assert 'Questions fréquentes' in html
     assert '/analyse-avis-google/' in html
-    assert 'sans garantie de suppression' in html
+    assert 'pas automatiquement supprimable' in html
 
 def test_v639_sitemap_and_robots():
     sm=sitemap().decode(); rb=robots().decode()
