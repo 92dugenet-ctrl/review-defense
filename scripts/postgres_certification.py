@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""V6.36 real PostgreSQL staging certification.
+"""V6.40 real PostgreSQL staging certification.
 
 Requires REVIEW_DEFENSE_TEST_DATABASE_URL and never falls back to DATABASE_URL.
 The check is safe to run repeatedly: migrations are applied, re-applied for
@@ -10,10 +10,10 @@ import json, os, sys
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from src.migration_runner import apply_migrations  # noqa: E402
-from src.postgres_integration import IntegrationConfig, connect, wait_for_database  # noqa: E402
+from src.migration_runner import apply_migrations
+from src.postgres_integration import IntegrationConfig, connect, wait_for_database
 
-VERSION = "6.36"
+VERSION = "6.40"
 REQUIRED_TABLES = {
     "organizations", "users", "memberships", "cases", "case_events",
     "api_sessions", "api_reviews", "api_cases", "api_decisions", "api_approvals",
