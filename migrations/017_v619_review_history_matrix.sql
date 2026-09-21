@@ -1,7 +1,7 @@
 -- V6.19 append-only contradiction disposition history.
 CREATE TABLE IF NOT EXISTS contradiction_disposition_history (
   history_id TEXT PRIMARY KEY,
-  organization_id UUID NOT NULL REFERENCES organizations(organization_id) ON DELETE CASCADE,
+  organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   case_id UUID NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
   contradiction_id TEXT NOT NULL,
   disposition_id TEXT NOT NULL,
