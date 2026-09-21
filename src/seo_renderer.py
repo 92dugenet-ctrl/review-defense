@@ -12,12 +12,22 @@ def _page_map():
 def is_seo_path(path: str) -> bool:
     return path in _page_map()
 
+TITLE_SUFFIXES = {
+    "avis-google-argent-avantage": " | Cas concret",
+    "avis-google-menace-entreprise": " | Cas concret",
+    "pourquoi-mon-avis-google-reste-en-ligne-conversationnel": " | Cas concret",
+    "google-refuse-de-supprimer-mon-faux-avis": " | Cas concret",
+}
+
 def _meta(slug: str, title: str) -> str:
     if slug == "suppression-avis-google":
         return "Guide complet sur la suppression d’avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes."
     if slug in SERVICE_SLUGS:
         return f"{title}. Analyse, qualification, préparation du dossier, accompagnement et suivi, sans garantie de suppression."
     return f"{title} Découvrez les vérifications à effectuer, les éléments à conserver, les options de signalement et les suites possibles. Analyse factuelle possible."
+
+def _title_tag(slug: str, title: str) -> str:
+    return title + TITLE_SUFFIXES.get(slug, " | Review Defense")
 
 def _cluster(slug: str) -> str:
     if slug in SERVICE_SLUGS: return "Services"
@@ -103,9 +113,9 @@ def render_page(path: str) -> bytes:
     schema_graph.append({"@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in faq]})
     schema={"@context":"https://schema.org","@graph":schema_graph}
     doc=f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{html.escape(title)} | Review Defense</title><meta name="description" content="{html.escape(meta)}">
+<title>{html.escape(_title_tag(slug,title))}</title><meta name="description" content="{html.escape(meta)}">
 <link rel="canonical" href="{html.escape(canonical)}"><meta name="robots" content="index,follow,max-image-preview:large">
-<meta property="og:type" content="article"><meta property="og:title" content="{html.escape(title)}"><meta property="og:description" content="{html.escape(meta)}"><meta property="og:url" content="{html.escape(canonical)}">
+<meta property="og:type" content="article"><meta property="og:title" content="{html.escape(_title_tag(slug,title))}"><meta property="og:description" content="{html.escape(meta)}"><meta property="og:url" content="{html.escape(canonical)}">
 <link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css"><link rel="stylesheet" href="/assets/seo.css">
 <script type="application/ld+json">{json.dumps(schema,ensure_ascii=False,separators=(",",":"))}</script></head><body>
 <div class="marketing"><header class="public-header"><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><nav class="public-nav"><a href="/?page=features">Fonctionnalités</a><a href="/?page=how">Comment ça marche</a><a href="/?page=pricing">Tarifs</a><a href="/?page=resources">Ressources</a></nav><div class="public-actions"><a class="btn-secondary" href="/app">Connexion</a><a class="btn-primary" href="/analyse-avis-google/">Commencer gratuitement →</a></div></header>
