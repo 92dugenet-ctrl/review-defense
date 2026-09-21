@@ -8,7 +8,7 @@ def env(path="/health", method="GET", headers=None):
     return {"PATH_INFO":path,"REQUEST_METHOD":method,"REMOTE_ADDR":"127.0.0.1","wsgi.input":BytesIO(b""),"CONTENT_LENGTH":"0",**h}
 
 
-def test_health_is_v629_and_request_id():
+def test_health_is_v640_and_request_id():
     app=ReviewDefenseAPI(config=ProductionConfig(environment="development"))
     captured={}
     body=app(env(), lambda status, headers: captured.update(status=status,headers=dict(headers)))
