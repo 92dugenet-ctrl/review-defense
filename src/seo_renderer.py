@@ -1,11 +1,10 @@
-"""Server-rendered SEO pages, sitemap and robots for Review Defense."""
+"""Server-rendered SEO pages, sitemap and robots for Review Defense (V6.39)."""
 from __future__ import annotations
 import html, json, os
-from urllib.parse import quote
 from .seo_content import PAGES
 
 BASE_URL = os.environ.get("REVIEW_DEFENSE_PUBLIC_URL", "https://review-defense.com").rstrip("/")
-META = "Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible."
+SERVICE_SLUGS = {"analyse-avis-google","service-suppression-avis-google","agence-suppression-avis-google","expert-suppression-avis-google","faire-supprimer-avis-google","prix-suppression-avis-google"}
 
 def _page_map():
     return {"/" + slug + "/": (slug, title, keyword) for slug, title, keyword in PAGES}
@@ -13,84 +12,109 @@ def _page_map():
 def is_seo_path(path: str) -> bool:
     return path in _page_map()
 
+def _meta(slug: str, title: str) -> str:
+    if slug == "suppression-avis-google":
+        return "Guide complet sur la suppression d’avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes."
+    if slug in SERVICE_SLUGS:
+        return f"{title}. Analyse, qualification, préparation du dossier, accompagnement et suivi, sans garantie de suppression."
+    return f"{title} Découvrez les vérifications à effectuer, les éléments à conserver, les options de signalement et les suites possibles. Analyse factuelle possible."
+
+def _cluster(slug: str) -> str:
+    if slug in SERVICE_SLUGS: return "Services"
+    if slug == "faux-avis-google" or "faux-avis" in slug or "faux-client" in slug or "plusieurs-faux" in slug or "comptes-google" in slug: return "Faux avis"
+    if "signaler" in slug or "signalement" in slug or "dossier-de-signalement" in slug: return "Signalement"
+    if any(x in slug for x in ("refuse","reste-en-ligne","appel","contester","combien-de-temps")): return "Refus / appel"
+    return "Suppression / cas concrets"
+
+def _hub(slug: str):
+    c=_cluster(slug)
+    if c=="Faux avis": return ("faux-avis-google","Faux avis Google")
+    if c=="Signalement": return ("signaler-un-avis-google","Signalement d’un avis Google")
+    if c=="Refus / appel": return ("que-faire-quand-google-refuse-de-supprimer-un-avis","Refus et suites possibles")
+    return ("suppression-avis-google","Suppression d’avis Google")
+
 def _related(current_slug: str):
-    rows = [x for x in PAGES if x[0] != current_slug]
-    if current_slug == "analyse-avis-google":
-        return rows[:6]
-    if current_slug in {"suppression-avis-google","faux-avis-google"}:
-        return [x for x in rows if any(k in x[0] for k in ("faux-avis","signaler","prouver","dossier"))][:5]
-    if "signaler" in current_slug or "signalement" in current_slug:
-        return [x for x in rows if "signaler" in x[0] or "suivre" in x[0] or "google-refuse" in x[0]][:5]
-    if "refuse" in current_slug or "appel" in current_slug or "contester" in current_slug:
-        return [x for x in rows if "refuse" in x[0] or "appel" in x[0] or "contester" in x[0]][:5]
-    return rows[:5]
+    c=_cluster(current_slug)
+    rows=[x for x in PAGES if x[0] != current_slug and x[0] not in SERVICE_SLUGS]
+    if current_slug == "analyse-avis-google": return PAGES[:6]
+    filtered=[x for x in rows if _cluster(x[0])==c]
+    return (filtered or rows)[:5]
+
+def _faq(title: str):
+    return [
+        ("Peut-on supprimer cet avis Google ?", "Cela dépend du contenu, du contexte et du motif applicable. Un avis négatif ou contesté n’est pas automatiquement supprimable."),
+        ("Quels éléments faut-il vérifier ?", "Le texte de l’avis, son contexte, les faits disponibles et les éléments permettant de documenter les affirmations."),
+        ("Comment signaler un avis Google ?", "Utilisez la procédure adaptée lorsque le contenu semble relever d’un motif prévu par les règles applicables et conservez les éléments transmis."),
+        ("Que faire si Google refuse ?", "Conservez la décision, vérifiez le motif et examinez les possibilités de suivi ou de contestation disponibles."),
+        ("La suppression est-elle garantie ?", "Non. Google prend la décision finale."),
+    ]
 
 def _body(slug: str, title: str, keyword: str) -> str:
-    service = slug in {"analyse-avis-google","service-suppression-avis-google","agence-suppression-avis-google","expert-suppression-avis-google","faire-supprimer-avis-google","prix-suppression-avis-google"}
-    lead = ("Cette page présente le cadre d’analyse, de qualification et d’accompagnement autour des avis Google. "
-            "Un avis négatif n’est pas automatiquement supprimable : les faits doivent être vérifiés et la décision finale appartient à la plateforme.")
+    service=slug in SERVICE_SLUGS
     if service:
-        lead = ("Review Defense aide à structurer l’analyse d’un avis, les éléments factuels et le dossier à examiner. "
-                "Le service ne garantit pas la suppression : Google conserve la décision finale.")
-    sections = [
-        ("Réponse courte", lead),
-        ("Quels éléments vérifier ?", "Vérifiez le contexte de l’avis, la réalité de la relation avec l’entreprise, les faits décrits, le caractère pertinent du contenu et les éventuelles informations sensibles. Séparez les faits vérifiables des impressions ou désaccords."),
-        ("Quels éléments conserver ?", "Conservez l’URL de l’avis, des captures datées, les échanges utiles et les pièces factuelles disponibles. Pour un dossier complexe, reliez chaque élément à l’affirmation qu’il permet de vérifier ou de contester."),
-        ("Comment agir ou signaler l’avis ?", "Lorsque le contenu semble relever d’un motif prévu par les règles de Google, utilisez le mécanisme de signalement approprié et présentez les éléments pertinents. Un signalement demande un examen ; il ne garantit pas une suppression."),
-        ("Que faire en cas de refus ou d’absence de réponse ?", "Relisez le motif invoqué, vérifiez la cohérence des éléments présentés et examinez les voies de suivi ou de contestation proposées par la plateforme lorsqu’elles sont disponibles."),
-        ("Quand demander une analyse professionnelle ?", "Une analyse structurée peut être utile lorsque plusieurs faits doivent être rapprochés, lorsqu’une contradiction doit être documentée ou lorsqu’un premier signalement n’a pas abouti. Review Defense conserve une validation humaine avant toute action externe."),
-    ]
-    out = [f'<article class="seo-article"><p class="seo-lead">{html.escape(lead)}</p>']
-    for h,p in sections[1:]:
-        out.append(f"<section><h2>{html.escape(h)}</h2><p>{html.escape(p)}</p></section>")
-    faq = [
-        ("Un avis Google peut-il être supprimé ?", "Cela dépend du contenu et des règles applicables. Un avis négatif ou contesté n’est pas automatiquement supprimable."),
-        ("Comment constituer un dossier ?", "Réunissez l’URL, des captures datées, les faits vérifiables et les pièces permettant de comprendre le contexte."),
-        ("Le signalement garantit-il la suppression ?", "Non. Le signalement demande un examen et Google prend la décision finale."),
-        ("Faut-il répondre publiquement ?", "Une réponse peut apporter un contexte sans divulguer de données personnelles, mais elle ne remplace pas l’analyse du dossier."),
-    ]
+        sections=[
+            ("Le problème","Un service d’analyse d’avis doit distinguer les faits vérifiables des impressions, documenter le contexte et préparer les éléments utiles avant toute démarche."),
+            ("Ce qui est analysé","Le contexte de l’avis, ses affirmations, les éléments de preuve disponibles, les contradictions éventuelles et le motif de signalement pertinent."),
+            ("Le processus","Analyse → qualification → préparation des éléments → accompagnement du signalement → suivi. Les décisions importantes restent soumises à une validation humaine."),
+            ("Ce qui est inclus","Un dossier structuré, des éléments traçables et un suivi du traitement. Le périmètre exact dépend de la situation et des preuves disponibles."),
+            ("Limites","Aucune suppression n’est garantie. Google conserve la décision finale et un avis défavorable n’est pas automatiquement supprimable."),
+        ]
+    else:
+        sections=[
+            ("Réponse courte",f"Pour traiter « {title} », commencez par vérifier les faits, identifier le motif pertinent et conserver les éléments utiles. Ne qualifiez pas un avis de faux ou de supprimable sans éléments permettant de l’étayer."),
+            ("Quels éléments vérifier ?","Vérifiez le contenu exact de l’avis, son contexte, la relation commerciale connue, les dates utiles et tout élément permettant de confronter les affirmations à des faits."),
+            ("Quels éléments conserver ?","Conservez l’URL de l’avis, des captures datées, les échanges utiles et les pièces factuelles disponibles. Reliez si possible chaque élément à l’affirmation qu’il permet de vérifier."),
+            ("Comment agir ou signaler l’avis ?","Lorsque le contenu semble relever d’un motif applicable, utilisez la procédure adaptée. Un signalement demande un examen et ne garantit pas une suppression."),
+            ("Que faire en cas de refus ou d’absence de réponse ?","Relisez le motif invoqué, vérifiez la cohérence du dossier et examinez les voies de suivi ou de contestation proposées lorsqu’elles sont disponibles."),
+            ("Quand demander une analyse professionnelle ?","Une analyse structurée peut être utile lorsque plusieurs faits doivent être rapprochés, lorsqu’une contradiction doit être documentée ou lorsqu’un premier signalement n’a pas abouti."),
+        ]
+    out=[f'<article class="seo-article"><p class="seo-lead">{html.escape(_meta(slug,title))}</p>']
+    for h,p in sections:
+        out.append(f'<section><h2>{html.escape(h)}</h2><p>{html.escape(p)}</p></section>')
+    faq=_faq(title)
     out.append('<section class="seo-faq"><h2>Questions fréquentes</h2>')
     for q,a in faq:
-        out.append(f"<details><summary>{html.escape(q)}</summary><p>{html.escape(a)}</p></details>")
-    out.append("</section>")
-    out.append(f'<section class="seo-cta"><h2>Besoin d’analyser votre situation ?</h2><p>Structurez les éléments utiles avant toute démarche.</p><a class="btn-primary" href="/analyse-avis-google/">Analyser mon avis →</a></section></article>')
+        out.append(f'<details><summary>{html.escape(q)}</summary><p>{html.escape(a)}</p></details>')
+    out.append('</section>')
+    out.append(f'<section class="seo-cta"><h2>Besoin d’analyser votre situation ?</h2><p>Structurez les éléments utiles avant toute démarche et gardez la décision finale sous contrôle humain.</p><a class="btn-primary" href="/analyse-avis-google/">Analyser mon avis →</a></section></article>')
     return "".join(out)
 
 def render_page(path: str) -> bytes:
-    row = _page_map()[path]
-    slug, title, keyword = row
-    canonical = BASE_URL + path
-    related = _related(slug)
-    crumbs = f'<a href="{BASE_URL}/">Accueil</a><span>›</span><span>{html.escape(title)}</span>'
-    related_html = "".join(f'<li><a href="/{s}/">{html.escape(t)}</a></li>' for s,t,_ in related)
-    schema = {
-        "@context":"https://schema.org",
-        "@graph":[
-            {"@type":"Organization","@id":BASE_URL+"/#organization","name":"Review Defense","url":BASE_URL+"/"},
-            {"@type":"WebSite","@id":BASE_URL+"/#website","name":"Review Defense","url":BASE_URL+"/"},
-            {"@type":"BreadcrumbList","itemListElement":[
-                {"@type":"ListItem","position":1,"name":"Accueil","item":BASE_URL+"/"},
-                {"@type":"ListItem","position":2,"name":title,"item":canonical}]},
-            {"@type":"Service" if slug in {"analyse-avis-google","service-suppression-avis-google","agence-suppression-avis-google","expert-suppression-avis-google","faire-supprimer-avis-google","prix-suppression-avis-google"} else "Article",
-             "headline":title,"name":title,"description":META,"url":canonical,"inLanguage":"fr-FR"}
-        ]
-    }
-    if slug not in {"analyse-avis-google","service-suppression-avis-google","agence-suppression-avis-google","expert-suppression-avis-google","faire-supprimer-avis-google","prix-suppression-avis-google"}:
-        schema["@graph"][-1]["dateModified"]="2026-09-21"
-        schema["@graph"][-1]["author"]={"@type":"Organization","name":"Review Defense"}
+    slug,title,keyword=_page_map()[path]
+    meta=_meta(slug,title)
+    canonical=BASE_URL+path
+    hub_slug,hub_title=_hub(slug)
+    related=_related(slug)
+    related_html="".join(f'<li><a href="/{html.escape(s)}/">{html.escape(t)}</a></li>' for s,t,_ in related)
+    faq=_faq(title)
+    schema_graph=[
+        {"@type":"Organization","@id":BASE_URL+"/#organization","name":"Review Defense","url":BASE_URL+"/"},
+        {"@type":"WebSite","@id":BASE_URL+"/#website","name":"Review Defense","url":BASE_URL+"/","inLanguage":"fr-FR"},
+        {"@type":"BreadcrumbList","itemListElement":[
+            {"@type":"ListItem","position":1,"name":"Accueil","item":BASE_URL+"/"},
+            {"@type":"ListItem","position":2,"name":hub_title,"item":BASE_URL+"/"+hub_slug+"/"},
+            {"@type":"ListItem","position":3,"name":title,"item":canonical}]},
+        {"@type":"Service" if slug in SERVICE_SLUGS else "Article","headline":title,"name":title,"description":meta,"url":canonical,"inLanguage":"fr-FR","author":{"@type":"Organization","name":"Review Defense"}}
+    ]
+    if slug in SERVICE_SLUGS:
+        schema_graph[-1]["provider"]={"@type":"Organization","name":"Review Defense"}
+    else:
+        schema_graph[-1]["dateModified"]="2026-09-21"
+    schema_graph.append({"@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in faq]})
+    schema={"@context":"https://schema.org","@graph":schema_graph}
     doc=f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{html.escape(title)} | Review Defense</title><meta name="description" content="{html.escape(META)}"><meta name="keywords" content="{html.escape(keyword)}">
-<link rel="canonical" href="{html.escape(canonical)}"><meta property="og:type" content="article"><meta property="og:title" content="{html.escape(title)}"><meta property="og:description" content="{html.escape(META)}"><meta property="og:url" content="{html.escape(canonical)}">
-<link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css">
-<script type="application/ld+json">{json.dumps(schema,ensure_ascii=False)}</script></head><body>
-<div class="marketing"><header class="public-header"><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><nav class="public-nav"><a href="/?page=features">Fonctionnalités</a><a href="/?page=how">Comment ça marche</a><a href="/?page=pricing">Tarifs</a><a href="/?page=resources">Ressources</a></nav><div class="public-actions"><a class="btn-secondary" href="/app">Connexion</a><a class="btn-primary" href="/analyse-avis-google/">Commencer →</a></div></header>
-<main class="seo-main"><nav class="breadcrumbs">{crumbs}</nav><div class="seo-hero"><span class="eyebrow">GUIDE REVIEW DEFENSE</span><h1>{html.escape(title)}</h1><p>Mot-clé principal : <strong>{html.escape(keyword)}</strong></p></div>{_body(slug,title,keyword)}<aside class="seo-related"><h2>À lire ensuite</h2><ul>{related_html}</ul></aside></main>
+<title>{html.escape(title)} | Review Defense</title><meta name="description" content="{html.escape(meta)}">
+<link rel="canonical" href="{html.escape(canonical)}"><meta name="robots" content="index,follow,max-image-preview:large">
+<meta property="og:type" content="article"><meta property="og:title" content="{html.escape(title)}"><meta property="og:description" content="{html.escape(meta)}"><meta property="og:url" content="{html.escape(canonical)}">
+<link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css"><link rel="stylesheet" href="/assets/seo.css">
+<script type="application/ld+json">{json.dumps(schema,ensure_ascii=False,separators=(",",":"))}</script></head><body>
+<div class="marketing"><header class="public-header"><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><nav class="public-nav"><a href="/?page=features">Fonctionnalités</a><a href="/?page=how">Comment ça marche</a><a href="/?page=pricing">Tarifs</a><a href="/?page=resources">Ressources</a></nav><div class="public-actions"><a class="btn-secondary" href="/app">Connexion</a><a class="btn-primary" href="/analyse-avis-google/">Commencer gratuitement →</a></div></header>
+<main class="seo-main"><nav class="breadcrumbs"><a href="/">Accueil</a><span>›</span><a href="/{hub_slug}/">{html.escape(hub_title)}</a><span>›</span><span>{html.escape(title)}</span></nav><header class="seo-hero"><span>{html.escape(_cluster(slug).upper())}</span><h1>{html.escape(title)}</h1><p>{html.escape(meta)}</p><div class="seo-keyword">Sujet : {html.escape(keyword)}</div></header>{_body(slug,title,keyword)}<aside class="seo-related"><h2>À lire ensuite</h2><ul>{related_html}</ul></aside></main>
 <footer class="public-footer"><div><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><p>Analyse, qualification et accompagnement autour des avis en ligne.</p></div><div><b>Produit</b><a href="/?page=features">Fonctionnalités</a><a href="/?page=pricing">Tarifs</a></div><div><b>Ressources</b><a href="/?page=resources">Guides</a><a href="/analyse-avis-google/">Analyser un avis</a></div></footer></div></body></html>'''
     return doc.encode("utf-8")
 
 def sitemap() -> bytes:
-    urls=[BASE_URL+"/",BASE_URL+"/?page=features",BASE_URL+"/?page=how",BASE_URL+"/?page=pricing",BASE_URL+"/?page=resources",BASE_URL+"/analyse-avis-google/"]
-    urls += [BASE_URL+"/"+slug+"/" for slug,_,_ in PAGES if slug!="analyse-avis-google"]
+    urls=[BASE_URL+"/",BASE_URL+"/?page=features",BASE_URL+"/?page=how",BASE_URL+"/?page=pricing",BASE_URL+"/?page=resources",BASE_URL+"/analyse-avis-google/"]+[BASE_URL+"/"+slug+"/" for slug,_,_ in PAGES if slug!="analyse-avis-google"]
     body="".join(f"<url><loc>{html.escape(u)}</loc></url>" for u in urls)
     return f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{body}</urlset>'.encode()
 
