@@ -71,7 +71,7 @@ def render_page(path: str) -> bytes:
             {"@type":"BreadcrumbList","itemListElement":[
                 {"@type":"ListItem","position":1,"name":"Accueil","item":BASE_URL+"/"},
                 {"@type":"ListItem","position":2,"name":title,"item":canonical}]},
-            {"@type":"Service" if slug.endswith("avis-google") or slug in {"analyse-avis-google","service-suppression-avis-google","agence-suppression-avis-google","expert-suppression-avis-google","faire-supprimer-avis-google","prix-suppression-avis-google"} else "Article",
+            {"@type":"Service" if slug in {"analyse-avis-google","service-suppression-avis-google","agence-suppression-avis-google","expert-suppression-avis-google","faire-supprimer-avis-google","prix-suppression-avis-google"} else "Article",
              "headline":title,"name":title,"description":META,"url":canonical,"inLanguage":"fr-FR"}
         ]
     }
