@@ -51,20 +51,20 @@ jobs:
         run: python scripts/deploy_staging.py
       - name: Repository-only staging certification
         run: python scripts/staging_certification.py
-      - name: Package V6.37 release archive
+      - name: Package V6.38 release archive
         run: |
-          mkdir -p artifacts/review-defense-v6.37
-          zip -qr artifacts/review-defense-v6.37.zip . \
+          mkdir -p artifacts/review-defense-v6.38
+          zip -qr artifacts/review-defense-v6.38.zip . \
             -x '.git/*' '__pycache__/*' '*/__pycache__/*' '*.pyc' \
             'artifacts/*'
-          sha256sum artifacts/review-defense-v6.37.zip > artifacts/review-defense-v6.37.sha256
-      - name: Upload V6.37 release archive
+          sha256sum artifacts/review-defense-v6.38.zip > artifacts/review-defense-v6.38.sha256
+      - name: Upload V6.38 release archive
         uses: actions/upload-artifact@v4
         with:
-          name: review-defense-v6.37
+          name: review-defense-v6.38
           path: |
-            artifacts/review-defense-v6.37.zip
-            artifacts/review-defense-v6.37.sha256
+            artifacts/review-defense-v6.38.zip
+            artifacts/review-defense-v6.38.sha256
       - name: Upload certification report
         uses: actions/upload-artifact@v4
         with:
