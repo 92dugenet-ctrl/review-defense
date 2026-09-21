@@ -263,3 +263,24 @@ def test_v640_block7_sla_workload_preserves_server_control_boundary():
     js=(ROOT/'frontend/assets/app.js').read_text()
     assert "api('/v1/review-queue/workload')" in js
     assert 'Les affectations et escalades restent régies par les contrôles serveur' in js
+
+def test_v640_block8_evidence_has_integrity_registry_and_filters():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['evidence-overview','evidence-hero','evidence-kpis','evidence-registry','evidence-toolbar','evidence-list','evidence-card','hash-block','evidence-integrity-note']:
+        assert token in js or token in css
+    for token in ['Registre des preuves','Rechercher une preuve','Filtrer les preuves','SHA-256','Intégrité documentaire']:
+        assert token in js
+
+
+def test_v640_block8_evidence_has_responsive_contract():
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['.evidence-overview','.evidence-kpis','.evidence-toolbar','.hash-block','@media(max-width:900px)','@media(max-width:600px)']:
+        assert token in css
+
+
+def test_v640_block8_evidence_preserves_sha256_integrity_boundary():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    assert "api('/v1/evidence')" in js
+    assert 'x.sha256' in js
+    assert 'La présentation ne modifie jamais le contenu source.' in js
