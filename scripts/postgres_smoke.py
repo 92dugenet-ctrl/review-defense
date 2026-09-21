@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the V6.23 live PostgreSQL smoke test against an explicitly named test DB.
+"""Run the V6.40 live PostgreSQL smoke test against an explicitly named test DB.
 
 Usage:
   REVIEW_DEFENSE_TEST_DATABASE_URL=postgresql://... python scripts/postgres_smoke.py
@@ -40,17 +40,17 @@ def main() -> int:
     org_b = str(uuid.uuid4())
     case_a = None
     try:
-        # Seed tenants outside RLS using a dedicated test connection before setting tenant context.
+        # Seed tenants before applying tenant context.
         conn = connect(cfg)
         try:
             with conn.transaction():
                 with conn.cursor() as cur:
-                    cur.execute("INSERT INTO organizations(id,name) VALUES(%s,%s)", (org_a, "V623 smoke A"))
-                    cur.execute("INSERT INTO organizations(id,name) VALUES(%s,%s)", (org_b, "V623 smoke B"))
+                    cur.execute("INSERT INTO organizations(id,name) VALUES(%s,%s)", (org_a, "V640 smoke A"))
+                    cur.execute("INSERT INTO organizations(id,name) VALUES(%s,%s)", (org_b, "V640 smoke B"))
         finally:
             conn.close()
 
-        row = repo.create_case(org_a, "v623-smoke", "OPEN")
+        row = repo.create_case(org_a, "v640-smoke", "OPEN")
         case_a = str(row[0])
         assert repo.get_case(org_a, case_a)[0] == row[0]
         assert repo.get_case(org_b, case_a) is None, "tenant isolation failed"
@@ -61,15 +61,15 @@ def main() -> int:
             try:
                 with conn.transaction():
                     with conn.cursor() as cur:
-                        cur.execute("SET LOCAL app.organization_id = %s", (org_a,))
-                        cur.execute("INSERT INTO case_events(organization_id,case_id,event_type) VALUES(%s,%s,%s)", (org_a, case_a, "V623_ROLLBACK"))
+                        cur.execute("SELECT set_config('app.organization_id', %s, true)", (org_a,))
+                        cur.execute("INSERT INTO case_events(organization_id,case_id,event_type) VALUES(%s,%s,%s)", (org_a, case_a, "V640_ROLLBACK"))
                         cur.execute("SELECT 1/0")
             except Exception:
                 pass
             with conn.transaction():
                 with conn.cursor() as cur:
-                    cur.execute("SET LOCAL app.organization_id = %s", (org_a,))
-                    cur.execute("SELECT count(*) FROM case_events WHERE organization_id=%s AND case_id=%s AND event_type='V623_ROLLBACK'", (org_a, case_a))
+                    cur.execute("SELECT set_config('app.organization_id', %s, true)", (org_a,))
+                    cur.execute("SELECT count(*) FROM case_events WHERE organization_id=%s AND case_id=%s AND event_type='V640_ROLLBACK'", (org_a, case_a))
                     assert cur.fetchone()[0] == 0
         finally:
             conn.close()
@@ -81,6 +81,7 @@ def main() -> int:
         try:
             with conn.transaction():
                 with conn.cursor() as cur:
+                    cur.execute("SELECT set_config('app.organization_id', %s, true)", (org_a,))
                     cur.execute("DELETE FROM organizations WHERE id IN (%s,%s)", (org_a, org_b))
         finally:
             conn.close()
