@@ -23,3 +23,11 @@ def test_ecloudserv_default_bot_entrypoint_exists():
     assert command[1:3] == ["-m", "gunicorn"]
     assert "0.0.0.0:43127" in command
     assert command[-1] == "wsgi:app"
+
+
+def test_ecloudserv_default_bot_entrypoint_uses_allocated_port_when_platform_port_is_absent():
+    from bot import build_gunicorn_command as bot_build_gunicorn_command
+
+    command = bot_build_gunicorn_command(None)
+    assert "0.0.0.0:25875" in command
+    assert command[-1] == "wsgi:app"
