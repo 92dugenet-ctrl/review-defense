@@ -9,3 +9,4 @@ This file is intentionally non-functional. It records the V6.40 staging deployme
 - Google actions: none
 
 The purpose of this marker is only to produce a controlled `push` event and verify that GitHub → eCloudServ automatic deployment is triggered.
+Webhook push verification.
