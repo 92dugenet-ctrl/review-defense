@@ -6,7 +6,7 @@ from tests.test_v60_api import call
 def test_health_reports_v620_and_security_headers():
     app = create_app(config=ProductionConfig(environment="development", host="127.0.0.1"))
     status, data = call(app, "GET", "/health")
-    assert status == 200 and data["version"] == "6.39"
+    assert status == 200 and data["version"] == "6.40"
 
 
 def test_ready_checks_repository_database_when_available():
