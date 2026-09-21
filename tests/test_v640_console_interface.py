@@ -179,3 +179,24 @@ def test_v640_block3_dashboard_has_operational_metrics_sources():
     js=(ROOT/'frontend/assets/app.js').read_text()
     for endpoint in ['/v1/reviews','/v1/cases','/v1/approvals','/v1/notifications/metrics']:
         assert endpoint in js
+
+
+def test_v640_block4_reviews_has_inbox_filters_and_detail_affordance():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['review-overview','review-summary','review-mini-grid','reviews-panel','review-toolbar','review-list','review-card','filterReviewCards','focusReview']:
+        assert token in js or token in css
+    for token in ['Rechercher un avis','Filtrer par note','Filtrer par priorité','Ouvrir l’avis']:
+        assert token in js
+
+
+def test_v640_block4_reviews_has_responsive_visual_contract():
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['.review-overview','.review-list','.review-toolbar','.review-card','@media(max-width:900px)','@media(max-width:600px)']:
+        assert token in css
+
+
+def test_v640_block4_reviews_keeps_read_only_human_control_boundary():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    assert 'sans déclencher d’action externe automatique' in js
+    assert '/v1/reviews' in js
