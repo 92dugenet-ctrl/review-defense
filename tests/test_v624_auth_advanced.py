@@ -63,4 +63,4 @@ def test_v624_recovery_response_does_not_disclose_unknown_account():
 def test_v624_health_version():
     app = create_app(config=ProductionConfig(environment="development"))
     status, data = call(app, "GET", "/health")
-    assert status == 200 and data["version"] == "6.36"
+    assert status == 200 and data["version"] == "6.39"
