@@ -69,3 +69,27 @@ def test_v640_human_gate_copy_remains_visible_in_console():
     js=(ROOT/'frontend/assets/app.js').read_text()
     for marker in ['Revue humaine requise','Aucune action externe ne sera exécutée','Aucune de ces actions n’envoie ou ne supprime automatiquement un avis Google']:
         assert marker in js
+
+
+def test_v640_each_console_page_has_premium_page_header_contract():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    required=['dashboard','reviews','cases','workload','escalations','evidence','approvals','submissions','alerts','audit','settings']
+    for page in required:
+        assert "pageHead('"+page+"'" in js
+    assert 'hero-actions' in js
+    assert 'section-toolbar' in js
+
+
+def test_v640_empty_states_are_action_oriented():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    for marker in ['Aucun dossier pour le moment.','Aucune escalation active.','Les nouveaux dossiers apparaîtront ici après ingestion.']:
+        assert marker in js
+
+
+def test_v640_accessibility_focus_and_mobile_contracts():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    assert 'aria-label="Rechercher un dossier"' in js
+    assert 'focus-visible' in css
+    assert '.case-row:focus-visible' in css
+    assert '@media(max-width:760px)' in css
