@@ -1,7 +1,7 @@
 -- V6.17 analyst checklist; advisory only and tenant-scoped.
 CREATE TABLE IF NOT EXISTS case_review_checklist (
   item_id UUID PRIMARY KEY,
-  organization_id UUID NOT NULL REFERENCES organizations(organization_id) ON DELETE CASCADE,
+  organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   case_id UUID NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
   code TEXT NOT NULL,
   label TEXT NOT NULL,
