@@ -37,4 +37,4 @@ def test_sandbox_covers_human_gate_entities():
 def test_sandbox_never_enables_external_submission():
     assert "external_call" in SCRIPT
     assert "VALUES(%s,%s,%s,'PREPARED',false)" in SCRIPT
-    assert "external_action_enabled" in SCRIPT
+    assert '"external_actions_enabled":false' in SCRIPT
