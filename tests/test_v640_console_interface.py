@@ -23,3 +23,32 @@ def test_v640_case_console_has_human_review_states():
         assert value in js
     for fn in ["createDecision","freezeCase","approveCase","prepareSubmission"]:
         assert fn in js
+
+
+def test_v640_all_console_pages_have_explicit_view_and_navigation_contract():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    required=[
+        'dashboard','reviews','cases','workload','escalations','evidence',
+        'approvals','submissions','alerts','audit','settings'
+    ]
+    for page in required:
+        assert "['"+page+"'" in js or page+':async=>' in js
+        assert page+':async=>' in js or page+':async()=>{' in js
+    assert 'caseWorkspace' in js
+    assert 'renderLogin' in js and 'renderRecovery' in js and 'renderReset' in js and 'renderVerify' in js
+
+def test_v640_design_system_has_required_responsive_and_interaction_primitives():
+    css=(ROOT/'frontend/assets/app.css').read_text()
+    for token in ['--panel:','--line:','--muted:','--accent:','--good:','--warn:','--bad:','@media(max-width:1100px)','@media(max-width:760px)','hover','modal-backdrop','loading','.empty']:
+        assert token in css
+
+def test_v640_audit_page_is_designed_not_placeholder():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    assert 'Journal d’audit' in js
+    assert 'audit-item' in js
+    assert 'TRACEABILITY' in js
+
+def test_v640_demo_has_each_major_domain_state():
+    js=(ROOT/'frontend/assets/app.js').read_text()
+    for marker in ['HIGH','CRITICAL','MEDIUM','PENDING','DELIVERED','OPEN','VERIFIED','READY_FOR_HUMAN_ACTION']:
+        assert marker in js
