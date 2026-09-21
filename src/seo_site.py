@@ -1,6 +1,6 @@
 """Server-rendered SEO pages for Review Defense.
 
-V6.39 integrates the supplied SEO architecture as crawlable public routes,
+V6.40 integrates the supplied SEO architecture as crawlable public routes,
 including canonical URLs, sitemap, robots.txt, breadcrumbs and JSON-LD.
 """
 from __future__ import annotations
