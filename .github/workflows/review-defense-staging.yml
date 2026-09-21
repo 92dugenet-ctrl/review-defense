@@ -140,10 +140,14 @@ jobs:
             sleep 10
           done
       - name: Certify live eCloudServ staging
-        if: ${{ env.STAGING_BASE_URL != '' }}
         env:
           STAGING_BASE_URL: ${{ inputs.staging_url || secrets.STAGING_BASE_URL }}
-        run: python scripts/staging_certification.py --live --output artifacts/v6.40-live-certification.json
+        run: |
+          if [ -z "${STAGING_BASE_URL}" ]; then
+            echo "Live certification skipped because STAGING_BASE_URL is not configured."
+            exit 0
+          fi
+          python scripts/staging_certification.py --live --output artifacts/v6.40-live-certification.json
       - name: Upload live certification
         if: ${{ hashFiles('artifacts/v6.40-live-certification.json') != '' }}
         uses: actions/upload-artifact@v4
