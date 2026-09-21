@@ -14,7 +14,7 @@ def test_health_is_v629_and_request_id():
     body=app(env(), lambda status, headers: captured.update(status=status,headers=dict(headers)))
     assert captured["status"].startswith("200")
     assert captured["headers"]["X-Request-ID"]
-    assert b'"version": "6.36"' in body[0]
+    assert b'"version": "6.39"' in body[0]
 
 
 def test_metrics_exposes_only_aggregate_data():
