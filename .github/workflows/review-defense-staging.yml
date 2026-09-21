@@ -53,7 +53,8 @@ jobs:
       - name: Package V6.40 release archive
         run: |
           mkdir -p artifacts/review-defense-v6.40
-          zip -qr artifacts/review-defense-v6.40.zip .             -x '.git/*' '__pycache__/*' '*/__pycache__/*' '*.pyc'             'artifacts/*'
+          zip -qr artifacts/review-defense-v6.40.zip . \
+            -x '.git/*' '__pycache__/*' '*/__pycache__/*' '*.pyc' 'artifacts/*'
           sha256sum artifacts/review-defense-v6.40.zip > artifacts/review-defense-v6.40.sha256
       - name: Upload V6.40 release archive
         uses: actions/upload-artifact@v4
@@ -77,17 +78,18 @@ jobs:
         image: postgres:16-alpine
         env:
           POSTGRES_DB: review_defense_ci
-          POSTGRES_USER: review_defense
-          POSTGRES_PASSWORD: ci_password
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ci_admin_password
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U review_defense -d review_defense_ci"
+          --health-cmd "pg_isready -U postgres -d review_defense_ci"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 20
     env:
       REVIEW_DEFENSE_TEST_DATABASE_URL: postgresql://review_defense:ci_password@127.0.0.1:5432/review_defense_ci
+      POSTGRES_ADMIN_DATABASE_URL: postgresql://postgres:ci_admin_password@127.0.0.1:5432/review_defense_ci
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -95,6 +97,21 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install PostgreSQL integration dependencies
         run: pip install -r requirements.txt pytest
+      - name: Prepare non-superuser PostgreSQL integration role
+        run: |
+          python - <<'PY'
+          import os
+          import psycopg
+          admin = os.environ['POSTGRES_ADMIN_DATABASE_URL']
+          with psycopg.connect(admin, autocommit=True) as conn:
+              with conn.cursor() as cur:
+                  cur.execute("CREATE EXTENSION IF NOT EXISTS pgcrypto")
+                  cur.execute("CREATE EXTENSION IF NOT EXISTS citext")
+                  cur.execute("DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'review_defense') THEN CREATE ROLE review_defense LOGIN PASSWORD 'ci_password' NOSUPERUSER NOBYPASSRLS; END IF; END $$")
+                  cur.execute("ALTER ROLE review_defense NOSUPERUSER NOBYPASSRLS")
+                  cur.execute("ALTER DATABASE review_defense_ci OWNER TO review_defense")
+                  cur.execute("GRANT CONNECT ON DATABASE review_defense_ci TO review_defense")
+          PY
       - name: PostgreSQL migration and RLS certification
         run: python scripts/postgres_certification.py
       - name: PostgreSQL application smoke test
