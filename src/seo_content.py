@@ -55,7 +55,7 @@ PAGES = [
 ("que-faire-si-un-client-me-menace-avec-un-avis-google","Que faire si un client me menace avec un avis Google ?","client menace avis Google"),
 ("peut-on-supprimer-un-avis-google-diffamatoire","Peut-on supprimer un avis Google diffamatoire ?","supprimer avis Google diffamatoire"),
 ("comment-faire-supprimer-plusieurs-faux-avis-google","Comment faire supprimer plusieurs faux avis Google ?","supprimer plusieurs faux avis Google"),
-("avis-google-accusation-mensongere","Avis Google avec accusation mensongère : que faire ?","avis Google accusation mensongère"),
+
 ("avis-google-menace-entreprise","Avis Google qui menace une entreprise : que faire ?","avis Google menace entreprise"),
 ("avis-google-propos-discriminatoires","Avis Google avec propos discriminatoires : que faire ?","avis Google propos discriminatoires"),
 ("avis-google-argent-avantage","Avis Google en échange d’argent ou d’un avantage : que faire ?","avis Google argent avantage"),
