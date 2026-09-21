@@ -32,7 +32,7 @@ def test_migration_covers_api_state_and_rls():
 
 def test_all_transactions_set_tenant_context():
     r,c=repo(); r.get_user_by_email('org','user@example.com')
-    assert 'SET LOCAL app.organization_id' in c.c.calls[0][0]
+    assert "set_config('app.organization_id', %s, true)" in c.c.calls[0][0]
 
 def test_user_and_membership_are_created_atomically():
     r,c=repo(); r.create_user('org','user@example.com','hash','OWNER')
