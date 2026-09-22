@@ -25,6 +25,10 @@ def test_pdf_text_extraction_is_bounded_and_unverified():
 
 
 def test_png_ocr_extracts_text_without_network():
+    import shutil
+    import pytest
+    if shutil.which("tesseract") is None:
+        pytest.skip("tesseract is not installed in this runtime")
     from PIL import Image, ImageDraw, ImageFont
     img=Image.new('RGB',(600,120),'white'); d=ImageDraw.Draw(img); d.text((20,20),'60 euros',fill='black',font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',42))
     buf=__import__('io').BytesIO(); img.save(buf,format='PNG')
