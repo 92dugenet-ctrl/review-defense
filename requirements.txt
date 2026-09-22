@@ -3,3 +3,4 @@ psycopg[binary]>=3.2,<4
 gunicorn>=26,<27
 reportlab>=4,<5
 Pillow>=11,<13
+pypdf>=6,<7
