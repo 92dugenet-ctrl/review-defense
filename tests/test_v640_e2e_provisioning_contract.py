@@ -53,3 +53,29 @@ def test_application_password_hash_contract_matches_provisioning():
     assert len(bytes.fromhex(digest_hex)) == 32
     assert verify_password(password, encoded) is True
     assert verify_password("wrong-password-123!", encoded) is False
+
+
+def test_production_app_wires_configured_postgres_repository(monkeypatch):
+    monkeypatch.setenv("REVIEW_DEFENSE_ENV", "production")
+    monkeypatch.setenv("REVIEW_DEFENSE_PUBLIC_BASE_URL", "https://trustera-intelligence.ecloudserv.fr")
+    monkeypatch.setenv("TRUST_PROXY", "true")
+    monkeypatch.setenv("DATABASE_URL", "postgresql://redacted")
+    from src.api_server import create_app
+    from src.postgres_api_repository import PostgresAPIRepository
+
+    app = create_app()
+    assert isinstance(app.repository, PostgresAPIRepository)
+    assert app.repository.dsn == "postgresql://redacted"
+
+
+def test_production_app_rejects_missing_database_url(monkeypatch):
+    monkeypatch.setenv("REVIEW_DEFENSE_ENV", "production")
+    monkeypatch.setenv("REVIEW_DEFENSE_PUBLIC_BASE_URL", "https://trustera-intelligence.ecloudserv.fr")
+    monkeypatch.setenv("TRUST_PROXY", "true")
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    monkeypatch.delenv("REVIEW_DEFENSE_DATABASE_URL", raising=False)
+    from src.api_server import create_app
+
+    import pytest
+    with pytest.raises(ValueError, match="DATABASE_URL is required in production"):
+        create_app()
