@@ -27,7 +27,11 @@ class ProductionConfig:
 
     @classmethod
     def from_env(cls) -> "ProductionConfig":
-        env = os.getenv("REVIEW_DEFENSE_ENV", "development").strip().lower()
+        configured_env = os.getenv("REVIEW_DEFENSE_ENV", "").strip().lower()
+        public_base_url = os.getenv("REVIEW_DEFENSE_PUBLIC_BASE_URL", "http://localhost:8080").rstrip("/")
+        env = configured_env or (
+            "production" if public_base_url.startswith("https://") else "development"
+        )
         port = int(os.getenv("PORT", "8080"))
         if not 1 <= port <= 65535:
             raise ValueError("PORT must be between 1 and 65535")
@@ -55,7 +59,7 @@ class ProductionConfig:
             smtp_password=os.getenv("SMTP_PASSWORD"),
             smtp_sender=os.getenv("SMTP_SENDER"),
             smtp_starttls=os.getenv("SMTP_STARTTLS", "true").lower() in TRUTHY,
-            public_base_url=os.getenv("REVIEW_DEFENSE_PUBLIC_BASE_URL", "http://localhost:8080").rstrip("/"),
+            public_base_url=public_base_url,
         )
 
     @property
