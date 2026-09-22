@@ -43,6 +43,7 @@ class DossierSnapshot:
 class ApprovalEvent:
     approval_id: str
     decision_id: str
+    case_id: str
     organization_id: str
     actor_id: str
     actor_role: str
@@ -107,7 +108,7 @@ def approve_decision(*, decision: DecisionRecord, snapshot: DossierSnapshot, act
     if decision.organization_id != snapshot.organization_id:
         raise ValueError("tenant mismatch")
     approved = replace(decision, status="APPROVED", approved_at=approved_at, approved_by=actor_id)
-    event = ApprovalEvent(approval_id, decision.decision_id, decision.organization_id,
+    event = ApprovalEvent(approval_id, decision.decision_id, decision.case_id, decision.organization_id,
                           actor_id, actor_role, approved_at, snapshot.sha256)
     return approved, event
 
