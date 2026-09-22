@@ -98,6 +98,13 @@ class PostgresAPIRepository(PostgresRepository):
     def create_case_persistent(self, organization_id: str, case_id: str, review_id: str, status: str, actor_user_id: str|None=None):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
+                # The legacy cases table is the FK parent of case_events. Keep the
+                # event/audit graph consistent with the API persistence mirror.
+                cur.execute(
+                    "INSERT INTO cases(id,organization_id,review_id,state) VALUES(%s,%s,%s,%s) "
+                    "ON CONFLICT (id) DO NOTHING",
+                    (case_id, organization_id, review_id, status),
+                )
                 cur.execute("INSERT INTO api_cases(organization_id,case_id,review_id,status) VALUES(%s,%s,%s,%s) RETURNING case_id,organization_id,review_id,status,decision_id,snapshot_sha256,created_at,updated_at", (organization_id,case_id,review_id,status)); row=cur.fetchone()
                 cur.execute("INSERT INTO case_events(organization_id,case_id,event_type,actor_user_id,payload) VALUES(%s,%s,%s,%s,%s::jsonb)", (organization_id,case_id,'CASE_CREATED',actor_user_id,'{}'))
                 return row
