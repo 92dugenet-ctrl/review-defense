@@ -32,14 +32,17 @@ def main() -> int:
         try:
             with conn.transaction():
                 with conn.cursor() as cur:
-                    # The preceding sandbox seed and this certification both use the
-                    # same disposable identities. Remove users first so the unique
-                    # email constraint cannot make certification order-dependent.
+                    # Sandbox organizations are disposable. Delete the organizations
+                    # first so PostgreSQL can cascade dependent users, memberships,
+                    # cases and case events. Never delete users first because
+                    # case_events.actor_user_id references users.
+                    cur.execute("DELETE FROM organizations WHERE name LIKE %s", (PREFIX + " %",))
+                    # Keep this defensive cleanup for legacy databases where a user
+                    # might not have belonged to a sandbox organization.
                     cur.execute(
                         "DELETE FROM users WHERE email::text LIKE %s",
                         ("%.%@demo.review-defense.invalid",),
                     )
-                    cur.execute("DELETE FROM organizations WHERE name LIKE %s", (PREFIX + " %",))
                     a = seed_tenant(cur, f"{PREFIX} Alpha", "alpha")
                     b = seed_tenant(cur, f"{PREFIX} Beta", "beta")
 
