@@ -116,6 +116,18 @@ jobs:
         run: python scripts/postgres_certification.py
       - name: PostgreSQL application smoke test
         run: python scripts/postgres_smoke.py
+      - name: Normalize sandbox tenant context for psycopg parameters
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/sandbox_seed.py')
+          text = path.read_text()
+          old = 'SET LOCAL app.organization_id = %s'
+          new = "SELECT set_config('app.organization_id', %s, true)"
+          if old not in text:
+              raise SystemExit('sandbox_seed.py does not contain the expected legacy tenant-context statement')
+          path.write_text(text.replace(old, new))
+          PY
       - name: V6.40 demonstration sandbox seed
         run: python scripts/sandbox_seed.py
       - name: V6.40 demonstration sandbox certification
