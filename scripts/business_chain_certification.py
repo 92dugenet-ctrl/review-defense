@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """V6.40 business-chain certification against a real PostgreSQL database.
 
+Certification revision: 1.
+
 This is intentionally a disposable integration test. It exercises the HTTP
 boundary with a Postgres-backed repository and proves the human-gated chain:
 Decision -> Freeze/Pending Approval -> Human Approval -> READY_TO_SUBMIT ->
