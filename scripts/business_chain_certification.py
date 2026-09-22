@@ -178,7 +178,8 @@ def main() -> int:
         assert_status(review_b, 201, "tenant B review creation")
         case_b = call(app, "POST", "/v1/cases", {"review_id": review_b_id}, token_b)
         assert_status(case_b, 201, "tenant B case creation")
-        cross_tenant = call(app, "GET", f"/v1/cases/{case_b["body"]["case"]["case_id"]}", token_a)
+        case_b_id = case_b["body"]["case"]["case_id"]
+        cross_tenant = call(app, "GET", f"/v1/cases/{case_b_id}", token_a)
         assert_status(cross_tenant, 404, "cross-tenant case access")
 
         # Database persistence: the exact frozen state exists in PostgreSQL.
