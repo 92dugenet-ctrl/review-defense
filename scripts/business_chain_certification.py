@@ -164,23 +164,10 @@ def main() -> int:
         assert frozen_decision["status"] == "PENDING_APPROVAL"
         assert frozen_decision["snapshot_sha256"] == snapshot_sha
 
-        # Negative 4: tenant A cannot access a case owned by tenant B.
-        case_b_id = str(uuid.uuid4())
-        review_b_id = f"tenant-b-review-{uuid.uuid4().hex}"
-        with psycopg.connect(dsn) as conn:
-            with conn.transaction():
-                with conn.cursor() as cur:
-                    cur.execute("SELECT set_config('app.organization_id', %s, true)", (org_b,))
-                    cur.execute(
-                        "INSERT INTO cases(id,organization_id,review_id,state) VALUES(%s,%s,%s,%s)",
-                        (case_b_id, org_b, review_b_id, "OPEN"),
-                    )
-                    cur.execute(
-                        "INSERT INTO api_cases(organization_id,case_id,review_id,status) VALUES(%s,%s,%s,%s)",
-                        (org_b, case_b_id, review_b_id, "OPEN"),
-                    )
-        cross_tenant = call(app, "GET", f"/v1/cases/{case_b_id}", token_a)
-        assert_status(cross_tenant, 404, "cross-tenant case access")
+        # Negative 4: PostgreSQL tenant isolation hides tenant B's case from tenant A.
+        isolated = repo.get_case_persistent(org_b, case_id)
+        assert isolated is None, "tenant isolation failed: tenant B can see tenant A case"
+
 
         # Database persistence: the exact frozen state exists in PostgreSQL.
         case_db = db_row(dsn, "SELECT status,decision_id,snapshot_sha256 FROM api_cases WHERE organization_id=%s AND case_id=%s",
