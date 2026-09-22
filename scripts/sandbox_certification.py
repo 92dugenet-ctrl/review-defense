@@ -32,11 +32,18 @@ def main() -> int:
         try:
             with conn.transaction():
                 with conn.cursor() as cur:
+                    # The preceding sandbox seed and this certification both use the
+                    # same disposable identities. Remove users first so the unique
+                    # email constraint cannot make certification order-dependent.
+                    cur.execute(
+                        "DELETE FROM users WHERE email::text LIKE %s",
+                        ("%.%@demo.review-defense.invalid",),
+                    )
                     cur.execute("DELETE FROM organizations WHERE name LIKE %s", (PREFIX + " %",))
                     a = seed_tenant(cur, f"{PREFIX} Alpha", "alpha")
                     b = seed_tenant(cur, f"{PREFIX} Beta", "beta")
 
-                    cur.execute("SET LOCAL app.organization_id = %s", (a["organization_id"],))
+                    cur.execute("SELECT set_config('app.organization_id', %s, true)", (a["organization_id"],))
                     cur.execute("SELECT count(*) FROM api_reviews WHERE organization_id=%s", (a["organization_id"],))
                     assert cur.fetchone()[0] == 3
                     cur.execute("SELECT count(*) FROM api_cases WHERE organization_id=%s", (a["organization_id"],))
@@ -50,7 +57,7 @@ def main() -> int:
                     cur.execute("SELECT count(*) FROM memberships WHERE organization_id=%s", (b["organization_id"],))
                     assert cur.fetchone()[0] == 0, "tenant isolation failed for memberships"
 
-                    cur.execute("SET LOCAL app.organization_id = %s", (b["organization_id"],))
+                    cur.execute("SELECT set_config('app.organization_id', %s, true)", (b["organization_id"],))
                     cur.execute("SELECT count(*) FROM api_reviews WHERE organization_id=%s", (b["organization_id"],))
                     assert cur.fetchone()[0] == 3
 
