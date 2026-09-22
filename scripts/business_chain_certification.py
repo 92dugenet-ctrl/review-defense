@@ -164,8 +164,21 @@ def main() -> int:
         assert frozen_decision["status"] == "PENDING_APPROVAL"
         assert frozen_decision["snapshot_sha256"] == snapshot_sha
 
-        # Negative 4: another tenant cannot access the case.
-        cross_tenant = call(app, "GET", f"/v1/cases/{case_id}", token_b)
+        # Negative 4: tenant A cannot access a case owned by tenant B.
+        review_b_id = f"chain-review-b-{uuid.uuid4().hex}"
+        review_b = call(app, "POST", "/v1/reviews", {
+            "review_id": review_b_id,
+            "location_id": "chain-test-location-b",
+            "author_display_name": "Tenant B",
+            "rating": 2,
+            "text": "Tenant B isolation review",
+            "published_at": "2026-09-22T12:01:00+00:00",
+            "source": "GOOGLE",
+        }, token_b)
+        assert_status(review_b, 201, "tenant B review creation")
+        case_b = call(app, "POST", "/v1/cases", {"review_id": review_b_id}, token_b)
+        assert_status(case_b, 201, "tenant B case creation")
+        cross_tenant = call(app, "GET", f"/v1/cases/{case_b["body"]["case"]["case_id"]}", token_a)
         assert_status(cross_tenant, 404, "cross-tenant case access")
 
         # Database persistence: the exact frozen state exists in PostgreSQL.
