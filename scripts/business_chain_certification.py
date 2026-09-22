@@ -68,23 +68,6 @@ def assert_status(response, expected, label):
     if response["status"] != expected:
         raise AssertionError(f"{label}: expected HTTP {expected}, got {response['status']}: {response['body']}")
 
-def call_direct(app, method, path, body=None, token=None):
-    payload = json.dumps(body or {}).encode()
-    environ = {
-        "REQUEST_METHOD": method,
-        "PATH_INFO": path,
-        "QUERY_STRING": "",
-        "CONTENT_LENGTH": str(len(payload)),
-        "CONTENT_TYPE": "application/json",
-        "REMOTE_ADDR": "127.0.0.1",
-        "wsgi.input": io.BytesIO(payload),
-    }
-    if token:
-        environ["HTTP_AUTHORIZATION"] = f"Bearer {token}"
-    status, headers, raw = app.handle(environ)
-    return {"status": status, "headers": headers, "body": json.loads(raw.decode() or "{}")}
-
-
 def db_row(dsn, sql, params=()):
     with psycopg.connect(dsn) as conn:
         with conn.transaction():
@@ -203,10 +186,7 @@ def main() -> int:
                              (org_a, case_id))
         assert snapshot_db and snapshot_db[0] == snapshot_sha
 
-        try:
-            approved = call_direct(app, "POST", f"/v1/cases/{case_id}/approve", {}, token_a)
-        except Exception as exc:
-            raise AssertionError(f"human approval raised unexpected internal exception: {type(exc).__name__}: {exc}") from exc
+        approved = call(app, "POST", f"/v1/cases/{case_id}/approve", {}, token_a)
         assert_status(approved, 200, "human approval")
         assert approved["body"]["decision"]["status"] == "APPROVED"
         assert approved["body"]["approval"]["snapshot_sha256"] == snapshot_sha
