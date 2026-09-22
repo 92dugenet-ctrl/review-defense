@@ -9,10 +9,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from io import BytesIO
 import threading
+from typing import Any, TYPE_CHECKING
 
 from PIL import Image
 from pypdf import PdfReader
-from onnxocr.onnx_paddleocr import ONNXPaddleOcr
+
+if TYPE_CHECKING:
+    from onnxocr.onnx_paddleocr import ONNXPaddleOcr
 
 MAX_EXTRACTED_CHARS = 500_000
 SUPPORTED = {
@@ -35,13 +38,14 @@ def _bounded(text: str) -> str:
     return text
 
 _ocr_lock = threading.Lock()
-_ocr_engine: ONNXPaddleOcr | None = None
+_ocr_engine: Any = None
 
-def _get_ocr_engine() -> ONNXPaddleOcr:
+def _get_ocr_engine() -> "ONNXPaddleOcr":
     global _ocr_engine
     if _ocr_engine is None:
         with _ocr_lock:
             if _ocr_engine is None:
+                from onnxocr.onnx_paddleocr import ONNXPaddleOcr
                 _ocr_engine = ONNXPaddleOcr(use_angle_cls=True, use_gpu=False)
     return _ocr_engine
 
