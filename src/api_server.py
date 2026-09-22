@@ -127,7 +127,7 @@ class ReviewDefenseAPI:
                  limiter: RateLimiter | None = None, repository=None, delivery_email_config: dict[str, Any] | None = None, delivery_func=deliver, config: ProductionConfig | None = None):
         self.store = store or MemoryStore()
         self.config = config or ProductionConfig.from_env()
-        self.config.validate_startup(require_database=(repository is not None))
+        self.config.validate_startup(require_database=(repository is not None or self.config.production))
         self.repository = repository
         self.delivery_email_config = delivery_email_config or {}
         if not self.delivery_email_config and self.config.smtp_host and self.config.smtp_sender:
@@ -1506,6 +1506,10 @@ class ReviewDefenseAPI:
 
 
 def create_app(*, store: MemoryStore | None = None, repository=None, config: ProductionConfig | None = None) -> ReviewDefenseAPI:
+    config = config or ProductionConfig.from_env()
+    if repository is None and config.database_dsn:
+        from .postgres_api_repository import PostgresAPIRepository
+        repository = PostgresAPIRepository(config.database_dsn)
     return ReviewDefenseAPI(store=store, repository=repository, config=config)
 
 
