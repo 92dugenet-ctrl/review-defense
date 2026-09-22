@@ -5,4 +5,4 @@ COPY . /app
 RUN pip install --no-cache-dir "psycopg[binary]>=3.2,<4" gunicorn
 EXPOSE 8080
 ENV REVIEW_DEFENSE_ENV=production HOST=0.0.0.0
-CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT:-8080} --workers 2 --threads 4 --timeout 60 wsgi:app"]
+CMD ["sh", "-c", "export REVIEW_DEFENSE_ENV=\"${REVIEW_DEFENSE_ENV:-production}\"; exec gunicorn --bind 0.0.0.0:${PORT:-8080} --workers 2 --threads 4 --timeout 60 wsgi:app"]
