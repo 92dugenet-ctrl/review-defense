@@ -12,25 +12,23 @@ services:
       interval: 5s
       timeout: 5s
       retries: 12
-
   app:
     build: .
     environment:
       REVIEW_DEFENSE_ENV: production
       HOST: 0.0.0.0
-      PORT: 8080
+      PORT: ${PORT:-8080}
       TRUST_PROXY: "true"
       SECURE_HEADERS: "true"
       DATABASE_URL: postgresql://review_defense:${POSTGRES_PASSWORD}@postgres:5432/review_defense_staging
       REVIEW_DEFENSE_PUBLIC_BASE_URL: ${REVIEW_DEFENSE_PUBLIC_BASE_URL:?set REVIEW_DEFENSE_PUBLIC_BASE_URL}
       REVIEW_DEFENSE_MFA_ENCRYPTION_KEY: ${REVIEW_DEFENSE_MFA_ENCRYPTION_KEY:?set REVIEW_DEFENSE_MFA_ENCRYPTION_KEY}
     expose:
-      - "8080"
+      - "${PORT:-8080}"
     depends_on:
       postgres:
         condition: service_healthy
-    command: ["sh", "-c", "python scripts/migrate.py && gunicorn --bind 0.0.0.0:8080 --workers 2 --threads 4 --timeout 60 wsgi:app"]
-
+    command: ["sh", "-c", "python scripts/migrate.py && gunicorn --bind 0.0.0.0:${PORT:-8080} --workers 2 --threads 4 --timeout 60 wsgi:app"]
   caddy:
     image: caddy:2-alpine
     environment:
@@ -45,7 +43,6 @@ services:
       - caddy_config:/config
     depends_on:
       - app
-
 volumes:
   review_defense_staging_pg:
   caddy_data:
