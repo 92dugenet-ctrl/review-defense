@@ -71,9 +71,12 @@ def assert_status(response, expected, label):
 
 def db_row(dsn, sql, params=()):
     with psycopg.connect(dsn) as conn:
-        with conn.cursor() as cur:
-            cur.execute(sql, params)
-            return cur.fetchone()
+        with conn.transaction():
+            with conn.cursor() as cur:
+                if params:
+                    cur.execute("SELECT set_config('app.organization_id', %s, true)", (str(params[0]),))
+                cur.execute(sql, params)
+                return cur.fetchone()
 
 
 def main() -> int:
