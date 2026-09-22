@@ -1,4 +1,4 @@
-"""V6.33 release candidate static validation.
+"""V6.40 release static validation.
 
 This check is deterministic and non-destructive. It validates the artifacts that
 must be present before a live browser E2E run is considered meaningful.
@@ -16,7 +16,7 @@ def main() -> int:
         "frontend/index.html", "frontend/assets/app.js", "frontend/assets/app.css",
         "Dockerfile", "docker-compose.yml", "docker-compose.staging.yml", "Caddyfile",
         "wsgi.py", "src/api_server.py", "src/deployment.py", "scripts/staging_check.py",
-        "scripts/browser_e2e.py", "scripts/dr_validate.py", "README_V6.30.md", "README_V6.33.md", "README_V6.34.md", "README_V6.36.md", "scripts/release_candidate_gate.py", "scripts/staging_certification.py", "scripts/staging_e2e.py", "scripts/github_staging_contract.py", "scripts/deploy_staging.py", "scripts/postgres_certification.py",
+        "scripts/browser_e2e.py", "scripts/dr_validate.py", "scripts/release_candidate_gate.py", "scripts/staging_certification.py", "scripts/staging_e2e.py", "scripts/github_staging_contract.py", "scripts/deploy_staging.py", "scripts/postgres_certification.py", "scripts/sandbox_seed.py", "scripts/sandbox_certification.py",
     ]
     missing = [p for p in required if not (ROOT / p).is_file()]
     if missing:
