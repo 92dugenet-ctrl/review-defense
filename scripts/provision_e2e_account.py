@@ -33,6 +33,7 @@ sys.path.insert(0, str(ROOT))
 
 from cryptography.fernet import Fernet
 from src.mfa import generate_secret, otpauth_uri, encrypt_secret
+from src.security_hardening import hash_password
 
 
 ROLES = {"OWNER", "ADMIN", "ANALYST", "CLIENT", "VIEWER"}
@@ -118,11 +119,11 @@ def main() -> int:
                         mfa_enabled,mfa_secret_enc,mfa_enabled_at
                     )
                     VALUES(
-                        %s,%s,crypt(%s,gen_salt('bf')),now(),
+                        %s,%s,%s,now(),
                         true,%s,now()
                     )
                     """,
-                    (user_id, email, password, encrypted_secret),
+                    (user_id, email, hash_password(password), encrypted_secret),
                 )
                 cur.execute(
                     """
