@@ -60,8 +60,32 @@ def main() -> int:
                 with sync_playwright() as p:
                     browser=p.chromium.launch(headless=True,args=['--no-sandbox'])
                     page=browser.new_page()
+                    browser_errors=[]
+                    browser_console=[]
+                    asset_responses=[]
+                    page.on('pageerror', lambda exc: browser_errors.append(str(exc)))
+                    page.on('console', lambda msg: browser_console.append(f'{msg.type}: {msg.text}'))
+                    page.on('response', lambda response: asset_responses.append({
+                        'url': response.url,
+                        'status': response.status,
+                        'content_type': response.headers.get('content-type','')
+                    }) if '/assets/' in response.url else None)
                     page.goto(base+'/app',wait_until='networkidle')
-                    page.wait_for_selector('#login',timeout=10000)
+                    try:
+                        page.wait_for_selector('#login',timeout=10000)
+                    except Exception as exc:
+                        report['browser_diagnostic']={
+                            'url':page.url,
+                            'title':page.title(),
+                            'ready_state':page.evaluate('document.readyState'),
+                            'body_text':page.locator('body').inner_text()[:4000],
+                            'app_root_html':page.locator('#app').inner_html()[:4000] if page.locator('#app').count() else '',
+                            'script_srcs':page.locator('script').evaluate_all('(els) => els.map(e => e.src)'),
+                            'page_errors':browser_errors[-20:],
+                            'console':browser_console[-50:],
+                            'asset_responses':[x for x in asset_responses if '/assets/app.js' in x['url'] or '/assets/public.js' in x['url'] or '/assets/app.css' in x['url']],
+                        }
+                        raise exc
                     page.locator('#login input[name="email"]').fill(email)
                     page.locator('#login input[name="organization_id"]').fill(org)
                     page.locator('#login input[name="password"]').fill(password)
