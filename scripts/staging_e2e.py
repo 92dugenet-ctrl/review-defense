@@ -6,6 +6,8 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 def api_login(base: str, email: str, org: str, password: str, mfa_code: str | None = None):
     body = {"email": email, "organization_id": org, "password": password}
