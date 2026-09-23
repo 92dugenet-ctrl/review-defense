@@ -120,7 +120,7 @@ def render_page(path: str) -> bytes:
 <script type="application/ld+json">{json.dumps(schema,ensure_ascii=False,separators=(",",":"))}</script></head><body>
 <div class="marketing"><header class="public-header"><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><nav class="public-nav"><a href="/produit/">Produit</a><a href="/comment-ca-marche/">Comment ça fonctionne</a><a href="/services/">Services</a><a href="/tarifs/">Tarifs</a><a href="/ressources/">Ressources</a><a href="/contact/">Contact</a></nav><div class="public-actions"><a class="btn-secondary" href="/app">Connexion</a><a class="btn-primary" href="/analyse-avis-google/">Analyser un avis →</a></div></header>
 <main class="seo-main"><nav class="breadcrumbs"><a href="/">Accueil</a><span>›</span><a href="/{hub_slug}/">{html.escape(hub_title)}</a><span>›</span><span>{html.escape(title)}</span></nav><header class="seo-hero"><span>{html.escape(_cluster(slug).upper())}</span><h1>{html.escape(title)}</h1><p>{html.escape(meta)}</p><div class="seo-keyword">Sujet : {html.escape(keyword)}</div></header>{_body(slug,title,keyword)}<aside class="seo-related"><h2>À lire ensuite</h2><ul>{related_html}</ul></aside></main>
-<footer class="public-footer"><div><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><p>Analyse, qualification et accompagnement autour des avis en ligne.</p></div><div><b>Produit</b><a href="/?page=features">Fonctionnalités</a><a href="/?page=pricing">Tarifs</a></div><div><b>Ressources</b><a href="/?page=resources">Guides</a><a href="/analyse-avis-google/">Analyser un avis</a></div></footer></div></body></html>'''
+<footer class="public-footer"><div><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><p>Analyse, qualification et accompagnement autour des avis en ligne.</p></div><div><b>Produit</b><a href="/produit/">Fonctionnalités</a><a href="/tarifs/">Tarifs</a></div><div><b>Ressources</b><a href="/ressources/">Guides</a><a href="/analyse-avis-google/">Analyser un avis</a></div></footer></div></body></html>'''
     return doc.encode("utf-8")
 
 def sitemap() -> bytes:
@@ -129,4 +129,4 @@ def sitemap() -> bytes:
     return f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{body}</urlset>'.encode()
 
 def robots() -> bytes:
-    return f"User-agent: *\nAllow: /\nDisallow: /app\nDisallow: /v1/\nDisallow: /reset-password\nDisallow: /verify-email\nSitemap: {BASE_URL}/sitemap.xml\n".encode()
+    return f"User-agent: *\nAllow: /\nDisallow: /app\nDisallow: /v1/\nDisallow: /reset-password\nDisallow: /verify-email\nDisallow: /accept-invitation\nSitemap: {BASE_URL}/sitemap.xml\n".encode()
