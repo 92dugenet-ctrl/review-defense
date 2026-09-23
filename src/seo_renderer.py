@@ -10,7 +10,7 @@ def _page_map():
     return {"/" + slug + "/": (slug, title, keyword) for slug, title, keyword in PAGES}
 
 def is_seo_path(path: str) -> bool:
-    return path in _page_map()
+    return path in _page_map() or path in {"/","/produit/","/comment-ca-marche/","/services/","/tarifs/","/ressources/","/contact/","/analyse-avis-google/"}
 
 TITLE_SUFFIXES = {
     "avis-google-argent-avantage": " | Cas concret",
@@ -118,7 +118,7 @@ def render_page(path: str) -> bytes:
 <meta property="og:type" content="article"><meta property="og:title" content="{html.escape(_title_tag(slug,title))}"><meta property="og:description" content="{html.escape(meta)}"><meta property="og:url" content="{html.escape(canonical)}">
 <link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css"><link rel="stylesheet" href="/assets/seo.css">
 <script type="application/ld+json">{json.dumps(schema,ensure_ascii=False,separators=(",",":"))}</script></head><body>
-<div class="marketing"><header class="public-header"><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><nav class="public-nav"><a href="/?page=features">Fonctionnalités</a><a href="/?page=how">Comment ça marche</a><a href="/?page=pricing">Tarifs</a><a href="/?page=resources">Ressources</a></nav><div class="public-actions"><a class="btn-secondary" href="/app">Connexion</a><a class="btn-primary" href="/analyse-avis-google/">Commencer gratuitement →</a></div></header>
+<div class="marketing"><header class="public-header"><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><nav class="public-nav"><a href="/produit/">Produit</a><a href="/comment-ca-marche/">Comment ça fonctionne</a><a href="/services/">Services</a><a href="/tarifs/">Tarifs</a><a href="/ressources/">Ressources</a><a href="/contact/">Contact</a></nav><div class="public-actions"><a class="btn-secondary" href="/app">Connexion</a><a class="btn-primary" href="/analyse-avis-google/">Analyser un avis →</a></div></header>
 <main class="seo-main"><nav class="breadcrumbs"><a href="/">Accueil</a><span>›</span><a href="/{hub_slug}/">{html.escape(hub_title)}</a><span>›</span><span>{html.escape(title)}</span></nav><header class="seo-hero"><span>{html.escape(_cluster(slug).upper())}</span><h1>{html.escape(title)}</h1><p>{html.escape(meta)}</p><div class="seo-keyword">Sujet : {html.escape(keyword)}</div></header>{_body(slug,title,keyword)}<aside class="seo-related"><h2>À lire ensuite</h2><ul>{related_html}</ul></aside></main>
 <footer class="public-footer"><div><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><p>Analyse, qualification et accompagnement autour des avis en ligne.</p></div><div><b>Produit</b><a href="/?page=features">Fonctionnalités</a><a href="/?page=pricing">Tarifs</a></div><div><b>Ressources</b><a href="/?page=resources">Guides</a><a href="/analyse-avis-google/">Analyser un avis</a></div></footer></div></body></html>'''
     return doc.encode("utf-8")
