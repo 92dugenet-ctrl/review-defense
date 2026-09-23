@@ -75,3 +75,55 @@
   .rd-product-stage .rd-floating-card{animation:none}
   .rd-product-window,.evidence-card,.console-showcase,.btn-primary,.btn-secondary,.rd-workflow-visual article,.rd-value-grid article,.security-grid article,.resource-cards a,.feature-grid article,.article-grid article{transition:none}
 }
+
+
+/* V6.40 — editorial-grade Matterhorn hero + fluid motion */
+.rd-home-hero{isolation:isolate;overflow:hidden;min-height:760px;background:linear-gradient(110deg,#fff 0%,#f9fcff 52%,#eef6ff 100%)}
+.rd-home-hero:after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 70% 18%,rgba(32,103,190,.11),transparent 34%),linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,.7))}
+.mountain-wash{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.matterhorn-real{position:absolute;right:-8%;top:-7%;width:min(72vw,980px);height:720px;transform:translate3d(var(--mx,0),calc(var(--my,0) - var(--scroll-y,0)),0) scale(1.04);transition:transform 1.1s cubic-bezier(.16,1,.3,1);filter:saturate(.82) contrast(.94)}
+.matterhorn-photo{position:absolute;inset:0;background-image:linear-gradient(90deg,rgba(255,255,255,1) 0%,rgba(255,255,255,.78) 20%,rgba(255,255,255,.18) 58%,rgba(255,255,255,.02) 100%),linear-gradient(180deg,rgba(241,248,255,.05) 35%,rgba(238,246,255,.88) 100%),url("https://commons.wikimedia.org/wiki/Special:Redirect/file/Peak_of_the_Matterhorn,_seen_from_Zermatt,_Switzerland.jpg");background-size:cover;background-position:56% 36%;mask-image:linear-gradient(90deg,transparent 0%,#000 15%,#000 90%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 15%,#000 90%,transparent 100%)}
+.matterhorn-haze{position:absolute;inset:0;background:radial-gradient(ellipse at 70% 42%,rgba(255,255,255,.05),rgba(255,255,255,.58) 58%,rgba(255,255,255,.96) 100%);mix-blend-mode:screen}
+.matterhorn-glow{position:absolute;width:520px;height:520px;right:15%;top:8%;border-radius:50%;background:rgba(255,255,255,.35);filter:blur(70px);animation:mountainGlow 8s ease-in-out infinite alternate}
+.hero-orbit{position:absolute;border:1px solid rgba(33,103,190,.12);border-radius:50%;transform:rotate(-18deg);animation:orbitDrift 18s ease-in-out infinite}
+.hero-orbit-a{width:650px;height:220px;right:3%;top:18%}
+.hero-orbit-b{width:480px;height:170px;right:15%;top:35%;animation-delay:-7s}
+.rd-hero-copy{position:relative}
+.hero-status-line{display:flex;align-items:center;gap:9px;margin:0 0 20px;font-size:9px;letter-spacing:.18em;font-weight:800;color:#60738b;text-transform:uppercase}
+.hero-status-line i{width:3px;height:3px;border-radius:50%;background:#aab9c9}
+.status-pulse{width:7px;height:7px;border-radius:50%;background:#1d78d4;box-shadow:0 0 0 5px rgba(29,120,212,.10);animation:statusPulse 2.4s ease-out infinite}
+.hero-microcopy{display:flex;justify-content:space-between;gap:16px;margin-top:18px;padding-top:14px;border-top:1px solid rgba(45,93,140,.10);font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:#8191a4}
+.hero-signal-card{position:absolute;right:2%;bottom:2%;display:flex;align-items:center;gap:11px;padding:12px 15px;border:1px solid rgba(255,255,255,.82);border-radius:16px;background:rgba(255,255,255,.88);box-shadow:0 18px 50px rgba(36,79,120,.13);backdrop-filter:blur(16px);animation:signalFloat 5.5s ease-in-out infinite}
+.hero-signal-card>div{display:grid;gap:3px}.hero-signal-card small{font-size:8px;letter-spacing:.14em;color:#8191a4}.hero-signal-card strong{font-size:11px;color:#20334a}.hero-signal-card b{font-size:8px;letter-spacing:.12em;color:#2877c4}.signal-dot{width:8px;height:8px;border-radius:50%;background:#4c9eea;box-shadow:0 0 0 5px rgba(76,158,234,.12)}
+.rd-hero-grid{position:relative;z-index:2}
+.rd-hero-copy h1{letter-spacing:-.055em;text-wrap:balance}
+.rd-hero-copy .rd-hero-lead{max-width:650px}
+.rd-btn-lg{position:relative;overflow:hidden;will-change:transform}
+.rd-btn-lg:before{content:"";position:absolute;inset:-2px -30%;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.34) 50%,transparent 60%);transform:translateX(-80%);transition:transform .8s cubic-bezier(.16,1,.3,1)}
+.rd-btn-lg:hover:before{transform:translateX(80%)}
+.rd-product-window{will-change:transform;transform:perspective(1200px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .7s cubic-bezier(.16,1,.3,1),box-shadow .7s ease}
+.rd-product-stage{filter:drop-shadow(0 30px 50px rgba(32,78,122,.12))}
+.rd-floating-card{animation:signalFloat 6s ease-in-out infinite}
+.rd-section-heading h2{letter-spacing:-.04em;text-wrap:balance}
+.rd-value-grid article,.security-grid article,.resource-cards a,.feature-grid article,.article-grid article{will-change:transform}
+.rd-workflow-visual article{transition:transform .55s cubic-bezier(.16,1,.3,1),box-shadow .55s ease,border-color .4s ease;background:rgba(255,255,255,.82);backdrop-filter:blur(12px)}
+.rd-workflow-visual article:hover{transform:translateY(-8px) scale(1.015)}
+.rd-workflow-visual article.is-selected{transform:translateY(-9px);box-shadow:0 24px 55px rgba(31,93,148,.14);border-color:rgba(39,121,200,.32)}
+.console-showcase,.evidence-card{will-change:transform}
+.rd-final-cta{position:relative;overflow:hidden}
+.rd-final-cta .mountain-cta{opacity:.38;filter:blur(.2px) saturate(.72)}
+@keyframes statusPulse{0%{box-shadow:0 0 0 0 rgba(29,120,212,.24)}70%{box-shadow:0 0 0 7px rgba(29,120,212,0)}100%{box-shadow:0 0 0 0 rgba(29,120,212,0)}}
+@keyframes signalFloat{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-7px,0)}}
+@keyframes mountainGlow{0%{opacity:.25;transform:translate3d(-12px,6px,0)}100%{opacity:.55;transform:translate3d(16px,-10px,0)}}
+@keyframes orbitDrift{0%,100%{transform:rotate(-18deg) translate3d(0,0,0)}50%{transform:rotate(-14deg) translate3d(-12px,9px,0)}}
+@media (max-width:900px){
+ .rd-home-hero{min-height:980px}
+ .matterhorn-real{right:-36%;top:280px;width:900px;height:620px;opacity:.52}
+ .hero-orbit{display:none}
+ .hero-signal-card{right:5%;bottom:4%}
+ .hero-microcopy{flex-direction:column;gap:7px}
+}
+@media (prefers-reduced-motion:reduce){
+ .matterhorn-real,.hero-signal-card,.matterhorn-glow,.hero-orbit,.status-pulse,.rd-floating-card{animation:none!important;transition:none!important}
+ .rd-product-window{transform:none!important}
+}
