@@ -124,7 +124,7 @@ def render_page(path: str) -> bytes:
     return doc.encode("utf-8")
 
 def sitemap() -> bytes:
-    urls=[BASE_URL+"/",BASE_URL+"/?page=features",BASE_URL+"/?page=how",BASE_URL+"/?page=pricing",BASE_URL+"/?page=resources",BASE_URL+"/analyse-avis-google/"]+[BASE_URL+"/"+slug+"/" for slug,_,_ in PAGES if slug!="analyse-avis-google"]
+    urls=[BASE_URL+"/",BASE_URL+"/produit/",BASE_URL+"/comment-ca-marche/",BASE_URL+"/services/",BASE_URL+"/tarifs/",BASE_URL+"/ressources/",BASE_URL+"/contact/",BASE_URL+"/analyse-avis-google/"]+[BASE_URL+"/"+slug+"/" for slug,_,_ in PAGES if slug!="analyse-avis-google"]
     body="".join(f"<url><loc>{html.escape(u)}</loc></url>" for u in urls)
     return f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{body}</urlset>'.encode()
 
