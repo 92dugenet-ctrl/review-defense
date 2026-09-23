@@ -625,3 +625,23 @@ a{color:var(--accent)}
   header{background:linear-gradient(#f7faff 78%,rgba(247,250,255,0))}
   .mobile-nav-scrim{background:rgba(24,42,66,.25)}
 }
+
+
+/* V6.40 FINAL OVERRIDE — remove legacy dark-console specificity */
+body.console-mode{background:var(--bg);color:var(--text)}
+body.console-mode .sidebar{background:#fff;border-right:1px solid var(--line);box-shadow:8px 0 28px rgba(31,68,114,.035)}
+body.console-mode main{background:var(--bg)}
+body.console-mode header{background:transparent;border-bottom:0;box-shadow:none;backdrop-filter:none}
+body.console-mode .mobile-nav-scrim{background:rgba(24,42,66,.25)}
+body.console-mode .card,body.console-mode .panel,body.console-mode .hero-card{background:#fff;color:var(--text);border-color:var(--line)}
+body.console-mode .workspace-switcher{background:#f7faff;color:#344862;border-color:var(--line)}
+body.console-mode nav button{color:#5d6e86}
+body.console-mode nav button:hover,body.console-mode nav button.active{background:#eaf4ff;color:var(--accent);border-color:#d8e8fb}
+body.console-mode h1,body.console-mode h2,body.console-mode h3,body.console-mode label,body.console-mode strong{color:var(--text)}
+body.console-mode p{color:var(--muted)}
+body.console-mode .pill{background:#f4f8fd;border-color:var(--line);color:#50647f}
+body.console-mode .command-btn{background:#fff;border-color:var(--line);color:#5b6d86}
+body.console-mode .ghost{background:#fff;border-color:var(--line);color:#5d6e86}
+@media(max-width:760px){
+  body.console-mode header{background:linear-gradient(#f7faff 78%,rgba(247,250,255,0));border-bottom:0;box-shadow:none;backdrop-filter:none}
+}
