@@ -5,3 +5,13 @@
 
 /* V6.39 SEO editorial pages */
 .seo-main{margin:0!important;padding:0 24px 80px!important;background:transparent!important;min-height:0!important}.seo-breadcrumb{max-width:1080px;margin:0 auto;padding:24px 0;color:#7a8799;font-size:11px}.seo-breadcrumb a{color:#3772ca}.seo-article{max-width:900px;margin:10px auto;background:#fff;border:1px solid #e1e9f4;border-radius:24px;padding:48px;box-shadow:0 18px 60px rgba(45,86,135,.07)}.seo-article h1{font-size:clamp(38px,5vw,58px);line-height:1.03;letter-spacing:-2px;margin:16px 0 18px;color:#111a42}.seo-lead{font-size:16px;line-height:1.75;color:#61708a;border-bottom:1px solid #e8eef5;padding-bottom:28px}.seo-content section{padding:26px 0;border-bottom:1px solid #edf1f6}.seo-content h2,.seo-faq h2,.seo-related h2,.seo-cta h2{font-size:24px;letter-spacing:-.5px}.seo-content p,.seo-faq p{color:#56677f;font-size:14px;line-height:1.8}.seo-disclaimer{margin:28px 0;padding:18px 20px;border-left:4px solid #1264e8;background:#eef6ff;color:#50617a;font-size:13px;line-height:1.7;border-radius:8px}.seo-faq{margin-top:34px}.seo-faq details{border:1px solid #e2e9f3;border-radius:11px;margin:9px 0;padding:15px 17px;background:#fbfdff}.seo-faq summary{font-weight:700;font-size:13px;cursor:pointer}.seo-related{margin-top:34px}.seo-related ul{display:grid;gap:10px;padding-left:18px}.seo-related a{color:#1264e8;font-size:13px;font-weight:650}.seo-cta{margin-top:38px;padding:30px;border-radius:18px;background:linear-gradient(135deg,#eaf4ff,#dceeff);text-align:center}.seo-cta p{color:#60718a;font-size:13px;line-height:1.6}.seo-cta .btn-primary{display:inline-block;margin-top:8px}.seo-article .eyebrow{display:inline-block}@media(max-width:560px){.seo-main{padding:0 14px 50px!important}.seo-article{padding:28px 22px;border-radius:18px}.seo-breadcrumb{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.seo-article h1{font-size:38px}.seo-content h2,.seo-faq h2,.seo-related h2,.seo-cta h2{font-size:21px}}
+
+/* V6.40 Review Defense premium tokens — consolidated build layer */
+:root{--rd-bg:#F8FAFC;--rd-surface:#FFFFFF;--rd-surface-2:#F1F5F9;--rd-border:#E2E8F0;--rd-text:#0F172A;--rd-secondary:#475569;--rd-muted:#64748B;--rd-accent:#1264e8}
+body{background:var(--rd-bg);color:var(--rd-text)}
+.marketing{background:linear-gradient(180deg,var(--rd-surface),var(--rd-bg))}
+.public-header{border-bottom-color:var(--rd-border)}
+.public-nav button{font-size:13px}
+.hero-copy h1{letter-spacing:-2.5px}
+.btn-primary{background:var(--rd-accent)}
+.feature-grid article,.steps article,.price-card,.article-grid article{border-color:var(--rd-border);box-shadow:0 8px 30px rgba(15,23,42,.05)}
