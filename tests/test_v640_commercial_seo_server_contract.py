@@ -48,3 +48,15 @@ def test_conversion_page_has_form_and_tracking_contract():
     assert "analysis_submit" in text
     assert "Aucune action Google n’est exécutée automatiquement." in text
     assert "la plateforme concernée" in text
+
+
+def test_legacy_commercial_query_urls_redirect():
+    from wsgi import app
+    captured = {}
+    def start_response(status, headers):
+        captured["status"] = status
+        captured["headers"] = dict(headers)
+    body = app({"PATH_INFO": "/", "QUERY_STRING": "page=pricing"}, start_response)
+    assert captured["status"] == "301 Moved Permanently"
+    assert captured["headers"]["Location"] == "/tarifs/"
+    assert body == [b""]
