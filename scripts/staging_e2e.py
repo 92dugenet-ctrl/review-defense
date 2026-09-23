@@ -98,6 +98,9 @@ def main() -> int:
                     page.wait_for_selector('.sidebar',timeout=10000)
                     page.wait_for_selector('#console-sidebar',timeout=5000)
                     page.wait_for_selector('#content',timeout=5000)
+                    # The app shell hydrates its first view asynchronously after authentication.
+                    # Wait for the actual dashboard component instead of racing the initial shell.
+                    page.wait_for_selector('#content .hero-grid',timeout=10000)
                     title=page.locator('#title').inner_text()
                     nav_count=page.locator('#nav button').count()
                     content_text=page.locator('#content').inner_text()
