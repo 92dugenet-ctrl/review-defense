@@ -1134,6 +1134,11 @@ class ReviewDefenseAPI:
         if method == "POST" and path == "/v1/cases":
             self._require_role(user, "OWNER", "ADMIN", "ANALYST")
             body = self._body(environ); rid = str(body.get("review_id", ""))
+            if (user.organization_id, rid) not in self.store.reviews and self.repository is not None and hasattr(self.repository, "get_review"):
+                row = self.repository.get_review(user.organization_id, rid)
+                if row:
+                    review = _review_from_row(row)
+                    self.store.reviews[(user.organization_id, rid)] = review
             if (user.organization_id, rid) not in self.store.reviews:
                 raise APIError(404, "NOT_FOUND", "review not found")
             def create():
