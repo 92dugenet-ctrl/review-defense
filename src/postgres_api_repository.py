@@ -109,6 +109,16 @@ class PostgresAPIRepository(PostgresRepository):
                 cur.execute("INSERT INTO case_events(organization_id,case_id,event_type,actor_user_id,payload) VALUES(%s,%s,%s,%s,%s::jsonb)", (organization_id,case_id,'CASE_CREATED',actor_user_id,'{}'))
                 return row
 
+    def list_cases(self, organization_id: str):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT case_id,organization_id,review_id,status,decision_id,snapshot_sha256,created_at,updated_at "
+                    "FROM api_cases WHERE organization_id=%s ORDER BY created_at DESC NULLS LAST",
+                    (organization_id,),
+                )
+                return cur.fetchall()
+
     def get_case_persistent(self, organization_id: str, case_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
