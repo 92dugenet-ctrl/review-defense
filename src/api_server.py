@@ -558,10 +558,25 @@ class ReviewDefenseAPI:
 
         if method == "POST" and path == "/v1/organization/invitations/accept":
             body = self._body(environ)
-            token = str(body.get("invitation_token", "")); email = normalize_email(str(body.get("email", "")))
+            try:
+                email = normalize_email(str(body.get("email", "")))
+            except ValueError as exc:
+                raise APIError(422, "VALIDATION_ERROR", str(exc)) from exc
+            organization_id = str(body.get("organization_id", "")).strip()
+            token = str(body.get("invitation_token", ""))
             password = body.get("password", "")
             token_hash = hash_token(token)
             invitation = next((i for i in self.store.invitations.values() if i.get("token_hash") == token_hash), None)
+            if invitation is None and self.repository is not None and organization_id and hasattr(self.repository, "get_invitation_by_token"):
+                dbrow = self.repository.get_invitation_by_token(organization_id, token_hash)
+                if dbrow:
+                    invitation = {
+                        "invitation_id": str(dbrow[0]), "organization_id": str(dbrow[1]),
+                        "email": str(dbrow[2]), "role": str(dbrow[3]), "token_hash": str(dbrow[4]),
+                        "expires_at": dbrow[5].isoformat() if hasattr(dbrow[5], "isoformat") else str(dbrow[5]),
+                        "invited_by": str(dbrow[6]), "accepted_at": dbrow[7], "revoked_at": dbrow[8],
+                    }
+                    self.store.invitations[invitation["invitation_id"]] = invitation
             if invitation is None or invitation.get("email") != email or invitation.get("accepted_at") or invitation.get("revoked_at"):
                 raise APIError(400, "INVITATION_INVALID", "invitation is invalid or already used")
             from datetime import datetime
@@ -586,6 +601,9 @@ class ReviewDefenseAPI:
                 if self.repository is not None and hasattr(self.repository,"create_user"):
                     rid,*_=self.repository.create_user(invitation["organization_id"],email,ph,invitation["role"]); uid=str(rid); self.store.users.pop(uid,None); self.store.users[rid]=User(rid,invitation["organization_id"],email,ph,invitation["role"])
             invitation["accepted_at"]=utc_now().isoformat()
+            if self.repository is not None and hasattr(self.repository, "mark_invitation_accepted"):
+                if not self.repository.mark_invitation_accepted(invitation["organization_id"], invitation["invitation_id"]):
+                    raise APIError(409, "INVITATION_STATE_CONFLICT", "invitation could not be accepted")
             self.store.email_verified[uid] = False
             if self.repository is not None and hasattr(self.repository, "set_email_unverified"):
                 self.repository.set_email_unverified(invitation["organization_id"], uid)
