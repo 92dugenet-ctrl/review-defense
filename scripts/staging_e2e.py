@@ -159,6 +159,9 @@ def main() -> int:
                     dashboard_ok = dashboard_title.strip() in {"Vue d’ensemble", "Vue d'ensemble", "Dashboard"} and bool(dashboard_text.strip())
                     reviews_ok = page.locator(".reviews-panel").count() > 0
                     cases_ok = page.locator(".cases-panel").count() > 0
+                    dashboard_ok = dashboard_title.strip() in {"Dashboard", "Vue d'ensemble", "Vue d’ensemble"} and bool(dashboard_text.strip())
+                    reviews_ok = page.locator(".reviews-panel").count() > 0
+                    cases_ok = page.locator(".cases-panel").count() > 0
                     browser_checks = {
                         "login": "PASS",
                         "dashboard": dashboard_ok,
@@ -167,18 +170,13 @@ def main() -> int:
                         "human_control_boundary": approval_marker,
                         "no_external_google": not forbidden,
                         "page_errors": browser_errors[-20:],
-                        "page_error_policy": "recorded_as_diagnostic; core UAT gates are DOM/auth/security assertions",
+                        "page_error_policy": "diagnostic_only",
                     }
                     report["browser"] = browser_checks
-                    core_browser_ok = all([
-                        dashboard_ok,
-                        reviews_ok,
-                        cases_ok,
-                        approval_marker,
-                        not forbidden,
-                    ])
+                    core_browser_ok = all([dashboard_ok, reviews_ok, cases_ok, approval_marker, not forbidden])
                     if not core_browser_ok:
                         report["error"] = "browser UAT contract failed"
+
                     browser.close()
             except Exception as exc:
                 report["error"] = f"browser UAT failed: {exc}"
