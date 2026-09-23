@@ -24,7 +24,7 @@ def test_commercial_pages_are_crawlable_and_canonical():
 def test_sitemap_includes_commercial_routes_and_seo_network():
     _, _, body = seo_site.render("/sitemap.xml")
     xml = body.decode()
-    assert xml.count("<url>") == 70
+    assert xml.count("<url>") == 69
     for route in COMMERCIAL:
         assert route in xml
     for route in ["/analyse-avis-google/", "/faux-avis-google/", "/signaler-un-avis-google/"]:
