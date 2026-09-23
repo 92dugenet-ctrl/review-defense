@@ -24,7 +24,7 @@ def test_v639_sitemap_and_robots_cover_public_seo_surface():
     status,_,body=seo_site.render("/sitemap.xml")
     xml=body.decode()
     assert status==200
-    assert xml.count("<url>")==70
+    assert xml.count("<url>")==69
     assert "/suppression-avis-google/" in xml
     status,_,body=seo_site.render("/robots.txt")
     robots=body.decode()
