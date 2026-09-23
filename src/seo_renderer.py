@@ -10,7 +10,7 @@ def _page_map():
     return {"/" + slug + "/": (slug, title, keyword) for slug, title, keyword in PAGES}
 
 def is_seo_path(path: str) -> bool:
-    return path in _page_map() or path in {"/","/produit/","/comment-ca-marche/","/services/","/tarifs/","/ressources/","/contact/","/analyse-avis-google/"}
+    return path in _page_map()
 
 TITLE_SUFFIXES = {
     "avis-google-argent-avantage": " | Cas concret",
