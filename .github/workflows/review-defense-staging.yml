@@ -134,6 +134,10 @@ jobs:
         run: python scripts/sandbox_seed.py
       - name: V6.40 demonstration sandbox certification
         run: python scripts/sandbox_certification.py
+      - name: V6.40 UAT environment readiness
+        run: python scripts/uat_environment_readiness.py
+      - name: V6.40 UAT package certification
+        run: python scripts/uat_v640_certification.py
 
   ecloudserv-staging:
     if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
