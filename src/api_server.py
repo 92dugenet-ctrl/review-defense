@@ -1151,12 +1151,43 @@ class ReviewDefenseAPI:
             return self._json(201, self._idem(user, environ, body, create))
         if method == "GET" and path == "/v1/cases":
             rows = [c for (org, _), c in self.store.cases.items() if org == user.organization_id]
+            if self.repository is not None and hasattr(self.repository, "list_cases"):
+                for row in self.repository.list_cases(user.organization_id):
+                    cid = str(row[0])
+                    if (user.organization_id, cid) not in self.store.cases:
+                        self.store.cases[(user.organization_id, cid)] = Case(
+                            case_id=cid,
+                            organization_id=str(row[1]),
+                            review_id=str(row[2]),
+                            status=str(row[3]),
+                            decision_id=str(row[4]) if row[4] is not None else None,
+                            snapshot_sha256=str(row[5]) if row[5] is not None else None,
+                            created_at=_iso_value(row[6]),
+                        )
+                rows = [c for (org, _), c in self.store.cases.items() if org == user.organization_id]
             return self._json(200, {"items": [asdict(c) for c in rows], "count": len(rows)})
         if path.startswith("/v1/cases/"):
             parts = path.split("/")
             if len(parts) < 4: raise APIError(404, "NOT_FOUND", "resource not found")
             cid = parts[3]; case = self.store.cases.get((user.organization_id, cid))
+            if case is None and self.repository is not None and hasattr(self.repository, "get_case_persistent"):
+                row = self.repository.get_case_persistent(user.organization_id, cid)
+                if row:
+                    case = Case(
+                        case_id=str(row[0]),
+                        organization_id=str(row[1]),
+                        review_id=str(row[2]),
+                        status=str(row[3]),
+                        decision_id=str(row[4]) if row[4] is not None else None,
+                        snapshot_sha256=str(row[5]) if row[5] is not None else None,
+                        created_at=_iso_value(row[6]),
+                    )
+                    self.store.cases[(user.organization_id, cid)] = case
             if not case: raise APIError(404, "NOT_FOUND", "case not found")
+            if (user.organization_id, case.review_id) not in self.store.reviews and self.repository is not None and hasattr(self.repository, "get_review"):
+                review_row = self.repository.get_review(user.organization_id, case.review_id)
+                if review_row:
+                    self.store.reviews[(user.organization_id, case.review_id)] = _review_from_row(review_row)
             if method == "GET" and len(parts) == 4:
                 review = self.store.reviews[(user.organization_id, case.review_id)]
                 claims = extract_claims(review); signals = classify_policy_signals(claims)
