@@ -97,9 +97,17 @@ def main() -> int:
                         page.locator('#login button[type="submit"]').click()
                     page.wait_for_selector('.sidebar',timeout=10000)
                     title=page.locator('#title').inner_text()
+                    dashboard_nav=page.locator('#nav button[data-view="dashboard"]')
                     resources=page.evaluate("performance.getEntriesByType('resource').map(x => x.name)")
                     forbidden=[u for u in resources if 'googleapis.com' in u or 'google.com' in u]
-                    report['browser']={'login':'PASS','dashboard':'Dashboard' in title,'no_external_google':not forbidden}
+                    dashboard_class=dashboard_nav.get_attribute('class') if dashboard_nav.count() else ''
+                    dashboard_visible=dashboard_nav.count() > 0 and 'active' in (dashboard_class or '')
+                    report['browser']={
+                        'login':'PASS',
+                        'dashboard':bool(dashboard_visible and title.strip() == 'Vue d’ensemble'),
+                        'dashboard_title':title,
+                        'no_external_google':not forbidden
+                    }
                     if not report['browser']['dashboard'] or forbidden:
                         report['error']='browser security/auth contract failed'
                     browser.close()
