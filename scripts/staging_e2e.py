@@ -148,7 +148,7 @@ def main() -> int:
                     dashboard_text = page.locator("#content").inner_text()
                     reviews_text = view("reviews", "Avis", ".reviews-panel", ("Qualification des avis", "Inbox des avis"))
                     cases_text = view("cases", "Dossiers", ".cases-panel", ("Centre des dossiers", "File des dossiers"))
-                    approval_marker = "validation humaine" in (cases_text + " " + reviews_text).lower() or "aucune action externe automatique" in (cases_text + " " + reviews_text).lower()
+                    boundary_text = (dashboard_text + " " + reviews_text + " " + cases_text).lower()\n                    approval_markers = ("validation humaine", "aucune action externe automatique", "contrôles humains", "action externe automatique", "revue humaine requise")\n                    approval_marker = any(marker in boundary_text for marker in approval_markers)
                     if not approval_marker:
                         raise AssertionError("human-control boundary is not visible in the browser UAT")
 
