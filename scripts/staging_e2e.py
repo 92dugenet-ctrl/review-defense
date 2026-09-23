@@ -99,6 +99,17 @@ def main() -> int:
                     page.wait_for_selector(".rd-home-hero", timeout=10000)
                     landing_text = page.locator("body").inner_text()
                     if "Analysez vos avis Google" not in landing_text or "Gardez le contrôle" not in landing_text:
+                        report["root_diagnostic"] = {
+                            "url": page.url,
+                            "title": page.title(),
+                            "ready_state": page.evaluate("document.readyState"),
+                            "body_text": landing_text[:5000],
+                            "app_root_html": page.locator("#app").inner_html()[:5000] if page.locator("#app").count() else "",
+                            "script_srcs": page.locator("script").evaluate_all("(els) => els.map(e => e.src)"),
+                            "page_errors": browser_errors[-20:],
+                            "console": browser_console[-50:],
+                            "asset_responses": [x for x in asset_responses if "/assets/app.js" in x["url"] or "/assets/public.js" in x["url"] or "/assets/public.css" in x["url"]],
+                        }
                         raise AssertionError("public commercial landing page is not served at the root URL")
                     page.locator("#public-login").click()
                     page.wait_for_selector("#login", timeout=10000)
