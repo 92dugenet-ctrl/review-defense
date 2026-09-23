@@ -142,7 +142,7 @@ def render(path):
         return 200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"public, max-age=300"},_commercial_html(path).encode()
     pages=_pages()
     if path=="/robots.txt":
-        return 200,{"Content-Type":"text/plain; charset=utf-8","Cache-Control":"public, max-age=3600"},f"User-agent: *\nAllow: /\nDisallow: /app\nDisallow: /v1/\nSitemap: {_url('/sitemap.xml')}\n".encode()
+        return 200,{"Content-Type":"text/plain; charset=utf-8","Cache-Control":"public, max-age=3600"},f"User-agent: *\nAllow: /\nDisallow: /app\nDisallow: /v1/\nDisallow: /reset-password\nDisallow: /verify-email\nDisallow: /accept-invitation\nSitemap: {_url('/sitemap.xml')}\n".encode()
     if path=="/sitemap.xml":
         paths=list(dict.fromkeys(["/"]+[x for x in COMMERCIAL if x!="/"]+[p["path"] for p in pages]))
         body='<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(f"<url><loc>{_e(_url(path))}</loc><lastmod>{SITE_MODIFIED}</lastmod></url>" for path in paths)+"</urlset>"
