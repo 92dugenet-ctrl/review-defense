@@ -29,7 +29,8 @@ def test_client_invitation_acceptance_can_load_from_persistent_repository():
         def mark_invitation_accepted(self, organization_id, invitation_id): return True
     app=ReviewDefenseAPI()
     app.repository=Repo()
-    app.config.require_email_verification=False
+    from dataclasses import replace
+    app.config = replace(app.config, require_email_verification=False)
     body=json.dumps({"organization_id":"org-1","email":"client@example.com","invitation_token":"tok","password":"StrongPassword123!"}).encode()
     env={"REQUEST_METHOD":"POST","PATH_INFO":"/v1/organization/invitations/accept","REMOTE_ADDR":"127.0.0.1","CONTENT_LENGTH":str(len(body)),"wsgi.input":io.BytesIO(body)}
     out={}
