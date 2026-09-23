@@ -39,3 +39,8 @@ def test_client_invitation_acceptance_can_load_from_persistent_repository():
     assert out["status"]=="200 OK"
     assert data["role"]=="CLIENT"
     assert data["access_token"]
+
+def test_client_workspace_does_not_render_sensitive_action_controls():
+    app = (ROOT / "frontend/assets/app.js").read_text(encoding="utf-8")
+    assert "const canAct=['OWNER','ADMIN','ANALYST'].includes(state.me?.role)" in app
+    assert "Lecture client · les décisions sensibles sont réservées aux rôles habilités." in app
