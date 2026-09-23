@@ -99,3 +99,14 @@ def test_robots_excludes_non_public_application_routes():
     for route in ["/app", "/v1/", "/reset-password", "/verify-email", "/accept-invitation"]:
         assert "Disallow: " + route in robots
     assert "Sitemap: " in robots
+
+
+def test_login_route_redirects_to_application():
+    from wsgi import app
+    captured = {}
+    def start_response(status, headers):
+        captured["status"] = status
+        captured["headers"] = dict(headers)
+    assert app({"PATH_INFO": "/login", "QUERY_STRING": ""}, start_response) == [b""]
+    assert captured["status"] == "301 Moved Permanently"
+    assert captured["headers"]["Location"] == "/app"
