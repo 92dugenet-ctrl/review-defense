@@ -8,9 +8,13 @@ _api = create_app()
 def app(environ, start_response):
     path = environ.get("PATH_INFO", "/")
     query = parse_qs(environ.get("QUERY_STRING", ""))
-    legacy = {"features":"/produit/","how":"/comment-ca-marche/","services":"/services/","pricing":"/tarifs/","resources":"/ressources/","contact":"/contact/"}
+    legacy = {"features":"/produit/","how":"/comment-ca-marche/","services":"/services/","pricing":"/tarifs/","resources":"/ressources/","contact":"/contact/","google-refuse-de-supprimer-mon-faux-avis-que-faire":"/google-refuse-de-supprimer-mon-faux-avis/","pourquoi-mon-avis-google-reste-en-ligne-conversationnel":"/pourquoi-mon-avis-google-reste-en-ligne/"}
     if path=="/" and query.get("page", [None])[0] in legacy:
         target=legacy[query["page"][0]]
+        start_response("301 Moved Permanently", [("Location", target), ("Content-Length", "0")])
+        return [b""]
+    if path in ("/google-refuse-de-supprimer-mon-faux-avis-que-faire/","/pourquoi-mon-avis-google-reste-en-ligne-conversationnel/"):
+        target=legacy[path.strip("/")] if path.strip("/") in legacy else "/"
         start_response("301 Moved Permanently", [("Location", target), ("Content-Length", "0")])
         return [b""]
     seo = render_seo(path)
