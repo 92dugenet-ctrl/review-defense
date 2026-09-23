@@ -16,10 +16,11 @@ def _base(): return os.environ.get("REVIEW_DEFENSE_PUBLIC_URL","https://review-d
 def _url(p): return urljoin(_base(),p.lstrip("/"))
 def _e(x): return html.escape(str(x),quote=True)
 def _pages():
-    out=[]; seen_titles=set()
+    out=[]; title_counts={}
     for s,t,k,c in _RAW:
-        title=t if t not in seen_titles else f"{t} | Cas concret"
-        seen_titles.add(title)
+        title_counts[t]=title_counts.get(t,0)+1
+        occurrence=title_counts[t]
+        title=t if occurrence==1 else f"{t} | Cas concret {occurrence}"
         out.append({"path":f"/{s}/","title":title,"h1":title,"keyword":k,"cluster":c,"service":s in _SERVICE_SLUGS,
                     "description":f"{title} : vérifiez les faits, identifiez le motif pertinent, préparez les éléments utiles et suivez les prochaines étapes. "+("Aucune garantie de suppression : Google prend la décision finale." if s in _SERVICE_SLUGS else "Guide pratique et points de vigilance.")})
     return out
@@ -97,8 +98,7 @@ def _sections(page):
     for h in hs:
         if h=="Réponse courte":
             t=f"Pour « {title} », commencez par vérifier les faits et le contenu exact de l’avis. {context}"
-        elif "motif" in h.lower():
-            t=f"Le mot-clé « {keyword} » décrit une intention de recherche, pas une conclusion juridique ou factuelle. Le motif retenu doit correspondre à ce qui est réellement visible dans l’avis et aux règles applicables."
+        elif "motif" in h.lower():            t=f"Le mot-clé « {keyword} » décrit une intention de recherche, pas une conclusion juridique ou factuelle. Le motif retenu doit correspondre à ce qui est réellement visible dans l’avis et aux règles applicables."
         elif "indices" in h.lower():
             t="Un indice isolé ne permet pas toujours de conclure. Comparez les affirmations de l’avis avec les éléments dont vous disposez et notez précisément ce qui est vérifiable, incertain ou contradictoire."
         elif "document" in h.lower() or "éléments" in h.lower() or "dossier" in h.lower():
