@@ -93,6 +93,20 @@ def main() -> int:
                         }) if "/assets/" in response.url else None,
                     )
 
+                    # Public commercialization boundary: the root URL must open the commercial landing page,
+                    # and the landing page must provide a direct path into the authenticated interface.
+                    page.goto(base + "/", wait_until="networkidle")
+                    page.wait_for_selector(".rd-home-hero", timeout=10000)
+                    landing_text = page.locator("body").inner_text()
+                    if "Analysez vos avis Google" not in landing_text or "Gardez le contrôle" not in landing_text:
+                        raise AssertionError("public commercial landing page is not served at the root URL")
+                    page.locator("#public-login").click()
+                    page.wait_for_selector("#login", timeout=10000)
+                    report["public_commercial_landing"] = {
+                        "status": "PASS",
+                        "root_url": base + "/",
+                        "login_cta": "PASS",
+                    }
                     page.goto(base + "/app", wait_until="networkidle")
                     try:
                         page.wait_for_selector("#login", timeout=10000)
