@@ -47,26 +47,46 @@ def _related(page,pages):
         if p["path"]!=page["path"] and p["cluster"]==page["cluster"] and p not in out: out.append(p)
     return out[:5]
 def _sections(page):
-    if page["service"]: hs=["Le problème","Ce qui est analysé","Le processus","Ce qui est inclus","Limites"]
-    elif page["cluster"]=="Signalement": hs=["Quand signaler un avis Google ?","Identifier le motif pertinent","Comment effectuer le signalement","Comment suivre la demande","Que faire après la décision ?"]
-    elif page["cluster"]=="Refus / appel": hs=["Comprendre la situation","Vérifier les éléments du dossier","Que faire après un refus ?","Préparer la suite de la démarche","Quand demander une analyse ?"]
-    elif page["cluster"]=="Faux avis": hs=["Comment reconnaître la situation ?","Quels éléments vérifier ?","Comment documenter les faits ?","Comment signaler l’avis ?","Que faire ensuite ?"]
-    else: hs=["Réponse courte","Quels éléments faut-il vérifier ?","Quels éléments conserver ?","Quelles démarches sont possibles ?","Que faire si la situation évolue ?"]
+    title=page["title"]; keyword=page["keyword"]; cluster=page["cluster"]
+    context={
+      "Faux avis":"Examinez les indices disponibles sans transformer une suspicion en certitude : contenu, contexte de la relation, chronologie, répétitions éventuelles et éléments qui peuvent être vérifiés.",
+      "Signalement":"Un signalement doit correspondre au motif réellement observable dans le contenu publié. Préparez les faits et les pièces utiles avant d’utiliser la procédure de la plateforme.",
+      "Refus / appel":"Un refus ne signifie pas nécessairement que tous les éléments du dossier ont été examinés comme vous le souhaiteriez. Relisez la décision, vérifiez le motif et documentez la suite.",
+      "Procédure":"La démarche doit être suivie dans l’ordre : identifier la situation, rassembler les éléments utiles, utiliser la procédure adaptée puis conserver la trace de la décision.",
+      "Services":"Le service porte sur l’analyse, la qualification, la préparation et le suivi. Il ne transforme pas une hypothèse en fait établi et ne garantit pas une suppression.",
+      "Cas concrets / longue traîne":"La réponse dépend des faits précis du dossier. La formulation du problème ne suffit pas à établir qu’un avis est faux, illicite ou contraire aux règles de la plateforme.",
+      "Éditorial":"Deux démarches peuvent être complémentaires : répondre publiquement lorsque cela est utile et signaler lorsque le contenu semble relever d’un motif prévu par les règles.",
+      "Pillar / suppression":"Un avis négatif n’est pas automatiquement supprimable. La première étape consiste à vérifier le contenu exact, son contexte et le motif pertinent avant toute démarche.",
+    }.get(cluster,"Commencez par distinguer les faits observables, les éléments à vérifier et les options réellement disponibles.")
+    if page["service"]:
+        hs=["À quoi sert ce service ?","Ce qui est analysé","Comment le dossier est préparé","Validation et suivi","Limites du service"]
+    elif cluster=="Signalement": hs=["Réponse courte","Identifier le motif pertinent","Préparer les éléments","Effectuer et suivre le signalement","Que faire après la décision ?"]
+    elif cluster=="Refus / appel": hs=["Réponse courte","Comprendre la décision","Vérifier le dossier","Préparer une éventuelle suite","Quand demander une analyse ?"]
+    elif cluster=="Faux avis": hs=["Réponse courte","Quels indices vérifier ?","Comment documenter les faits ?","Comment signaler la situation ?","Que faire ensuite ?"]
+    elif cluster=="Pillar / suppression": hs=["Réponse courte","Dans quels cas la question se pose ?","Quels éléments vérifier ?","Quelles démarches sont possibles ?","Que faire en cas de refus ?"]
+    else: hs=["Réponse courte","Quels éléments faut-il vérifier ?","Quels éléments conserver ?","Quelles options sont possibles ?","Quand demander une analyse ?"]
     out=[]
     for h in hs:
-        if "Réponse courte" in h: t=f"Un avis Google n’est pas automatiquement supprimable parce qu’il est négatif ou contesté. Pour « {page['title']} », commencez par distinguer les faits vérifiables, le contexte et les éléments qui peuvent réellement être documentés."
-        elif "motif" in h: t="Le motif de signalement doit correspondre au contenu réellement publié. Évitez de sélectionner un motif uniquement parce qu’il paraît plus favorable : la qualification doit rester cohérente avec les éléments observables."
-        elif "reconnaître" in h or "situation" in h: t="Examinez le contenu publié, le contexte de la relation avec l’établissement et les affirmations précises formulées dans l’avis. Une impression ou une note faible ne suffit pas, à elle seule, à établir qu’un avis enfreint les règles."
-        elif "vérifier" in h or "conserver" in h or "document" in h: t="Conservez une copie de l’avis, sa date, le contexte utile, les échanges pertinents et les pièces permettant de vérifier une affirmation précise. Ne présentez pas comme certain un élément qui n’a pas été vérifié."
-        elif "signal" in h or "démarche" in h: t="Le signalement doit suivre la procédure proposée par la plateforme et s’appuyer sur les éléments disponibles. Review Defense peut aider à qualifier la situation et structurer un dossier ; la décision finale appartient à la plateforme."
-        elif "refus" in h or "suite" in h: t="En cas de refus ou d’absence de résultat, relisez le motif communiqué et vérifiez les voies de recours disponibles. Une nouvelle démarche doit s’appuyer sur des éléments précis et pertinents plutôt que répéter le même argument."
-        elif "processus" in h or "analys" in h: t="Le processus Review Defense repose sur l’analyse, la qualification, la préparation des éléments, le suivi et la validation humaine. Les étapes importantes restent documentées et aucune suppression n’est garantie."
-        elif "inclus" in h: t="Selon le service choisi, le travail peut couvrir l’analyse du dossier, la qualification des éléments, la préparation des pièces, l’accompagnement du signalement et le suivi. Le périmètre exact doit être confirmé avant toute prestation."
-        elif "limites" in h: t="Un avis négatif n’est pas nécessairement contraire aux règles d’une plateforme. Review Defense ne promet donc pas un résultat déterminé et ne remplace pas la décision de Google."
-        else: t=f"Cette étape permet d’examiner « {page['title']} » de manière factuelle, en distinguant les éléments observables des hypothèses et en préparant les informations nécessaires à la suite du dossier."
+        if h=="Réponse courte":
+            t=f"Pour « {title} », commencez par vérifier les faits et le contenu exact de l’avis. {context}"
+        elif "motif" in h.lower():
+            t=f"Le mot-clé « {keyword} » décrit une intention de recherche, pas une conclusion juridique ou factuelle. Le motif retenu doit correspondre à ce qui est réellement visible dans l’avis et aux règles applicables."
+        elif "indices" in h.lower():
+            t="Un indice isolé ne permet pas toujours de conclure. Comparez les affirmations de l’avis avec les éléments dont vous disposez et notez précisément ce qui est vérifiable, incertain ou contradictoire."
+        elif "document" in h.lower() or "éléments" in h.lower() or "dossier" in h.lower():
+            t="Conservez l’URL de l’avis, une capture datée, les échanges utiles, les dates et les pièces factuelles permettant de vérifier les affirmations. Évitez d’exposer des données personnelles qui ne sont pas nécessaires au dossier."
+        elif "signal" in h.lower() or "démarches" in h.lower() or "options" in h.lower():
+            t="Lorsque la situation semble relever d’un motif prévu par la plateforme, utilisez la procédure correspondante et gardez une trace de la demande. Le signalement déclenche un examen ; il ne garantit pas une suppression."
+        elif "refus" in h.lower() or "suite" in h.lower() or "décision" in h.lower():
+            t="Relisez le motif communiqué, vérifiez les éléments déjà transmis et identifiez les voies de suivi ou de contestation effectivement proposées. Une nouvelle démarche doit apporter une information pertinente, pas simplement répéter la précédente."
+        elif "service" in h.lower() or "processus" in h.lower() or "prépar" in h.lower():
+            t="Review Defense structure le dossier autour de l’analyse, de la qualification, des preuves, de la décision humaine et du suivi. Les étapes importantes restent explicites et traçables."
+        elif "validation" in h.lower() or "suivi" in h.lower():
+            t="Les étapes importantes nécessitent une validation humaine explicite. L’outil prépare les informations et conserve une trace du dossier ; il n’exécute pas automatiquement une action Google."
+        else:
+            t=context
         out.append((h,t))
     return out
-
 def _schema(page):
     c=_url(page["path"])
     graph=[{"@type":"Organization","@id":_url("/#organization"),"name":"Review Defense","url":_url("/")},{"@type":"WebSite","@id":_url("/#website"),"name":"Review Defense","url":_url("/")},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":_url("/")},{"@type":"ListItem","position":2,"name":page["cluster"]},{"@type":"ListItem","position":3,"name":page["h1"],"item":c}]}]
