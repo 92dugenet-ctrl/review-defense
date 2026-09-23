@@ -1,6 +1,6 @@
 from pathlib import Path
 import io, json
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -22,7 +22,7 @@ def test_client_invitation_acceptance_can_load_from_persistent_repository():
     class Repo:
         def get_invitation_by_token(self, organization_id, token_hash):
             return ("inv-1", organization_id, "client@example.com", "CLIENT", token_hash,
-                    datetime.now(timezone.utc).replace(microsecond=0), "owner-1", None, None)
+                    datetime.now(timezone.utc).replace(microsecond=0) + timedelta(minutes=10), "owner-1", None, None)
         def create_user(self, organization_id, email, password_hash, role):
             return ("client-1", email, password_hash, role)
         def set_email_unverified(self, organization_id, user_id): pass
