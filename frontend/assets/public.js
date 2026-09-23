@@ -36,7 +36,7 @@ function servicesPage(){return '<section class="page-hero"><div class="page-moun
 function pricingPage(){const p=[['Monitoring','29 €','Pour les petites équipes',['Surveillance des avis','Alertes et suivi','Tableau de bord']],['Professional','79 €','Pour les entreprises en croissance',['Analyse avancée','Dossiers et preuves','Suivi des validations','Support prioritaire']],['Business','149 €','Pour les équipes et multi-établissements',['Multi-établissements','Rapports détaillés','Gestion des rôles','Support dédié']],['Enterprise','Sur devis','Pour les organisations à besoins spécifiques',['Accompagnement dédié','Intégrations sur mesure','Contrôles avancés','Gouvernance adaptée']]];return '<section class="page-hero"><div class="page-mountain"></div><span>TARIFS</span><h1>Des offres adaptées à<br><span>vos besoins.</span></h1><p>Des niveaux d’offre lisibles. Les fonctionnalités et limites restent présentées clairement.</p></section><section class="pricing-grid premium-pricing">'+p.map((x,i)=>'<article class="price-card '+(i===1?'featured':'')+'">'+(i===1?'<em>LE PLUS CHOISI</em>':'')+'<small>'+x[0]+'</small><p>'+x[2]+'</p><strong>'+x[1]+'<small>'+((i<3)?' / mois':'')+'</small></strong><ul>'+x[3].map(y=>'<li>✓ '+y+'</li>').join('')+'</ul><button class="btn-'+(i===1?'primary':'secondary')+'" onclick="location.href=\"'+(i===3?'/contact/':'/app')+'\">'+(i===3?'Nous contacter':'Commencer')+'</button></article>').join('')+'</section><section class="faq"><h2>Questions fréquentes</h2>'+['Quels avis peuvent être analysés ?','Quelles plateformes sont prises en charge ?','Comment fonctionne la validation humaine ?','Puis-je changer d’offre ?','La suppression d’un avis est-elle garantie ?'].map(q=>'<details><summary>'+q+' <span>＋</span></summary><p>Les modalités dépendent du dossier, du périmètre de l’offre et des éléments disponibles. Review Defense prépare et structure ; la plateforme concernée conserve la décision finale.</p></details>').join('')+'</section>'}
 function resourcesPage(){const cards=[['GUIDE','Comment supprimer un faux avis Google ?','/comment-supprimer-un-avis-google/'],['E-RÉPUTATION','Comment reconnaître un faux avis Google ?','/comment-reconnaitre-un-faux-avis-google/'],['DOSSIER','Comment prouver qu’un avis Google est faux ?','/comment-prouver-qu-un-avis-google-est-faux/'],['PROCÉDURE','Comment signaler un avis Google ?','/signaler-un-avis-google/'],['REFUS','Que faire quand Google refuse de supprimer un avis ?','/que-faire-quand-google-refuse-de-supprimer-un-avis/'],['PILIER','Analyse et qualification des avis Google','/analyse-avis-google/']];return '<section class="page-hero"><div class="page-mountain"></div><span>CONSEILS, GUIDES ET SEO</span><h1>Comprendre avant<br><span>d’agir.</span></h1><p>Un hub éditorial pour vérifier les faits, structurer les preuves et comprendre les procédures liées aux avis.</p></section><section class="article-grid premium-articles">'+cards.map((x,i)=>'<article><div class="article-image article-'+i+'"></div><small>'+x[0]+'</small><h3>'+x[1]+'</h3><p>Vérifications, éléments utiles et étapes à connaître avant d’agir.</p><a href="'+x[2]+'">Lire le guide <span>→</span></a></article>').join('')+'</section><section class="newsletter-band"><div><span class="rd-eyebrow">RESSOURCES</span><h2>Recevez les prochains guides.</h2><p>Un contenu utile, sans promesses artificielles.</p></div><a class="btn-primary" href="/contact/">Nous contacter →</a></section>'}
 function contactPage(){return '<section class="contact-layout premium-contact"><div class="page-mountain"></div><div><span>BESOIN D’AIDE ?</span><h1>Une question ?<br><span>Une démonstration ?</span></h1><p>Présentez-nous votre besoin. L’équipe peut vous aider à comprendre le parcours et le périmètre de Review Defense.</p><div class="contact-points"><span>✉ contact@review-defense.com</span><span>⌕ France</span><span>◷ Réponse selon disponibilité de l’équipe</span></div></div><form class="contact-form" onsubmit="event.preventDefault();toast(&quot;Votre message a bien été préparé.&quot;,&quot;success&quot;);this.reset()"><h3>Parlons de votre besoin</h3><label>Nom complet<input required></label><label>E-mail<input type="email" required></label><label>Entreprise<input></label><label>Message<textarea rows="5" required></textarea></label><button class="btn-primary">Envoyer le message</button></form></section>'}
-function marketingLayout(active,body){ensurePublicStyles();setPublicMeta(active||'home');document.body.innerHTML='<div class="marketing">'+publicHeader(active)+'<main>'+body+'</main>'+publicFooter()+'</div>';document.querySelectorAll('[data-public]').forEach(x=>x.onclick=()=>showPublicPage(x.dataset.public));document.getElementById('public-login').onclick=()=>location.href='/app';document.getElementById('public-cta').onclick=()=>location.href='/analyse-avis-google/';document.getElementById('mobile-menu')?.addEventListener('click',()=>document.querySelector('.public-nav')?.classList.toggle('open'))}
+function marketingLayout(active,body){ensurePublicStyles();setPublicMeta(active||'home');document.body.innerHTML='<div class="marketing">'+publicHeader(active)+'<main>'+body+'</main>'+publicFooter()+'</div>';document.querySelectorAll('[data-public]').forEach(x=>x.onclick=()=>showPublicPage(x.dataset.public));document.getElementById('public-login').onclick=()=>location.href='/app';document.getElementById('public-cta').onclick=()=>location.href='/analyse-avis-google/';initPremiumInteractions();document.getElementById('mobile-menu')?.addEventListener('click',()=>document.querySelector('.public-nav')?.classList.toggle('open'))}
 function showPublicPage(page,push=true){if(page==='accept-invitation'){invitationSignupPage();return}const p={home:['',homePage()],features:['features',featuresPage()],how:['how',howPage()],services:['services',servicesPage()],pricing:['pricing',pricingPage()],resources:['resources',resourcesPage()],contact:['contact',contactPage()]};const x=p[page]||p.home;if(push&&PUBLIC_ROUTES[page]&&location.pathname!==PUBLIC_ROUTES[page])history.pushState({publicPage:page},'',PUBLIC_ROUTES[page]);marketingLayout(x[0],x[1])}
 window.addEventListener('popstate',()=>{const page=Object.keys(PUBLIC_ROUTES).find(k=>PUBLIC_ROUTES[k]===location.pathname)||'home';showPublicPage(page,false)});
 function invitationSignupPage(){
@@ -65,3 +65,51 @@ function invitationSignupPage(){
 }
 
 window.addEventListener('popstate',()=>{const page=Object.keys(PUBLIC_ROUTES).find(k=>PUBLIC_ROUTES[k]===location.pathname)||'home';showPublicPage(page,false)});
+
+function initPremiumInteractions(){
+  const root=document.querySelector('.marketing');
+  if(!root || root.dataset.premiumReady==='1') return;
+  root.dataset.premiumReady='1';
+  const reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  root.querySelectorAll('.rd-workflow-visual article').forEach((card,index)=>{
+    card.setAttribute('tabindex','0');
+    card.setAttribute('role','button');
+    card.dataset.step=String(index+1);
+    const activate=()=>{
+      root.querySelectorAll('.rd-workflow-visual article').forEach(x=>x.classList.remove('is-selected'));
+      card.classList.add('is-selected');
+    };
+    card.addEventListener('click',activate);
+    card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();activate();}});
+  });
+  root.querySelectorAll('.rd-value-grid article,.security-grid article,.resource-cards a,.feature-grid article,.article-grid article').forEach(card=>{
+    card.addEventListener('click',()=>card.classList.toggle('is-selected'));
+  });
+  root.querySelectorAll('.btn-primary,.btn-secondary').forEach(btn=>{
+    btn.addEventListener('pointerdown',()=>btn.classList.add('is-pressed'));
+    btn.addEventListener('pointerup',()=>btn.classList.remove('is-pressed'));
+    btn.addEventListener('pointercancel',()=>btn.classList.remove('is-pressed'));
+    btn.addEventListener('pointerleave',()=>btn.classList.remove('is-pressed'));
+  });
+  if(!reduce){
+    root.querySelectorAll('.rd-product-window,.evidence-card,.console-showcase').forEach(card=>{
+      card.addEventListener('pointermove',e=>{
+        if(e.pointerType!=='mouse') return;
+        const r=card.getBoundingClientRect();
+        const x=(e.clientX-r.left)/r.width-.5;
+        const y=(e.clientY-r.top)/r.height-.5;
+        card.style.setProperty('--rx',(-y*2.2).toFixed(2)+'deg');
+        card.style.setProperty('--ry',(x*2.2).toFixed(2)+'deg');
+      });
+      card.addEventListener('pointerleave',()=>{card.style.setProperty('--rx','0deg');card.style.setProperty('--ry','0deg');});
+    });
+    root.querySelectorAll('.rd-section,.rd-final-cta').forEach(section=>{
+      const obs=new IntersectionObserver(entries=>entries.forEach(entry=>{
+        if(entry.isIntersecting){entry.target.classList.add('is-visible');obs.unobserve(entry.target);}
+      }),{threshold:.08});
+      obs.observe(section);
+    });
+  } else {
+    root.querySelectorAll('.rd-section,.rd-final-cta').forEach(x=>x.classList.add('is-visible'));
+  }
+}
