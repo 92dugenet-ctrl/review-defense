@@ -147,7 +147,9 @@ def main() -> int:
                     dashboard_title = page.locator("#title").inner_text()
                     dashboard_text = page.locator("#content").inner_text()
                     reviews_text = view("reviews", "Avis", ".reviews-panel", ("Qualification des avis", "Inbox des avis"))
+                    reviews_ok = page.locator(".reviews-panel").count() > 0
                     cases_text = view("cases", "Dossiers", ".cases-panel", ("Centre des dossiers", "File des dossiers"))
+                    cases_ok = page.locator(".cases-panel").count() > 0
                     boundary_text = (dashboard_text + " " + reviews_text + " " + cases_text).lower()
                     approval_markers = ("validation humaine", "aucune action externe automatique", "contrôles humains", "action externe automatique", "revue humaine requise")
                     approval_marker = any(marker in boundary_text for marker in approval_markers)
@@ -156,12 +158,7 @@ def main() -> int:
 
                     resources = page.evaluate("performance.getEntriesByType('resource').map(x => x.name)")
                     forbidden = [u for u in resources if "googleapis.com" in u or "google.com" in u]
-                    dashboard_ok = dashboard_title.strip() in {"Vue d’ensemble", "Vue d'ensemble", "Dashboard"} and bool(dashboard_text.strip())
-                    reviews_ok = page.locator(".reviews-panel").count() > 0
-                    cases_ok = page.locator(".cases-panel").count() > 0
                     dashboard_ok = dashboard_title.strip() in {"Dashboard", "Vue d'ensemble", "Vue d’ensemble"} and bool(dashboard_text.strip())
-                    reviews_ok = page.locator(".reviews-panel").count() > 0
-                    cases_ok = page.locator(".cases-panel").count() > 0
                     browser_checks = {
                         "login": "PASS",
                         "dashboard": dashboard_ok,
