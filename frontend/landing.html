@@ -14,7 +14,21 @@
 <link rel="stylesheet" href="/assets/public.css?v=6403">
 </head>
 <body>
-<div id="app"></div>
+<div id="app">
+  <section class="rd-home-hero">
+    <div class="rd-container rd-hero-grid">
+      <div class="rd-hero-copy">
+        <span class="rd-eyebrow-pill">REPUTATION INTELLIGENCE · POUR LES ENTREPRISES</span>
+        <h1>Analysez vos avis Google.<br><span>Préparez vos dossiers.</span><br>Gardez le contrôle.</h1>
+        <p class="rd-hero-lead">Review Defense vous aide à analyser, qualifier, documenter et suivre les situations liées à vos avis Google. L’outil structure le travail ; les décisions importantes restent entre les mains de votre équipe.</p>
+        <div class="rd-hero-actions">
+          <button class="btn-primary rd-btn-lg" onclick="location.href='/analyse-avis-google/'">Analyser un avis →</button>
+          <button class="btn-secondary rd-btn-lg" id="public-login" onclick="location.href='/app'">Connexion</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
 <script src="/assets/public.js?v=6404"></script>
 <script>
 if (typeof showPublicPage === "function") showPublicPage("home", false);
