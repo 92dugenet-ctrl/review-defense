@@ -98,7 +98,7 @@ def main() -> int:
                     page.goto(base + "/", wait_until="networkidle")
                     page.wait_for_selector(".rd-home-hero", timeout=10000)
                     landing_text = page.locator("body").inner_text()
-                    if "Analysez vos avis Google" not in landing_text or "Gardez le contrôle" not in landing_text:
+                    if "Reprenez le contrôle de" not in landing_text or "Analyser un avis" not in landing_text:
                         report["root_diagnostic"] = {
                             "url": page.url,
                             "title": page.title(),
