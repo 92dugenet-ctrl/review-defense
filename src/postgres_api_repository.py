@@ -15,6 +15,21 @@ class PostgresAPIRepository(PostgresRepository):
     def _row(self, cur, sql, params=()):
         cur.execute(sql, params); return cur.fetchone()
 
+    def create_organization_and_owner(self, organization_name: str, email: str, password_hash: str):
+        """Create a new tenant and its first OWNER atomically."""
+        if not organization_name or len(organization_name.strip()) > 200:
+            raise ValueError("invalid organization name")
+        with self._connect() as conn:
+            with conn.transaction():
+                with conn.cursor() as cur:
+                    cur.execute("INSERT INTO organizations(name) VALUES(%s) RETURNING id", (organization_name.strip(),))
+                    organization_id = str(cur.fetchone()[0])
+                    cur.execute("SELECT set_config('app.organization_id', %s, true)", (organization_id,))
+                    cur.execute("INSERT INTO users(email,password_hash) VALUES(%s,%s) RETURNING id,email,password_hash", (email.lower(), password_hash))
+                    uid, em, ph = cur.fetchone()
+                    cur.execute("INSERT INTO memberships(organization_id,user_id,role) VALUES(%s,%s,'OWNER')", (organization_id, uid))
+                    return organization_id, str(uid), str(em), ph, "OWNER"
+
     def create_user(self, organization_id: str, email: str, password_hash: str, role: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
