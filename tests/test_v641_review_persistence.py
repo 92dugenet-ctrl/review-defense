@@ -122,3 +122,48 @@ def test_case_creation_accepts_a_review_that_only_exists_in_persistent_storage()
 
     assert out["status"] == "201 Created"
     assert data["case"]["review_id"] == "persisted-review"
+
+class CaseRepository(ReviewRepository):
+    def list_cases(self, organization_id):
+        assert organization_id == "org-a"
+        return [[
+            "case-persisted", "org-a", "persisted-review", "ANALYZING",
+            None, None, datetime(2026, 9, 23, 11, 0, tzinfo=timezone.utc),
+            datetime(2026, 9, 23, 11, 0, tzinfo=timezone.utc),
+        ]]
+
+    def get_case_persistent(self, organization_id, case_id):
+        if organization_id == "org-a" and case_id == "case-persisted":
+            return self.list_cases(organization_id)[0]
+        return None
+
+
+def test_get_cases_hydrates_persistent_cases_into_api_store():
+    app = ReviewDefenseAPI()
+    app.repository = CaseRepository()
+    app._auth = lambda environ: User(
+        "user-a", "org-a", "admin@example.com", "hash", "ADMIN"
+    )
+
+    status, data = call(app, "GET", "/v1/cases")
+
+    assert status == "200 OK"
+    assert data["count"] == 1
+    assert data["items"][0]["case_id"] == "case-persisted"
+    assert data["items"][0]["status"] == "ANALYZING"
+    assert ("org-a", "case-persisted") in app.store.cases
+
+
+def test_get_persistent_case_hydrates_its_persistent_review():
+    app = ReviewDefenseAPI()
+    app.repository = CaseRepository()
+    app._auth = lambda environ: User(
+        "user-a", "org-a", "admin@example.com", "hash", "ADMIN"
+    )
+
+    status, data = call(app, "GET", "/v1/cases/case-persisted")
+
+    assert status == "200 OK"
+    assert data["case"]["case_id"] == "case-persisted"
+    assert data["case"]["review_id"] == "persisted-review"
+    assert data["review"]["review_id"] == "persisted-review"
