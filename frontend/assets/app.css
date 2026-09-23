@@ -645,3 +645,5 @@ body.console-mode .ghost{background:#fff;border-color:var(--line);color:#5d6e86}
 @media(max-width:760px){
   body.console-mode header{background:linear-gradient(#f7faff 78%,rgba(247,250,255,0));border-bottom:0;box-shadow:none;backdrop-filter:none}
 }
+
+/* V6.40 verification gate: latest CSS override is intentionally kept as the final cascade layer. */
