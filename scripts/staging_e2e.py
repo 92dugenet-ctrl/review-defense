@@ -128,7 +128,7 @@ def main() -> int:
                     page.wait_for_selector("#content", timeout=5000)
                     page.wait_for_selector("#content .hero-grid", timeout=10000)
 
-                    def view(label: str, expected_title: str, marker: str):
+                    def view(label: str, expected_title: str, selector: str, fallback_markers: tuple[str, ...] = ()):
                         button = page.locator(f'#nav button[data-view="{label}"]')
                         if not button.count():
                             raise AssertionError(f"navigation item missing: {label}")
@@ -138,15 +138,16 @@ def main() -> int:
                             arg=expected_title,
                             timeout=10000,
                         )
+                        page.wait_for_selector(selector, timeout=10000)
                         text = page.locator("#content").inner_text()
-                        if marker not in text:
-                            raise AssertionError(f"{label} view missing expected marker: {marker}")
+                        if fallback_markers and not any(marker.lower() in text.lower() for marker in fallback_markers):
+                            raise AssertionError(f"{label} view missing expected content markers: {fallback_markers}")
                         return text
 
                     dashboard_title = page.locator("#title").inner_text()
                     dashboard_text = page.locator("#content").inner_text()
-                    reviews_text = view("reviews", "Avis", "Qualification des avis")
-                    cases_text = view("cases", "Dossiers", "Centre des dossiers")
+                    reviews_text = view("reviews", "Avis", ".reviews-panel", ("Qualification des avis", "Inbox des avis"))
+                    cases_text = view("cases", "Dossiers", ".cases-panel", ("Centre des dossiers", "File des dossiers"))
                     approval_marker = "validation humaine" in (cases_text + " " + reviews_text).lower() or "aucune action externe automatique" in (cases_text + " " + reviews_text).lower()
                     if not approval_marker:
                         raise AssertionError("human-control boundary is not visible in the browser UAT")
