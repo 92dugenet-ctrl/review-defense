@@ -40,3 +40,14 @@ def test_uat_human_gate_contract():
     assert "Human approval" in release
     assert "GO_STEP_4" in release
     assert "HOLD_STEP_3" in release
+
+import json
+
+def test_deterministic_uat_fixture():
+    data = json.loads((ROOT / "tests/fixtures/v640_uat_dataset.json").read_text(encoding="utf-8"))
+    assert data["version"] == "6.40"
+    assert data["external_actions_enabled"] is False
+    assert [t["key"] for t in data["tenants"]] == ["A", "B"]
+    assert all(t["roles"] == ["OWNER", "ADMIN", "ANALYST", "CLIENT", "VIEWER"] for t in data["tenants"])
+    assert all(len(t["reviews"]) == 3 and len(t["cases"]) == 3 for t in data["tenants"])
+    assert len({r["review_id"] for t in data["tenants"] for r in t["reviews"]}) == 6
