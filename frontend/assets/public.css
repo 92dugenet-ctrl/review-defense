@@ -8,3 +8,70 @@
 .hero-section{position:relative}
 
 /* hero-section: premium commercial hero contract */
+
+/* Premium interaction layer */
+.rd-workflow-visual article,.rd-value-grid article,.security-grid article,.resource-cards a,.feature-grid article,.article-grid article{
+  cursor:pointer;
+  transition:transform .28s cubic-bezier(.22,1,.36,1),box-shadow .28s ease,border-color .28s ease,background-color .28s ease;
+}
+.rd-workflow-visual article:hover,.rd-value-grid article:hover,.security-grid article:hover,.resource-cards a:hover,.feature-grid article:hover,.article-grid article:hover{
+  transform:translateY(-5px);
+  border-color:#b9d7fa;
+  box-shadow:0 22px 55px rgba(29,67,108,.11);
+}
+.rd-workflow-visual article.is-selected{
+  transform:translateY(-7px) scale(1.015);
+}
+.rd-workflow-visual article.is-selected .step-icon{
+  background:#1264e8;
+  color:#fff;
+  box-shadow:0 14px 34px rgba(18,100,232,.22);
+}
+.rd-value-grid article.is-selected,.security-grid article.is-selected,.resource-cards a.is-selected,.feature-grid article.is-selected,.article-grid article.is-selected{
+  border-color:#9fc9f8;
+  background:#f5faff;
+}
+.btn-primary,.btn-secondary{
+  transition:transform .2s cubic-bezier(.22,1,.36,1),box-shadow .2s ease,background .2s ease,border-color .2s ease,color .2s ease;
+}
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 15px 32px rgba(18,100,232,.24);
+}
+.btn-primary.is-pressed,.btn-secondary.is-pressed{
+  transform:translateY(1px) scale(.985);
+}
+.btn-secondary:hover{
+  border-color:#a9c8e9;
+  background:#f5faff;
+  transform:translateY(-2px);
+}
+.rd-product-window,.evidence-card,.console-showcase{
+  transform:perspective(1200px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
+  transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease;
+}
+.rd-product-window:hover,.evidence-card:hover,.console-showcase:hover{
+  box-shadow:0 38px 95px rgba(27,65,108,.16);
+}
+.rd-section,.rd-final-cta{
+  opacity:0;
+  transform:translateY(22px);
+  transition:opacity .7s ease,transform .8s cubic-bezier(.22,1,.36,1);
+}
+.rd-section.is-visible,.rd-final-cta.is-visible{
+  opacity:1;
+  transform:none;
+}
+.rd-product-stage .rd-floating-card{
+  animation:rdFloat 4.8s ease-in-out infinite;
+}
+@keyframes rdFloat{
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  50%{transform:translateY(-7px) rotate(-.5deg)}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .rd-section,.rd-final-cta{opacity:1;transform:none;transition:none}
+  .rd-product-stage .rd-floating-card{animation:none}
+  .rd-product-window,.evidence-card,.console-showcase,.btn-primary,.btn-secondary,.rd-workflow-visual article,.rd-value-grid article,.security-grid article,.resource-cards a,.feature-grid article,.article-grid article{transition:none}
+}
