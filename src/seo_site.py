@@ -84,11 +84,11 @@ def _sections(page):
     }.get(cluster,"Commencez par distinguer les faits observables, les éléments à vérifier et les options réellement disponibles.")
     if page["service"]:
         hs=["À quoi sert ce service ?","Ce qui est analysé","Comment le dossier est préparé","Validation et suivi","Limites du service"]
-    elif cluster=="Signalement": hs=["Réponse courte","Identifier le motif pertinent","Préparer les éléments","Effectuer et suivre le signalement","Que faire après la décision ?"]
-    elif cluster=="Refus / appel": hs=["Réponse courte","Comprendre la décision","Vérifier le dossier","Préparer une éventuelle suite","Quand demander une analyse ?"]
-    elif cluster=="Faux avis": hs=["Réponse courte","Quels indices vérifier ?","Comment documenter les faits ?","Comment signaler la situation ?","Que faire ensuite ?"]
-    elif cluster=="Pillar / suppression": hs=["Réponse courte","Dans quels cas la question se pose ?","Quels éléments vérifier ?","Quelles démarches sont possibles ?","Que faire en cas de refus ?"]
-    else: hs=["Réponse courte","Quels éléments faut-il vérifier ?","Quels éléments conserver ?","Quelles options sont possibles ?","Quand demander une analyse ?"]
+    elif cluster=="Signalement": hs=["Réponse courte","Dans quels cas signaler ?","Identifier le motif pertinent","Préparer les éléments","Effectuer et suivre le signalement","Que faire après la décision ?","Quand demander une analyse ?"]
+    elif cluster=="Refus / appel": hs=["Réponse courte","Comprendre la décision","Vérifier le dossier","Conserver les éléments utiles","Préparer une éventuelle suite","Que faire si Google ne répond pas ?","Quand demander une analyse ?"]
+    elif cluster=="Faux avis": hs=["Réponse courte","Dans quels cas la situation peut-elle se présenter ?","Quels indices vérifier ?","Comment documenter les faits ?","Comment signaler la situation ?","Que faire si le signalement échoue ?","Quand demander une analyse ?"]
+    elif cluster=="Pillar / suppression": hs=["Réponse courte","Dans quels cas la question se pose ?","Quels éléments vérifier ?","Quels éléments factuels conserver ?","Quelles démarches sont possibles ?","Que faire en cas de refus ou d’absence de réponse ?","Quand demander une analyse professionnelle ?"]
+    else: hs=["Réponse courte","Dans quels cas cette situation peut-elle se présenter ?","Quels éléments faut-il vérifier ?","Quels éléments conserver ?","Quelles démarches sont possibles ?","Que faire si Google refuse ou ne répond pas ?","Quand demander une analyse professionnelle ?"]
     out=[]
     for h in hs:
         if h=="Réponse courte":
