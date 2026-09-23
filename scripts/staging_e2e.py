@@ -135,7 +135,7 @@ def main() -> int:
                         button.click()
                         page.wait_for_function(
                             "(title) => document.querySelector('#title')?.innerText === title",
-                            expected_title,
+                            arg=expected_title,
                             timeout=10000,
                         )
                         text = page.locator("#content").inner_text()
