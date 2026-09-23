@@ -11,6 +11,7 @@
 - [ ] browser E2E green on live staging
 - [ ] MFA flow green when enabled
 - [ ] human approval gate verified
+- Human approval is mandatory before any external submission.
 - [ ] external Google action remains disabled
 
 ## Decision states
