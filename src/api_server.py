@@ -1615,9 +1615,11 @@ class ReviewDefenseAPI:
             body = sitemap()
             start_response("200 OK", [("Content-Type","application/xml; charset=utf-8"),("Content-Length",str(len(body))),("X-Request-ID",trace_id)])
             return [body]
-        if path == "/" or path == "/app" or path == "/app/":
+        if path == "/" :
+            path = "/landing.html"
+        elif path == "/app" or path == "/app/":
             path = "/index.html"
-        if path == "/index.html" or path.startswith("/assets/"):
+        if path == "/index.html" or path == "/landing.html" or path.startswith("/assets/"):
             from pathlib import Path
             import mimetypes
             root = Path(__file__).resolve().parents[1] / "frontend"
