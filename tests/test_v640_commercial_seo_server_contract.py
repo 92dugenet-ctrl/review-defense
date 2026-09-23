@@ -110,3 +110,9 @@ def test_login_route_redirects_to_application():
     assert app({"PATH_INFO": "/login", "QUERY_STRING": ""}, start_response) == [b""]
     assert captured["status"] == "301 Moved Permanently"
     assert captured["headers"]["Location"] == "/app"
+
+
+def test_seo_pack_has_no_duplicate_public_paths():
+    paths = [p["path"] for p in seo_site._pages()]
+    assert len(paths) == 62
+    assert len(paths) == len(set(paths))
