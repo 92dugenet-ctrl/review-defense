@@ -96,11 +96,17 @@ def main() -> int:
                         page.locator('#login input[name="mfa_code"]').fill(totp_code(mfa_secret))
                         page.locator('#login button[type="submit"]').click()
                     page.wait_for_selector('.sidebar',timeout=10000)
+                    page.wait_for_selector('#console-sidebar',timeout=5000)
+                    page.wait_for_selector('#content',timeout=5000)
                     title=page.locator('#title').inner_text()
+                    nav_count=page.locator('#nav button').count()
+                    content_text=page.locator('#content').inner_text()
                     resources=page.evaluate("performance.getEntriesByType('resource').map(x => x.name)")
                     forbidden=[u for u in resources if 'googleapis.com' in u or 'google.com' in u]
-                    report['browser']={'login':'PASS','dashboard':'Dashboard' in title,'no_external_google':not forbidden}
-                    if not report['browser']['dashboard'] or forbidden:
+                    # V6.40 UX localizes the hydrated dashboard title to the nav label.
+                    dashboard_ready=title.strip() in {"Vue d’ensemble", "Vue d'ensemble", "Dashboard"} and nav_count > 0 and len(content_text.strip()) > 0
+                    report['browser']={'login':'PASS','dashboard':dashboard_ready,'dashboard_title':title,'nav_items':nav_count,'no_external_google':not forbidden}
+                    if not dashboard_ready or forbidden:
                         report['error']='browser security/auth contract failed'
                     browser.close()
             except Exception as exc:
