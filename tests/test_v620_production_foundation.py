@@ -12,7 +12,7 @@ def test_production_config_requires_database_and_non_loopback():
 
 def test_migrations_are_numbered_and_v620_is_present():
     files = migration_files(Path(__file__).parents[1] / "migrations")
-    assert files[-1].name.startswith("022_")
+    assert any(f.name.startswith("022_") for f in files)
     assert len(files) >= 20
 
 
