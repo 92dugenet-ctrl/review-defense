@@ -1,43 +1,50 @@
-from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
+from src import seo_site
 
 COMMERCIAL = ["/", "/produit/", "/comment-ca-marche/", "/services/", "/tarifs/", "/ressources/", "/contact/"]
 
 
 def test_server_renders_all_commercial_routes():
-    seo = (ROOT / "src/seo_site.py").read_text(encoding="utf-8")
+    assert list(seo_site.COMMERCIAL) == COMMERCIAL
     for route in COMMERCIAL:
-        assert '"' + route + '":{' in seo
-    assert "def _commercial_html(path):" in seo
-    assert "if path in COMMERCIAL:" in seo
+        status, headers, body = seo_site.render(route)
+        assert status == 200
+        assert headers["Content-Type"].startswith("text/html")
+        assert b"Review Defense" in body
 
 
 def test_commercial_pages_are_crawlable_and_canonical():
-    seo = (ROOT / "src/seo_site.py").read_text(encoding="utf-8")
-    assert 'name="robots" content="index,follow"' in seo
-    assert 'rel="canonical"' in seo
-    assert 'application/ld+json' in seo
+    for route in COMMERCIAL:
+        _, _, body = seo_site.render(route)
+        text = body.decode()
+        assert 'name="robots" content="index,follow"' in text
+        assert 'rel="canonical"' in text
+        assert 'application/ld+json' in text
 
 
 def test_sitemap_includes_commercial_routes_and_seo_network():
-    seo = (ROOT / "src/seo_site.py").read_text(encoding="utf-8")
-    assert '[{"path":"/"}]+[{"path":x} for x in COMMERCIAL if x!="/"]+pages' in seo
-    assert '"analyse-avis-google"' in seo
-    assert '"faux-avis-google"' in seo
-    assert '"signaler-un-avis-google"' in seo
+    _, _, body = seo_site.render("/sitemap.xml")
+    xml = body.decode()
+    assert xml.count("<url>") == 70
+    for route in COMMERCIAL:
+        assert route in xml
+    for route in ["/analyse-avis-google/", "/faux-avis-google/", "/signaler-un-avis-google/"]:
+        assert route in xml
 
 
 def test_seo_network_uses_clean_commercial_urls():
-    seo = (ROOT / "src/seo_site.py").read_text(encoding="utf-8")
+    _, _, body = seo_site.render("/faux-avis-google/")
+    text = body.decode()
     for old in ["/?page=features", "?page=how", "?page=pricing", "?page=resources"]:
-        assert old not in seo
-    for route in ["/produit/", "/comment-ca-marche/", "/tarifs/", "/ressources/", "/contact/"]:
-        assert route in seo
+        assert old not in text
+    for route in ["/produit/", "/comment-ca-marche/", "/services/", "/tarifs/", "/ressources/", "/contact/"]:
+        assert route in text
 
 
-def test_conversion_routes_to_analysis_not_automatic_google_action():
-    seo = (ROOT / "src/seo_site.py").read_text(encoding="utf-8")
-    assert 'href="/analyse-avis-google/"' in seo
-    assert "Aucune action Google automatique" in seo
-    assert "La décision finale appartient toujours à la plateforme concernée." in seo
+def test_conversion_page_has_form_and_tracking_contract():
+    _, _, body = seo_site.render("/analyse-avis-google/")
+    text = body.decode()
+    assert 'id="rd-analysis-form"' in text
+    assert "analysis_start" in text
+    assert "analysis_submit" in text
+    assert "Aucune action Google n’est exécutée automatiquement." in text
+    assert "la plateforme concernée" in text
