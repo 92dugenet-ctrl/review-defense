@@ -54,3 +54,24 @@ body{background:var(--rd-bg);color:var(--rd-text)}
 .rd-commercial-main .rd-home-hero{border-bottom:1px solid var(--rd-border)}
 .rd-commercial-main .rd-product-stage{min-width:0}
 @media(max-width:650px){.rd-value-card{padding:22px}.rd-commercial-main .rd-product-window{transform:none}}
+
+/* V6.40 full commercial + SEO conversion layer */
+.rd-contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.rd-contact-points{display:grid;gap:10px;margin-top:24px;color:var(--rd-muted);font-size:14px}
+.rd-contact-form,.rd-analysis-card{background:#fff;border:1px solid var(--rd-border);border-radius:20px;padding:28px;box-shadow:0 14px 50px rgba(15,23,42,.07)}
+.rd-contact-form label,.rd-analysis-card label{display:grid;gap:8px;margin-bottom:16px;font-size:13px;font-weight:700;color:var(--rd-text)}
+.rd-contact-form input,.rd-contact-form textarea,.rd-analysis-card input,.rd-analysis-card textarea,.rd-analysis-card select{width:100%;box-sizing:border-box;border:1px solid var(--rd-border);border-radius:10px;padding:12px 13px;background:#fff;font:inherit;color:var(--rd-text);outline:none}
+.rd-contact-form input:focus,.rd-contact-form textarea:focus,.rd-analysis-card input:focus,.rd-analysis-card textarea:focus,.rd-analysis-card select:focus{border-color:var(--rd-accent);box-shadow:0 0 0 3px rgba(18,100,232,.1)}
+.rd-contact-form small,.rd-analysis-card small{display:block;margin-top:14px;color:var(--rd-muted);line-height:1.6}
+.rd-analysis-main{background:var(--rd-bg)}
+.rd-analysis-card{align-self:center}
+.rd-card-kicker{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--rd-accent);margin-bottom:10px}
+.rd-analysis-card h2{font-size:28px;margin:0 0 8px}
+.rd-analysis-card p{color:var(--rd-muted);font-size:14px;line-height:1.6;margin:0 0 22px}
+.rd-pricing-compare{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.rd-pricing-compare>div{background:#fff;border:1px solid var(--rd-border);border-radius:16px;padding:22px;display:grid;gap:10px}
+.rd-pricing-compare .featured{border-color:var(--rd-accent);box-shadow:0 12px 35px rgba(18,100,232,.12)}
+.rd-pricing-compare b{font-size:17px}.rd-pricing-compare span{color:var(--rd-muted);font-size:13px;min-height:36px}.rd-pricing-compare strong{font-size:28px}.rd-pricing-compare a{font-weight:700;text-decoration:none;color:var(--rd-accent);margin-top:8px}
+.rd-pricing-note{margin-top:20px;color:var(--rd-muted);font-size:13px;line-height:1.6}
+@media(max-width:900px){.rd-contact-grid{grid-template-columns:1fr}.rd-pricing-compare{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.rd-pricing-compare{grid-template-columns:1fr}.rd-contact-form,.rd-analysis-card{padding:20px}}
