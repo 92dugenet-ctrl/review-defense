@@ -31,4 +31,6 @@ No automated Google deletion, reporting or response is performed by the applicat
 ## Deployment
 
 The repository is the source of truth for application code. External infrastructure configuration (database credentials, deployment provider settings, DNS/TLS and live staging credentials) is intentionally kept outside the repository.
+## V6.40 construction integration
 
+The premium public site layer and P0 construction blueprint are tracked in `docs/BUILD_INTEGRATION_V640.md`, `docs/SEO_INTEGRATION_V1.md` and `docs/P0_SCREEN_BLUEPRINT.md`. The existing V6.40 architecture remains the source of truth; no parallel frontend or backend stack was introduced.
