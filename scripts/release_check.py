@@ -16,7 +16,7 @@ def main() -> int:
         "frontend/index.html", "frontend/assets/app.js", "frontend/assets/app.css",
         "Dockerfile", "docker-compose.yml", "docker-compose.staging.yml", "Caddyfile",
         "wsgi.py", "src/api_server.py", "src/deployment.py", "scripts/staging_check.py",
-        "scripts/browser_e2e.py", "scripts/dr_validate.py", "scripts/release_candidate_gate.py", "scripts/staging_certification.py", "scripts/staging_e2e.py", "scripts/github_staging_contract.py", "scripts/deploy_staging.py", "scripts/postgres_certification.py", "scripts/sandbox_seed.py", "scripts/sandbox_certification.py",
+        "scripts/browser_e2e.py", "scripts/dr_validate.py", "scripts/release_candidate_gate.py", "scripts/staging_certification.py", "scripts/staging_e2e.py", "scripts/github_staging_contract.py", "scripts/deploy_staging.py", "scripts/postgres_certification.py", "scripts/sandbox_seed.py", "scripts/sandbox_certification.py", "scripts/uat_v640_certification.py", "scripts/uat_environment_readiness.py",
     ]
     missing = [p for p in required if not (ROOT / p).is_file()]
     if missing:
