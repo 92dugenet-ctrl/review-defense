@@ -1,8 +1,52 @@
-"""Single production WSGI entrypoint for Review Defense.
+"""Single production WSGI gateway for Review Defense.
 
-All HTTP routing is owned by src.api_server.create_app().
-This module intentionally contains no second routing layer.
+Gunicorn enters here once. Application/API/static/SEO handling is delegated to
+the single ReviewDefenseAPI router. The small redirects below are compatibility
+aliases only; they do not create a second application router.
 """
+from urllib.parse import parse_qs
+
 from src.api_server import create_app
 
 app = create_app()
+
+_LEGACY_QUERY_ROUTES = {
+    "features": "/produit/",
+    "how": "/comment-ca-marche/",
+    "services": "/services/",
+    "pricing": "/tarifs/",
+    "resources": "/ressources/",
+    "contact": "/contact/",
+    "google-refuse-de-supprimer-mon-faux-avis-que-faire": "/google-refuse-de-supprimer-mon-faux-avis/",
+    "pourquoi-mon-avis-google-reste-en-ligne-conversationnel": "/pourquoi-mon-avis-google-reste-en-ligne/",
+}
+
+_LEGACY_PATH_ROUTES = {
+    "/google-refuse-de-supprimer-mon-faux-avis-que-faire/": "/google-refuse-de-supprimer-mon-faux-avis/",
+    "/pourquoi-mon-avis-google-reste-en-ligne-conversationnel/": "/pourquoi-mon-avis-google-reste-en-ligne/",
+}
+
+
+def _redirect(target, start_response):
+    start_response("301 Moved Permanently", [("Location", target), ("Content-Length", "0")])
+    return [b""]
+
+
+def gateway(environ, start_response):
+    path = environ.get("PATH_INFO", "/")
+    query = parse_qs(environ.get("QUERY_STRING", ""))
+
+    if path == "/login":
+        return _redirect("/app", start_response)
+
+    if path == "/" and query.get("page", [None])[0] in _LEGACY_QUERY_ROUTES:
+        return _redirect(_LEGACY_QUERY_ROUTES[query["page"][0]], start_response)
+
+    if path in _LEGACY_PATH_ROUTES:
+        return _redirect(_LEGACY_PATH_ROUTES[path], start_response)
+
+    return app(environ, start_response)
+
+
+# Gunicorn uses exactly one public gateway.
+app = gateway
