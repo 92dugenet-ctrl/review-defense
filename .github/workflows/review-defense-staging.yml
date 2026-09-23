@@ -138,6 +138,13 @@ jobs:
         run: python scripts/uat_environment_readiness.py
       - name: V6.40 UAT package certification
         run: python scripts/uat_v640_certification.py
+      - name: V6.40 complete 47-scenario UAT execution
+        run: python scripts/uat_v640_execute.py
+      - name: Upload final UAT execution record
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-defense-v640-final-uat
+          path: artifacts/v6.40-uat-final-execution.json
 
   ecloudserv-staging:
     if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
