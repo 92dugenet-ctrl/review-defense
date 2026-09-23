@@ -91,3 +91,11 @@ def test_all_seo_articles_have_unique_titles_faq_cta_and_canonical():
         assert "/?page=" not in text
     titles = [x.split("<title>", 1)[1].split("</title>", 1)[0] for x in documents]
     assert len(titles) == len(set(titles))
+
+
+def test_robots_excludes_non_public_application_routes():
+    _, _, body = seo_site.render("/robots.txt")
+    robots = body.decode()
+    for route in ["/app", "/v1/", "/reset-password", "/verify-email", "/accept-invitation"]:
+        assert "Disallow: " + route in robots
+    assert "Sitemap: " in robots
