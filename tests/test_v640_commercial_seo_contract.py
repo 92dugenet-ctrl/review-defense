@@ -9,6 +9,7 @@ def test_v640_clean_commercial_routes_are_declared():
     for path in ["/", "/produit/", "/comment-ca-marche/", "/services/", "/tarifs/", "/ressources/", "/contact/"]:
         assert path in app or path in public
     assert "const PUBLIC_ROUTES" in public
+    assert "PUBLIC_META" in public
 
 
 def test_v640_sitemap_contains_commercial_routes():
