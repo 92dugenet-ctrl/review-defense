@@ -45,7 +45,7 @@ def main() -> int:
         "production_database_rejected": "Refusing to use DATABASE_URL" in (ROOT/"scripts/sandbox_seed.py").read_text(),
         "external_action_disabled": "external_actions_enabled" in (ROOT/"scripts/sandbox_seed.py").read_text(),
         "human_gate_documented": "Human approval" in (ROOT/"docs/UAT_V640_RELEASE_GATE.md").read_text(),
-        "live_not_falsely_certified": "not certified" in (ROOT/"docs/UAT_V640_FINAL_EXECUTION_RECORD.md").read_text().lower(),
+        "live_not_falsely_certified": ("not yet certified" in (ROOT/"docs/UAT_V640_FINAL_EXECUTION_RECORD.md").read_text().lower() or "not certified" in (ROOT/"docs/UAT_V640_FINAL_EXECUTION_RECORD.md").read_text().lower()),
         "final_report_manifest": (ROOT/"docs/UAT_V640_FINAL_REPORT_MANIFEST.md").is_file(),
     }
     checks["all"] = all(checks.values()) and not missing
