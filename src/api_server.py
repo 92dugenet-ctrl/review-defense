@@ -121,6 +121,29 @@ class MemoryStore:
         })
 
 
+def _iso_value(value: Any) -> str | None:
+    if value is None:
+        return None
+    return value.isoformat() if hasattr(value, "isoformat") else str(value)
+
+
+def _review_from_row(row: Any) -> ReviewContext:
+    """Convert a persistent api_reviews row into the API review contract."""
+    return ReviewContext(
+        review_id=str(row[0]),
+        organization_id=str(row[1]),
+        location_id=str(row[2] or ""),
+        author_display_name=row[3],
+        rating=int(row[4]),
+        text=str(row[5]),
+        published_at=_iso_value(row[6]) or "",
+        updated_at=_iso_value(row[7]),
+        language=row[8],
+        source=str(row[9] or "GOOGLE"),
+        review_url=row[10],
+    )
+
+
 class ReviewDefenseAPI:
     """Small WSGI API with explicit human-gated state transitions."""
     def __init__(self, store: MemoryStore | None = None, *, session_ttl: int = 3600,
@@ -756,10 +779,20 @@ class ReviewDefenseAPI:
             return self._json(201, {"review": asdict(review)})
         if method == "GET" and path == "/v1/reviews":
             rows = [r for (org, _), r in self.store.reviews.items() if org == user.organization_id]
+            if self.repository is not None and hasattr(self.repository, "list_reviews"):
+                for row in self.repository.list_reviews(user.organization_id):
+                    review = _review_from_row(row)
+                    self.store.reviews[(user.organization_id, review.review_id)] = review
+                rows = [r for (org, _), r in self.store.reviews.items() if org == user.organization_id]
             return self._json(200, {"items": [asdict(r) for r in rows], "count": len(rows)})
         if method == "GET" and path.startswith("/v1/reviews/"):
             rid = path.rsplit("/", 1)[-1]
             review = self.store.reviews.get((user.organization_id, rid))
+            if review is None and self.repository is not None and hasattr(self.repository, "get_review"):
+                row = self.repository.get_review(user.organization_id, rid)
+                if row:
+                    review = _review_from_row(row)
+                    self.store.reviews[(user.organization_id, rid)] = review
             if not review: raise APIError(404, "NOT_FOUND", "review not found")
             claims = extract_claims(review)
             signals = classify_policy_signals(claims)
