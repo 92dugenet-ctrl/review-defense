@@ -60,3 +60,18 @@ def test_legacy_commercial_query_urls_redirect():
     assert captured["status"] == "301 Moved Permanently"
     assert captured["headers"]["Location"] == "/tarifs/"
     assert body == [b""]
+
+
+def test_duplicate_seo_url_families_redirect_to_canonical():
+    from wsgi import app
+    for source, target in [
+        ("/google-refuse-de-supprimer-mon-faux-avis-que-faire/", "/google-refuse-de-supprimer-mon-faux-avis/"),
+        ("/pourquoi-mon-avis-google-reste-en-ligne-conversationnel/", "/pourquoi-mon-avis-google-reste-en-ligne/"),
+    ]:
+        captured = {}
+        def start_response(status, headers):
+            captured["status"] = status
+            captured["headers"] = dict(headers)
+        assert app({"PATH_INFO": source, "QUERY_STRING": ""}, start_response) == [b""]
+        assert captured["status"] == "301 Moved Permanently"
+        assert captured["headers"]["Location"] == target
