@@ -8,7 +8,7 @@ def test_v640_root_is_commercial_homepage():
     home=js[js.index("function homePage()"):js.index("function featuresPage()")]
     for marker in ["Analyser un avis", "TARIFS", "SERVICES", "HUMAN APPROVAL", "Tout le dossier", "Review Defense"]:
         assert marker in home
-    assert "Décision finale appartient" in home
+    assert "décision finale appartient" in home
 
 def test_v640_commercial_header_primary_cta_goes_to_analysis():
     js=(ROOT/"frontend/assets/public.js").read_text(encoding="utf-8")
