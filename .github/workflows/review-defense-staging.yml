@@ -130,8 +130,8 @@ jobs:
               raise SystemExit('sandbox_seed.py does not contain the expected legacy tenant-context statement')
           path.write_text(text.replace(old, new))
           PY
-      - name: V6.40 demonstration sandbox seed
-        run: python scripts/sandbox_seed.py
+      - name: V6.40 deterministic UAT seed
+        run: python scripts/uat_seed.py
       - name: V6.40 demonstration sandbox certification
         run: python scripts/sandbox_certification.py
       - name: V6.40 UAT environment readiness
