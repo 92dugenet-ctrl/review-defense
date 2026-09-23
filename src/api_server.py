@@ -516,6 +516,69 @@ class ReviewDefenseAPI:
             self.store.audit_event(organization_id, user_id, "EMAIL_VERIFIED", f"user:{user_id}")
             return self._json(200, {"status": "email_verified"})
 
+        if method == "POST" and path == "/v1/auth/register":
+            body = self._body(environ)
+            try:
+                email = normalize_email(str(body.get("email", "")))
+            except ValueError as exc:
+                raise APIError(422, "VALIDATION_ERROR", str(exc)) from exc
+            organization_name = str(body.get("organization_name", "")).strip()
+            password = body.get("password", "")
+            if not organization_name or len(organization_name) > 200:
+                raise APIError(422, "VALIDATION_ERROR", "organization_name is required")
+            try:
+                password_hash = hash_password(password)
+            except ValueError as exc:
+                raise APIError(422, "VALIDATION_ERROR", str(exc)) from exc
+            if self.repository is not None and hasattr(self.repository, "create_organization_and_owner"):
+                try:
+                    organization_id, uid, em, ph, role = self.repository.create_organization_and_owner(
+                        organization_name, email, password_hash
+                    )
+                except Exception as exc:
+                    if "duplicate" in str(exc).lower() or "unique" in str(exc).lower():
+                        raise APIError(409, "ACCOUNT_EXISTS", "an account with this email already exists") from exc
+                    raise
+            else:
+                organization_id = str(uuid.uuid4())
+                uid = str(uuid.uuid4())
+                user = User(uid, organization_id, email, password_hash, "OWNER")
+                self.store.users[uid] = user
+                self.store.email_verified[uid] = False
+                self.store.audit_event(organization_id, uid, "ACCOUNT_CREATED", f"user:{uid}")
+                if self.config.require_email_verification:
+                    if not self.config.recovery_email_enabled:
+                        raise APIError(503, "EMAIL_DELIVERY_NOT_CONFIGURED", "authentication email delivery is not configured")
+                    raw_verification, expires_verification = self._issue_email_verification(user)
+                    try:
+                        send_verification_email(recipient=email, organization_id=organization_id, token=raw_verification,
+                                                base_url=self.config.public_base_url, config=self._smtp_config())
+                    except RecoveryEmailError as exc:
+                        raise APIError(503, "EMAIL_DELIVERY_FAILED", "verification email could not be delivered") from exc
+                    return self._json(201, {"status": "verification_required", "organization_id": organization_id,
+                                            "expires_at": expires_verification})
+            user = User(str(uid), str(organization_id), email, password_hash, "OWNER")
+            self.store.users[user.user_id] = user
+            self.store.email_verified[user.user_id] = not self.config.require_email_verification
+            self.store.audit_event(user.organization_id, user.user_id, "ACCOUNT_CREATED", f"user:{user.user_id}")
+            if self.repository is not None and self.config.require_email_verification:
+                raw_verification, expires_verification = self._issue_email_verification(user)
+                try:
+                    send_verification_email(recipient=email, organization_id=organization_id, token=raw_verification,
+                                            base_url=self.config.public_base_url, config=self._smtp_config())
+                except RecoveryEmailError as exc:
+                    raise APIError(503, "EMAIL_DELIVERY_FAILED", "verification email could not be delivered") from exc
+                return self._json(201, {"status": "verification_required", "organization_id": organization_id,
+                                        "expires_at": expires_verification})
+            raw, session = issue_session(user_id=user.user_id, organization_id=user.organization_id,
+                                         role=user.role, ttl_seconds=self.session_ttl)
+            self.store.sessions[session.token_hash] = session
+            if self.repository is not None and hasattr(self.repository, "put_session"):
+                self.repository.put_session(user.organization_id, session.token_hash, user.user_id,
+                                            user.role, session.expires_at.isoformat())
+            return self._json(201, {"status": "created", "access_token": raw, "token_type": "Bearer",
+                                    "expires_at": session.expires_at.isoformat(), "role": user.role,
+                                    "organization_id": user.organization_id})
         if method == "POST" and path == "/v1/auth/login":
             body = self._body(environ)
             try:
