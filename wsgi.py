@@ -1,14 +1,15 @@
-"""Single production WSGI gateway for Review Defense.
+"""Single production WSGI entrypoint for Review Defense.
 
-Gunicorn enters here once. Application/API/static/SEO handling is delegated to
-the single ReviewDefenseAPI router. The small redirects below are compatibility
-aliases only; they do not create a second application router.
+Gunicorn enters here once. Compatibility redirects are kept at this boundary;
+all normal application, API, static, and SEO handling remains delegated to the
+single ReviewDefenseAPI instance.
 """
 from urllib.parse import parse_qs
 
 from src.api_server import create_app
 
-app = create_app()
+
+_application = create_app()
 
 _LEGACY_QUERY_ROUTES = {
     "features": "/produit/",
@@ -32,7 +33,7 @@ def _redirect(target, start_response):
     return [b""]
 
 
-def gateway(environ, start_response):
+def app(environ, start_response):
     path = environ.get("PATH_INFO", "/")
     query = parse_qs(environ.get("QUERY_STRING", ""))
 
@@ -45,8 +46,4 @@ def gateway(environ, start_response):
     if path in _LEGACY_PATH_ROUTES:
         return _redirect(_LEGACY_PATH_ROUTES[path], start_response)
 
-    return app(environ, start_response)
-
-
-# Gunicorn uses exactly one public gateway.
-app = gateway
+    return _application(environ, start_response)
