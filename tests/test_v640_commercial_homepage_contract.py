@@ -12,7 +12,7 @@ def test_v640_root_is_commercial_homepage():
 
 def test_v640_commercial_header_primary_cta_goes_to_analysis():
     js=(ROOT/"frontend/assets/public.js").read_text(encoding="utf-8")
-    assert "id=\"public-cta\"">Analyser un avis" in js
+    assert 'id="public-cta">Analyser un avis' in js
     assert "location.href='/analyse-avis-google/'" in js
 
 def test_v640_homepage_does_not_present_app_as_root_destination():
