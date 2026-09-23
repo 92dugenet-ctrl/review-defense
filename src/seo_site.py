@@ -19,15 +19,33 @@ def _pages():
             for s,t,k,c in _RAW]
 
 def _related(page,pages):
-    preferred={"Pillar / suppression":["/faux-avis-google/","/signaler-un-avis-google/","/que-faire-quand-google-refuse-de-supprimer-un-avis/","/analyse-avis-google/"],"Faux avis":["/comment-reconnaitre-un-faux-avis-google/","/comment-prouver-qu-un-avis-google-est-faux/","/comment-constituer-un-dossier-contre-un-faux-avis-google/","/signaler-un-avis-google/"],"Signalement":["/comment-signaler-un-avis-google-etape-par-etape/","/comment-signaler-un-avis-google-google-maps/","/comment-signaler-un-avis-google-business-profile/","/comment-suivre-un-signalement-avis-google/"],"Refus / appel":["/pourquoi-mon-avis-google-reste-en-ligne/","/comment-faire-appel-apres-refus-suppression-avis-google/","/comment-contester-une-decision-concernant-un-avis-google/","/analyse-avis-google/"],"Services":["/analyse-avis-google/","/faire-supprimer-avis-google/","/service-suppression-avis-google/","/prix-suppression-avis-google/"]}
+    hubs={
+        "Pillar / suppression":"/suppression-avis-google/",
+        "Faux avis":"/faux-avis-google/",
+        "Signalement":"/signaler-un-avis-google/",
+        "Refus / appel":"/que-faire-quand-google-refuse-de-supprimer-un-avis/",
+        "Services":"/analyse-avis-google/",
+        "Cas concrets / longue traîne":"/suppression-avis-google/",
+        "Éditorial":"/suppression-avis-google/",
+        "Procédure":"/signaler-un-avis-google/",
+    }
+    preferred={
+        "Pillar / suppression":["/peut-on-supprimer-un-avis-google/","/comment-supprimer-un-avis-google/","/faux-avis-google/","/signaler-un-avis-google/"],
+        "Faux avis":["/comment-reconnaitre-un-faux-avis-google/","/comment-prouver-qu-un-avis-google-est-faux/","/comment-constituer-un-dossier-contre-un-faux-avis-google/","/signaler-un-avis-google/"],
+        "Signalement":["/comment-signaler-un-avis-google-etape-par-etape/","/comment-signaler-un-avis-google-google-maps/","/comment-signaler-un-avis-google-business-profile/","/comment-suivre-un-signalement-avis-google/"],
+        "Refus / appel":["/pourquoi-mon-avis-google-reste-en-ligne/","/comment-faire-appel-apres-refus-suppression-avis-google/","/comment-contester-une-decision-concernant-un-avis-google/","/analyse-avis-google/"],
+        "Services":["/analyse-avis-google/","/faire-supprimer-avis-google/","/service-suppression-avis-google/","/prix-suppression-avis-google/"],
+    }
     by={p["path"]:p for p in pages}; out=[]
+    hub=hubs.get(page["cluster"])
+    if hub and hub!=page["path"] and hub in by: out.append(by[hub])
     for path in preferred.get(page["cluster"],[]):
-        if path!=page["path"] and path in by: out.append(by[path])
-    for p in pages:
         if len(out)>=4: break
+        if path!=page["path"] and path in by and by[path] not in out: out.append(by[path])
+    for p in pages:
+        if len(out)>=5: break
         if p["path"]!=page["path"] and p["cluster"]==page["cluster"] and p not in out: out.append(p)
-    return out[:4]
-
+    return out[:5]
 def _sections(page):
     if page["service"]: hs=["Le problème","Ce qui est analysé","Le processus","Ce qui est inclus","Limites"]
     elif page["cluster"]=="Signalement": hs=["Quand signaler un avis Google ?","Identifier le motif pertinent","Comment effectuer le signalement","Comment suivre la demande","Que faire après la décision ?"]
