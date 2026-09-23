@@ -44,3 +44,26 @@ def test_client_workspace_does_not_render_sensitive_action_controls():
     app = (ROOT / "frontend/assets/app.js").read_text(encoding="utf-8")
     assert "const canAct=['OWNER','ADMIN','ANALYST'].includes(state.me?.role)" in app
     assert "Lecture client · les décisions sensibles sont réservées aux rôles habilités." in app
+
+def test_self_service_signup_endpoint_creates_owner_account():
+    from src.api_server import ReviewDefenseAPI
+    import io, json
+    api = ReviewDefenseAPI()
+    body = json.dumps({"organization_name":"Acme Test","email":"owner@example.com","password":"StrongPassword123!"}).encode()
+    env={"REQUEST_METHOD":"POST","PATH_INFO":"/v1/auth/register","REMOTE_ADDR":"127.0.0.1","CONTENT_LENGTH":str(len(body)),"wsgi.input":io.BytesIO(body)}
+    out={}
+    def start(status,headers): out["status"]=status
+    payload=b"".join(api(env,start))
+    data=json.loads(payload)
+    assert out["status"]=="201 Created"
+    assert data["status"]=="created"
+    assert data["role"]=="OWNER"
+    assert data["access_token"]
+
+def test_public_site_offers_direct_signup_and_invitation_paths():
+    public=(ROOT/"frontend/assets/public.js").read_text(encoding="utf-8")
+    app=(ROOT/"frontend/assets/app.js").read_text(encoding="utf-8")
+    assert "renderSignup" in public
+    assert "/v1/auth/register" in app
+    assert "Créer un compte" in app
+    assert "J’ai une invitation" in app
