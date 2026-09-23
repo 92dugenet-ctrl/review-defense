@@ -26,6 +26,7 @@ REQUIRED = [
     "docs/UAT_V640_FINAL_CHECKLIST.csv",
     "docs/UAT_V640_HANDOFF.md",
     "scripts/sandbox_seed.py",
+    "scripts/uat_seed.py", "tests/fixtures/v640_uat_dataset.json",
     "scripts/staging_e2e.py",
     "scripts/browser_e2e.py",
 ]
@@ -45,6 +46,7 @@ def main() -> int:
         "external_action_disabled": "external_actions_enabled" in (ROOT/"scripts/sandbox_seed.py").read_text(),
         "human_gate_documented": "Human approval" in (ROOT/"docs/UAT_V640_RELEASE_GATE.md").read_text(),
         "live_not_falsely_certified": "not certified" in (ROOT/"docs/UAT_V640_FINAL_EXECUTION_RECORD.md").read_text().lower(),
+        "final_report_manifest": (ROOT/"docs/UAT_V640_FINAL_REPORT_MANIFEST.md").is_file(),
     }
     checks["all"] = all(checks.values()) and not missing
     report = {"version":"6.40","status":"PASS" if checks["all"] else "FAIL",
