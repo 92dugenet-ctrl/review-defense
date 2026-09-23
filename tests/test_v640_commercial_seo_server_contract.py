@@ -75,3 +75,19 @@ def test_duplicate_seo_url_families_redirect_to_canonical():
         assert app({"PATH_INFO": source, "QUERY_STRING": ""}, start_response) == [b""]
         assert captured["status"] == "301 Moved Permanently"
         assert captured["headers"]["Location"] == target
+
+
+def test_all_seo_articles_have_unique_titles_faq_cta_and_canonical():
+    pages = seo_site._pages()
+    documents = []
+    for page in pages:
+        _, _, body = seo_site.render(page["path"])
+        text = body.decode()
+        documents.append(text)
+        assert "<title>" in text
+        assert 'rel="canonical"' in text
+        assert "Questions fréquentes" in text
+        assert "/analyse-avis-google/" in text
+        assert "/?page=" not in text
+    titles = [x.split("<title>", 1)[1].split("</title>", 1)[0] for x in documents]
+    assert len(titles) == len(set(titles))
