@@ -424,3 +424,9 @@ body.console-mode .mobile-nav-scrim{background:rgba(0,0,0,.62)}
   .hero-card{padding:17px}
   .hero-card h2{font-size:20px}
 }
+
+
+/* V6.40 review-to-case action */
+.review-card-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.primary.compact{padding:7px 10px;font-size:10px;border-radius:8px}
+@media(max-width:600px){.review-card-footer{align-items:flex-start;flex-direction:column}.review-card-actions{width:100%;justify-content:space-between}.review-card-actions .primary.compact{flex:1}}
