@@ -23,4 +23,4 @@ AS $$
 $$;
 
 REVOKE ALL ON FUNCTION lookup_api_session_by_token_hash(text) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION lookup_api_session_by_token_hash(text) TO PUBLIC;
+GRANT EXECUTE ON FUNCTION lookup_api_session_by_token_hash(text) TO review_defense;
