@@ -1,6 +1,10 @@
 name: Review Defense demo seed
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/review-defense-demo-seed.yml"
   workflow_dispatch:
     inputs:
       staging_url:
@@ -26,6 +30,23 @@ jobs:
           python-version: "3.12"
       - name: Install runtime dependencies
         run: pip install -r requirements.txt
+      - name: Wait for staging endpoint
+        env:
+          STAGING_BASE_URL: ${{ inputs.staging_url || secrets.STAGING_BASE_URL }}
+        run: |
+          if [ -z "${STAGING_BASE_URL}" ]; then
+            echo "::error::STAGING_BASE_URL is not configured."
+            exit 1
+          fi
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --show-error --max-time 5 "${STAGING_BASE_URL%/}/health" > /tmp/review-defense-health.json; then
+              cat /tmp/review-defense-health.json
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::Staging endpoint did not become reachable."
+          exit 1
       - name: Seed fictitious Hôtel Bellevue demo dossier
         env:
           STAGING_BASE_URL: ${{ inputs.staging_url || secrets.STAGING_BASE_URL }}
