@@ -192,3 +192,9 @@
 .reference-legal{text-align:center;color:#718096;font-size:9px;line-height:1.5;margin:12px auto 0;max-width:900px}
 @media(max-width:1050px){.reference-pricing-grid{grid-template-columns:1fr}.reference-lower-grid{grid-template-columns:1fr}.reference-journey-steps{grid-template-columns:1fr 20px 1fr 20px 1fr 20px 1fr}.reference-pricing-head{align-items:flex-start}}
 @media(max-width:720px){.reference-pricing{padding:14px 12px 45px}.reference-pricing-head{display:block}.reference-head-note{display:none}.reference-pricing-head h1{font-size:32px}.reference-pricing-head p{font-size:14px}.reference-panel{padding:18px 14px}.reference-lower-grid{grid-template-columns:1fr}.reference-journey-steps{grid-template-columns:1fr}.journey-arrow{display:none}.reference-bottom{grid-template-columns:1fr}.reference-quote{border-left:0;border-top:1px solid #d7e0eb;padding:14px 0 0}.reference-main-cta{width:100%}}
+
+/* V6.41 frontend-only legal/RGPD document hub */
+.legal-hub-grid{align-items:stretch}
+.legal-hub-card{appearance:none;width:100%;text-align:left;font:inherit;color:inherit;background:var(--surface,#fff);border:1px solid rgba(20,40,70,.10);border-radius:24px;padding:28px;cursor:pointer;box-shadow:0 14px 40px rgba(20,40,70,.06);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;display:flex;flex-direction:column;gap:10px}
+.legal-hub-card:hover,.legal-hub-card:focus-visible{transform:translateY(-4px);border-color:rgba(40,100,180,.28);box-shadow:0 22px 55px rgba(20,40,70,.11);outline:none}
+.legal-hub-card i{font-style:normal;font-size:28px}.legal-hub-card small{font-size:11px;letter-spacing:.12em;font-weight:700;opacity:.58}.legal-hub-card h3{margin:0;font-size:20px}.legal-hub-card p{margin:0;line-height:1.6;opacity:.72}.legal-hub-card span{margin-top:auto;padding-top:10px;font-weight:700}
