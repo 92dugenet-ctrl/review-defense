@@ -103,7 +103,13 @@ def main() -> int:
                     page.goto(base + "/", wait_until="networkidle")
                     page.wait_for_selector(".rd-home-hero", timeout=10000)
                     landing_text = page.locator("body").inner_text()
-                    if "Analysez. Qualifiez. Préparez." not in landing_text or "Gardez le contrôle." not in landing_text or "Analyser un avis" not in landing_text:
+                    current_root_markers = (
+                        "Reprenez le contrôle de",
+                        "votre réputation.",
+                        "Analyser un avis",
+                        "validation humaine",
+                    )
+                    if not all(marker.lower() in landing_text.lower() for marker in current_root_markers):
                         report["root_diagnostic"] = {
                             "url": page.url,
                             "title": page.title(),
@@ -183,14 +189,14 @@ def main() -> int:
                     page.wait_for_selector("#content", timeout=5000)
                     page.wait_for_selector("#content .hero-grid", timeout=10000)
 
-                    def view(label: str, expected_title: str, selector: str, fallback_markers: tuple[str, ...] = ()):
+                    def view(label: str, expected_title_fragment: str, selector: str, fallback_markers: tuple[str, ...] = ()):
                         button = page.locator(f'#nav button[data-view="{label}"]')
                         if not button.count():
                             raise AssertionError(f"navigation item missing: {label}")
                         button.click()
                         page.wait_for_function(
-                            "(title) => document.querySelector('#title')?.innerText === title",
-                            arg=expected_title,
+                            "(fragment) => document.querySelector('#title')?.innerText?.toLowerCase().includes(fragment.toLowerCase())",
+                            arg=expected_title_fragment,
                             timeout=10000,
                         )
                         page.wait_for_selector(selector, timeout=10000)
@@ -201,10 +207,10 @@ def main() -> int:
 
                     dashboard_title = page.locator("#title").inner_text()
                     dashboard_text = page.locator("#content").inner_text()
-                    reviews_text = view("reviews", "Avis", ".reviews-panel", ("Qualification des avis", "Inbox des avis"))
-                    reviews_ok = page.locator(".reviews-panel").count() > 0
-                    cases_text = view("cases", "Dossiers", ".cases-panel", ("Centre des dossiers", "File des dossiers"))
-                    cases_ok = page.locator(".cases-panel").count() > 0
+                    reviews_text = view("reviews", "avis", ".review-overview", ("Qualification des avis", "Inbox des avis"))
+                    reviews_ok = page.locator(".review-overview").count() > 0
+                    cases_text = view("cases", "dossiers", ".case-overview", ("Centre des dossiers", "File des dossiers"))
+                    cases_ok = page.locator(".case-overview").count() > 0
                     boundary_text = (dashboard_text + " " + reviews_text + " " + cases_text).lower()
                     approval_markers = ("validation humaine", "aucune action externe automatique", "contrôles humains", "action externe automatique", "revue humaine requise")
                     approval_marker = any(marker in boundary_text for marker in approval_markers)
