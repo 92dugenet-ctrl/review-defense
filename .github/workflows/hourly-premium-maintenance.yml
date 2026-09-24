@@ -1,0 +1,46 @@
+name: Hourly premium maintenance
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  maintain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Run bounded maintenance
+        continue-on-error: true
+        run: python scripts/hourly_premium_maintenance.py
+
+      - name: Run frontend contract tests
+        continue-on-error: true
+        run: |
+          python -m pip install -q pytest
+          pytest -q tests/test_v626_frontend.py
+
+      - name: Push maintenance commit when created
+        if: always()
+        run: |
+          if [ "$(git rev-parse HEAD)" != "$GITHUB_SHA" ]; then
+            git push origin HEAD:main
+          else
+            echo "No maintenance commit created."
+          fi
+
+      - name: Upload maintenance report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hourly-premium-maintenance
+          path: artifacts/hourly-premium-maintenance.json
+          if-no-files-found: ignore
