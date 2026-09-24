@@ -112,6 +112,8 @@ class MemoryStore:
         self.mfa: dict[str, dict[str, Any]] = {}
         self.recovery_tokens: dict[str, dict[str, Any]] = {}
         self.email_verification_tokens: dict[str, dict[str, Any]] = {}
+        self.privacy_requests: dict[str, dict[str, Any]] = {}
+        self.privacy_consents: list[dict[str, Any]] = []
         self.email_verified: dict[str, bool] = {}
 
     def audit_event(self, org: str, actor: str | None, action: str, resource: str, **meta: Any) -> None:
@@ -229,6 +231,45 @@ class ReviewDefenseAPI:
 
     def _json(self, status: int, payload: Mapping[str, Any], headers: Mapping[str, str] | None = None):
         return status, {"Content-Type": "application/json; charset=utf-8", **(headers or {})}, json.dumps(payload, ensure_ascii=False).encode()
+
+    def _privacy_request_payload(self, row: Any) -> dict[str, Any]:
+        if isinstance(row, dict):
+            return dict(row)
+        keys = ("id","organization_id","requester_user_id","request_type","status","details","response_note","due_at","created_at","updated_at")
+        return dict(zip(keys, row))
+
+    def _privacy_export(self, user: User) -> dict[str, Any]:
+        requests = []
+        consents = []
+        if self.repository is not None:
+            if hasattr(self.repository, "list_privacy_requests"):
+                requests = [self._privacy_request_payload(r) for r in (self.repository.list_privacy_requests(user.organization_id, user.user_id) or [])]
+            if hasattr(self.repository, "list_privacy_consents"):
+                rows = self.repository.list_privacy_consents(user.organization_id, user.user_id) or []
+                consents = [dict(zip(("id","purpose","policy_version","granted","granted_at","withdrawn_at"), r)) for r in rows]
+        if not requests:
+            requests = [dict(v) for v in self.store.privacy_requests.values()
+                         if v.get("organization_id") == user.organization_id and v.get("requester_user_id") == user.user_id]
+        if not consents:
+            consents = [dict(v) for v in self.store.privacy_consents
+                        if v.get("organization_id") == user.organization_id and v.get("user_id") == user.user_id]
+        audit = [dict(e) for e in self.store.audit
+                 if e.get("organization_id") == user.organization_id and e.get("actor_id") == user.user_id]
+        return {
+            "export_version": "1.0",
+            "generated_at": utc_now().isoformat(),
+            "scope": "personal_account_data",
+            "account": {
+                "user_id": user.user_id,
+                "organization_id": user.organization_id,
+                "email": user.email,
+                "role": user.role,
+            },
+            "privacy_requests": requests,
+            "consents": consents,
+            "audit_events": audit,
+            "note": "This export covers personal account and privacy-request data available through this endpoint; organization-owned business data remains subject to the applicable controller/processor relationship."
+        }
 
     def _auth(self, environ) -> User:
         header = environ.get("HTTP_AUTHORIZATION", "")
@@ -739,6 +780,98 @@ class ReviewDefenseAPI:
             if self.repository is not None and hasattr(self.repository,"disable_mfa"): self.repository.disable_mfa(user.organization_id,user.user_id)
             self.store.audit_event(user.organization_id,user.user_id,"MFA_DISABLED",f"user:{user.user_id}")
             return self._json(200,{"status":"disabled"})
+
+        if method == "GET" and path == "/v1/privacy/export":
+            payload = self._privacy_export(user)
+            self.store.audit_event(user.organization_id, user.user_id, "PRIVACY_EXPORT_REQUESTED", f"user:{user.user_id}")
+            return self._json(200, payload, {"Content-Disposition": 'attachment; filename="review-defense-rgpd-export.json"'})
+
+        if method == "GET" and path == "/v1/privacy/requests":
+            self._require_role(user, "OWNER", "ADMIN", "ANALYST", "CLIENT", "VIEWER")
+            rows = []
+            if self.repository is not None and hasattr(self.repository, "list_privacy_requests"):
+                rows = [self._privacy_request_payload(r) for r in (self.repository.list_privacy_requests(user.organization_id, user.user_id) or [])]
+            if not rows:
+                rows = [dict(v) for v in self.store.privacy_requests.values()
+                        if v.get("organization_id") == user.organization_id and v.get("requester_user_id") == user.user_id]
+            return self._json(200, {"items": rows, "count": len(rows)})
+
+        if method == "POST" and path == "/v1/privacy/requests":
+            body = self._body(environ)
+            request_type = str(body.get("request_type", "")).upper()
+            allowed = {"ACCESS", "RECTIFICATION", "ERASURE", "RESTRICTION", "OBJECTION", "PORTABILITY"}
+            if request_type not in allowed:
+                raise APIError(422, "VALIDATION_ERROR", "invalid privacy request type")
+            details = body.get("details") if isinstance(body.get("details"), dict) else {}
+            import datetime as _datetime
+            created = utc_now()
+            due = created + _datetime.timedelta(days=30)
+            request_id = str(uuid.uuid4())
+            row = {
+                "id": request_id,
+                "organization_id": user.organization_id,
+                "requester_user_id": user.user_id,
+                "request_type": request_type,
+                "status": "RECEIVED",
+                "details": details,
+                "response_note": None,
+                "due_at": due.isoformat(),
+                "created_at": created.isoformat(),
+                "updated_at": created.isoformat(),
+            }
+            if self.repository is not None and hasattr(self.repository, "create_privacy_request"):
+                persisted = self.repository.create_privacy_request(
+                    user.organization_id, user.user_id, request_type, details, due.isoformat()
+                )
+                if persisted:
+                    row.update(dict(zip(("id","status","created_at","updated_at","due_at"), persisted)))
+                    row["organization_id"] = user.organization_id
+                    row["requester_user_id"] = user.user_id
+                    row["request_type"] = request_type
+                    row["details"] = details
+                    row["response_note"] = None
+            self.store.privacy_requests[request_id] = row
+            self.store.audit_event(user.organization_id, user.user_id, "PRIVACY_REQUEST_CREATED", f"privacy_request:{row['id']}", request_type=request_type)
+            return self._json(201, {"request": row})
+
+        if method == "GET" and path == "/v1/privacy/consents":
+            rows = []
+            if self.repository is not None and hasattr(self.repository, "list_privacy_consents"):
+                rows = [dict(zip(("id","purpose","policy_version","granted","granted_at","withdrawn_at"), r))
+                        for r in (self.repository.list_privacy_consents(user.organization_id, user.user_id) or [])]
+            if not rows:
+                rows = [dict(v) for v in self.store.privacy_consents
+                        if v.get("organization_id") == user.organization_id and v.get("user_id") == user.user_id]
+            return self._json(200, {"items": rows, "count": len(rows)})
+
+        if method == "POST" and path == "/v1/privacy/consents":
+            body = self._body(environ)
+            purpose = str(body.get("purpose", "")).strip()
+            policy_version = str(body.get("policy_version", "")).strip()
+            if not purpose or not policy_version:
+                raise APIError(422, "VALIDATION_ERROR", "purpose and policy_version are required")
+            granted = bool(body.get("granted"))
+            row = {
+                "id": str(uuid.uuid4()),
+                "organization_id": user.organization_id,
+                "user_id": user.user_id,
+                "purpose": purpose,
+                "policy_version": policy_version,
+                "granted": granted,
+                "granted_at": utc_now().isoformat(),
+                "withdrawn_at": None if granted else utc_now().isoformat(),
+            }
+            if self.repository is not None and hasattr(self.repository, "create_privacy_consent"):
+                persisted = self.repository.create_privacy_consent(
+                    user.organization_id, user.user_id, purpose, policy_version, granted
+                )
+                if persisted:
+                    row.update(dict(zip(("id","purpose","policy_version","granted","granted_at","withdrawn_at"), persisted)))
+                    row["organization_id"] = user.organization_id
+                    row["user_id"] = user.user_id
+            self.store.privacy_consents.append(row)
+            self.store.audit_event(user.organization_id, user.user_id, "PRIVACY_CONSENT_RECORDED", f"consent:{row['id']}", purpose=purpose, granted=granted, policy_version=policy_version)
+            return self._json(201, {"consent": row})
 
         if method == "GET" and path == "/v1/me":
             return self._json(200, {"user_id": user.user_id, "organization_id": user.organization_id, "email": user.email, "role": user.role})
