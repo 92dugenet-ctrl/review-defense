@@ -144,14 +144,13 @@ def wait_for_live_contract(base: str, token: str, cases: dict) -> None:
 
 
 def ensure_evidence(base: str, token: str, case_id: str) -> list[dict]:
-    status, payload = request_json(base, "GET", "/v1/evidence", token=token)
+    status, payload = request_json(base, "GET", f"/v1/cases/{case_id}/workspace", token=token)
     if status != 200:
-        raise RuntimeError(f"evidence lookup failed: HTTP {status}")
-    existing = {
-        item.get("filename"): item
-        for item in payload.get("items", [])
-        if item.get("case_id") == case_id
-    }
+        raise RuntimeError(f"workspace evidence lookup failed: HTTP {status}")
+    existing = {}
+    for item in payload.get("evidence_tasks", []):
+        if item.get("filename"):
+            existing[item["filename"]] = item
 
     result = []
     for spec in DEMO_EVIDENCE:
