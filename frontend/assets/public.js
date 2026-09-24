@@ -16,12 +16,23 @@ function setPublicMeta(page){
  let d=document.querySelector('meta[name="description"]'); if(!d){d=document.createElement('meta');d.name='description';document.head.appendChild(d)} d.content=m[1];
  let c=document.querySelector('link[rel="canonical"]'); if(!c){c=document.createElement('link');c.rel='canonical';document.head.appendChild(c)} c.href=location.origin+(PUBLIC_ROUTES[page]||'/');
 }
+const PUBLIC_NAV_ITEMS=[
+ ['features','Produit'],['how','Comment ça marche'],['services','Services'],['pricing','Tarifs'],['resources','Ressources']
+];
+const PUBLIC_FOOTER_GROUPS=[
+ ['Produit',[['Fonctionnalités','/produit/'],['Comment ça marche','/comment-ca-marche/'],['Tarifs','/tarifs/']]],
+ ['Ressources',[['Guides & SEO','/ressources/'],['Analyser un avis Google','/analyse-avis-google/'],['Contact','/contact/']]],
+ ['Confiance',[['Centre conformité','/conformite/'],['Sécurité','/securite/'],['Confidentialité','/confidentialite/'],['Conservation des données','/conservation-donnees/'],['Sous-traitants','/sous-traitants/'],['IA & contrôle humain','/ia-et-controle-humain/']]],
+ ['Juridique',[['Mentions légales','/mentions-legales/'],['CGV','/cgv/'],['CGU','/cgu/'],['Cookies','/cookies/'],['Droits RGPD','/droits-rgpd/'],['Violations de données','/violation-donnees/']]]
+];
 function publicHeader(active){
- const n=[['features','Produit'],['how','Comment ça marche'],['services','Services'],['pricing','Tarifs'],['resources','Ressources']];
- return '<header class="public-header"><div class="rd-nav-inner"><a class="public-brand" href="/"><b class="brand-mark">RD</b><span>Review Defense</span></a><nav class="public-nav">'+n.map(x=>'<button class="'+(active===x[0]?'active':'')+'" data-public="'+x[0]+'">'+x[1]+'</button>').join('')+'</nav><div class="public-actions"><button class="btn-secondary" id="public-login">Connexion</button><button class="btn-primary" id="public-cta">Analyser un avis <span>→</span></button></div><button class="mobile-menu" id="mobile-menu" aria-label="Menu">☰</button></div></header>';
+ return '<header class="public-header" data-public-shell="header"><div class="rd-nav-inner"><a class="public-brand" href="/"><b class="brand-mark">RD</b><span>Review Defense</span></a><nav class="public-nav" aria-label="Navigation principale">'+PUBLIC_NAV_ITEMS.map(x=>'<button class="'+(active===x[0]?'active':'')+'" data-public="'+x[0]+'">'+x[1]+'</button>').join('')+'</nav><div class="public-actions"><button class="btn-secondary" id="public-login">Connexion</button><button class="btn-primary" id="public-cta">Analyser un avis <span>→</span></button></div><button class="mobile-menu" id="mobile-menu" aria-label="Menu">☰</button></div></header>';
 }
 function publicFooter(){
- return '<footer class="public-footer"><div class="rd-footer-inner"><div class="footer-brand"><a class="public-brand" href="/"><b class="brand-mark">RD</b><span>Review Defense</span></a><p>Analyse, qualification et préparation de dossiers liés aux avis en ligne.</p><small>Préparation ≠ exécution. Les décisions externes restent sous contrôle humain.</small></div><div><b>Produit</b><a href="/produit/">Fonctionnalités</a><a href="/comment-ca-marche/">Comment ça marche</a><a href="/tarifs/">Tarifs</a></div><div><b>Ressources</b><a href="/ressources/">Guides & SEO</a><a href="/analyse-avis-google/">Analyser un avis Google</a><a href="/contact/">Contact</a></div><div><b>Confiance</b><a href="/securite/">Sécurité</a><a href="/confidentialite/">Confidentialité</a><a href="/sous-traitants/">Sous-traitants</a><a href="/ia-et-controle-humain/">IA & contrôle humain</a></div><div><b>Juridique</b><a href="/mentions-legales/">Mentions légales</a><a href="/cgv/">CGV</a><a href="/cgu/">CGU</a><a href="/cookies/">Cookies</a><a href="/droits-rgpd/">Droits RGPD</a></div></div><div class="footer-bottom"><span>© 2026 Review Defense</span><span>Plateforme d’aide et de préparation — aucune suppression garantie.</span></div></footer>';
+ return '<footer class="public-footer" data-public-shell="footer"><div class="rd-footer-inner"><div class="footer-brand"><a class="public-brand" href="/"><b class="brand-mark">RD</b><span>Review Defense</span></a><p>Analyse, qualification et préparation de dossiers liés aux avis en ligne.</p><small>Préparation ≠ exécution. Les décisions externes restent sous contrôle humain.</small></div>'+PUBLIC_FOOTER_GROUPS.map(g=>'<div><b>'+g[0]+'</b>'+g[1].map(x=>'<a href="'+x[1]+'">'+x[0]+'</a>').join('')+'</div>').join('')+'</div><div class="footer-bottom"><span>© 2026 Review Defense</span><span>Plateforme d’aide et de préparation — aucune suppression garantie.</span></div></footer>';
+}
+function publicShell(active,body){
+ return '<div class="marketing" data-public-shell="site"><div class="public-shell-header">'+publicHeader(active)+'</div><main>'+body+'</main><div class="public-shell-footer">'+publicFooter()+'</div></div>';
 }
 function ensurePublicStyles(){if(document.getElementById('public-styles'))return;const link=document.createElement('link');link.id='public-styles';link.rel='stylesheet';link.href='/assets/public.css?v=6501';document.head.appendChild(link)}
 function productMockup(){
