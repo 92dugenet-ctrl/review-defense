@@ -94,3 +94,6 @@ body{background:var(--rd-bg);color:var(--rd-text)}
 @media(max-width:1100px){.pricing-recurring{grid-template-columns:repeat(2,1fr)}.pricing-section-label{grid-column:1/-1}}
 @media(max-width:900px){.review-removal-panel{grid-template-columns:1fr;margin-left:16px;margin-right:16px;padding:28px}.pricing-compare{margin-left:16px;margin-right:16px}}
 @media(max-width:560px){.pricing-recurring{grid-template-columns:1fr}.pricing-section-label{grid-column:auto}.pricing-section-label h2{font-size:24px}.review-removal-copy h2{font-size:28px}.removal-points{grid-template-columns:1fr}.review-removal-flow{grid-template-columns:1fr 1fr}.compare-row{grid-template-columns:1fr;gap:4px}.pricing-compare{padding:22px}}
+
+/* V6.40 pricing selection handoff */
+.pricing-selection-banner{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 18px;padding:13px 15px;border:1px solid #dbe7f5;border-radius:12px;background:#f7fbff;color:#475569;font-size:12px}.pricing-selection-banner strong{color:#0f172a}.pricing-selection-banner span{font-weight:750;color:#1264e8}.pricing-selection-banner .link-btn{margin-left:auto;border:0;background:transparent;color:#1264e8;font:inherit;font-size:11px;cursor:pointer;padding:0}
