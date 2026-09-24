@@ -194,6 +194,31 @@ class PostgresAPIRepository(PostgresRepository):
                 cur.execute("INSERT INTO api_idempotency(organization_id,idempotency_key,payload_fingerprint,response_json) VALUES(%s,%s,%s,%s::jsonb) ON CONFLICT(organization_id,idempotency_key) DO NOTHING RETURNING idempotency_key", (organization_id,key,fingerprint,json.dumps(response,sort_keys=True)))
                 return cur.fetchone()
 
+    def put_evidence(self, organization_id: str, evidence: Mapping[str,Any]):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""INSERT INTO api_evidence(organization_id,evidence_id,case_id,filename,content_type,size_bytes,sha256,object_key,verified,created_by,verified_by,verified_at)
+                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                ON CONFLICT(organization_id,evidence_id) DO UPDATE SET filename=excluded.filename,content_type=excluded.content_type,size_bytes=excluded.size_bytes,sha256=excluded.sha256,object_key=excluded.object_key,verified=excluded.verified,verified_by=excluded.verified_by,verified_at=excluded.verified_at""",
+                (organization_id,evidence['evidence_id'],evidence['case_id'],evidence['filename'],evidence['content_type'],evidence['size_bytes'],evidence['sha256'],evidence['object_key'],evidence.get('verified',False),evidence.get('created_by'),evidence.get('verified_by'),evidence.get('verified_at')))
+
+    def list_evidence(self, organization_id: str, case_id: str):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT evidence_id,organization_id,case_id,filename,content_type,size_bytes,sha256,object_key,verified,created_by,verified_by,verified_at FROM api_evidence WHERE case_id=%s ORDER BY created_at", (case_id,))
+                return cur.fetchall()
+
+    def get_evidence(self, organization_id: str, evidence_id: str):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT evidence_id,organization_id,case_id,filename,content_type,size_bytes,sha256,object_key,verified,created_by,verified_by,verified_at FROM api_evidence WHERE evidence_id=%s", (evidence_id,))
+                return cur.fetchone()
+
+    def update_evidence_verification(self, organization_id: str, evidence_id: str, verified_by: str, verified_at: str):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("UPDATE api_evidence SET verified=true, verified_by=%s, verified_at=%s WHERE evidence_id=%s", (verified_by,verified_at,evidence_id))
+
     def put_evidence_fact(self, organization_id: str, fact: Mapping[str,Any]):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
