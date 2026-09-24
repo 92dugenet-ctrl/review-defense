@@ -37,6 +37,22 @@ class PostgresRepository:
         finally:
             conn.close()
 
+    @contextmanager
+    def transaction_without_tenant(self) -> Iterator[object]:
+        """Open a transaction without setting tenant context.
+
+        This is reserved for security-boundary lookups whose only credential
+        is the opaque token itself, such as restoring a persisted session
+        before the organization is known. Tenant-scoped operations must keep
+        using transaction(organization_id).
+        """
+        conn = self._connect()
+        try:
+            with conn.transaction():
+                yield conn
+        finally:
+            conn.close()
+
     def ping(self) -> bool:
         """Check database connectivity without requiring tenant context."""
         conn = self._connect()
