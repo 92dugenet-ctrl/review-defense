@@ -1332,6 +1332,7 @@ class ReviewDefenseAPI:
                 return self._json(200, {
                     "workspace": {**asdict(workspace), "review": review_payload},
                     "evidence_tasks": [asdict(t) for t in tasks],
+                    "evidence_items": [asdict(e) for e in evidence],
                     "requires_human_review": case_requires_human_review(workspace),
                     "decision": asdict(self.store.decisions[(user.organization_id, case.decision_id)]) if case.decision_id and (user.organization_id, case.decision_id) in self.store.decisions else None,
                     "snapshot": asdict(self.store.snapshots[(user.organization_id, cid)]) if (user.organization_id, cid) in self.store.snapshots else None,
