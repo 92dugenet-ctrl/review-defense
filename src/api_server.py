@@ -238,23 +238,29 @@ class ReviewDefenseAPI:
         token_hash = hash_token(raw)
         session = self.store.sessions.get(token_hash)
         if session is None and self.repository is not None:
-            # Production adapters may expose a persistent session row. The repository
-            # contract is deliberately tenant-bound, so the token is first matched
-            # against the in-memory user index when available.
-            for candidate in self.store.users.values():
-                row = self.repository.get_session(candidate.organization_id, token_hash)
-                if row:
-                    _, uid, org, role, expires_at, revoked_at = row
-                    from datetime import datetime
-                    def parse(v):
-                        if isinstance(v, datetime): return v
-                        return datetime.fromisoformat(str(v).replace('Z','+00:00'))
-                    session = Session(str(uid), str(org), str(role), token_hash, parse(expires_at), parse(revoked_at) if revoked_at else None)
-                    self.store.sessions[token_hash] = session
-                    break
+            # Multi-worker production: the login request and the following browser
+            # request may land on different workers. Resolve the persisted session
+            # directly by its hashed bearer token instead of relying on local memory.
+            row = None
+            if hasattr(self.repository, "get_session_by_token_hash"):
+                row = self.repository.get_session_by_token_hash(token_hash)
+            if row:
+                _, uid, org, role, expires_at, revoked_at = row
+                from datetime import datetime
+                def parse(v):
+                    if isinstance(v, datetime): return v
+                    return datetime.fromisoformat(str(v).replace('Z','+00:00'))
+                session = Session(str(uid), str(org), str(role), token_hash, parse(expires_at), parse(revoked_at) if revoked_at else None)
+                self.store.sessions[token_hash] = session
         if session is None or not session.active():
             raise APIError(401, "AUTH_INVALID", "invalid or expired session")
         user = self.store.users.get(session.user_id)
+        if user is None and self.repository is not None and hasattr(self.repository, "get_user_by_id"):
+            row = self.repository.get_user_by_id(session.organization_id, session.user_id)
+            if row:
+                uid, email, password_hash, role = row
+                user = User(str(uid), session.organization_id, str(email), str(password_hash), str(role))
+                self.store.users[user.user_id] = user
         if user is None or user.organization_id != session.organization_id:
             raise APIError(401, "AUTH_INVALID", "invalid session")
         if self.repository is not None and hasattr(self.repository, "touch_session"):
