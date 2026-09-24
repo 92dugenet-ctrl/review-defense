@@ -240,3 +240,16 @@
 @media(max-width:1000px){.product-hero{grid-template-columns:1fr;padding-top:65px}.product-hero-visual{min-height:500px}.product-two-col,.product-interface-grid,.ai-product-grid{grid-template-columns:1fr;gap:45px}.product-pillar-grid{grid-template-columns:repeat(2,1fr)}.product-flow-visual{grid-template-columns:repeat(3,1fr);row-gap:35px}.flow-line{display:none}.product-security-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.product-hero{padding:50px 18px 65px}.product-hero-copy h1{font-size:43px;letter-spacing:-2.2px}.product-hero-visual{min-height:420px}.product-dashboard-illustration{transform:none}.product-ui-body{grid-template-columns:78px 1fr}.product-ui-body aside{font-size:6px}.product-ui-main{padding:12px}.product-floating{transform:scale(.82)}.product-floating-a{left:-10px}.product-floating-b{right:-8px}.product-pillar-grid,.product-security-grid{grid-template-columns:1fr}.product-flow-visual{grid-template-columns:1fr;gap:20px}.product-interface-grid{gap:25px}.ai-boundary-list{grid-template-columns:1fr}.mini-browser-grid{grid-template-columns:72px 1fr}.mini-browser-main{padding:12px}.mini-columns{grid-template-columns:1fr}.mini-timeline span:not(:last-child):after{width:20px}.product-final-cta{padding:80px 18px}}
 @media(prefers-reduced-motion:reduce){.product-orbit,.product-floating,.ai-ring{animation:none}.product-pillar-card{transition:none}}
+
+
+/* V6.41 — canonical public shell: identical header/footer structure on every public route */
+.public-shell-header,.public-shell-footer{width:100%}
+.public-shell-header{position:relative;z-index:50}
+.public-shell-footer{position:relative;z-index:10}
+.public-shell-header .public-header,.public-shell-footer .public-footer{width:100%;box-sizing:border-box}
+.public-shell-header .rd-nav-inner,.public-shell-footer .rd-footer-inner{box-sizing:border-box}
+.public-shell-footer .footer-bottom{box-sizing:border-box}
+@media(max-width:760px){
+  .public-shell-header .rd-nav-inner{width:calc(100% - 30px)}
+  .public-shell-footer .rd-footer-inner{width:calc(100% - 30px)}
+}
