@@ -82,6 +82,23 @@ class PostgresAPIRepository(PostgresRepository):
             with conn.cursor() as cur:
                 cur.execute("INSERT INTO security_events(organization_id,actor_user_id,event_type,target_user_id,metadata) VALUES(%s,%s,%s,%s,%s::jsonb)", (organization_id,actor_user_id,event_type,target_user_id,json.dumps(metadata or {})))
 
+    def get_session_by_token_hash(self, token_hash: str):
+        """Load a persisted session before tenant context is known.
+
+        Authentication starts with only the opaque bearer token, so this
+        security-boundary lookup intentionally uses the narrowly scoped
+        SECURITY DEFINER database function instead of a tenant-scoped query.
+        The raw bearer token is never persisted.
+        """
+        with self.transaction_without_tenant() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT token_hash,user_id,organization_id,role,expires_at,revoked_at "
+                    "FROM lookup_api_session_by_token_hash(%s)",
+                    (token_hash,),
+                )
+                return cur.fetchone()
+
     def get_session(self, organization_id: str, token_hash: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
