@@ -741,15 +741,15 @@ class ReviewDefenseAPI:
             _, state_manager=self._google_oauth()
             try: state_manager.verify(state_value)
             except Exception as exc: raise APIError(400,"GOOGLE_OAUTH_STATE_INVALID","Google OAuth state is invalid or expired") from exc
-            state_row=None
-            if self.repository is not None and hasattr(self.repository,"consume_google_oauth_state"):
-                # The signed state carries no tenant data; resolve candidate tenant only from a short-lived in-memory copy.
-                state_row=self.store.google_oauth_states.pop(state_value,None)
-                if state_row is None:
-                    raise APIError(400,"GOOGLE_OAUTH_STATE_INVALID","Google OAuth state is no longer available")
-            else:
-                state_row=self.store.google_oauth_states.pop(state_value,None)
+            state_row=self.store.google_oauth_states.pop(state_value,None)
+            if state_row is None and self.repository is not None and hasattr(self.repository,"consume_google_oauth_state_by_state"):
+                row=self.repository.consume_google_oauth_state_by_state(state_value)
+                if row:
+                    state_row={"state":str(row[0]),"organization_id":str(row[1]),"user_id":str(row[2]),"code_verifier":str(row[3]),"expires_at":_iso_value(row[4])}
             if not state_row: raise APIError(400,"GOOGLE_OAUTH_STATE_INVALID","Google OAuth state is invalid or already used")
+            from datetime import datetime
+            exp=datetime.fromisoformat(str(state_row["expires_at"]).replace("Z","+00:00"))
+            if exp <= utc_now(): raise APIError(400,"GOOGLE_OAUTH_STATE_INVALID","Google OAuth state has expired")
             org_id=str(state_row["organization_id"]); user_id=str(state_row["user_id"]); verifier=str(state_row["code_verifier"])
             oauth_client,_=self._google_oauth()
             token=oauth_client.exchange_code(code=code,redirect_uri=self.config.public_base_url.rstrip("/")+"/v1/integrations/google/callback",code_verifier=verifier)
