@@ -15,3 +15,25 @@ body{background:var(--rd-bg);color:var(--rd-text)}
 .hero-copy h1{letter-spacing:-2.5px}
 .btn-primary{background:var(--rd-accent)}
 .feature-grid article,.steps article,.price-card,.article-grid article{border-color:var(--rd-border);box-shadow:0 8px 30px rgba(15,23,42,.05)}
+
+/* V6.40 commercial pricing layer */
+.price-loyalty{margin:10px 0 2px;padding:9px 11px;border:1px solid var(--rd-border);border-radius:10px;background:var(--rd-surface-2);font-size:11px;color:var(--rd-muted)}
+.price-loyalty b{color:var(--rd-text)}
+.pricing-detail{max-width:1120px;margin:70px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:28px;padding:0 24px}
+.pricing-detail>div,.pricing-credit{background:#fff;border:1px solid var(--rd-border);border-radius:22px;padding:30px;box-shadow:0 8px 30px rgba(15,23,42,.05)}
+.pricing-detail>div>span,.pricing-credit>div>span{font-size:10px;font-weight:800;letter-spacing:1.4px;color:var(--rd-accent)}
+.pricing-detail h2,.pricing-credit h2{font-size:25px;letter-spacing:-.7px;margin:10px 0 22px}
+.price-table{display:grid;gap:8px}
+.price-table>div{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid #edf1f6;font-size:13px}
+.price-table>div:last-child{border-bottom:0}
+.price-table b{white-space:nowrap}
+.pricing-note{font-size:12px;line-height:1.65;color:var(--rd-muted);margin:20px 0 0}
+.pricing-credit{max-width:1120px;margin:28px auto 0;display:grid;grid-template-columns:.8fr 1.2fr;gap:28px}
+.pricing-credit>div>p{font-size:13px;line-height:1.7;color:var(--rd-muted)}
+.credit-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:stretch}
+.credit-grid article{border:1px solid var(--rd-border);border-radius:15px;padding:18px 14px;display:flex;flex-direction:column;gap:9px;background:#fbfdff}
+.credit-grid article small{font-weight:700;color:var(--rd-muted)}
+.credit-grid article strong{font-size:20px;letter-spacing:-.5px}
+.credit-grid article button{margin-top:auto}
+@media(max-width:900px){.pricing-detail,.pricing-credit{grid-template-columns:1fr}.credit-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.pricing-detail,.pricing-credit{padding-left:16px;padding-right:16px}.credit-grid{grid-template-columns:1fr 1fr}.pricing-detail h2,.pricing-credit h2{font-size:21px}}
