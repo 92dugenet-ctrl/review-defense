@@ -70,8 +70,9 @@ const stateCard=(kind,title,body)=>`<div class="state-card ${esc(kind)}"><div cl
 const pageHead=(id,count='')=>{const m=viewMeta[id]||[id,''];return `<div class="section-head page-head"><div><div class="eyebrow">${esc(m[0])}</div><h2>${esc(navItems.find(x=>x[0]===id)?.[1]||id)}</h2><p>${esc(m[1])}</p></div>${count?`<span class="pill">${esc(count)}</span>`:''}</div>`};
 function shell(){
  const role=state.me?.role||'';
+ const clientOperationalSections=['dashboard','reviews','cases','evidence','alerts','analytics'];
  const allowed={
-   CLIENT:new Set(['dashboard','client-monitoring','reviews','cases','evidence','alerts','analytics']),
+   CLIENT:new Set([...clientOperationalSections,'client-monitoring']),
    VIEWER:new Set(['dashboard','client-monitoring','reviews','cases','analytics'])
  };
  const visible=allowed[role]?navItems.filter(([id])=>allowed[role].has(id)):navItems;
