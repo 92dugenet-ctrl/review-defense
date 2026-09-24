@@ -1,0 +1,41 @@
+name: Review Defense demo seed
+
+on:
+  workflow_dispatch:
+    inputs:
+      staging_url:
+        description: "Optional deployed HTTPS staging URL (defaults to STAGING_BASE_URL secret)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: review-defense-demo-seed
+  cancel-in-progress: false
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install runtime dependencies
+        run: pip install -r requirements.txt
+      - name: Seed fictitious Hôtel Bellevue demo dossier
+        env:
+          STAGING_BASE_URL: ${{ inputs.staging_url || secrets.STAGING_BASE_URL }}
+          E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+          E2E_ORGANIZATION_ID: ${{ secrets.E2E_ORGANIZATION_ID }}
+          E2E_MFA_SECRET: ${{ secrets.E2E_MFA_SECRET }}
+        run: |
+          if [ -z "${STAGING_BASE_URL}" ] || [ -z "${E2E_EMAIL}" ] || [ -z "${E2E_PASSWORD}" ] || [ -z "${E2E_ORGANIZATION_ID}" ]; then
+            echo "::error::Staging authentication secrets are not configured."
+            exit 1
+          fi
+          python scripts/demo_seed.py
