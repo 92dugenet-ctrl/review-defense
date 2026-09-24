@@ -89,3 +89,17 @@ class IdentityRepository(PostgresAPIRepository):
             with conn.cursor() as cur:
                 cur.execute("SELECT u.id,u.email,u.password_hash,m.role FROM users u JOIN memberships m ON m.user_id=u.id WHERE m.organization_id=%s AND u.id=%s", (organization_id,user_id))
                 return cur.fetchone()
+
+    def get_session_by_token_hash(self, token_hash: str):
+        """Load a session without requiring the caller to know its tenant first.
+
+        The token hash is the only lookup key; the raw bearer token is never persisted.
+        This supports stateless request routing across multiple application workers.
+        """
+        with self.transaction(None) as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT token_hash,user_id,organization_id,role,expires_at,revoked_at FROM api_sessions WHERE token_hash=%s",
+                    (token_hash,),
+                )
+                return cur.fetchone()
