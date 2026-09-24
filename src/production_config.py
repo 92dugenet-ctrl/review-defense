@@ -24,6 +24,7 @@ class ProductionConfig:
     smtp_sender: str | None = None
     smtp_starttls: bool = True
     public_base_url: str = "http://localhost:8080"
+    evidence_storage_root: str = "/var/lib/review-defense/evidence"
 
     @classmethod
     def from_env(cls) -> "ProductionConfig":
@@ -60,6 +61,7 @@ class ProductionConfig:
             smtp_sender=os.getenv("SMTP_SENDER"),
             smtp_starttls=os.getenv("SMTP_STARTTLS", "true").lower() in TRUTHY,
             public_base_url=public_base_url,
+            evidence_storage_root=os.getenv("EVIDENCE_STORAGE_ROOT", "/var/lib/review-defense/evidence"),
         )
 
     @property
