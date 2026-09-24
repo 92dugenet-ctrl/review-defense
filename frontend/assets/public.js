@@ -311,3 +311,5 @@ function initPremiumInteractions(){
       });
       card.addEventListener('pointerleave',()=>{card.style.setProperty('--rx','0deg');card.style.setProperty('--ry','0deg');});
     });
+  }
+}
