@@ -920,6 +920,7 @@ class ReviewDefenseAPI:
             self.store.evidence[(user.organization_id, evidence_id)] = row
             self.store.evidence_facts[(user.organization_id, evidence_id)] = facts
             if self.repository is not None:
+                self.repository.put_evidence(user.organization_id, row)
                 for fact in facts:
                     self.repository.put_evidence_fact(user.organization_id, fact)
             self.store.audit_event(user.organization_id, user.user_id, "EVIDENCE_UPLOADED", f"evidence:{evidence_id}", sha256=obj.sha256, case_id=case_id)
