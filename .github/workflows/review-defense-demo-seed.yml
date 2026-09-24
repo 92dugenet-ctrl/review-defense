@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/review-defense-demo-seed.yml"
+      - "scripts/demo_seed.py"
+      - "src/api_server.py"
   workflow_dispatch:
     inputs:
       staging_url:
