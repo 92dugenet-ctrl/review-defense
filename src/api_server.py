@@ -940,10 +940,17 @@ class ReviewDefenseAPI:
         if method == "POST" and path.startswith("/v1/evidence/") and path.endswith("/verify") and len(path.split("/")) == 5:
             self._require_role(user, "OWNER", "ADMIN", "ANALYST")
             eid = path.split("/")[3]; row = self.store.evidence.get((user.organization_id, eid))
+            if row is None and self.repository is not None and hasattr(self.repository, "get_evidence"):
+                dbrow = self.repository.get_evidence(user.organization_id, eid)
+                if dbrow:
+                    row = dict(zip(("evidence_id","organization_id","case_id","filename","content_type","size_bytes","sha256","object_key","verified","created_by","verified_by","verified_at"), dbrow))
+                    self.store.evidence[(user.organization_id, eid)] = row
             if not row: raise APIError(404, "NOT_FOUND", "evidence not found")
             if not verify_integrity(self.store.vault.get(organization_id=user.organization_id, object_key=row["object_key"]), row["sha256"]):
                 raise APIError(409, "INTEGRITY_FAILURE", "stored evidence integrity check failed")
             row["verified"] = True; row["verified_by"] = user.user_id; row["verified_at"] = utc_now().isoformat()
+            if self.repository is not None and hasattr(self.repository, "update_evidence_verification"):
+                self.repository.update_evidence_verification(user.organization_id, eid, user.user_id, row["verified_at"])
             self.store.audit_event(user.organization_id, user.user_id, "EVIDENCE_VERIFIED", f"evidence:{eid}")
             return self._json(200, {"evidence": row})
         if method == "POST" and path.startswith("/v1/evidence/") and path.endswith("/facts/verify"):
