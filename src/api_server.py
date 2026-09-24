@@ -732,9 +732,10 @@ class ReviewDefenseAPI:
             return self._json(200,{"status":"accepted","access_token":raw,"token_type":"Bearer","expires_at":session.expires_at.isoformat(),"role":invitation["role"]})
         # V6.41 client monitoring: Google OAuth callback is public but bound to a signed, one-time state.
         if method == "GET" and path == "/v1/integrations/google/callback":
-            code=str(parse_qs(urlsplit(environ.get("QUERY_STRING","")).query if False else environ.get("QUERY_STRING","")).get("code",[""])[0])
-            state_value=str(parse_qs(environ.get("QUERY_STRING","")).get("state",[""])[0])
-            error_value=str(parse_qs(environ.get("QUERY_STRING","")).get("error",[""])[0])
+            query=parse_qs(environ.get("QUERY_STRING",""))
+            code=str(query.get("code",[""])[0])
+            state_value=str(query.get("state",[""])[0])
+            error_value=str(query.get("error",[""])[0])
             if error_value:
                 return 302, {"Location": "/app?page=client-monitoring&google=denied"}, b""
             if not code or not state_value: raise APIError(400,"GOOGLE_OAUTH_INVALID","Google OAuth callback is incomplete")
@@ -1760,7 +1761,7 @@ class ReviewDefenseAPI:
             status, headers, body = self._json(exc.status, {"error": {"code": exc.code, "message": exc.message, "details": exc.details}})
         except Exception:
             status, headers, body = self._json(500, {"error": {"code": "INTERNAL_ERROR", "message": "internal server error"}})
-        phrase = {200:"OK",201:"Created",400:"Bad Request",401:"Unauthorized",403:"Forbidden",404:"Not Found",409:"Conflict",413:"Payload Too Large",422:"Unprocessable Entity",429:"Too Many Requests",500:"Internal Server Error"}.get(status,"Error")
+        phrase = {200:"OK",201:"Created",302:"Found",400:"Bad Request",401:"Unauthorized",403:"Forbidden",404:"Not Found",409:"Conflict",413:"Payload Too Large",422:"Unprocessable Entity",429:"Too Many Requests",500:"Internal Server Error"}.get(status,"Error")
         elapsed = (_time.perf_counter() - started) * 1000
         self.telemetry.increment("http_requests_total", labels={"method": environ.get("REQUEST_METHOD", "GET"), "path": path, "status": str(status)})
         self.telemetry.observe_ms("http_request_duration_ms", elapsed, labels={"method": environ.get("REQUEST_METHOD", "GET"), "path": path})
