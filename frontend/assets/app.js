@@ -71,8 +71,8 @@ const pageHead=(id,count='')=>{const m=viewMeta[id]||[id,''];return `<div class=
 function shell(){
  const role=state.me?.role||'';
  const allowed={
-   CLIENT:new Set(['dashboard','reviews','cases','evidence','alerts','analytics']),
-   VIEWER:new Set(['dashboard','reviews','cases','analytics'])
+   CLIENT:new Set(['dashboard','client-monitoring','reviews','cases','evidence','alerts','analytics']),
+   VIEWER:new Set(['dashboard','client-monitoring','reviews','cases','analytics'])
  };
  const visible=allowed[role]?navItems.filter(([id])=>allowed[role].has(id)):navItems;
  document.body.classList.add('console-mode');document.body.innerHTML=`<div id="app"><aside class="sidebar" id="console-sidebar" aria-label="Navigation principale"><div class="brand">REVIEW<span>DEFENSE</span></div><button class="workspace-switcher" type="button" onclick="openCommandPalette()" aria-label="Ouvrir le sélecteur d’espace de travail"><span>⌘</span> Workspace <small>⌘K</small></button><nav id="nav">${visible.map(([id,label])=>`<button type="button" data-view="${id}" onclick="navigateTo('${id}')" aria-label="Ouvrir ${label}">${label}</button>`).join('')}</nav><div class="tenant" id="tenant"></div></aside><main><header><div><div class="eyebrow">REVIEW DEFENSE</div><h1 id="title">Dashboard</h1><p id="subtitle">Vue opérationnelle</p></div><div class="header-actions"><button class="icon-btn mobile-nav-toggle" type="button" onclick="toggleMobileNav()" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="console-sidebar">☰</button><button class="command-btn" type="button" onclick="openCommandPalette()">Rechercher <kbd>⌘ K</kbd></button><span id="role" class="pill"></span><button id="logout" class="ghost">Déconnexion</button></div></header><section id="content"></section></main></div><div id="toast" role="status" aria-live="polite"></div>`}
