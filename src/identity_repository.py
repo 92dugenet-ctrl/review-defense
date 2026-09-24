@@ -96,7 +96,7 @@ class IdentityRepository(PostgresAPIRepository):
         The token hash is the only lookup key; the raw bearer token is never persisted.
         This supports stateless request routing across multiple application workers.
         """
-        with self.transaction(None) as conn:
+        with self.transaction_without_tenant() as conn:
             with conn.cursor() as cur:
                 cur.execute(
                     "SELECT token_hash,user_id,organization_id,role,expires_at,revoked_at FROM api_sessions WHERE token_hash=%s",
