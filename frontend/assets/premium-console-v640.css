@@ -1,0 +1,399 @@
+/* Review Defense V6.40 — Premium Console Visual Layer
+   Frontend-only. No routes, API contracts, data models or backend behavior are changed. */
+
+:root{
+  --rd-bg:#f5f8fc;
+  --rd-surface:#ffffff;
+  --rd-surface-2:#f8fbff;
+  --rd-border:#dfe7f1;
+  --rd-border-strong:#cbd8e8;
+  --rd-text:#14233d;
+  --rd-text-2:#42546d;
+  --rd-muted:#718198;
+  --rd-blue:#1769e8;
+  --rd-blue-dark:#0d55c7;
+  --rd-blue-soft:#eaf3ff;
+  --rd-green:#16845a;
+  --rd-amber:#9a6b00;
+  --rd-red:#c43d45;
+  --rd-shadow:0 8px 28px rgba(25,62,105,.07);
+  --rd-shadow-hover:0 16px 42px rgba(25,62,105,.11);
+  --rd-radius:16px;
+}
+
+html{background:var(--rd-bg)}
+body.console-mode{
+  background:
+    radial-gradient(circle at 82% -8%,rgba(39,121,240,.09),transparent 28%),
+    linear-gradient(180deg,#f8fbff 0%,var(--rd-bg) 52%,#f3f7fb 100%);
+  color:var(--rd-text);
+}
+body.console-mode main{background:transparent;max-width:1600px}
+body.console-mode .sidebar{
+  width:252px;
+  background:rgba(255,255,255,.94);
+  border-right:1px solid var(--rd-border);
+  box-shadow:10px 0 35px rgba(28,66,108,.045);
+}
+body.console-mode .brand{letter-spacing:.08em;color:var(--rd-text);font-size:15px}
+body.console-mode .brand span{color:var(--rd-blue)}
+body.console-mode .tenant{
+  border-top:1px solid var(--rd-border);
+  padding-top:16px;
+  margin-top:18px;
+}
+body.console-mode .workspace-switcher{
+  background:linear-gradient(180deg,#fff,#f7faff);
+  border:1px solid var(--rd-border);
+  border-radius:12px;
+  box-shadow:0 3px 12px rgba(25,62,105,.035);
+}
+body.console-mode nav{gap:4px}
+body.console-mode nav button{
+  min-height:42px;
+  border-radius:10px;
+  color:#61728a;
+  font-size:12px;
+  font-weight:600;
+}
+body.console-mode nav button:hover{
+  background:#f2f7fd;
+  color:var(--rd-blue);
+  border-color:transparent;
+}
+body.console-mode nav button.active{
+  background:var(--rd-blue-soft);
+  color:var(--rd-blue);
+  border-color:#d4e5fb;
+  box-shadow:inset 3px 0 0 var(--rd-blue);
+}
+
+body.console-mode main{padding:32px 42px 60px}
+body.console-mode header{
+  margin-bottom:28px;
+  align-items:center;
+}
+body.console-mode header h1{
+  font-size:30px;
+  letter-spacing:-.045em;
+  line-height:1.05;
+}
+body.console-mode header p{font-size:12px;margin-top:7px}
+body.console-mode .header-actions{gap:8px}
+body.console-mode .header-actions .pill{
+  background:#fff;
+  border-color:var(--rd-border);
+  color:var(--rd-text-2);
+  box-shadow:0 2px 8px rgba(25,62,105,.035);
+}
+
+body.console-mode .card,
+body.console-mode .panel,
+body.console-mode .hero-card,
+body.console-mode .state-card,
+body.console-mode .rd-state{
+  background:rgba(255,255,255,.96);
+  border:1px solid var(--rd-border);
+  border-radius:var(--rd-radius);
+  box-shadow:var(--rd-shadow);
+}
+body.console-mode .card:hover,
+body.console-mode .panel:hover{
+  border-color:var(--rd-border-strong);
+  box-shadow:var(--rd-shadow-hover);
+  transform:translateY(-1px);
+}
+body.console-mode .hero-card{
+  background:
+    radial-gradient(circle at 100% 0,rgba(23,105,232,.09),transparent 36%),
+    linear-gradient(135deg,#fff,#f4f9ff);
+  padding:26px;
+}
+body.console-mode .hero-card h2{
+  font-size:28px;
+  letter-spacing:-.04em;
+}
+body.console-mode .hero-card p{
+  max-width:760px;
+  font-size:13px;
+  line-height:1.7;
+}
+
+body.console-mode .primary{
+  min-height:40px;
+  padding:10px 15px;
+  border-radius:10px;
+  background:linear-gradient(180deg,#2378ee,#1262db);
+  box-shadow:0 7px 18px rgba(23,105,232,.17);
+  font-size:12px;
+}
+body.console-mode .primary:hover{
+  background:linear-gradient(180deg,#1b70e5,#0d55c7);
+  box-shadow:0 11px 24px rgba(23,105,232,.22);
+}
+body.console-mode .ghost,
+body.console-mode .command-btn{
+  min-height:40px;
+  border-radius:10px;
+  background:#fff;
+  border-color:var(--rd-border);
+  color:#52647c;
+}
+body.console-mode .ghost:hover,
+body.console-mode .command-btn:hover{
+  background:#f4f8fd;
+  color:var(--rd-blue);
+  border-color:#cbdcf0;
+}
+
+body.console-mode .card-grid,
+body.console-mode .dashboard-kpis{gap:16px}
+body.console-mode .metric{
+  font-size:32px;
+  letter-spacing:-.045em;
+  color:var(--rd-text);
+}
+body.console-mode .metric-caption,
+body.console-mode .kpi-trend{
+  color:var(--rd-muted);
+}
+body.console-mode .kpi-card{
+  min-height:148px;
+  overflow:hidden;
+}
+body.console-mode .kpi-card:before{
+  content:"";
+  position:absolute;
+  left:18px;
+  top:18px;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--rd-blue);
+  box-shadow:0 0 0 5px rgba(23,105,232,.08);
+}
+
+body.console-mode .table-wrap{
+  border:1px solid var(--rd-border);
+  border-radius:14px;
+  overflow:auto;
+  background:#fff;
+}
+body.console-mode .table{background:#fff}
+body.console-mode .table th{
+  height:44px;
+  padding:10px 13px;
+  background:#f8fbff;
+  border-bottom:1px solid var(--rd-border);
+  color:#6d7d94;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+}
+body.console-mode .table td{
+  padding:14px 13px;
+  font-size:12px;
+  color:#40536d;
+}
+body.console-mode .table tbody tr{
+  transition:background .15s ease;
+}
+body.console-mode .table tbody tr:hover{background:#f7fbff}
+body.console-mode .table td:first-child{color:var(--rd-text);font-weight:650}
+
+body.console-mode .status,
+body.console-mode .readiness,
+body.console-mode .rd-status{
+  border-radius:999px;
+  font-weight:700;
+  background:#f3f6fa;
+  color:#52647c;
+}
+body.console-mode .readiness.ok,
+body.console-mode .rd-status--success{
+  background:#ecf9f2;
+  border-color:#bce5cf;
+  color:var(--rd-green);
+}
+body.console-mode .readiness.warn,
+body.console-mode .rd-status--warning{
+  background:#fff8e7;
+  border-color:#efdba7;
+  color:var(--rd-amber);
+}
+body.console-mode .rd-status--danger{
+  background:#fff1f2;
+  border-color:#f3c5c9;
+  color:var(--rd-red);
+}
+body.console-mode .rd-status--info{
+  background:#edf5ff;
+  border-color:#c7ddfa;
+  color:#175fc7;
+}
+
+body.console-mode .section-toolbar,
+body.console-mode .section-head{
+  margin-bottom:16px;
+}
+body.console-mode .section-toolbar h3,
+body.console-mode .section-head h3{
+  font-size:17px;
+  letter-spacing:-.02em;
+}
+body.console-mode .section-toolbar p,
+body.console-mode .section-head p{font-size:11px}
+
+body.console-mode .case-list{gap:9px}
+body.console-mode .case-row{
+  min-height:64px;
+  padding:15px 16px;
+  border-radius:12px;
+  background:#fff;
+  border-color:var(--rd-border);
+  box-shadow:0 2px 8px rgba(25,62,105,.025);
+}
+body.console-mode .case-row:hover{
+  background:#f8fbff;
+  border-color:#bdd4ed;
+}
+
+body.console-mode .workspace-grid{gap:16px}
+body.console-mode .workspace-grid .panel{padding:20px}
+body.console-mode .workspace-header{
+  padding:18px 20px;
+  border:1px solid var(--rd-border);
+  border-radius:16px;
+  background:linear-gradient(135deg,#fff,#f6faff);
+  box-shadow:var(--rd-shadow);
+}
+body.console-mode .workspace-stats{gap:10px}
+body.console-mode .workspace-stat{
+  background:#f8fbff!important;
+  border:1px solid var(--rd-border)!important;
+  border-radius:12px!important;
+}
+body.console-mode .rd-approval-gate{
+  background:linear-gradient(135deg,#fff,#f7fbff);
+  box-shadow:var(--rd-shadow);
+}
+body.console-mode .rd-approval-chain span{
+  border:1px solid var(--rd-border);
+}
+body.console-mode .rd-approval-chain .current{
+  box-shadow:0 0 0 3px rgba(23,105,232,.07);
+}
+
+body.console-mode .toolbar{
+  padding:10px;
+  margin-bottom:16px;
+  border:1px solid var(--rd-border);
+  border-radius:13px;
+  background:rgba(255,255,255,.8);
+}
+body.console-mode .toolbar input,
+body.console-mode .stack input,
+body.console-mode select{
+  min-height:40px;
+  border-radius:10px;
+  border-color:#d4dfeb;
+  color:var(--rd-text);
+  background:#fff;
+}
+body.console-mode .toolbar input:focus,
+body.console-mode .stack input:focus,
+body.console-mode select:focus{
+  border-color:#8bb9ef;
+  box-shadow:0 0 0 3px rgba(23,105,232,.10);
+}
+
+body.console-mode .empty,
+body.console-mode .state-card{
+  padding:28px;
+  background:#fff;
+  border-style:dashed;
+}
+body.console-mode .loading-bar{
+  background:linear-gradient(90deg,#eef3f8,#fff,#eef3f8);
+  border-color:var(--rd-border);
+}
+
+body.console-mode .modal-backdrop{
+  background:rgba(19,38,63,.28);
+  backdrop-filter:blur(5px);
+}
+body.console-mode .modal,
+body.console-mode .command-palette{
+  border-radius:18px;
+  background:#fff;
+  border-color:var(--rd-border);
+  box-shadow:0 28px 90px rgba(20,48,82,.20);
+}
+body.console-mode #toast{
+  right:26px;
+  bottom:26px;
+  border-radius:12px;
+  background:#fff;
+  border-color:var(--rd-border);
+  box-shadow:0 14px 40px rgba(20,48,82,.15);
+}
+
+body.console-mode .audit-list{background:#fff;border:1px solid var(--rd-border);border-radius:14px;padding:4px 16px}
+body.console-mode .audit-item{padding:15px 4px;border-color:#edf2f7}
+body.console-mode .audit-dot{border-color:var(--rd-blue);box-shadow:0 0 0 4px rgba(23,105,232,.08)}
+
+body.console-mode .pipeline-large{gap:9px}
+body.console-mode .pipeline-step{
+  background:#f8fbff;
+  border-color:var(--rd-border);
+  border-radius:12px;
+}
+body.console-mode .pipeline-step strong{color:var(--rd-text)}
+body.console-mode .pipeline-large>i{color:#9aabc0}
+
+body.console-mode .auth-page{
+  background:
+    radial-gradient(circle at 80% 10%,rgba(23,105,232,.11),transparent 28%),
+    linear-gradient(180deg,#f7faff,#fff);
+}
+body.console-mode .auth-card{
+  border-radius:20px;
+  background:rgba(255,255,255,.97);
+  border-color:var(--rd-border);
+  box-shadow:0 28px 90px rgba(25,62,105,.14);
+}
+body.console-mode .auth-form{
+  border:1px solid var(--rd-border);
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 8px 28px rgba(25,62,105,.05);
+}
+body.console-mode .auth-mark{
+  background:linear-gradient(135deg,#1769e8,#0d55c7)!important;
+  border:0;
+  box-shadow:0 7px 18px rgba(23,105,232,.2);
+}
+
+@media(max-width:1100px){
+  body.console-mode main{padding:26px 28px 50px}
+  body.console-mode .dashboard-kpis{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:760px){
+  body.console-mode main{padding:14px 14px 42px}
+  body.console-mode header{
+    margin:0 -14px 18px;
+    padding:13px 14px;
+    background:rgba(248,251,255,.94);
+    border-bottom:1px solid var(--rd-border);
+    backdrop-filter:blur(16px);
+  }
+  body.console-mode header h1{font-size:24px}
+  body.console-mode .card-grid,
+  body.console-mode .dashboard-kpis{grid-template-columns:1fr;gap:10px}
+  body.console-mode .hero-card{padding:20px}
+  body.console-mode .hero-card h2{font-size:23px}
+  body.console-mode .toolbar{display:grid;grid-template-columns:1fr}
+  body.console-mode .table-wrap{border-radius:11px}
+  body.console-mode .dashboard-grid,
+  body.console-mode .dashboard-bottom{grid-template-columns:1fr}
+}
