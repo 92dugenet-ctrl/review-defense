@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import base64
 import json
+import os
 import secrets
 import time
 import uuid
@@ -50,6 +51,7 @@ from .recovery_email import SMTPConfig, send_recovery_email, send_verification_e
 from .deployment import DeploymentConfig, security_headers
 from .observability import InMemoryTelemetry, TraceContext, health_check
 from .seo_renderer import is_seo_path, render_page, sitemap, robots
+from .google_business_profile import OAuthStateManager, GoogleOAuthClient, OAuthTokenSet, GoogleBusinessProfileClient
 
 
 class APIError(Exception):
@@ -113,6 +115,10 @@ class MemoryStore:
         self.recovery_tokens: dict[str, dict[str, Any]] = {}
         self.email_verification_tokens: dict[str, dict[str, Any]] = {}
         self.email_verified: dict[str, bool] = {}
+        self.organization_profiles: dict[str, dict[str, Any]] = {}
+        self.client_documents: dict[tuple[str, str], dict[str, Any]] = {}
+        self.google_oauth_states: dict[str, dict[str, Any]] = {}
+        self.google_connections: dict[tuple[str, str], dict[str, Any]] = {}
 
     def audit_event(self, org: str, actor: str | None, action: str, resource: str, **meta: Any) -> None:
         self.audit.append({
@@ -384,6 +390,37 @@ class ReviewDefenseAPI:
             lines.append(f"http_request_duration_ms{{{label_text},quantile=\"max\"}} {max(values):.3f}")
         body = ("\n".join(lines) + "\n").encode()
         return 200, {"Content-Type": "text/plain; version=0.0.4; charset=utf-8"}, body
+
+    def _google_secret(self) -> bytes:
+        raw = os.getenv("REVIEW_DEFENSE_GOOGLE_TOKEN_KEY", "").strip()
+        if raw:
+            from cryptography.fernet import Fernet
+            try: Fernet(raw.encode("ascii")); return raw.encode("ascii")
+            except Exception as exc: raise APIError(500,"GOOGLE_TOKEN_KEY_INVALID","Google token encryption key is invalid") from exc
+        if self.config.production: raise APIError(503,"GOOGLE_INTEGRATION_NOT_CONFIGURED","Google token encryption is not configured")
+        if not hasattr(self,"_dev_google_key"): self._dev_google_key=__import__("cryptography.fernet",fromlist=["Fernet"]).Fernet.generate_key()
+        return self._dev_google_key
+
+    def _google_oauth(self):
+        client_id=os.getenv("GOOGLE_OAUTH_CLIENT_ID","").strip()
+        client_secret=os.getenv("GOOGLE_OAUTH_CLIENT_SECRET","").strip()
+        if not client_id or not client_secret: raise APIError(503,"GOOGLE_INTEGRATION_NOT_CONFIGURED","Google OAuth is not configured")
+        redirect_uri=self.config.public_base_url.rstrip("/")+"/v1/integrations/google/callback"
+        secret=os.getenv("REVIEW_DEFENSE_GOOGLE_STATE_KEY","").encode("utf-8") or self._google_secret()
+        return GoogleOAuthClient(client_id=client_id,client_secret=client_secret), OAuthStateManager(secret)
+
+    def _google_connection_payload(self, organization_id: str):
+        if self.repository is not None and hasattr(self.repository,"list_google_connections"):
+            rows=self.repository.list_google_connections(organization_id)
+        else:
+            rows=[(v["connection_id"],v.get("google_account_id"),v.get("google_location_id"),v.get("location_title"),v.get("expires_at"),v.get("status"),v.get("created_by"),v.get("updated_at")) for (org,_),v in self.store.google_connections.items() if org==organization_id]
+        return [{"connection_id":str(r[0]),"google_account_id":r[1],"google_location_id":r[2],"location_title":r[3],"expires_at":_iso_value(r[4]),"status":r[5],"created_by":str(r[6]) if r[6] else None,"updated_at":_iso_value(r[7])} for r in rows]
+
+    def _client_profile(self, organization_id: str):
+        if organization_id not in self.store.organization_profiles and self.repository is not None and hasattr(self.repository,"get_organization_profile"):
+            row=self.repository.get_organization_profile(organization_id)
+            if row: self.store.organization_profiles[organization_id]=dict(zip(("legal_name","website","phone","address","city","postal_code","country","sector","employee_count","description","updated_at"),row))
+        return self.store.organization_profiles.get(organization_id,{})
 
     def handle(self, environ):
         path = urlsplit(environ.get("PATH_INFO", "/")).path.rstrip("/") or "/"
