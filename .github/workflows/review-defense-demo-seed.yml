@@ -1,12 +1,9 @@
 name: Review Defense demo seed
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/review-defense-demo-seed.yml"
-      - "scripts/demo_seed.py"
-      - "src/api_server.py"
+  workflow_run:
+    workflows: ["Review Defense staging"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       staging_url:
@@ -23,10 +20,13 @@ concurrency:
 
 jobs:
   seed:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
