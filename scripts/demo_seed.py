@@ -148,7 +148,7 @@ def ensure_evidence(base: str, token: str, case_id: str) -> list[dict]:
     if status != 200:
         raise RuntimeError(f"workspace evidence lookup failed: HTTP {status}")
     existing = {}
-    for item in payload.get("evidence_tasks", []):
+    for item in payload.get("evidence_items", []):
         if item.get("filename"):
             existing[item["filename"]] = item
 
