@@ -53,6 +53,71 @@ class PostgresRepository:
         finally:
             conn.close()
 
+    def create_privacy_request(self, organization_id: str, requester_user_id: str, request_type: str, details: dict, due_at: str):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO privacy_requests
+                      (organization_id, requester_user_id, request_type, details, due_at)
+                    VALUES (%s,%s,%s,%s::jsonb,%s)
+                    RETURNING id, status, created_at, updated_at, due_at
+                """, (organization_id, requester_user_id, request_type, __import__("json").dumps(details), due_at))
+                return cur.fetchone()
+
+    def list_privacy_requests(self, organization_id: str, requester_user_id: str | None = None):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                if requester_user_id:
+                    cur.execute("""
+                        SELECT id, organization_id, requester_user_id, request_type, status,
+                               details, response_note, due_at, created_at, updated_at
+                        FROM privacy_requests
+                        WHERE requester_user_id=%s
+                        ORDER BY created_at DESC
+                    """, (requester_user_id,))
+                else:
+                    cur.execute("""
+                        SELECT id, organization_id, requester_user_id, request_type, status,
+                               details, response_note, due_at, created_at, updated_at
+                        FROM privacy_requests
+                        ORDER BY created_at DESC
+                    """)
+                return cur.fetchall()
+
+    def update_privacy_request(self, organization_id: str, request_id: str, status: str, response_note: str | None = None):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    UPDATE privacy_requests
+                    SET status=%s, response_note=%s, updated_at=now()
+                    WHERE id=%s
+                    RETURNING id, status, response_note, due_at, created_at, updated_at
+                """, (status, response_note, request_id))
+                return cur.fetchone()
+
+    def create_privacy_consent(self, organization_id: str, user_id: str, purpose: str, policy_version: str, granted: bool):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO privacy_consents
+                      (organization_id, user_id, purpose, policy_version, granted, withdrawn_at)
+                    VALUES (%s,%s,%s,%s,%s,%s)
+                    RETURNING id, purpose, policy_version, granted, granted_at, withdrawn_at
+                """, (organization_id, user_id, purpose, policy_version, bool(granted),
+                      None if granted else __import__("datetime").datetime.now(__import__("datetime").timezone.utc)))
+                return cur.fetchone()
+
+    def list_privacy_consents(self, organization_id: str, user_id: str):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT id, purpose, policy_version, granted, granted_at, withdrawn_at
+                    FROM privacy_consents
+                    WHERE user_id=%s
+                    ORDER BY granted_at DESC
+                """, (user_id,))
+                return cur.fetchall()
+
     def ping(self) -> bool:
         """Check database connectivity without requiring tenant context."""
         conn = self._connect()
