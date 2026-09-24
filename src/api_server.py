@@ -1284,6 +1284,14 @@ class ReviewDefenseAPI:
                     )
                     self.store.cases[(user.organization_id, cid)] = case
             if not case: raise APIError(404, "NOT_FOUND", "case not found")
+            if self.repository is not None and hasattr(self.repository, "list_evidence"):
+                for erow in self.repository.list_evidence(user.organization_id, cid):
+                    evidence_id = str(erow[0])
+                    self.store.evidence[(user.organization_id, evidence_id)] = dict(zip(("evidence_id","organization_id","case_id","filename","content_type","size_bytes","sha256","object_key","verified","created_by","verified_by","verified_at"), erow))
+                if hasattr(self.repository, "list_evidence_facts"):
+                    for frow in self.repository.list_evidence_facts(user.organization_id, cid):
+                        fact = dict(zip(("fact_id","evidence_id","case_id","key","kind","value","source_location","verified","verified_by","verified_at"), frow))
+                        self.store.evidence_facts.setdefault((user.organization_id, str(frow[1])), []).append(fact)
             if (user.organization_id, case.review_id) not in self.store.reviews and self.repository is not None and hasattr(self.repository, "get_review"):
                 review_row = self.repository.get_review(user.organization_id, case.review_id)
                 if review_row:
