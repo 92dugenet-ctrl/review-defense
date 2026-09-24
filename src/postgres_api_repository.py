@@ -443,3 +443,66 @@ class PostgresAPIRepository(PostgresRepository):
     def get_user_by_id(self, organization_id: str, user_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur: cur.execute("SELECT u.id,u.email,u.password_hash,m.role FROM users u JOIN memberships m ON m.user_id=u.id WHERE m.organization_id=%s AND u.id=%s", (organization_id,user_id)); return cur.fetchone()
+
+    def get_organization_profile(self, organization_id: str):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT legal_name,website,phone,address,city,postal_code,country,sector,employee_count,description,updated_at FROM organization_profiles WHERE organization_id=%s", (organization_id,))
+                return cur.fetchone()
+
+    def upsert_organization_profile(self, organization_id: str, profile: Mapping[str,Any]):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""INSERT INTO organization_profiles(organization_id,legal_name,website,phone,address,city,postal_code,country,sector,employee_count,description)
+                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                ON CONFLICT(organization_id) DO UPDATE SET legal_name=EXCLUDED.legal_name,website=EXCLUDED.website,phone=EXCLUDED.phone,address=EXCLUDED.address,city=EXCLUDED.city,postal_code=EXCLUDED.postal_code,country=EXCLUDED.country,sector=EXCLUDED.sector,employee_count=EXCLUDED.employee_count,description=EXCLUDED.description,updated_at=now()
+                RETURNING legal_name,website,phone,address,city,postal_code,country,sector,employee_count,description,updated_at""",
+                (organization_id,profile.get("legal_name"),profile.get("website"),profile.get("phone"),profile.get("address"),profile.get("city"),profile.get("postal_code"),profile.get("country"),profile.get("sector"),profile.get("employee_count"),profile.get("description")))
+                return cur.fetchone()
+
+    def put_client_document(self, organization_id: str, document: Mapping[str,Any]):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""INSERT INTO client_documents(document_id,organization_id,filename,content_type,size_bytes,sha256,object_key,category,created_by)
+                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                (document["document_id"],organization_id,document["filename"],document["content_type"],document["size_bytes"],document["sha256"],document["object_key"],document.get("category","GENERAL"),document.get("created_by")))
+
+    def list_client_documents(self, organization_id: str):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT document_id,organization_id,filename,content_type,size_bytes,sha256,object_key,category,created_by,created_at FROM client_documents WHERE organization_id=%s ORDER BY created_at DESC", (organization_id,))
+                return cur.fetchall()
+
+    def save_google_oauth_state(self, organization_id: str, state: str, user_id: str, code_verifier: str, expires_at: str):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("INSERT INTO google_oauth_states(state,organization_id,user_id,code_verifier,expires_at) VALUES(%s,%s,%s,%s,%s) ON CONFLICT(state) DO UPDATE SET code_verifier=EXCLUDED.code_verifier,expires_at=EXCLUDED.expires_at", (state,organization_id,user_id,code_verifier,expires_at))
+
+    def consume_google_oauth_state(self, organization_id: str, state: str):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT state,organization_id,user_id,code_verifier,expires_at FROM google_oauth_states WHERE state=%s FOR UPDATE", (state,))
+                row=cur.fetchone()
+                if row:
+                    cur.execute("DELETE FROM google_oauth_states WHERE state=%s", (state,))
+                return row
+
+    def save_google_connection(self, organization_id: str, connection: Mapping[str,Any]):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""INSERT INTO google_connections(connection_id,organization_id,google_account_id,google_location_id,location_title,encrypted_access_token,encrypted_refresh_token,expires_at,status,created_by)
+                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                ON CONFLICT(connection_id) DO UPDATE SET google_account_id=EXCLUDED.google_account_id,google_location_id=EXCLUDED.google_location_id,encrypted_access_token=EXCLUDED.encrypted_access_token,encrypted_refresh_token=EXCLUDED.encrypted_refresh_token,expires_at=EXCLUDED.expires_at,status=EXCLUDED.status,updated_at=now()""",
+                (connection["connection_id"],organization_id,connection.get("google_account_id"),connection.get("google_location_id"),connection.get("location_title"),connection["encrypted_access_token"],connection.get("encrypted_refresh_token"),connection["expires_at"],connection.get("status","CONNECTED"),connection.get("created_by")))
+
+    def list_google_connections(self, organization_id: str):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT connection_id,google_account_id,google_location_id,location_title,expires_at,status,created_by,updated_at FROM google_connections WHERE organization_id=%s ORDER BY updated_at DESC", (organization_id,))
+                return cur.fetchall()
+
+    def get_google_connection(self, organization_id: str, connection_id: str):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT connection_id,google_account_id,google_location_id,location_title,encrypted_access_token,encrypted_refresh_token,expires_at,status,created_by,updated_at FROM google_connections WHERE organization_id=%s AND connection_id=%s", (organization_id,connection_id))
+                return cur.fetchone()
