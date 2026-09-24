@@ -1,4 +1,4 @@
-"""V6.2 PostgreSQL identity/session repository extensions."""
+""""V6.2 PostgreSQL identity/session repository extensions."""
 from __future__ import annotations
 import json
 import uuid
@@ -91,15 +91,13 @@ class IdentityRepository(PostgresAPIRepository):
                 return cur.fetchone()
 
     def get_session_by_token_hash(self, token_hash: str):
-        """Load a session without requiring the caller to know its tenant first.
+        """Load a persisted session before tenant context is known.
 
-        The token hash is the only lookup key; the raw bearer token is never persisted.
-        This supports stateless request routing across multiple application workers.
+        The token hash is the only lookup key and the raw bearer token is never
+        persisted. The database function is intentionally narrow and returns
+        only the session row needed to establish the authenticated tenant.
         """
         with self.transaction_without_tenant() as conn:
             with conn.cursor() as cur:
-                cur.execute(
-                    "SELECT token_hash,user_id,organization_id,role,expires_at,revoked_at FROM api_sessions WHERE token_hash=%s",
-                    (token_hash,),
-                )
+                cur.execute("SELECT token_hash,user_id,organization_id,role,expires_at,revoked_at FROM lookup_api_session_by_token_hash(%s)", (token_hash,))
                 return cur.fetchone()
