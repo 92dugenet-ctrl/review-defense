@@ -887,7 +887,12 @@ class ReviewDefenseAPI:
         if method == "POST" and path == "/v1/evidence":
             body = self._body(environ)
             case_id = str(body.get("case_id", ""))
-            if not case_id or (user.organization_id, case_id) not in self.store.cases:
+            case_key = (user.organization_id, case_id)
+            if case_key not in self.store.cases and self.repository is not None and hasattr(self.repository, "get_case_persistent"):
+                row = self.repository.get_case_persistent(user.organization_id, case_id)
+                if row:
+                    self.store.cases[case_key] = Case(case_id=str(row[0]), organization_id=str(row[1]), review_id=str(row[2]), status=str(row[3]), decision_id=str(row[4]) if row[4] is not None else None, snapshot_sha256=str(row[5]) if row[5] is not None else None, created_at=_iso_value(row[6]))
+            if case_key not in self.store.cases:
                 raise APIError(404, "NOT_FOUND", "case not found")
             filename = str(body.get("filename", "")); content_type = str(body.get("content_type", "")); encoded = body.get("content_base64")
             if not filename or not isinstance(encoded, str):
