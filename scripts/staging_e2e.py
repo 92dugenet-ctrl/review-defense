@@ -120,9 +120,13 @@ def main() -> int:
                     }
                     page.goto(base + "/app", wait_until="networkidle")
                     try:
-                        page.wait_for_selector("#login", timeout=10000)
+                        page.wait_for_function(
+                            "() => !!document.querySelector('.sidebar, #login')",
+                            timeout=10000,
+                        )
                     except Exception as exc:
                         report["browser_diagnostic"] = {
+                            "stage": "initial_app_boot",
                             "url": page.url,
                             "title": page.title(),
                             "ready_state": page.evaluate("document.readyState"),
@@ -137,6 +141,22 @@ def main() -> int:
                             ],
                         }
                         raise exc
+                    if page.locator("#login").count() and page.locator("#login").is_visible():
+                        report["browser_diagnostic"] = {
+                            "stage": "initial_app_boot",
+                            "reason": "app route opened the login screen instead of restoring the authenticated session",
+                            "url": page.url,
+                            "title": page.title(),
+                            "ready_state": page.evaluate("document.readyState"),
+                            "body_text": page.locator("body").inner_text()[:4000],
+                            "page_errors": browser_errors[-20:],
+                            "console": browser_console[-50:],
+                            "asset_responses": [
+                                x for x in asset_responses
+                                if "/assets/app.js" in x["url"] or "/assets/public.js" in x["url"] or "/assets/app.css" in x["url"]
+                            ],
+                        }
+                        raise AssertionError("authenticated browser session was not restored at /app")
 
                     page.locator('#login input[name="email"]').fill(email)
                     page.locator('#login input[name="organization_id"]').fill(org)
