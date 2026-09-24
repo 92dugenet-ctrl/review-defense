@@ -1306,8 +1306,10 @@ class ReviewDefenseAPI:
                     ReviewSummary(review.review_id, review.rating, review.text, review.published_at),
                     claim_views, policy_views, evidence, timeline, contradiction_views, coverage
                 )
+                review_payload = asdict(workspace.review)
+                review_payload.update({"author_display_name": review.author_display_name, "source": review.source, "language": review.language, "review_url": review.review_url})
                 return self._json(200, {
-                    "workspace": asdict(workspace),
+                    "workspace": {**asdict(workspace), "review": review_payload},
                     "evidence_tasks": [asdict(t) for t in tasks],
                     "requires_human_review": case_requires_human_review(workspace),
                     "decision": asdict(self.store.decisions[(user.organization_id, case.decision_id)]) if case.decision_id and (user.organization_id, case.decision_id) in self.store.decisions else None,
