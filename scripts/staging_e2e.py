@@ -175,16 +175,9 @@ def main() -> int:
                         }
                         raise AssertionError("authenticated browser session was not restored at /app")
 
-                    page.locator('#login input[name="email"]').fill(email)
-                    page.locator('#login input[name="organization_id"]').fill(org)
-                    page.locator('#login input[name="password"]').fill(password)
-                    page.locator('#login button[type="submit"]').click()
-                    if mfa_secret:
-                        page.wait_for_selector('#login input[name="mfa_code"]', timeout=10000)
-                        from src.mfa import totp_code
-                        page.locator('#login input[name="mfa_code"]').fill(totp_code(mfa_secret))
-                        page.locator('#login button[type="submit"]').click()
-
+                    # Session restoration succeeded. Continue directly with the authenticated
+                    # console; do not perform a second login, which would invalidate the
+                    # purpose of this multi-worker restoration test.
                     page.wait_for_selector(".sidebar", timeout=10000)
                     page.wait_for_selector("#console-sidebar", timeout=5000)
                     page.wait_for_selector("#content", timeout=5000)
