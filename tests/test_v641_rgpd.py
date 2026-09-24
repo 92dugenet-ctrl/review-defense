@@ -4,7 +4,7 @@ ROOT = Path(__file__).parents[1]
 
 
 def test_v641_rgpd_migration_contains_tenant_isolation():
-    sql = (ROOT / "migrations" / "002_rgpd_privacy_workflow.sql").read_text(encoding="utf-8")
+    sql = (ROOT / "migrations" / "024_v641_rgpd_privacy_workflow.sql").read_text(encoding="utf-8")
     assert "privacy_requests" in sql
     assert "privacy_consents" in sql
     assert "ENABLE ROW LEVEL SECURITY" in sql
