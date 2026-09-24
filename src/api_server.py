@@ -730,6 +730,52 @@ class ReviewDefenseAPI:
                 self.repository.put_session(invitation["organization_id"],session.token_hash,uid,invitation["role"],session.expires_at.isoformat())
             self.store.audit_event(invitation["organization_id"],uid,"INVITATION_ACCEPTED",f"invitation:{invitation['invitation_id']}")
             return self._json(200,{"status":"accepted","access_token":raw,"token_type":"Bearer","expires_at":session.expires_at.isoformat(),"role":invitation["role"]})
+        # V6.41 client monitoring: Google OAuth callback is public but bound to a signed, one-time state.
+        if method == "GET" and path == "/v1/integrations/google/callback":
+            code=str(parse_qs(urlsplit(environ.get("QUERY_STRING","")).query if False else environ.get("QUERY_STRING","")).get("code",[""])[0])
+            state_value=str(parse_qs(environ.get("QUERY_STRING","")).get("state",[""])[0])
+            error_value=str(parse_qs(environ.get("QUERY_STRING","")).get("error",[""])[0])
+            if error_value:
+                return 302, {"Location": "/app?page=client-monitoring&google=denied"}, b""
+            if not code or not state_value: raise APIError(400,"GOOGLE_OAUTH_INVALID","Google OAuth callback is incomplete")
+            _, state_manager=self._google_oauth()
+            try: state_manager.verify(state_value)
+            except Exception as exc: raise APIError(400,"GOOGLE_OAUTH_STATE_INVALID","Google OAuth state is invalid or expired") from exc
+            state_row=None
+            if self.repository is not None and hasattr(self.repository,"consume_google_oauth_state"):
+                # The signed state carries no tenant data; resolve candidate tenant only from a short-lived in-memory copy.
+                state_row=self.store.google_oauth_states.pop(state_value,None)
+                if state_row is None:
+                    raise APIError(400,"GOOGLE_OAUTH_STATE_INVALID","Google OAuth state is no longer available")
+            else:
+                state_row=self.store.google_oauth_states.pop(state_value,None)
+            if not state_row: raise APIError(400,"GOOGLE_OAUTH_STATE_INVALID","Google OAuth state is invalid or already used")
+            org_id=str(state_row["organization_id"]); user_id=str(state_row["user_id"]); verifier=str(state_row["code_verifier"])
+            oauth_client,_=self._google_oauth()
+            token=oauth_client.exchange_code(code=code,redirect_uri=self.config.public_base_url.rstrip("/")+"/v1/integrations/google/callback",code_verifier=verifier)
+            accounts_client=GoogleBusinessProfileClient(organization_id=org_id,access_token=token.access_token)
+            accounts,_=accounts_client.list_accounts()
+            locations=[]
+            for account in accounts:
+                locs,_=accounts_client.list_locations(account.name)
+                locations.extend((account,loc) for loc in locs)
+            from cryptography.fernet import Fernet
+            f=Fernet(self._google_secret())
+            connection_id=str(uuid.uuid4())
+            account,loc=(locations[0] if len(locations)==1 else (None,None))
+            conn={"connection_id":connection_id,"google_account_id":account.name if account else None,"google_location_id":loc.name if loc else None,"location_title":loc.location_name if loc else None,"encrypted_access_token":f.encrypt(token.access_token.encode()).decode(),"encrypted_refresh_token":f.encrypt(token.refresh_token.encode()).decode() if token.refresh_token else None,"expires_at":__import__("datetime").datetime.fromtimestamp(token.expires_at,__import__("datetime").timezone.utc).isoformat(),"status":"CONNECTED","created_by":user_id,"updated_at":utc_now().isoformat()}
+            self.store.google_connections[(org_id,connection_id)]=conn
+            if self.repository is not None and hasattr(self.repository,"save_google_connection"): self.repository.save_google_connection(org_id,conn)
+            if account and loc:
+                sync=accounts_client.list_reviews(account.name,loc.name,page_size=50,order_by="updateTime desc")
+                for review in sync.items:
+                    self.store.reviews[(org_id,review.review_id)]=review
+                    if self.repository is not None and hasattr(self.repository,"upsert_review"): self.repository.upsert_review(org_id,asdict(review))
+            if self.repository is not None and hasattr(self.repository,"security_event"): self.repository.security_event(org_id,user_id,"GOOGLE_CONNECTED",user_id,{"connection_id":connection_id,"locations":len(locations)})
+            self.store.audit_event(org_id,user_id,"GOOGLE_CONNECTED",f"connection:{connection_id}",locations=len(locations))
+            target="/app?page=client-monitoring&google=connected&locations="+str(len(locations))
+            return 302, {"Location": target, "Cache-Control":"no-store"}, b""
+
         user = self._auth(environ)
         # All v1 routes are tenant-bound to the authenticated user. There is no organization_id override.
         if method == "POST" and path == "/v1/auth/email-verification/request":
