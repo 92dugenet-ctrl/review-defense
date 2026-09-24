@@ -122,6 +122,27 @@ def login(base: str) -> str:
     return str(token)
 
 
+def wait_for_live_contract(base: str, token: str, cases: dict) -> None:
+    """Wait until the deployed API exposes the source-preservation fix."""
+    import time
+    existing = next((item for item in cases.get("items", []) if item.get("review_id") == DEMO_REVIEW_ID), None)
+    if not existing:
+        return
+    case_id = str(existing["case_id"])
+    last = None
+    for _ in range(36):
+        status, payload = request_json(base, "GET", f"/v1/cases/{case_id}/workspace", token=token)
+        if status == 200:
+            source = payload.get("workspace", {}).get("review", {}).get("source")
+            if source == "GOOGLE":
+                return
+            last = f"workspace source={source!r}"
+        else:
+            last = f"HTTP {status}"
+        time.sleep(5)
+    raise RuntimeError(f"live deployment did not expose the new workspace contract: {last}")
+
+
 def ensure_evidence(base: str, token: str, case_id: str) -> list[dict]:
     status, payload = request_json(base, "GET", "/v1/evidence", token=token)
     if status != 200:
@@ -211,6 +232,10 @@ def seed_demo(base: str, token: str) -> dict:
     status, cases = request_json(base, "GET", "/v1/cases", token=token)
     if status != 200:
         raise RuntimeError(f"demo case lookup failed: HTTP {status} {cases}")
+    wait_for_live_contract(base, token, cases)
+    status, cases = request_json(base, "GET", "/v1/cases", token=token)
+    if status != 200:
+        raise RuntimeError(f"demo case lookup failed after deployment wait: HTTP {status} {cases}")
     existing = next((x for x in cases.get("items", []) if x.get("review_id") == DEMO_REVIEW_ID), None)
 
     if existing:
