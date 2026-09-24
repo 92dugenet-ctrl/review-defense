@@ -16,7 +16,7 @@ from dataclasses import asdict, dataclass
 from typing import Any, Callable, Mapping
 from urllib.parse import parse_qs, urlsplit
 
-from .evidence_vault import InMemoryObjectStore, sign_download_url, verify_integrity
+from .evidence_vault import InMemoryObjectStore, FilesystemObjectStore, sign_download_url, verify_integrity
 from .security_hardening import RateLimiter, Session, generate_session_token, hash_password, verify_password, utc_now, hash_token
 from .app_shell import SessionContext, can_access
 from .decision_workspace import (
@@ -1693,6 +1693,10 @@ class ReviewDefenseAPI:
 
 def create_app(*, store: MemoryStore | None = None, repository=None, config: ProductionConfig | None = None) -> ReviewDefenseAPI:
     config = config or ProductionConfig.from_env()
+    if store is None:
+        store = MemoryStore()
+        if config.production:
+            store.vault = FilesystemObjectStore(config.evidence_storage_root)
     if repository is None and config.database_dsn:
         from .postgres_api_repository import PostgresAPIRepository
         repository = PostgresAPIRepository(config.database_dsn)
