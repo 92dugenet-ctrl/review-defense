@@ -1811,7 +1811,7 @@ class ReviewDefenseAPI:
             start_response("200 OK", [("Content-Type","application/xml; charset=utf-8"),("Content-Length",str(len(body))),("X-Request-ID",trace_id)])
             return [body]
         if path == "/" :
-            path = "/landing.html"
+            path = "/index.html"
         elif path == "/app" or path == "/app/":
             path = "/index.html"
         elif path in {"/produit/","/comment-ca-marche/","/services/","/tarifs/","/ressources/","/contact/"}:
