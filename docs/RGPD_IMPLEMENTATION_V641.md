@@ -39,10 +39,12 @@ Types de demandes supportés :
 
 ## Base PostgreSQL
 
-La migration `002_rgpd_privacy_workflow.sql` crée :
+La migration `024_v641_rgpd_privacy_workflow.sql` crée :
 
 - `privacy_requests`
 - `privacy_consents`
+
+Le numéro `024` est volontaire : la migration `002_v59_google_sync.sql` occupe déjà la version `002`. Le runner identifie les migrations par leur numéro, qui doit donc rester unique.
 
 Les deux tables sont protégées par PostgreSQL Row Level Security et la variable de transaction `app.organization_id`.
 
