@@ -2,7 +2,7 @@ name: Review Defense staging
 
 on:
   push:
-    branches: [main]
+    branches: [main, feature/paypal-billing-v1]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -140,7 +140,7 @@ jobs:
         run: python scripts/uat_v640_certification.py
 
   ecloudserv-staging:
-    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch' }}
     needs:
       - contract-and-tests
       - postgres-integration
