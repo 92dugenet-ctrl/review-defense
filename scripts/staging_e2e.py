@@ -55,6 +55,7 @@ def main() -> int:
         password = os.environ["E2E_PASSWORD"]
         org = os.environ["E2E_ORGANIZATION_ID"]
         mfa_secret = os.getenv("E2E_MFA_SECRET", "")
+        access_token = None
 
         if mfa_secret:
             status, payload = api_login(base, email, org, password)
@@ -67,11 +68,15 @@ def main() -> int:
                 report["mfa_login"] = {"status": status}
                 if status != 200 or not payload.get("access_token"):
                     report["error"] = "MFA login failed"
+                else:
+                    access_token = payload["access_token"]
         else:
             status, payload = api_login(base, email, org, password)
             report["password_login"] = {"status": status}
             if status != 200 or not payload.get("access_token"):
                 report["error"] = "staging password login failed"
+            else:
+                access_token = payload["access_token"]
 
         if "error" not in report:
             try:
@@ -118,6 +123,18 @@ def main() -> int:
                         "root_url": base + "/",
                         "login_cta": "PASS",
                     }
+                    # The API login above creates the real server-side session, but
+                    # the browser has its own localStorage token. Seed that browser
+                    # context with the token returned by the authenticated API login
+                    # before opening /app; this tests the actual multi-worker session
+                    # restoration path rather than accidentally testing two unrelated
+                    # clients.
+                    if not access_token:
+                        raise AssertionError("authenticated API login did not return an access token")
+                    page.evaluate(
+                        "(token) => localStorage.setItem('rd_token', token)",
+                        access_token,
+                    )
                     page.goto(base + "/app", wait_until="networkidle")
                     try:
                         page.wait_for_function(
