@@ -506,3 +506,12 @@ class PostgresAPIRepository(PostgresRepository):
             with conn.cursor() as cur:
                 cur.execute("SELECT connection_id,google_account_id,google_location_id,location_title,encrypted_access_token,encrypted_refresh_token,expires_at,status,created_by,updated_at FROM google_connections WHERE organization_id=%s AND connection_id=%s", (organization_id,connection_id))
                 return cur.fetchone()
+
+    def consume_google_oauth_state_by_state(self, state: str):
+        with self.transaction_without_tenant() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT state,organization_id,user_id,code_verifier,expires_at FROM google_oauth_states WHERE state=%s FOR UPDATE", (state,))
+                row=cur.fetchone()
+                if row:
+                    cur.execute("DELETE FROM google_oauth_states WHERE state=%s", (state,))
+                return row
