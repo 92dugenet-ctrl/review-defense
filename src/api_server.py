@@ -788,13 +788,46 @@ class ReviewDefenseAPI:
 
         if method == "GET" and path == "/v1/privacy/requests":
             self._require_role(user, "OWNER", "ADMIN", "ANALYST", "CLIENT", "VIEWER")
+            scope = parse_qs(environ.get("QUERY_STRING", "")).get("scope", ["self"])[0]
+            org_scope = scope == "organization"
+            if org_scope:
+                self._require_role(user, "OWNER", "ADMIN")
+            requester = None if org_scope else user.user_id
             rows = []
             if self.repository is not None and hasattr(self.repository, "list_privacy_requests"):
-                rows = [self._privacy_request_payload(r) for r in (self.repository.list_privacy_requests(user.organization_id, user.user_id) or [])]
+                rows = [self._privacy_request_payload(r) for r in (self.repository.list_privacy_requests(user.organization_id, requester) or [])]
             if not rows:
                 rows = [dict(v) for v in self.store.privacy_requests.values()
-                        if v.get("organization_id") == user.organization_id and v.get("requester_user_id") == user.user_id]
-            return self._json(200, {"items": rows, "count": len(rows)})
+                        if v.get("organization_id") == user.organization_id and (org_scope or v.get("requester_user_id") == user.user_id)]
+            return self._json(200, {"items": rows, "count": len(rows), "scope": "organization" if org_scope else "self"})
+
+        if method == "PATCH" and path.startswith("/v1/privacy/requests/"):
+            self._require_role(user, "OWNER", "ADMIN")
+            request_id = path.rsplit("/", 1)[-1]
+            body = self._body(environ)
+            status = str(body.get("status", "")).upper()
+            allowed = {"RECEIVED", "IN_REVIEW", "COMPLETED", "REJECTED"}
+            if status not in allowed:
+                raise APIError(422, "VALIDATION_ERROR", "invalid privacy request status")
+            note = body.get("response_note")
+            if note is not None and not isinstance(note, str):
+                raise APIError(422, "VALIDATION_ERROR", "response_note must be text")
+            row = None
+            if self.repository is not None and hasattr(self.repository, "update_privacy_request"):
+                persisted = self.repository.update_privacy_request(user.organization_id, request_id, status, note)
+                if persisted:
+                    row = dict(zip(("id","status","response_note","due_at","created_at","updated_at"), persisted))
+            if row is None:
+                row = self.store.privacy_requests.get(request_id)
+                if row and row.get("organization_id") == user.organization_id:
+                    row["status"] = status
+                    row["response_note"] = note
+                    row["updated_at"] = utc_now().isoformat()
+            if row is None:
+                raise APIError(404, "NOT_FOUND", "privacy request not found")
+            self.store.privacy_requests[request_id] = {**self.store.privacy_requests.get(request_id, {}), **row, "organization_id": user.organization_id}
+            self.store.audit_event(user.organization_id, user.user_id, "PRIVACY_REQUEST_UPDATED", f"privacy_request:{request_id}", status=status)
+            return self._json(200, {"request": self.store.privacy_requests[request_id]})
 
         if method == "POST" and path == "/v1/privacy/requests":
             body = self._body(environ)
