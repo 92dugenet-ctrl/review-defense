@@ -1124,12 +1124,36 @@ class ReviewDefenseAPI:
             return self._json(200, {"evidence": row})
         if method == "POST" and path.startswith("/v1/evidence/") and path.endswith("/facts/verify"):
             self._require_role(user, "OWNER", "ADMIN", "ANALYST")
-            eid = path.split("/")[3]; row = self.store.evidence.get((user.organization_id, eid))
+            eid = path.split("/")[3]
+            key = (user.organization_id, eid)
+            row = self.store.evidence.get(key)
+            # Production uses multiple workers. A verification request can land
+            # on a worker whose in-memory cache still contains the pre-verification
+            # row. Always reconcile the evidence state from PostgreSQL first when
+            # persistence is available so the facts gate observes the durable state.
+            if self.repository is not None and hasattr(self.repository, "get_evidence"):
+                dbrow = self.repository.get_evidence(user.organization_id, eid)
+                if dbrow:
+                    row = dict(zip(("evidence_id","organization_id","case_id","filename","content_type","size_bytes","sha256","object_key","verified","created_by","verified_by","verified_at"), dbrow))
+                    self.store.evidence[key] = row
             if not row: raise APIError(404, "NOT_FOUND", "evidence not found")
             if not row.get("verified"):
                 raise APIError(409, "STATE_CONFLICT", "evidence must be verified before its facts can be verified")
             body = self._body(environ); fact_ids = body.get("fact_ids")
-            facts = self.store.evidence_facts.get((user.organization_id, eid), [])
+            facts = self.store.evidence_facts.get(key, [])
+            if self.repository is not None and hasattr(self.repository, "list_evidence_facts"):
+                dbfacts = self.repository.list_evidence_facts(user.organization_id, row["case_id"])
+                facts = [
+                    {
+                        "fact_id": str(r[0]), "evidence_id": str(r[1]), "case_id": str(r[2]),
+                        "key": str(r[3]), "kind": str(r[4]), "value": str(r[5]),
+                        "source_location": str(r[6] or ""), "verified": bool(r[7]),
+                        "verified_by": str(r[8]) if r[8] is not None else None,
+                        "verified_at": _iso_value(r[9]),
+                    }
+                    for r in dbfacts if str(r[1]) == eid
+                ]
+                self.store.evidence_facts[key] = facts
             if fact_ids is None: fact_ids = [f["fact_id"] for f in facts]
             if not isinstance(fact_ids, list): raise APIError(422, "VALIDATION_ERROR", "fact_ids must be a list")
             selected = set(str(x) for x in fact_ids)
