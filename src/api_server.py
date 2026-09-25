@@ -16,7 +16,7 @@ from dataclasses import asdict, dataclass
 from typing import Any, Callable, Mapping
 from urllib.parse import parse_qs, urlsplit
 
-from .evidence_vault import InMemoryObjectStore, sign_download_url, verify_integrity
+from .evidence_vault import FilesystemObjectStore, InMemoryObjectStore, sign_download_url, verify_integrity
 from .security_hardening import RateLimiter, Session, generate_session_token, hash_password, verify_password, utc_now, hash_token
 from .app_shell import SessionContext, can_access
 from .decision_workspace import (
@@ -94,7 +94,7 @@ class MemoryStore:
         self.submissions: dict[tuple[str, str], dict[str, Any]] = {}
         self.idempotency: dict[tuple[str, str], tuple[str, Any]] = {}
         self.audit: list[dict[str, Any]] = []
-        self.vault = InMemoryObjectStore()
+        evidence_root = os.environ.get("REVIEW_DEFENSE_EVIDENCE_ROOT", "").strip()\n        self.vault = FilesystemObjectStore(evidence_root) if evidence_root else InMemoryObjectStore()
         self.evidence: dict[tuple[str, str], dict[str, Any]] = {}
         self.evidence_facts: dict[tuple[str, str], list[dict[str, Any]]] = {}
         self.contradictions: dict[tuple[str, str], list[dict[str, Any]]] = {}
