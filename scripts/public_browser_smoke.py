@@ -22,9 +22,9 @@ from wsgi import app  # noqa: E402
 
 ROUTES = {
     "/": "Review Defense",
-    "/produit/": "Produit Review Defense",
+    "/produit/": "Une plateforme complète",
     "/comment-ca-marche/": "Comment ça marche",
-    "/services/": "Services B2B",
+    "/services/": "Un accompagnement structuré",
     "/tarifs/": "Tarifs",
     "/ressources/": "Ressources",
     "/contact/": "Contact",
