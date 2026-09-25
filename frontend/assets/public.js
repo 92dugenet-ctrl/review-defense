@@ -1,5 +1,5 @@
 const PUBLIC_MARKETING_BOUNDARIES=['Aucune suppression garantie','La décision finale appartient toujours à la plateforme','Structurez votre dossier avant toute démarche externe.'];
-const PUBLIC_ASSET_VERSION='6700';
+const PUBLIC_ASSET_VERSION='6710';
 let __seoArticlesPromise=null;
 function ensureSeoArticles(){
  if(window.REVIEW_DEFENSE_SEO_ARTICLES) return Promise.resolve(window.REVIEW_DEFENSE_SEO_ARTICLES);
