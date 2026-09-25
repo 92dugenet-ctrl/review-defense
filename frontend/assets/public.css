@@ -312,3 +312,11 @@
 .marketing.is-navigating:after{content:"";position:fixed;left:50%;top:76px;width:120px;height:3px;transform:translateX(-50%);border-radius:999px;background:linear-gradient(90deg,transparent,#1264e8,transparent);background-size:200% 100%;animation:rdLoading .9s linear infinite;z-index:100}
 @keyframes rdLoading{0%{background-position:100% 0;opacity:.55}50%{background-position:0 0;opacity:1}100%{background-position:-100% 0;opacity:.55}}
 @media(prefers-reduced-motion:reduce){.public-loading-line,.marketing.is-navigating:after{animation:none}}
+
+/* P2 — resilient public loading state */
+.public-error-state{min-height:58vh;display:grid;place-items:center;padding:80px 24px;background:linear-gradient(180deg,#f8fbff 0%,#fff 100%)}
+.public-error-card{width:min(680px,100%);padding:48px;border:1px solid rgba(17,24,39,.08);border-radius:28px;background:rgba(255,255,255,.96);box-shadow:0 24px 70px rgba(23,38,68,.10);text-align:center}
+.public-error-card h1{margin:18px 0 12px;font-size:clamp(32px,5vw,52px);line-height:1.05;letter-spacing:-.04em;color:#111827}
+.public-error-card p{max-width:540px;margin:0 auto 26px;color:#687386;line-height:1.7}
+.public-retry{min-width:150px}
+@media(max-width:620px){.public-error-state{min-height:65vh;padding:48px 18px}.public-error-card{padding:34px 22px;border-radius:22px}}
