@@ -94,7 +94,8 @@ class MemoryStore:
         self.submissions: dict[tuple[str, str], dict[str, Any]] = {}
         self.idempotency: dict[tuple[str, str], tuple[str, Any]] = {}
         self.audit: list[dict[str, Any]] = []
-        evidence_root = os.environ.get("REVIEW_DEFENSE_EVIDENCE_ROOT", "").strip()\n        self.vault = FilesystemObjectStore(evidence_root) if evidence_root else InMemoryObjectStore()
+        evidence_root = os.environ.get("REVIEW_DEFENSE_EVIDENCE_ROOT", "").strip()
+        self.vault = FilesystemObjectStore(evidence_root) if evidence_root else InMemoryObjectStore()
         self.evidence: dict[tuple[str, str], dict[str, Any]] = {}
         self.evidence_facts: dict[tuple[str, str], list[dict[str, Any]]] = {}
         self.contradictions: dict[tuple[str, str], list[dict[str, Any]]] = {}
