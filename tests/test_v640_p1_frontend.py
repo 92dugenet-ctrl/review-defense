@@ -8,7 +8,7 @@ def test_public_shell_does_not_eagerly_load_seo_editorial_payload():
     for name in ("frontend/index.html", "frontend/landing.html"):
         text = (ROOT / name).read_text()
         assert "seo-articles.js" not in text
-        assert "public.js?v=6700" in text
+        assert "public.js?v=6710" in text
 
 
 def test_public_js_has_deferred_seo_loader_and_single_history_listener():
