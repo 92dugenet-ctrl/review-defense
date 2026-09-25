@@ -16,7 +16,7 @@
 <script src="/assets/public.js?v=6601" defer></script>
 <script src="/assets/compliance-front.js?v=1" defer></script>
 <script>
-window.addEventListener('DOMContentLoaded',function(){ if(typeof showPublicPage==='function') showPublicPage('home',false); });
+window.addEventListener('DOMContentLoaded',function(){ if(typeof showPublicPage!=='function') return; const routes={'/':'home','/conformite/':'compliance','/produit/':'features','/comment-ca-marche/':'how','/services/':'services','/tarifs/':'pricing','/ressources/':'resources','/contact/':'contact','/mentions-legales/':'legal','/confidentialite/':'privacy','/cgv/':'cgv','/cgu/':'cgu','/cookies/':'cookies','/securite/':'security','/conservation-donnees/':'retention','/droits-rgpd/':'rights','/violation-donnees/':'breach','/sous-traitants/':'subprocessors','/ia-et-controle-humain/':'ai'}; const page=routes[location.pathname]||'home'; showPublicPage(page,false); });
 </script>
 </body>
 </html>
