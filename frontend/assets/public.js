@@ -9,10 +9,15 @@ function ensureSeoArticles(){
    script.src='/assets/seo-articles.js?v='+PUBLIC_ASSET_VERSION;
    script.async=true;
    script.onload=()=>resolve(window.REVIEW_DEFENSE_SEO_ARTICLES||{});
-   script.onerror=()=>reject(new Error('Impossible de charger les ressources éditoriales.'));
+   script.onerror=()=>{__seoArticlesPromise=null;reject(new Error('Impossible de charger les ressources éditoriales.'))};
    document.head.appendChild(script);
  });
  return __seoArticlesPromise;
+}
+function publicLoadError(){
+ ensurePublicStyles();
+ const retry='<button class="btn-primary public-retry" type="button" onclick="bootPublicRoute()">Réessayer <span>↻</span></button>';
+ return '<section class="public-error-state"><div class="public-error-card"><span class="rd-eyebrow-pill">REVIEW DEFENSE · CHARGEMENT</span><h1>Cette page n’a pas pu être chargée.</h1><p>Le contenu éditorial n’a pas répondu correctement. Votre dossier et vos données ne sont pas concernés par cette erreur de chargement.</p>'+retry+'</div></section>';
 }
 function publicPathPage(path){
  const routes={ '/':'home','/conformite/':'compliance','/produit/':'features','/comment-ca-marche/':'how','/services/':'services','/tarifs/':'pricing','/ressources/':'resources','/contact/':'contact','/mentions-legales/':'legal','/confidentialite/':'privacy','/cgv/':'cgv','/cgu/':'cgu','/cookies/':'cookies','/securite/':'security','/conservation-donnees/':'retention','/droits-rgpd/':'rights','/violation-donnees/':'breach','/sous-traitants/':'subprocessors','/ia-et-controle-humain/':'ai'};
@@ -303,7 +308,7 @@ function showPublicPage(page,push=true){
    ensureSeoArticles().then(()=>{
      Object.keys(window.REVIEW_DEFENSE_SEO_ARTICLES||{}).forEach(slug=>{PUBLIC_ROUTES[slug]='/'+slug+'/'});
      render();
-   }).catch(()=>{clearPublicLoading();marketingLayout('home',homePage());});
+   }).catch(()=>{clearPublicLoading();marketingLayout('resources',publicLoadError());});
  }else{
    publicLoadingState();render();
  }
