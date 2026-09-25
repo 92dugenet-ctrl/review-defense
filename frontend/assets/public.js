@@ -272,7 +272,6 @@ function invitationSignupPage(){
  document.getElementById('signup-login').onclick=()=>renderLogin();
 }
 
-window.addEventListener('popstate',()=>{const page=Object.keys(PUBLIC_ROUTES).find(k=>PUBLIC_ROUTES[k]===location.pathname)||'home';showPublicPage(page,false)});
 
 function initPremiumInteractions(){
   const root=document.querySelector('.marketing');
