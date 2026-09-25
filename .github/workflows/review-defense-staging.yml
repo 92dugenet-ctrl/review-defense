@@ -23,6 +23,45 @@ env:
   PYTHON_VERSION: '3.12'
 
 jobs:
+  frontend-syntax:
+    name: Frontend JavaScript syntax gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Check every frontend JavaScript file
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=$(find frontend -type f -name '*.js' -print)
+          test -n "$files"
+          while IFS= read -r file; do
+            echo "::group::node --check $file"
+            node --check "$file"
+            echo "::endgroup::"
+          done <<< "$files"
+
+  browser-smoke:
+    name: Public marketing browser smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install browser smoke dependencies
+        run: |
+          pip install -r requirements.txt playwright
+          playwright install --with-deps chromium
+      - name: Run seven-route browser smoke
+        run: python scripts/public_browser_smoke.py
+
   contract-and-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 20
