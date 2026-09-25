@@ -155,6 +155,8 @@ jobs:
         run: python scripts/postgres_certification.py
       - name: PostgreSQL application smoke test
         run: python scripts/postgres_smoke.py
+      - name: V6.40 multi-worker persistence certification
+        run: pytest -q tests/test_v640_multiworker_state.py
       - name: Business chain Decision Freeze Approval READY_TO_SUBMIT certification
         run: python scripts/business_chain_certification.py
       - name: Normalize sandbox tenant context for psycopg parameters
