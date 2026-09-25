@@ -188,8 +188,9 @@ async function boot(){
   if(demoMode)state.token='demo-token';
   try{state.me=await api('/v1/me');shell();if(demoMode)document.getElementById('content').insertAdjacentHTML('beforebegin','<div class="demo-banner">MODE DÉMO · données fictives · aucune action externe exécutée</div>');document.getElementById('role').textContent=state.me.role;document.getElementById('tenant').textContent='Organisation '+state.me.organization_id;document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{state.view=b.dataset.view;render()});document.getElementById('logout').onclick=async()=>{try{await api('/v1/logout',{method:'POST'})}finally{state.token=null;localStorage.removeItem('rd_token');location.href='/'}};await render()}catch(e){state.token=null;localStorage.removeItem('rd_token');renderLogin(e.message)}return
  }
- const publicRoutes={'/':'home','/conformite/':'compliance','/produit/':'features','/comment-ca-marche/':'how','/services/':'services','/tarifs/':'pricing','/ressources/':'resources','/contact/':'contact','/mentions-legales/':'legal','/confidentialite/':'privacy','/cgv/':'cgv','/cgu/':'cgu','/cookies/':'cookies','/securite/':'security','/conservation-donnees/':'retention','/droits-rgpd/':'rights','/violation-donnees/':'breach','/sous-traitants/':'subprocessors','/ia-et-controle-humain/':'ai'};
- const page=publicRoutes[location.pathname]||new URLSearchParams(location.search).get('page')||'home';
+ const publicPaths=['/','/conformite/','/produit/','/comment-ca-marche/','/services/','/tarifs/','/ressources/','/contact/','/mentions-legales/','/confidentialite/','/cgv/','/cgu/','/cookies/','/securite/','/conservation-donnees/','/droits-rgpd/','/violation-donnees/','/sous-traitants/','/ia-et-controle-humain/'];
+ if(publicPaths.includes(location.pathname)) return;
+ const page=new URLSearchParams(location.search).get('page')||'home';
  if(typeof showPublicPage==='function')showPublicPage(page,false);else renderLogin();
 }
 if(demoMode && !location.pathname.startsWith('/app')) history.replaceState({},'', '/app?demo=1');
