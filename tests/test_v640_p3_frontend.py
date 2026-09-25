@@ -11,7 +11,7 @@ def test_p3_public_navigation_has_timeout_and_retryable_failure():
     assert "__seoArticlesPromise=null" in PUBLIC_JS
     assert "publicLoadError()" in PUBLIC_JS
     assert 'role="alert"' in PUBLIC_JS
-    assert "aria-live=\\\"assertive\\\"" in PUBLIC_JS
+    assert 'aria-live="assertive"' in PUBLIC_JS
 
 
 def test_p3_public_navigation_ignores_stale_async_render():
