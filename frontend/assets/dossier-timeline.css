@@ -9,3 +9,5 @@
 .workspace-timeline strong{font-size:10px;line-height:1.35}
 .workspace-timeline span{color:var(--muted);font-size:9px;line-height:1.4}
 @media(max-width:700px){.workspace-timeline li{grid-template-columns:1fr;gap:3px;padding-left:40px}.workspace-timeline time{grid-row:auto}}
+
+/* REVUE-DEFENSE-004 */
