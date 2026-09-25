@@ -1,6 +1,7 @@
 const PUBLIC_MARKETING_BOUNDARIES=['Aucune suppression garantie','La décision finale appartient toujours à la plateforme','Structurez votre dossier avant toute démarche externe.'];
 const PUBLIC_ASSET_VERSION='6710';
 let __seoArticlesPromise=null;
+let __publicNavigationToken=0;
 function ensureSeoArticles(){
  if(window.REVIEW_DEFENSE_SEO_ARTICLES) return Promise.resolve(window.REVIEW_DEFENSE_SEO_ARTICLES);
  if(__seoArticlesPromise) return __seoArticlesPromise;
@@ -8,8 +9,11 @@ function ensureSeoArticles(){
    const script=document.createElement('script');
    script.src='/assets/seo-articles.js?v='+PUBLIC_ASSET_VERSION;
    script.async=true;
-   script.onload=()=>resolve(window.REVIEW_DEFENSE_SEO_ARTICLES||{});
-   script.onerror=()=>{__seoArticlesPromise=null;reject(new Error('Impossible de charger les ressources éditoriales.'))};
+   let settled=false;
+   const finish=(fn)=>{if(settled)return;settled=true;fn()};
+   const timeout=window.setTimeout(()=>{__seoArticlesPromise=null;finish(()=>reject(new Error('Le contenu éditorial met trop de temps à répondre.')))},8000);
+   script.onload=()=>{window.clearTimeout(timeout);finish(()=>resolve(window.REVIEW_DEFENSE_SEO_ARTICLES||{}))};
+   script.onerror=()=>{window.clearTimeout(timeout);__seoArticlesPromise=null;finish(()=>reject(new Error('Impossible de charger les ressources éditoriales.')))};
    document.head.appendChild(script);
  });
  return __seoArticlesPromise;
@@ -17,7 +21,7 @@ function ensureSeoArticles(){
 function publicLoadError(){
  ensurePublicStyles();
  const retry='<button class="btn-primary public-retry" type="button" onclick="bootPublicRoute()">Réessayer <span>↻</span></button>';
- return '<section class="public-error-state"><div class="public-error-card"><span class="rd-eyebrow-pill">REVIEW DEFENSE · CHARGEMENT</span><h1>Cette page n’a pas pu être chargée.</h1><p>Le contenu éditorial n’a pas répondu correctement. Votre dossier et vos données ne sont pas concernés par cette erreur de chargement.</p>'+retry+'</div></section>';
+ return '<section class="public-error-state" role="alert" aria-live="assertive"><div class="public-error-card"><span class="rd-eyebrow-pill">REVIEW DEFENSE · CHARGEMENT</span><h1>Cette page n’a pas pu être chargée.</h1><p>Le contenu éditorial n’a pas répondu correctement. Votre dossier et vos données ne sont pas concernés par cette erreur de chargement.</p>'+retry+'</div></section>';
 }
 function publicPathPage(path){
  const routes={ '/':'home','/conformite/':'compliance','/produit/':'features','/comment-ca-marche/':'how','/services/':'services','/tarifs/':'pricing','/ressources/':'resources','/contact/':'contact','/mentions-legales/':'legal','/confidentialite/':'privacy','/cgv/':'cgv','/cgu/':'cgu','/cookies/':'cookies','/securite/':'security','/conservation-donnees/':'retention','/droits-rgpd/':'rights','/violation-donnees/':'breach','/sous-traitants/':'subprocessors','/ia-et-controle-humain/':'ai'};
@@ -291,6 +295,7 @@ function clearPublicLoading(){
  document.querySelector('.marketing')?.classList.remove('is-navigating');
 }
 function showPublicPage(page,push=true){
+ const navigationToken=++__publicNavigationToken;
  if(page==='accept-invitation'){clearPublicLoading();invitationSignupPage();return}
  const render=()=>{
    if(window.REVIEW_DEFENSE_RENDER_ARTICLE&&window.REVIEW_DEFENSE_ARTICLE_META&&window.REVIEW_DEFENSE_ARTICLE_META(page)){
@@ -306,11 +311,17 @@ function showPublicPage(page,push=true){
  if(needsSeo){
    publicLoadingState();
    ensureSeoArticles().then(()=>{
+     if(navigationToken!==__publicNavigationToken)return;
      Object.keys(window.REVIEW_DEFENSE_SEO_ARTICLES||{}).forEach(slug=>{PUBLIC_ROUTES[slug]='/'+slug+'/'});
      render();
-   }).catch(()=>{clearPublicLoading();marketingLayout('resources',publicLoadError());});
+   }).catch(()=>{
+     if(navigationToken!==__publicNavigationToken)return;
+     clearPublicLoading();marketingLayout('resources',publicLoadError());
+   });
  }else{
-   publicLoadingState();render();
+   publicLoadingState();
+   if(navigationToken!==__publicNavigationToken)return;
+   render();
  }
 }
 window.addEventListener('popstate',()=>{const page=publicPathPage(location.pathname)||location.pathname.slice(1)||'home';showPublicPage(page,false)});
