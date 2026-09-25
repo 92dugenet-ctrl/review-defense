@@ -59,7 +59,7 @@ def test_two_repository_instances_share_persisted_case_state():
         })
         before = repo_b.get_evidence(org, evidence_id)
         assert before is not None and before[8] is False
-        repo_a.update_evidence_verification(org, evidence_id, "p0-worker-a", "2026-09-25T13:00:00+00:00")
+        repo_a.update_evidence_verification(org, evidence_id, str(uuid.uuid4()), "2026-09-25T13:00:00+00:00")
         after = repo_b.get_evidence(org, evidence_id)
         assert after is not None and after[8] is True
     finally:
