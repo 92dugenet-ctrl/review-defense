@@ -1,0 +1,11 @@
+/* Review Defense dossier timeline */
+.workspace-timeline{position:relative;list-style:none;margin:16px 0 0;padding:2px 0;display:grid;gap:0}
+.workspace-timeline::before{content:"";position:absolute;left:14px;top:8px;bottom:8px;width:1px;background:var(--line-strong)}
+.workspace-timeline li{position:relative;display:grid;grid-template-columns:116px 1fr;gap:4px 16px;padding:11px 10px 11px 40px;border:0;border-radius:var(--radius-md);background:transparent;font-size:10px}
+.workspace-timeline li::before{content:"";position:absolute;left:8px;top:14px;width:13px;height:13px;border:2px solid var(--line-strong);border-radius:50%;background:var(--surface);z-index:1}
+.workspace-timeline li:last-child{background:var(--surface-soft)}
+.workspace-timeline li:last-child::before{border-color:var(--accent);background:var(--accent);box-shadow:0 0 0 5px rgba(45,108,255,.08)}
+.workspace-timeline time{grid-row:span 2;color:var(--muted);font-size:9px;line-height:1.4}
+.workspace-timeline strong{font-size:10px;line-height:1.35}
+.workspace-timeline span{color:var(--muted);font-size:9px;line-height:1.4}
+@media(max-width:700px){.workspace-timeline li{grid-template-columns:1fr;gap:3px;padding-left:40px}.workspace-timeline time{grid-row:auto}}
