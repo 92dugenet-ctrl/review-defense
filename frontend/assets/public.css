@@ -320,3 +320,8 @@
 .public-error-card p{max-width:540px;margin:0 auto 26px;color:#687386;line-height:1.7}
 .public-retry{min-width:150px}
 @media(max-width:620px){.public-error-state{min-height:65vh;padding:48px 18px}.public-error-card{padding:34px 22px;border-radius:22px}}
+
+/* Public shell isolation — marketing pages must not inherit authenticated app layout rules. */
+.marketing main{margin-left:0;padding:0;min-width:0;width:100%;}
+.marketing h1,.marketing h2,.marketing h3,.marketing p{font-family:inherit;}
+@media(max-width:760px){.marketing main{margin-left:0;padding:0;}}
