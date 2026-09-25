@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_public_navigation_has_recoverable_editorial_failure_path():
     text = (ROOT / "frontend/assets/public.js").read_text()
     assert "__seoArticlesPromise=null" in text
-    assert "__seoArticlesPromise=null;reject" in text
+    assert "__seoArticlesPromise=null;finish(()=>reject" in text
     assert "function publicLoadError()" in text
     assert "bootPublicRoute()" in text
     assert "public-error-state" in text
