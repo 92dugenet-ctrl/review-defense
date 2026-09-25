@@ -1,4 +1,23 @@
 const PUBLIC_MARKETING_BOUNDARIES=['Aucune suppression garantie','La décision finale appartient toujours à la plateforme','Structurez votre dossier avant toute démarche externe.'];
+const PUBLIC_ASSET_VERSION='6700';
+let __seoArticlesPromise=null;
+function ensureSeoArticles(){
+ if(window.REVIEW_DEFENSE_SEO_ARTICLES) return Promise.resolve(window.REVIEW_DEFENSE_SEO_ARTICLES);
+ if(__seoArticlesPromise) return __seoArticlesPromise;
+ __seoArticlesPromise=new Promise((resolve,reject)=>{
+   const script=document.createElement('script');
+   script.src='/assets/seo-articles.js?v='+PUBLIC_ASSET_VERSION;
+   script.async=true;
+   script.onload=()=>resolve(window.REVIEW_DEFENSE_SEO_ARTICLES||{});
+   script.onerror=()=>reject(new Error('Impossible de charger les ressources éditoriales.'));
+   document.head.appendChild(script);
+ });
+ return __seoArticlesPromise;
+}
+function publicPathPage(path){
+ const routes={ '/':'home','/conformite/':'compliance','/produit/':'features','/comment-ca-marche/':'how','/services/':'services','/tarifs/':'pricing','/ressources/':'resources','/contact/':'contact','/mentions-legales/':'legal','/confidentialite/':'privacy','/cgv/':'cgv','/cgu/':'cgu','/cookies/':'cookies','/securite/':'security','/conservation-donnees/':'retention','/droits-rgpd/':'rights','/violation-donnees/':'breach','/sous-traitants/':'subprocessors','/ia-et-controle-humain/':'ai'};
+ return routes[path]||null;
+}
 const PUBLIC_ROUTES={home:'/',compliance:'/conformite/',features:'/produit/',how:'/comment-ca-marche/',services:'/services/',pricing:'/tarifs/',resources:'/ressources/',contact:'/contact/',legal:'/mentions-legales/',privacy:'/confidentialite/',cgv:'/cgv/',cgu:'/cgu/',cookies:'/cookies/',security:'/securite/',retention:'/conservation-donnees/',rights:'/droits-rgpd/',breach:'/violation-donnees/',subprocessors:'/sous-traitants/',ai:'/ia-et-controle-humain/'};
 if(window.REVIEW_DEFENSE_SEO_ARTICLES){Object.keys(window.REVIEW_DEFENSE_SEO_ARTICLES).forEach(slug=>{PUBLIC_ROUTES[slug]='/'+slug+'/';});}
 const PUBLIC_META={
@@ -37,7 +56,7 @@ function publicFooter(){
 function publicShell(active,body){
  return '<div class="marketing" data-public-shell="site"><div class="public-shell-header">'+publicHeader(active)+'</div><main>'+body+'</main><div class="public-shell-footer">'+publicFooter()+'</div></div>';
 }
-function ensurePublicStyles(){if(document.getElementById('public-styles'))return;const link=document.createElement('link');link.id='public-styles';link.rel='stylesheet';link.href='/assets/public.css?v=6601';document.head.appendChild(link)}
+function ensurePublicStyles(){if(document.getElementById('public-styles'))return;const link=document.createElement('link');link.id='public-styles';link.rel='stylesheet';link.href='/assets/public.css?v='+PUBLIC_ASSET_VERSION;document.head.appendChild(link)}
 function productMockup(){
  return '<div class="rd-product-stage"><div class="rd-product-glow"></div><div class="rd-product-window"><div class="rd-window-top"><div class="window-dots"><i></i><i></i><i></i></div><b>Review Defense</b><span>Workspace</span></div><div class="rd-window-body"><aside><strong>RD</strong><span class="active">⌂ Tableau</span><span>◌ Mes avis</span><span>⌕ Analyse</span><span>□ Dossiers</span><span>◇ Preuves</span><span>✓ Suivi</span><span>◫ Rapports</span></aside><div class="rd-preview-main"><div class="preview-toolbar"><div><small>ANALYSE · DOSSIER REV-88421</small><h3>Avis Google à vérifier</h3></div><span class="rd-mini-badge">À VÉRIFIER</span></div><div class="preview-review"><div class="stars">★☆☆☆☆</div><b>« Service déplorable, une arnaque totale. »</b><span>Google · publié récemment · source vérifiée</span></div><div class="preview-kpis"><div><small>SIGNAUX</small><strong>03</strong><span>à examiner</span></div><div><small>PREUVES</small><strong>07</strong><span>associées</span></div><div><small>STATUT</small><strong>Gel</strong><span>validation requise</span></div></div><div class="preview-chain"><span class="done">01 Analyse</span><span class="done">02 Décision</span><span class="current">03 Gel</span><span>04 Approbation</span><span>05 Préparation</span></div><div class="preview-chart"><div class="chart-line"></div><div class="chart-labels"><span>Éléments factuels</span><span>Contradictions</span><span>Preuves</span></div></div></div></div></div><div class="rd-floating-card"><span>HUMAN APPROVAL</span><strong>Validation requise</strong><small>Avant toute étape contrôlée</small></div><div class="hero-signal-card"><span class="signal-dot"></span><div><small>SIGNAL DE DOSSIER</small><strong>03 éléments à vérifier</strong></div><b>LIVE</b></div></div>';
 }
@@ -244,9 +263,57 @@ function compliancePage(){
 }
 
 function contactPage(){return '<section class="contact-layout premium-contact"><div class="page-mountain"></div><div><span>BESOIN D’AIDE ?</span><h1>Une question ?<br><span>Une démonstration ?</span></h1><p>Présentez-nous votre besoin. L’équipe peut vous aider à comprendre le parcours et le périmètre de Review Defense.</p><div class="contact-points"><span>✉ contact@review-defense.com</span><span>⌕ France</span><span>◷ Réponse selon disponibilité de l’équipe</span></div></div><form class="contact-form" onsubmit="event.preventDefault();toast(&quot;Votre message a bien été préparé.&quot;,&quot;success&quot;);this.reset()"><h3>Parlons de votre besoin</h3><label>Nom complet<input required></label><label>E-mail<input type="email" required></label><label>Entreprise<input></label><label>Message<textarea rows="5" required></textarea></label><button class="btn-primary">Envoyer le message</button></form></section>'}
-function marketingLayout(active,body){ensurePublicStyles();setPublicMeta(active||'home');document.body.innerHTML=publicShell(active,body);document.querySelectorAll('[data-public]').forEach(x=>x.onclick=()=>showPublicPage(x.dataset.public));document.getElementById('public-login').onclick=()=>location.href='/app';document.getElementById('public-cta').onclick=()=>location.href='/analyse-avis-google/';initPremiumInteractions();document.getElementById('mobile-menu')?.addEventListener('click',()=>document.querySelector('.public-nav')?.classList.toggle('open'))}
-function showPublicPage(page,push=true){if(page==='accept-invitation'){invitationSignupPage();return}if(window.REVIEW_DEFENSE_RENDER_ARTICLE&&window.REVIEW_DEFENSE_ARTICLE_META&&window.REVIEW_DEFENSE_ARTICLE_META(page)){if(push&&PUBLIC_ROUTES[page]&&location.pathname!==PUBLIC_ROUTES[page])history.pushState({publicPage:page},'',PUBLIC_ROUTES[page]);marketingLayout('resources',window.REVIEW_DEFENSE_RENDER_ARTICLE(page));return}const p={home:['',homePage],compliance:['compliance',compliancePage],features:['features',featuresPage],how:['how',howPage],services:['services',servicesPage],pricing:['pricing',pricingPage],resources:['resources',resourcesPage],contact:['contact',contactPage],legal:['legal',()=>legalPage('legal')],privacy:['privacy',()=>legalPage('privacy')],cgv:['cgv',()=>legalPage('cgv')],cgu:['cgu',()=>legalPage('cgu')],cookies:['cookies',()=>legalPage('cookies')],security:['security',()=>legalPage('security')],retention:['retention',()=>legalPage('retention')],rights:['rights',()=>legalPage('rights')],breach:['breach',()=>legalPage('breach')],subprocessors:['subprocessors',()=>legalPage('subprocessors')],ai:['ai',()=>legalPage('ai')]};const x=p[page]||p.home;if(push&&PUBLIC_ROUTES[page]&&location.pathname!==PUBLIC_ROUTES[page])history.pushState({publicPage:page},'',PUBLIC_ROUTES[page]);marketingLayout(x[0],x[1]())}
-window.addEventListener('popstate',()=>{const page=Object.keys(PUBLIC_ROUTES).find(k=>PUBLIC_ROUTES[k]===location.pathname)||'home';showPublicPage(page,false)});
+function marketingLayout(active,body){
+ ensurePublicStyles();setPublicMeta(active||'home');
+ document.body.innerHTML=publicShell(active,body);
+ document.querySelectorAll('[data-public]').forEach(x=>x.onclick=()=>showPublicPage(x.dataset.public));
+ document.getElementById('public-login').onclick=()=>location.href='/app';
+ document.getElementById('public-cta').onclick=()=>location.href='/analyse-avis-google/';
+ initPremiumInteractions();
+ document.getElementById('mobile-menu')?.addEventListener('click',()=>document.querySelector('.public-nav')?.classList.toggle('open'));
+}
+function publicLoadingState(){
+ if(document.body.dataset.publicLoading==='1') return;
+ document.body.dataset.publicLoading='1';
+ document.body.setAttribute('aria-busy','true');
+ const existing=document.querySelector('.marketing');
+ if(existing) existing.classList.add('is-navigating');
+ else document.body.innerHTML='<main class="public-loading" aria-live="polite"><div class="public-loading-mark">RD</div><div class="public-loading-line"></div><div class="public-loading-line short"></div></main>';
+}
+function clearPublicLoading(){
+ delete document.body.dataset.publicLoading;
+ document.body.removeAttribute('aria-busy');
+ document.querySelector('.marketing')?.classList.remove('is-navigating');
+}
+function showPublicPage(page,push=true){
+ if(page==='accept-invitation'){clearPublicLoading();invitationSignupPage();return}
+ const render=()=>{
+   if(window.REVIEW_DEFENSE_RENDER_ARTICLE&&window.REVIEW_DEFENSE_ARTICLE_META&&window.REVIEW_DEFENSE_ARTICLE_META(page)){
+     if(push&&PUBLIC_ROUTES[page]&&location.pathname!==PUBLIC_ROUTES[page])history.pushState({publicPage:page},'',PUBLIC_ROUTES[page]);
+     marketingLayout('resources',window.REVIEW_DEFENSE_RENDER_ARTICLE(page));clearPublicLoading();return;
+   }
+   const p={home:['',homePage],compliance:['compliance',compliancePage],features:['features',featuresPage],how:['how',howPage],services:['services',servicesPage],pricing:['pricing',pricingPage],resources:['resources',resourcesPage],contact:['contact',contactPage],legal:['legal',()=>legalPage('legal')],privacy:['privacy',()=>legalPage('privacy')],cgv:['cgv',()=>legalPage('cgv')],cgu:['cgu',()=>legalPage('cgu')],cookies:['cookies',()=>legalPage('cookies')],security:['security',()=>legalPage('security')],retention:['retention',()=>legalPage('retention')],rights:['rights',()=>legalPage('rights')],breach:['breach',()=>legalPage('breach')],subprocessors:['subprocessors',()=>legalPage('subprocessors')],ai:['ai',()=>legalPage('ai')]};
+   const x=p[page]||p.home;
+   if(push&&PUBLIC_ROUTES[page]&&location.pathname!==PUBLIC_ROUTES[page])history.pushState({publicPage:page},'',PUBLIC_ROUTES[page]);
+   marketingLayout(x[0],x[1]());clearPublicLoading();
+ };
+ const needsSeo=page==='resources'||!PUBLIC_ROUTES[page];
+ if(needsSeo){
+   publicLoadingState();
+   ensureSeoArticles().then(()=>{
+     Object.keys(window.REVIEW_DEFENSE_SEO_ARTICLES||{}).forEach(slug=>{PUBLIC_ROUTES[slug]='/'+slug+'/'});
+     render();
+   }).catch(()=>{clearPublicLoading();marketingLayout('home',homePage());});
+ }else{
+   publicLoadingState();render();
+ }
+}
+window.addEventListener('popstate',()=>{const page=publicPathPage(location.pathname)||location.pathname.slice(1)||'home';showPublicPage(page,false)});
+function bootPublicRoute(){
+ const page=publicPathPage(location.pathname)||location.pathname.slice(1)||'home';
+ showPublicPage(page,false);
+}
+window.bootPublicRoute=bootPublicRoute;
 function invitationSignupPage(){
  ensurePublicStyles();
  const p=new URLSearchParams(location.search);
