@@ -10,4 +10,56 @@
 .workspace-timeline span{color:var(--muted);font-size:9px;line-height:1.4}
 @media(max-width:700px){.workspace-timeline li{grid-template-columns:1fr;gap:3px;padding-left:40px}.workspace-timeline time{grid-row:auto}}
 
-/* REVUE-DEFENSE-004 */
+/* REVUE-DEFENSE-005 — client-facing timeline refinement */
+.workspace-timeline{
+  counter-reset:rd-event;
+  padding:4px 0 2px;
+}
+.workspace-timeline li{
+  counter-increment:rd-event;
+  min-height:58px;
+  transition:background .16s ease,transform .16s ease;
+}
+.workspace-timeline li::before{
+  box-shadow:0 0 0 4px rgba(11,110,243,.045);
+}
+.workspace-timeline li:hover{
+  background:var(--surface-soft);
+}
+.workspace-timeline li::after{
+  content:counter(rd-event);
+  position:absolute;
+  left:1px;
+  top:17px;
+  width:13px;
+  text-align:center;
+  font-size:7px;
+  line-height:1;
+  font-weight:800;
+  color:var(--muted);
+  pointer-events:none;
+}
+.workspace-timeline li:last-child{
+  border:1px solid var(--line);
+  padding-top:12px;
+  padding-bottom:12px;
+  box-shadow:0 3px 12px rgba(31,68,114,.045);
+}
+.workspace-timeline li:last-child::after{
+  color:#fff;
+}
+.workspace-timeline li:last-child strong::after{
+  content:"  ·  Étape actuelle";
+  color:var(--accent);
+  font-size:8px;
+  font-weight:700;
+}
+.workspace-timeline time{
+  font-variant-numeric:tabular-nums;
+}
+@media(max-width:700px){
+  .workspace-timeline li:last-child{
+    padding-top:12px;
+    padding-bottom:12px;
+  }
+}
