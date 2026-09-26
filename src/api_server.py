@@ -119,7 +119,8 @@ class MemoryStore:
         self.email_verification_tokens: dict[str, dict[str, Any]] = {}
         self.privacy_requests: dict[str, dict[str, Any]] = {}
         self.privacy_consents: list[dict[str, Any]] = []
-        self.email_verified: dict[str, bool] = {}\n        self.billing: dict[str, dict[str, Any]] = {}
+        self.email_verified: dict[str, bool] = {}
+        self.billing: dict[str, dict[str, Any]] = {}
 
     def audit_event(self, org: str, actor: str | None, action: str, resource: str, **meta: Any) -> None:
         self.audit.append({
