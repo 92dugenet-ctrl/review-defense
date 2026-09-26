@@ -44,7 +44,10 @@ def access_token():
     try:
         with urllib.request.urlopen(req,timeout=20) as r: return json.loads(r.read().decode())["access_token"]
     except urllib.error.HTTPError as exc:
-        raise PayPalError("PayPal authentication failed",exc.code) from exc
+        raw=exc.read()
+        try: data=json.loads(raw.decode())
+        except Exception: data={}
+        raise PayPalError("PayPal authentication failed",exc.code,data) from exc
 
 def create_order(*, offer_id, name, amount, currency, reference_id, return_url, cancel_url):
     token=access_token()
