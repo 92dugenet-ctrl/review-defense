@@ -68,6 +68,8 @@ def main() -> int:
 
                 title = page.title()
                 body_text = page.locator("body").inner_text()
+                if page.evaluate("typeof window.boot") != "function":
+                    failures.append(f"{route}: frontend boot entrypoint missing")
                 if not body_text.strip():
                     failures.append(f"{route}: blank body")
                 if expected not in body_text:
