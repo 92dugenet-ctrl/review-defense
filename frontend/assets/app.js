@@ -201,4 +201,5 @@ async function boot(){
  if(typeof showPublicPage==='function')showPublicPage(page,false);else renderLogin();
 }
 if(demoMode && !location.pathname.startsWith('/app')) history.replaceState({},'', '/app?demo=1');
+}
 boot();
