@@ -58,8 +58,10 @@ class PayPalClient:
         self.base_url = (
             os.getenv("PAYPAL_BASE_URL", DEFAULT_BASE_URL).strip().rstrip("/")
         )
-        if not self.base_url.startswith("https://"):
-            raise RuntimeError("PAYPAL_BASE_URL doit utiliser HTTPS")
+        if self.base_url not in {DEFAULT_BASE_URL, "https://api-m.paypal.com"}:
+            raise RuntimeError("PAYPAL_BASE_URL doit pointer vers une API PayPal officielle")
+        if os.getenv("PAYPAL_ENVIRONMENT", "sandbox").strip().lower() != "sandbox":
+            raise RuntimeError("Le provisioning Sandbox ne peut utiliser que l'API Sandbox PayPal")
 
     def access_token(self) -> str:
         credentials = f"{self.client_id}:{self.client_secret}".encode("utf-8")
