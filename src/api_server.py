@@ -748,7 +748,7 @@ class ReviewDefenseAPI:
             if length > 1000000: raise APIError(413,"PAYLOAD_TOO_LARGE","webhook payload too large")
             raw=environ["wsgi.input"].read(length)
             try:
-                verified,event=paypal_verify_webhook(raw_body=raw,headers={k[5:].lower().replace("_","-"):v for k,v in environ.items() if k.startswith("HTTP_PAYPAL_")}|{"paypal-cert-url":environ.get("HTTP_PAYPAL_CERT_URL","")})
+                verified,event=paypal_verify_webhook(raw_body=raw,headers={"paypal-"+k[len("HTTP_PAYPAL_"):].lower().replace("_","-"):v for k,v in environ.items() if k.startswith("HTTP_PAYPAL_")})
             except (PayPalError,ValueError,KeyError) as exc:
                 raise APIError(400,"PAYPAL_WEBHOOK_INVALID","invalid PayPal webhook") from exc
             if not verified: raise APIError(400,"PAYPAL_WEBHOOK_INVALID","PayPal webhook signature verification failed")
@@ -758,15 +758,14 @@ class ReviewDefenseAPI:
             resource=event.get("resource") or {}
             paypal_id=str(resource.get("id") or "")
             tx=None
-            if self.repository is not None and paypal_id:
-                # Orders and subscriptions are looked up through tenant rows below.
-                for candidate_org in []: pass
-            # Webhooks are authoritative status signals; transaction ownership is
-            # established by a locally recorded PayPal ID. In-memory mode uses the
-            # local ledger, while production deployments should persist the same row.
-            for key,row in list(self.store.billing.items()):
-                if row.get("paypal_order_id")==paypal_id or row.get("paypal_subscription_id")==paypal_id:
-                    tx=row; break
+            # Webhooks are authoritative status signals; resolve the locally recorded
+            # PayPal identifier before mutating billing state.
+            if self.repository is not None and paypal_id and hasattr(self.repository,"get_billing_by_paypal_id_global"):
+                tx=self.repository.get_billing_by_paypal_id_global(paypal_id)
+            if tx is None:
+                for key,row in list(self.store.billing.items()):
+                    if row.get("paypal_order_id")==paypal_id or row.get("paypal_subscription_id")==paypal_id:
+                        tx=row; break
             if tx is not None:
                 status_map={"CHECKOUT.ORDER.COMPLETED":"COMPLETED","PAYMENT.CAPTURE.COMPLETED":"COMPLETED",
                     "PAYMENT.CAPTURE.DENIED":"DENIED","PAYMENT.SALE.COMPLETED":"ACTIVE",
@@ -822,7 +821,7 @@ class ReviewDefenseAPI:
             self.store.audit_event(user.organization_id,user.user_id,"PAYPAL_ORDER_CAPTURED",f"billing:{row['id']}",paypal_order_id=order_id,status=row["status"])
             return self._json(200,{"status":row["status"],"id":order_id,"offer_id":row["offer_id"]})
         if method == "GET" and path == "/v1/paypal/subscription/config":
-            offer_id=str(parse_qs(urlsplit(environ.get("QUERY_STRING","")).query if False else environ.get("QUERY_STRING","")).get("offer_id",[""])[0])
+            offer_id=str(parse_qs(environ.get("QUERY_STRING","")).get("offer_id",[""])[0])
             try: offer=get_offer(offer_id)
             except ValueError as exc: raise APIError(422,"INVALID_OFFER","unknown subscription offer") from exc
             if offer.kind!="subscription": raise APIError(422,"INVALID_OFFER","not a subscription offer")
