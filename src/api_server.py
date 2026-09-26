@@ -1846,9 +1846,15 @@ class ReviewDefenseAPI:
             path = "/index.html"
         elif path == "/app" or path == "/app/":
             path = "/index.html"
-        elif path in {"/produit/","/comment-ca-marche/","/services/","/tarifs/","/ressources/","/contact/"}:
-            # Public marketing routes are client-rendered from the same stable shell.
-            # Serving index.html here keeps direct navigation, refreshes and deep links working.
+        elif path in {
+            "/conformite/","/produit/","/comment-ca-marche/","/services/","/tarifs/","/ressources/",
+            "/contact/","/mentions-legales/","/confidentialite/","/cgv/","/cgu/","/cookies/",
+            "/securite/","/conservation-donnees/","/droits-rgpd/","/violation-donnees/",
+            "/sous-traitants/","/ia-et-controle-humain/",
+            "/accept-invitation","/reset-password","/verify-email",
+        }:
+            # Public marketing and authentication deep links use the same stable frontend shell.
+            # Serving index.html here keeps direct navigation and refreshes working.
             path = "/index.html"
         if path == "/index.html" or path == "/landing.html" or path.startswith("/assets/"):
             from pathlib import Path
