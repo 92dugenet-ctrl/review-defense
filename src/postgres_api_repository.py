@@ -476,9 +476,11 @@ class PostgresAPIRepository(PostgresRepository):
                 if not row: return None
                 return dict(zip(("id","offer_id","kind","status","currency","amount","paypal_order_id","paypal_subscription_id","paypal_event_id","metadata"),row))
     def billing_event_seen(self, event_id: str):
-        with self.transaction(None) as conn:
-            with conn.cursor() as cur:
-                cur.execute("SELECT 1 FROM billing_transactions WHERE paypal_event_id=%s LIMIT 1",(event_id,)); return cur.fetchone() is not None
+        with self._connect() as conn:
+            with conn.transaction():
+                with conn.cursor() as cur:
+                    cur.execute("SELECT 1 FROM billing_transactions WHERE paypal_event_id=%s LIMIT 1",(event_id,))
+                    return cur.fetchone() is not None
     def record_billing_webhook(self, organization_id: str, event_id: str, payload):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
