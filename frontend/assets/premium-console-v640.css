@@ -397,3 +397,10 @@ body.console-mode .auth-mark{
   body.console-mode .dashboard-grid,
   body.console-mode .dashboard-bottom{grid-template-columns:1fr}
 }
+
+
+/* REVUE-DEFENSE-037 — strengthen the primary dashboard action */
+body.console-mode .client-focus-panel .client-focus-item:first-child{background:linear-gradient(135deg,#edf5ff,#f8fbff);border-color:#b9d5f7;box-shadow:0 7px 20px rgba(23,105,232,.07)}
+body.console-mode .client-focus-panel .client-focus-item:first-child .item-index{background:#1769e8;border-color:#1769e8;color:#fff;box-shadow:0 5px 14px rgba(23,105,232,.18)}
+body.console-mode .client-focus-panel .client-focus-item:first-child strong{color:#123d78}
+body.console-mode .client-focus-panel .client-focus-item:first-child b{color:#1769e8}
