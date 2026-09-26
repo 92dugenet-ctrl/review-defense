@@ -1,6 +1,8 @@
 (() => {
   const KEY='rd_locale';
   const SUPPORTED=['fr','en'];
+  const requested=new URLSearchParams(location.search).get('lang');
+  if(SUPPORTED.includes(requested)) localStorage.setItem(KEY,requested);
   const isEnglish=()=>localStorage.getItem(KEY)==='en';
   const translations = {
     'Produit':'Product','Comment ça marche':'How it works','Services':'Services','Tarifs':'Pricing','Ressources':'Resources',
