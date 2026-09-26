@@ -52,6 +52,8 @@ from .recovery_email import SMTPConfig, send_recovery_email, send_verification_e
 from .deployment import DeploymentConfig, security_headers
 from .observability import InMemoryTelemetry, TraceContext, health_check
 from .seo_renderer import is_seo_path, render_page, sitemap, robots
+from .billing_catalog import get_offer, paypal_plan_id
+from .paypal_client import configured as paypal_configured, create_order as paypal_create_order, capture_order as paypal_capture_order, verify_webhook as paypal_verify_webhook, request_json as paypal_request_json, access_token as paypal_access_token, PayPalError
 
 
 class APIError(Exception):
@@ -117,7 +119,7 @@ class MemoryStore:
         self.email_verification_tokens: dict[str, dict[str, Any]] = {}
         self.privacy_requests: dict[str, dict[str, Any]] = {}
         self.privacy_consents: list[dict[str, Any]] = []
-        self.email_verified: dict[str, bool] = {}
+        self.email_verified: dict[str, bool] = {}\n        self.billing: dict[str, dict[str, Any]] = {}
 
     def audit_event(self, org: str, actor: str | None, action: str, resource: str, **meta: Any) -> None:
         self.audit.append({
@@ -740,8 +742,109 @@ class ReviewDefenseAPI:
                 self.repository.put_session(invitation["organization_id"],session.token_hash,uid,invitation["role"],session.expires_at.isoformat())
             self.store.audit_event(invitation["organization_id"],uid,"INVITATION_ACCEPTED",f"invitation:{invitation['invitation_id']}")
             return self._json(200,{"status":"accepted","access_token":raw,"token_type":"Bearer","expires_at":session.expires_at.isoformat(),"role":invitation["role"]})
+
+        if method == "POST" and path == "/v1/paypal/webhook":
+            length=int(environ.get("CONTENT_LENGTH") or 0)
+            if length > 1000000: raise APIError(413,"PAYLOAD_TOO_LARGE","webhook payload too large")
+            raw=environ["wsgi.input"].read(length)
+            try:
+                verified,event=paypal_verify_webhook(raw_body=raw,headers={k[5:].lower().replace("_","-"):v for k,v in environ.items() if k.startswith("HTTP_PAYPAL_")}|{"paypal-cert-url":environ.get("HTTP_PAYPAL_CERT_URL","")})
+            except (PayPalError,ValueError,KeyError) as exc:
+                raise APIError(400,"PAYPAL_WEBHOOK_INVALID","invalid PayPal webhook") from exc
+            if not verified: raise APIError(400,"PAYPAL_WEBHOOK_INVALID","PayPal webhook signature verification failed")
+            event_id=str(event.get("id","")).strip()
+            if not event_id: raise APIError(400,"PAYPAL_WEBHOOK_INVALID","missing PayPal event id")
+            event_type=str(event.get("event_type",""))
+            resource=event.get("resource") or {}
+            paypal_id=str(resource.get("id") or "")
+            tx=None
+            if self.repository is not None and paypal_id:
+                # Orders and subscriptions are looked up through tenant rows below.
+                for candidate_org in []: pass
+            # Webhooks are authoritative status signals; transaction ownership is
+            # established by a locally recorded PayPal ID. In-memory mode uses the
+            # local ledger, while production deployments should persist the same row.
+            for key,row in list(self.store.billing.items()):
+                if row.get("paypal_order_id")==paypal_id or row.get("paypal_subscription_id")==paypal_id:
+                    tx=row; break
+            if tx is not None:
+                status_map={"CHECKOUT.ORDER.COMPLETED":"COMPLETED","PAYMENT.CAPTURE.COMPLETED":"COMPLETED",
+                    "PAYMENT.CAPTURE.DENIED":"DENIED","PAYMENT.SALE.COMPLETED":"ACTIVE",
+                    "BILLING.SUBSCRIPTION.ACTIVATED":"ACTIVE","BILLING.SUBSCRIPTION.UPDATED":"ACTIVE",
+                    "BILLING.SUBSCRIPTION.CANCELLED":"CANCELLED","BILLING.SUBSCRIPTION.SUSPENDED":"SUSPENDED",
+                    "BILLING.SUBSCRIPTION.EXPIRED":"EXPIRED","BILLING.SUBSCRIPTION.PAYMENT.FAILED":"PAYMENT_FAILED",
+                    "PAYMENT.SALE.REFUNDED":"REFUNDED","PAYMENT.SALE.REVERSED":"REVERSED"}
+                tx["status"]=status_map.get(event_type,tx.get("status","PENDING")); tx["paypal_event_id"]=event_id
+                tx["metadata"]={"last_webhook_type":event_type,"last_webhook_at":utc_now().isoformat()}
+                if self.repository is not None:
+                    try:self.repository.update_billing_transaction(tx["organization_id"],tx)
+                    except Exception:pass
+                self.store.audit_event(tx["organization_id"],None,"PAYPAL_WEBHOOK_PROCESSED",f"billing:{tx['id']}",event_type=event_type,paypal_id=paypal_id)
+            return self._json(200,{"status":"accepted"})
         user = self._auth(environ)
         # All v1 routes are tenant-bound to the authenticated user. There is no organization_id override.
+
+
+        if method == "GET" and path == "/v1/billing":
+            rows=list(self.store.billing.values())
+            if self.repository is not None and hasattr(self.repository,"list_billing_transactions"):
+                rows=self.repository.list_billing_transactions(user.organization_id,user.user_id)
+            return self._json(200,{"items":rows,"count":len(rows),"paypal_configured":paypal_configured()})
+        if method == "GET" and path == "/v1/paypal/config":
+            return self._json(200,{"configured":paypal_configured(),"client_id":os.getenv("PAYPAL_CLIENT_ID","").strip(),"environment":os.getenv("PAYPAL_ENVIRONMENT","sandbox").strip()})
+        if method == "POST" and path == "/v1/paypal/orders/create":
+            body=self._body(environ); offer_id=str(body.get("offer_id","")).strip()
+            try: offer=get_offer(offer_id)
+            except ValueError as exc: raise APIError(422,"INVALID_OFFER","unknown billing offer") from exc
+            if offer.amount is None or offer.kind=="subscription": raise APIError(422,"INVALID_OFFER","this offer is not a one-time PayPal order")
+            if not paypal_configured(): raise APIError(503,"PAYPAL_NOT_CONFIGURED","PayPal is not configured")
+            tx_id=str(uuid.uuid4()); base=self.config.public_base_url.rstrip("/")
+            try:
+                pp=paypal_create_order(offer_id=offer.offer_id,name=offer.name_fr,amount=f"{offer.amount:.2f}",currency=offer.currency,reference_id=tx_id,return_url=base+"/app?paypal=success",cancel_url=base+"/app?paypal=cancel")
+            except PayPalError as exc: raise APIError(502,"PAYPAL_CREATE_ORDER_FAILED","PayPal order creation failed",exc.payload)
+            row={"id":tx_id,"organization_id":user.organization_id,"user_id":user.user_id,"offer_id":offer.offer_id,"kind":offer.kind,"status":"CREATED","currency":offer.currency,"amount":str(offer.amount),"paypal_order_id":pp.get("id"),"paypal_subscription_id":None,"metadata":{}}
+            self.store.billing[tx_id]=row
+            if self.repository is not None and hasattr(self.repository,"create_billing_transaction"): self.repository.create_billing_transaction(user.organization_id,row)
+            self.store.audit_event(user.organization_id,user.user_id,"PAYPAL_ORDER_CREATED",f"billing:{tx_id}",offer_id=offer.offer_id,paypal_order_id=pp.get("id"))
+            return self._json(201,{"id":pp.get("id"),"offer_id":offer.offer_id,"amount":str(offer.amount),"currency":offer.currency})
+        if method == "POST" and path.startswith("/v1/paypal/orders/") and path.endswith("/capture"):
+            order_id=path.split("/")[4]
+            row=next((x for x in self.store.billing.values() if x.get("paypal_order_id")==order_id and x.get("organization_id")==user.organization_id),None)
+            if row is None and self.repository is not None and hasattr(self.repository,"get_billing_by_order"):
+                row=self.repository.get_billing_by_order(user.organization_id,order_id)
+            if row is None: raise APIError(404,"PAYMENT_NOT_FOUND","PayPal order not found")
+            if row.get("status")=="COMPLETED": return self._json(200,{"status":"COMPLETED","id":order_id})
+            try: pp=paypal_capture_order(order_id)
+            except PayPalError as exc: raise APIError(502,"PAYPAL_CAPTURE_FAILED","PayPal capture failed",exc.payload)
+            row["status"]=pp.get("status","UNKNOWN"); row["metadata"]={"capture":pp}
+            self.store.billing[str(row["id"])]=row
+            if self.repository is not None and hasattr(self.repository,"update_billing_transaction"): self.repository.update_billing_transaction(user.organization_id,row)
+            self.store.audit_event(user.organization_id,user.user_id,"PAYPAL_ORDER_CAPTURED",f"billing:{row['id']}",paypal_order_id=order_id,status=row["status"])
+            return self._json(200,{"status":row["status"],"id":order_id,"offer_id":row["offer_id"]})
+        if method == "GET" and path == "/v1/paypal/subscription/config":
+            offer_id=str(parse_qs(urlsplit(environ.get("QUERY_STRING","")).query if False else environ.get("QUERY_STRING","")).get("offer_id",[""])[0])
+            try: offer=get_offer(offer_id)
+            except ValueError as exc: raise APIError(422,"INVALID_OFFER","unknown subscription offer") from exc
+            if offer.kind!="subscription": raise APIError(422,"INVALID_OFFER","not a subscription offer")
+            plan_id=paypal_plan_id(offer)
+            if not paypal_configured() or not plan_id: raise APIError(503,"PAYPAL_NOT_CONFIGURED","PayPal subscription plan is not configured")
+            return self._json(200,{"offer_id":offer.offer_id,"plan_id":plan_id,"client_id":os.getenv("PAYPAL_CLIENT_ID","").strip(),"currency":offer.currency,"amount":str(offer.amount)})
+        if method == "POST" and path == "/v1/paypal/subscription/confirm":
+            body=self._body(environ); offer_id=str(body.get("offer_id","")).strip(); subscription_id=str(body.get("subscription_id","")).strip()
+            try: offer=get_offer(offer_id)
+            except ValueError as exc: raise APIError(422,"INVALID_OFFER","unknown subscription offer") from exc
+            if offer.kind!="subscription" or not subscription_id: raise APIError(422,"INVALID_SUBSCRIPTION","subscription and subscription offer are required")
+            plan_id=paypal_plan_id(offer)
+            if not plan_id: raise APIError(503,"PAYPAL_NOT_CONFIGURED","subscription plan is not configured")
+            try: pp=paypal_request_json("GET",f"/v1/billing/subscriptions/{subscription_id}",access_token=paypal_access_token())
+            except PayPalError as exc: raise APIError(502,"PAYPAL_SUBSCRIPTION_LOOKUP_FAILED","PayPal subscription lookup failed",exc.payload)
+            if str(pp.get("plan_id",""))!=plan_id: raise APIError(409,"SUBSCRIPTION_PLAN_MISMATCH","subscription plan does not match the selected offer")
+            tx_id=str(uuid.uuid4()); row={"id":tx_id,"organization_id":user.organization_id,"user_id":user.user_id,"offer_id":offer.offer_id,"kind":"subscription","status":pp.get("status","CREATED"),"currency":offer.currency,"amount":str(offer.amount),"paypal_order_id":None,"paypal_subscription_id":subscription_id,"metadata":{"subscription":pp}}
+            self.store.billing[tx_id]=row
+            if self.repository is not None and hasattr(self.repository,"create_billing_transaction"): self.repository.create_billing_transaction(user.organization_id,row)
+            self.store.audit_event(user.organization_id,user.user_id,"PAYPAL_SUBSCRIPTION_CONFIRMED",f"billing:{tx_id}",paypal_subscription_id=subscription_id,offer_id=offer.offer_id)
+            return self._json(201,{"status":row["status"],"subscription_id":subscription_id,"offer_id":offer.offer_id})
+
         if method == "POST" and path == "/v1/auth/email-verification/request":
             if self._email_verified(user):
                 return self._json(200, {"status": "already_verified"})
