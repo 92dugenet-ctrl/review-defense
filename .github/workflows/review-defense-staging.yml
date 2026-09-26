@@ -1,5 +1,7 @@
 name: Review Defense staging
 
+# Manual CI trigger marker: run the current staging E2E pipeline.
+
 on:
   push:
     branches: [main]
