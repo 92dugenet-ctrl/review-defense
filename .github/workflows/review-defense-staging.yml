@@ -216,7 +216,7 @@ jobs:
             curl_exit=$?
             set -e
             http_status=$(printf "%s\n" "$curl_output" | tail -n 1)
-            response_body=$(printf "%s\n" "$curl_output" | sed "$d")
+            response_body=$(printf "%s\n" "$curl_output" | sed '$d')
             echo "Health attempt ${attempt}/18: curl_exit=${curl_exit}, http_status=${http_status}"
             if [ "$curl_exit" -eq 0 ] && [ "$http_status" = "200" ]; then
               echo "Staging endpoint is reachable."
@@ -231,6 +231,7 @@ jobs:
               echo "::warning::eCloudServ staging health did not become HTTP 200 within the verification window."
               echo "::warning::Last HTTP status: ${http_status}"
               echo "::warning::Last response: ${response_body}"
+              touch /tmp/review-defense-staging-unavailable
               exit 0
             fi
             sleep 10
@@ -239,6 +240,10 @@ jobs:
         env:
           STAGING_BASE_URL: ${{ inputs.staging_url || secrets.STAGING_BASE_URL }}
         run: |
+          if [ -f /tmp/review-defense-staging-unavailable ]; then
+            echo "::warning::Live certification skipped because staging health never reached HTTP 200."
+            exit 0
+          fi
           if [ -z "${STAGING_BASE_URL}" ]; then
             echo "Live certification skipped because STAGING_BASE_URL is not configured."
             exit 0
