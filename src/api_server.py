@@ -855,8 +855,12 @@ class ReviewDefenseAPI:
             except PayPalError as exc: raise APIError(502,"PAYPAL_SUBSCRIPTION_LOOKUP_FAILED","PayPal subscription lookup failed",exc.payload)
             if str(pp.get("plan_id",""))!=plan_id: raise APIError(409,"SUBSCRIPTION_PLAN_MISMATCH","subscription plan does not match the selected offer")
             tx_id=str(uuid.uuid4()); row={"id":tx_id,"organization_id":user.organization_id,"user_id":user.user_id,"offer_id":offer.offer_id,"kind":"subscription","status":pp.get("status","CREATED"),"currency":offer.currency,"amount":str(offer.amount),"paypal_order_id":None,"paypal_subscription_id":subscription_id,"metadata":{"subscription":pp}}
+            try:
+                if self.repository is not None and hasattr(self.repository,"create_billing_transaction"): self.repository.create_billing_transaction(user.organization_id,row)
+            except Exception as exc:
+                self.store.audit_event(user.organization_id,user.user_id,"PAYPAL_SUBSCRIPTION_LEDGER_FAILED",f"billing:{tx_id}",offer_id=offer.offer_id,error_type=type(exc).__name__)
+                raise APIError(500,"BILLING_LEDGER_FAILED","PayPal subscription was created but could not be recorded. Please retry; the subscription was not cancelled automatically.") from exc
             self.store.billing[tx_id]=row
-            if self.repository is not None and hasattr(self.repository,"create_billing_transaction"): self.repository.create_billing_transaction(user.organization_id,row)
             self.store.audit_event(user.organization_id,user.user_id,"PAYPAL_SUBSCRIPTION_CONFIRMED",f"billing:{tx_id}",paypal_subscription_id=subscription_id,offer_id=offer.offer_id)
             return self._json(201,{"status":row["status"],"subscription_id":subscription_id,"offer_id":offer.offer_id})
 
