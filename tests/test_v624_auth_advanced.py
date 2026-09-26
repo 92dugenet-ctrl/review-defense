@@ -33,6 +33,41 @@ def test_v624_mfa_enrollment_requires_confirmation_and_then_login_code():
     os.environ.pop("REVIEW_DEFENSE_DEV_MFA_KEY", None)
 
 
+def test_v624_mfa_is_admin_only_and_legacy_client_enrollment_is_ignored():
+    import os
+    os.environ["REVIEW_DEFENSE_DEV_MFA_KEY"] = __import__("cryptography.fernet", fromlist=["Fernet"]).Fernet.generate_key().decode()
+    app = create_app(config=ProductionConfig(environment="development"))
+    client = app.seed_user(organization_id="org-client", email="client@example.com", password="correct horse battery staple", role="CLIENT")
+    secret = generate_secret()
+    app.store.mfa[client.user_id] = {
+        "enabled": True,
+        "secret_enc": encrypt_secret(secret, os.environ["REVIEW_DEFENSE_DEV_MFA_KEY"]),
+    }
+
+    status, login = call(app, "POST", "/v1/auth/login", {
+        "organization_id": "org-client",
+        "email": "client@example.com",
+        "password": "correct horse battery staple",
+    })
+    assert status == 200 and login["access_token"]
+
+    status, _ = call(app, "POST", "/v1/auth/mfa/enroll", {}, token=login["access_token"])
+    assert status == 403
+
+    admin = app.seed_user(organization_id="org-admin", email="admin@example.com", password="correct horse battery staple", role="ADMIN")
+    status, admin_login = call(app, "POST", "/v1/auth/login", {
+        "organization_id": "org-admin",
+        "email": "admin@example.com",
+        "password": "correct horse battery staple",
+    })
+    assert status == 200 and admin_login["access_token"]
+
+    status, data = call(app, "POST", "/v1/auth/mfa/enroll", {}, token=admin_login["access_token"])
+    assert status == 200 and data["secret"]
+
+    os.environ.pop("REVIEW_DEFENSE_DEV_MFA_KEY", None)
+
+
 def test_v624_recovery_token_is_single_use_and_revokes_sessions():
     os.environ["REVIEW_DEFENSE_EXPOSE_RECOVERY_TOKEN"] = "true"
     app = create_app(config=ProductionConfig(environment="development"))
