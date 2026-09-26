@@ -1,0 +1,42 @@
+name: PayPal Sandbox Provisioning
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  provision:
+    name: Create Review Defense PayPal Sandbox resources
+    runs-on: ubuntu-latest
+    env:
+      PAYPAL_ENVIRONMENT: sandbox
+      PAYPAL_BASE_URL: https://api-m.sandbox.paypal.com
+      PAYPAL_CLIENT_ID: ${{ secrets.PAYPAL_CLIENT_ID }}
+      PAYPAL_CLIENT_SECRET: ${{ secrets.PAYPAL_CLIENT_SECRET }}
+      PAYPAL_PRODUCT_ID: ${{ secrets.PAYPAL_PRODUCT_ID }}
+      PAYPAL_PLAN_ESSENTIAL_ID: ${{ secrets.PAYPAL_PLAN_ESSENTIAL_ID }}
+      PAYPAL_PLAN_PROFESSIONAL_ID: ${{ secrets.PAYPAL_PLAN_PROFESSIONAL_ID }}
+      PAYPAL_PLAN_BUSINESS_ID: ${{ secrets.PAYPAL_PLAN_BUSINESS_ID }}
+      PAYPAL_HOME_URL: https://review-defense.com
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Provision PayPal Sandbox
+        run: python scripts/paypal/setup_sandbox.py
+
+      - name: Upload PayPal IDs
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-defense-paypal-sandbox-config
+          path: paypal-sandbox-config.json
+          if-no-files-found: error
+          retention-days: 7
