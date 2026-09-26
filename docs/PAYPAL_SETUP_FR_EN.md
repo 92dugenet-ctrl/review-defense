@@ -160,3 +160,44 @@ Provisioning does not turn these tiers into a global PayPal plan-price mutation.
 - Product creation: https://developer.paypal.com/api/catalog-products/v1/products-create/
 - PayPal REST API requests: https://developer.paypal.com/api/make-api-requests/
 - Sandbox accounts: https://developer.paypal.com/sandbox-testing/accounts
+
+
+### Provisioning via GitHub Actions
+
+Le dépôt contient aussi `.github/workflows/paypal-sandbox-provision.yml`.
+
+Dans **Settings → Secrets and variables → Actions → New repository secret**, ajoute :
+
+- `PAYPAL_CLIENT_ID`
+- `PAYPAL_CLIENT_SECRET`
+
+Tu peux aussi fournir les IDs déjà existants si le provisioning a déjà été exécuté :
+
+- `PAYPAL_PRODUCT_ID`
+- `PAYPAL_PLAN_ESSENTIAL_ID`
+- `PAYPAL_PLAN_PROFESSIONAL_ID`
+- `PAYPAL_PLAN_BUSINESS_ID`
+
+Ensuite : **Actions → PayPal Sandbox Provisioning → Run workflow**.
+
+Le workflow ne s'exécute que manuellement et reste limité au Sandbox. Le résultat est fourni comme artefact temporaire pendant 7 jours. Les secrets sont gérés par GitHub Actions et ne sont pas écrits dans le dépôt.
+
+### Provisioning through GitHub Actions
+
+The repository also contains `.github/workflows/paypal-sandbox-provision.yml`.
+
+Go to **Settings → Secrets and variables → Actions → New repository secret** and add:
+
+- `PAYPAL_CLIENT_ID`
+- `PAYPAL_CLIENT_SECRET`
+
+You can also provide existing IDs if provisioning has already been run:
+
+- `PAYPAL_PRODUCT_ID`
+- `PAYPAL_PLAN_ESSENTIAL_ID`
+- `PAYPAL_PLAN_PROFESSIONAL_ID`
+- `PAYPAL_PLAN_BUSINESS_ID`
+
+Then: **Actions → PayPal Sandbox Provisioning → Run workflow**.
+
+The workflow is manual-only and restricted to Sandbox. The result is uploaded as a temporary artifact for 7 days. GitHub Actions manages the secrets and they are never written to the repository.
