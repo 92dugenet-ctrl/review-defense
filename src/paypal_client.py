@@ -9,6 +9,10 @@ class PayPalError(RuntimeError):
 def configured():
     return bool(os.getenv("PAYPAL_CLIENT_ID","").strip() and os.getenv("PAYPAL_CLIENT_SECRET","").strip())
 
+def configuration_status():
+    env=os.getenv("PAYPAL_ENVIRONMENT","sandbox").strip().lower()
+    return {"configured":configured(),"environment":env,"client_id_present":bool(os.getenv("PAYPAL_CLIENT_ID","").strip()),"client_secret_present":bool(os.getenv("PAYPAL_CLIENT_SECRET","").strip()),"product_id_present":bool(os.getenv("PAYPAL_PRODUCT_ID","").strip()),"plan_essential_present":bool(os.getenv("PAYPAL_PLAN_ESSENTIAL_ID","").strip()),"plan_professional_present":bool(os.getenv("PAYPAL_PLAN_PROFESSIONAL_ID","").strip()),"plan_business_present":bool(os.getenv("PAYPAL_PLAN_BUSINESS_ID","").strip()),"webhook_id_present":bool(os.getenv("PAYPAL_WEBHOOK_ID","").strip())}
+
 def base_url():
     env=os.getenv("PAYPAL_ENVIRONMENT","sandbox").strip().lower()
     return "https://api-m.sandbox.paypal.com" if env=="sandbox" else "https://api-m.paypal.com"
