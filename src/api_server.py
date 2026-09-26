@@ -654,7 +654,10 @@ class ReviewDefenseAPI:
                 raise APIError(401, "AUTH_INVALID", "invalid credentials")
             if self.config.require_email_verification and not self._email_verified(user):
                 raise APIError(403, "EMAIL_NOT_VERIFIED", "email verification is required before login")
-            mfa_secret = self._mfa_secret(user)
+            # MFA is reserved for privileged administration accounts.
+            # Client-facing roles must never be blocked by an MFA enrollment left
+            # over from an older account policy.
+            mfa_secret = self._mfa_secret(user) if user.role in {"OWNER", "ADMIN"} else None
             if mfa_secret is not None:
                 if not verify_totp(mfa_secret, str(body.get("mfa_code", ""))):
                     raise APIError(401, "MFA_REQUIRED", "valid MFA code is required")
@@ -754,6 +757,7 @@ class ReviewDefenseAPI:
             self.store.audit_event(user.organization_id, user.user_id, "EMAIL_VERIFICATION_EMAIL_SENT", f"user:{user.user_id}")
             return self._json(200, {"status": "sent", "expires_at": expires_at})
         if method == "POST" and path == "/v1/auth/mfa/enroll":
+            self._require_role(user, "OWNER", "ADMIN")
             if self._mfa_state(user).get("enabled"):
                 raise APIError(409, "MFA_ALREADY_ENABLED", "MFA is already enabled")
             secret = generate_secret(); encrypted = encrypt_secret(secret, self._mfa_key())
@@ -764,6 +768,7 @@ class ReviewDefenseAPI:
             return self._json(200,{"status":"pending","secret":secret,"otpauth_uri":otpauth_uri(secret,user.email)})
 
         if method == "POST" and path == "/v1/auth/mfa/confirm":
+            self._require_role(user, "OWNER", "ADMIN")
             state=self._mfa_state(user)
             if not state.get("secret_enc"): raise APIError(400,"MFA_NOT_ENROLLED","MFA enrollment has not been started")
             secret=decrypt_secret(state["secret_enc"],self._mfa_key())
