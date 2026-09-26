@@ -58,7 +58,7 @@ class PayPalClient:
         self.base_url = (
             os.getenv("PAYPAL_BASE_URL", DEFAULT_BASE_URL).strip().rstrip("/")
         )
-        if self.base_url not in {DEFAULT_BASE_URL, "https://api-m.paypal.com"}:
+        if self.base_url != DEFAULT_BASE_URL:
             raise RuntimeError("PAYPAL_BASE_URL doit pointer vers une API PayPal officielle")
         if os.getenv("PAYPAL_ENVIRONMENT", "sandbox").strip().lower() != "sandbox":
             raise RuntimeError("Le provisioning Sandbox ne peut utiliser que l'API Sandbox PayPal")
