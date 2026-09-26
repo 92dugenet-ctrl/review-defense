@@ -205,6 +205,34 @@ def create_plan(client: PayPalClient, product_id: str, plan: dict) -> dict:
     }
 
 
+def provision_webhook(client: PayPalClient) -> str:
+    existing=os.getenv("PAYPAL_WEBHOOK_ID","").strip()
+    if existing:
+        print(f"Webhook existant utilisé : {existing}")
+        return existing
+    url=os.getenv("PAYPAL_HOME_URL","https://review-defense.com").strip().rstrip("/")+"/v1/paypal/webhook"
+    try:
+        current=client.api("GET","/v1/notifications/webhooks")
+        for item in current.get("webhooks",[]):
+            if item.get("url")==url:
+                print(f"Webhook existant trouvé : {item.get('id')}")
+                return item.get("id","")
+    except RuntimeError:
+        pass
+    created=client.api("POST","/v1/notifications/webhooks",{
+        "url":url,
+        "event_types":[{"name":x} for x in (
+            "CHECKOUT.ORDER.COMPLETED","PAYMENT.CAPTURE.COMPLETED","PAYMENT.CAPTURE.DENIED",
+            "PAYMENT.SALE.COMPLETED","PAYMENT.SALE.REFUNDED","PAYMENT.SALE.REVERSED",
+            "BILLING.SUBSCRIPTION.ACTIVATED","BILLING.SUBSCRIPTION.UPDATED",
+            "BILLING.SUBSCRIPTION.CANCELLED","BILLING.SUBSCRIPTION.SUSPENDED",
+            "BILLING.SUBSCRIPTION.EXPIRED","BILLING.SUBSCRIPTION.PAYMENT.FAILED"
+        )]
+    })
+    wid=created.get("id","")
+    print(f"Webhook créé : {wid} → {url}")
+    return wid
+
 def main() -> int:
     if os.getenv("PAYPAL_ENVIRONMENT", "sandbox").strip().lower() != "sandbox":
         raise RuntimeError(
@@ -216,12 +244,15 @@ def main() -> int:
     client = PayPalClient()
     product_id = create_product(client)
     plans = [create_plan(client, product_id, plan) for plan in PLANS]
+    webhook_id = provision_webhook(client)
 
     output = {
         "environment": "sandbox",
         "product_id": product_id,
         "currency": "EUR",
         "plans": plans,
+        "webhook_id": webhook_id,
+        "webhook_url": os.getenv("PAYPAL_HOME_URL", "https://review-defense.com").strip().rstrip("/") + "/v1/paypal/webhook",
         "generated_at": __import__("datetime").datetime.now(
             __import__("datetime").timezone.utc
         ).isoformat(),
