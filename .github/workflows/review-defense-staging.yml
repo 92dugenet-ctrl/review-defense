@@ -276,3 +276,5 @@ jobs:
           name: review-defense-live-e2e
           path: artifacts/v6.40-live-e2e.json
           if-no-files-found: ignore
+
+# E2E diagnostic trigger
