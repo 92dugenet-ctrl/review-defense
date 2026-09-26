@@ -779,10 +779,13 @@ class ReviewDefenseAPI:
                     "BILLING.SUBSCRIPTION.EXPIRED":"EXPIRED","BILLING.SUBSCRIPTION.PAYMENT.FAILED":"PAYMENT_FAILED",
                     "PAYMENT.SALE.REFUNDED":"REFUNDED","PAYMENT.SALE.REVERSED":"REVERSED"}
                 tx["status"]=status_map.get(event_type,tx.get("status","PENDING")); tx["paypal_event_id"]=event_id
-                tx["metadata"]={"last_webhook_type":event_type,"last_webhook_at":utc_now().isoformat()}
+                existing_metadata=tx.get("metadata") if isinstance(tx.get("metadata"),dict) else {}
+                tx["metadata"]={**existing_metadata,"last_webhook_type":event_type,"last_webhook_at":utc_now().isoformat()}
                 if self.repository is not None:
-                    try:self.repository.update_billing_transaction(tx["organization_id"],tx)
-                    except Exception:pass
+                    try:
+                        self.repository.update_billing_transaction(tx["organization_id"],tx)
+                    except Exception as exc:
+                        raise APIError(500,"BILLING_WEBHOOK_PERSIST_FAILED","PayPal webhook was verified but billing state could not be persisted; PayPal should retry.") from exc
                 self.store.audit_event(tx["organization_id"],None,"PAYPAL_WEBHOOK_PROCESSED",f"billing:{tx['id']}",event_type=event_type,paypal_id=paypal_id)
             return self._json(200,{"status":"accepted"})
         user = self._auth(environ)
@@ -850,6 +853,8 @@ class ReviewDefenseAPI:
             if self.repository is not None and hasattr(self.repository,"get_billing_by_paypal_id_global"):
                 existing_tx=self.repository.get_billing_by_paypal_id_global(subscription_id)
             if existing_tx is not None:
+                if str(existing_tx.get("organization_id","")) != str(user.organization_id):
+                    raise APIError(409,"SUBSCRIPTION_ALREADY_LINKED","PayPal subscription is already linked to another organization")
                 return self._json(200,{"status":existing_tx.get("status","CREATED"),"subscription_id":subscription_id,"offer_id":existing_tx.get("offer_id",offer.offer_id),"existing":True})
             try: pp=paypal_request_json("GET",f"/v1/billing/subscriptions/{subscription_id}",access_token=paypal_access_token())
             except PayPalError as exc: raise APIError(502,"PAYPAL_SUBSCRIPTION_LOOKUP_FAILED","PayPal subscription lookup failed",exc.payload)
