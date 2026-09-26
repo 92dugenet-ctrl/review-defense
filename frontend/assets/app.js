@@ -201,5 +201,22 @@ window.boot=async function boot(){
  if(typeof showPublicPage==='function')showPublicPage(page,false);else renderLogin();
 }
 if(demoMode && !location.pathname.startsWith('/app')) history.replaceState({},'', '/app?demo=1');
+
+if(typeof window.boot!=='function'){
+ window.boot=async function(){
+  if(location.pathname==='/accept-invitation'){if(typeof invitationSignupPage==='function'){invitationSignupPage();return}}
+  if(location.pathname==='/reset-password'){renderReset();return}
+  if(location.pathname==='/verify-email'){renderVerify();return}
+  if(location.pathname==='/app'||location.pathname==='/app/'){
+   if(!state.token&&!demoMode){renderLogin();return}
+   if(demoMode)state.token='demo-token';
+   try{state.me=await api('/v1/me');shell();if(demoMode)document.getElementById('content').insertAdjacentHTML('beforebegin','<div class="demo-banner">MODE DÉMO · données fictives · aucune action externe exécutée</div>');document.getElementById('role').textContent=state.me.role;document.getElementById('tenant').textContent='Organisation '+state.me.organization_id;document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{state.view=b.dataset.view;render()});document.getElementById('logout').onclick=async()=>{try{await api('/v1/logout',{method:'POST'})}finally{state.token=null;localStorage.removeItem('rd_token');location.href='/'}};await render()}catch(e){state.token=null;localStorage.removeItem('rd_token');renderLogin(e.message)}return
+  }
+  const publicPaths=['/','/conformite/','/produit/','/comment-ca-marche/','/services/','/tarifs/','/ressources/','/contact/','/mentions-legales/','/confidentialite/','/cgv/','/cgu/','/cookies/','/securite/','/conservation-donnees/','/droits-rgpd/','/violation-donnees/','/sous-traitants/','/ia-et-controle-humain/'];
+  const publicPage=typeof publicPathPage==='function' ? publicPathPage(location.pathname) : null;
+  if(publicPaths.includes(location.pathname)||publicPage){if(typeof showPublicPage==='function')showPublicPage(publicPage||'home',false);return}
+  const page=new URLSearchParams(location.search).get('page')||'home';
+  if(typeof showPublicPage==='function')showPublicPage(page,false);else renderLogin();
+ };
 }
 window.boot();
