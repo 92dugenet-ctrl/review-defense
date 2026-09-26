@@ -325,3 +325,6 @@
 .marketing main{margin-left:0;padding:0;min-width:0;width:100%;}
 .marketing h1,.marketing h2,.marketing h3,.marketing p{font-family:inherit;}
 @media(max-width:760px){.marketing main{margin-left:0;padding:0;}}
+
+#rd-language-switcher,.rd-language-switcher{min-width:44px;height:36px;padding:0 12px;border:1px solid rgba(15,23,42,.14);border-radius:999px;background:rgba(255,255,255,.82);color:#172033;font:700 12px/1 inherit;letter-spacing:.08em;cursor:pointer;backdrop-filter:blur(12px);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}#rd-language-switcher:hover,.rd-language-switcher:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(15,23,42,.1);border-color:rgba(15,23,42,.28)}
+@media(max-width:760px){#rd-language-switcher,.rd-language-switcher{height:34px;min-width:40px;padding:0 10px}}
