@@ -19,7 +19,7 @@ def test_seo_article_keys_are_unique_and_match_server_pack():
     frontend = (ROOT / "frontend/assets/seo-articles.js").read_text(encoding="utf-8")
     server = (ROOT / "src/seo_content.py").read_text(encoding="utf-8")
     frontend_keys = re.findall(r'^\s*"([^"]+)":\s*\{', frontend, flags=re.MULTILINE)
-    server_keys = re.findall(r'^\\("([^"]+)"', server, flags=re.MULTILINE)
+    server_keys = re.findall(r'^\("([^"]+)"', server, flags=re.MULTILINE)
 
     assert len(frontend_keys) == len(set(frontend_keys))
     assert set(frontend_keys) == set(server_keys) - {
