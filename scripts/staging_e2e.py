@@ -123,7 +123,30 @@ def main() -> int:
                         }
                         raise AssertionError("public commercial landing page content contract failed at the root URL")
                     page.locator("#public-login").click()
-                    page.wait_for_selector("#login", timeout=10000)
+                    try:
+                        page.wait_for_selector("#login", timeout=10000)
+                    except Exception as exc:
+                        report["login_diagnostic"] = {
+                            "stage": "public_login_transition",
+                            "url": page.url,
+                            "title": page.title(),
+                            "ready_state": page.evaluate("document.readyState"),
+                            "pathname": page.evaluate("location.pathname"),
+                            "href": page.evaluate("location.href"),
+                            "app_root_html": page.locator("#app").inner_html()[:8000] if page.locator("#app").count() else "",
+                            "body_text": page.locator("body").inner_text()[:5000],
+                            "script_srcs": page.locator("script").evaluate_all("(els) => els.map(e => e.src)"),
+                            "boot_type": page.evaluate("typeof window.boot"),
+                            "render_type": page.evaluate("typeof window.render"),
+                            "rd_token_present": page.evaluate("Boolean(localStorage.getItem('rd_token'))"),
+                            "page_errors": browser_errors[-30:],
+                            "console": browser_console[-80:],
+                            "asset_responses": [
+                                x for x in asset_responses
+                                if "/assets/app.js" in x["url"] or "/assets/public.js" in x["url"] or "/assets/app.css" in x["url"]
+                            ],
+                        }
+                        raise exc
                     report["public_commercial_landing"] = {
                         "status": "PASS",
                         "root_url": base + "/",
