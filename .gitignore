@@ -1,0 +1,17 @@
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# PayPal local provisioning output
+paypal-sandbox-config.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Test/cache
+.pytest_cache/
+.coverage
