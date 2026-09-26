@@ -756,7 +756,7 @@ class ReviewDefenseAPI:
             if not event_id: raise APIError(400,"PAYPAL_WEBHOOK_INVALID","missing PayPal event id")
             event_type=str(event.get("event_type",""))
             resource=event.get("resource") or {}
-            paypal_id=str(resource.get("id") or "")
+            paypal_id=str(resource.get("id") or "")\n            if event_type.startswith("PAYMENT.SALE.") and resource.get("billing_agreement_id"):\n                paypal_id=str(resource.get("billing_agreement_id"))
             tx=None
             # Webhooks are authoritative status signals; resolve the locally recorded
             # PayPal identifier before mutating billing state.
