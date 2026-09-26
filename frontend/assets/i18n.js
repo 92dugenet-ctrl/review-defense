@@ -131,8 +131,7 @@
   }
   function addSwitcher(){
     if(document.getElementById('rd-language-switcher')) return;
-    const host=document.querySelector('.public-actions')||document.querySelector('header .header-actions')||document.querySelector('header');
-    if(!host)return;
+    const host=document.querySelector('.public-actions')||document.querySelector('header .header-actions')||document.querySelector('header')||document.body;
     const b=document.createElement('button'); b.id='rd-language-switcher'; b.type='button'; b.className='rd-language-switcher'; b.textContent=isEnglish()?'FR':'EN'; b.setAttribute('aria-label',isEnglish()?'Passer en français':'Passer en anglais'); b.title=isEnglish()?'Passer en français':'Passer en anglais';
     b.onclick=()=>{localStorage.setItem(KEY,isEnglish()?'fr':'en');location.reload()};
     host.appendChild(b);
