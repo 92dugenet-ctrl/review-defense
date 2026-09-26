@@ -202,4 +202,4 @@ window.boot=async function boot(){
 }
 if(demoMode && !location.pathname.startsWith('/app')) history.replaceState({},'', '/app?demo=1');
 }
-boot();
+window.boot();
