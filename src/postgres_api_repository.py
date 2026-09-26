@@ -440,6 +440,51 @@ class PostgresAPIRepository(PostgresRepository):
             with conn.cursor() as cur:
                 cur.execute("UPDATE email_verification_tokens SET used_at=now() WHERE organization_id=%s AND token_hash=%s AND used_at IS NULL", (organization_id,token_hash)); return cur.rowcount == 1
 
+    def create_billing_transaction(self, organization_id: str, row):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""INSERT INTO billing_transactions(id,organization_id,user_id,offer_id,kind,status,currency,amount,paypal_order_id,paypal_subscription_id,paypal_event_id,metadata)
+                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                ON CONFLICT (id) DO NOTHING""",
+                (row["id"],organization_id,row.get("user_id"),row["offer_id"],row["kind"],row["status"],row.get("currency","EUR"),row.get("amount"),row.get("paypal_order_id"),row.get("paypal_subscription_id"),row.get("paypal_event_id"),json.dumps(row.get("metadata",{}))))
+    def update_billing_transaction(self, organization_id: str, row):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""UPDATE billing_transactions SET status=%s,paypal_order_id=COALESCE(%s,paypal_order_id),paypal_subscription_id=COALESCE(%s,paypal_subscription_id),paypal_event_id=COALESCE(%s,paypal_event_id),metadata=%s,updated_at=now() WHERE organization_id=%s AND id=%s""",
+                (row["status"],row.get("paypal_order_id"),row.get("paypal_subscription_id"),row.get("paypal_event_id"),json.dumps(row.get("metadata",{})),organization_id,row["id"]))
+    def list_billing_transactions(self, organization_id: str, user_id=None):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                if user_id:
+                    cur.execute("""SELECT id,offer_id,kind,status,currency,amount,paypal_order_id,paypal_subscription_id,metadata,created_at,updated_at FROM billing_transactions WHERE organization_id=%s AND (user_id=%s OR user_id IS NULL) ORDER BY created_at DESC LIMIT 100""",(organization_id,user_id))
+                else:
+                    cur.execute("""SELECT id,offer_id,kind,status,currency,amount,paypal_order_id,paypal_subscription_id,metadata,created_at,updated_at FROM billing_transactions WHERE organization_id=%s ORDER BY created_at DESC LIMIT 100""",(organization_id,))
+                names=("id","offer_id","kind","status","currency","amount","paypal_order_id","paypal_subscription_id","metadata","created_at","updated_at")
+                rows=[]
+                for x in cur.fetchall():
+                    d=dict(zip(names,x))
+                    d["id"]=str(d["id"]); d["amount"]=str(d["amount"]) if d["amount"] is not None else None
+                    for k in ("created_at","updated_at"):
+                        d[k]=d[k].isoformat() if hasattr(d[k],"isoformat") else str(d[k])
+                    rows.append(d)
+                return rows
+    def get_billing_by_order(self, organization_id: str, order_id: str):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""SELECT id,offer_id,kind,status,currency,amount,paypal_order_id,paypal_subscription_id,paypal_event_id,metadata FROM billing_transactions WHERE organization_id=%s AND paypal_order_id=%s""",(organization_id,order_id))
+                row=cur.fetchone()
+                if not row: return None
+                return dict(zip(("id","offer_id","kind","status","currency","amount","paypal_order_id","paypal_subscription_id","paypal_event_id","metadata"),row))
+    def billing_event_seen(self, event_id: str):
+        with self.transaction(None) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT 1 FROM billing_transactions WHERE paypal_event_id=%s LIMIT 1",(event_id,)); return cur.fetchone() is not None
+    def record_billing_webhook(self, organization_id: str, event_id: str, payload):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""UPDATE billing_transactions SET paypal_event_id=%s,metadata=metadata || %s::jsonb,updated_at=now() WHERE organization_id=%s AND (paypal_order_id=%s OR paypal_subscription_id=%s)""",
+                (event_id,json.dumps({"last_webhook":payload}),organization_id,payload.get("_order_id"),payload.get("_subscription_id")))
+
     def get_user_by_id(self, organization_id: str, user_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur: cur.execute("SELECT u.id,u.email,u.password_hash,m.role FROM users u JOIN memberships m ON m.user_id=u.id WHERE m.organization_id=%s AND u.id=%s", (organization_id,user_id)); return cur.fetchone()
