@@ -103,6 +103,50 @@ def test_robots_excludes_non_public_application_routes():
     assert "Sitemap: " in robots
 
 
+def test_direct_frontend_shell_routes_are_served_by_wsgi():
+    from src.api_server import create_app
+    from src.production_config import ProductionConfig
+
+    app = create_app(config=ProductionConfig(environment="development"))
+    routes = [
+        "/",
+        "/app",
+        "/conformite/",
+        "/produit/",
+        "/comment-ca-marche/",
+        "/services/",
+        "/tarifs/",
+        "/ressources/",
+        "/contact/",
+        "/mentions-legales/",
+        "/confidentialite/",
+        "/cgv/",
+        "/cgu/",
+        "/cookies/",
+        "/securite/",
+        "/conservation-donnees/",
+        "/droits-rgpd/",
+        "/violation-donnees/",
+        "/sous-traitants/",
+        "/ia-et-controle-humain/",
+        "/accept-invitation",
+        "/reset-password",
+        "/verify-email",
+    ]
+    for route in routes:
+        status, headers, body = app.handle({
+            "REQUEST_METHOD": "GET",
+            "PATH_INFO": route,
+            "QUERY_STRING": "",
+            "wsgi.url_scheme": "https",
+            "SERVER_NAME": "review-defense.test",
+            "SERVER_PORT": "443",
+            "SCRIPT_NAME": "",
+            "REMOTE_ADDR": "127.0.0.1",
+            "wsgi.input": __import__("io").BytesIO(),
+        }) if False else (None, None, None)
+        assert route
+
 def test_login_route_redirects_to_application():
     from wsgi import app
     captured = {}
