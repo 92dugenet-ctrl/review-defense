@@ -182,7 +182,7 @@ async function confirmMfa(){try{await api('/v1/auth/mfa/confirm',{method:'POST',
 async function changeOrganizationRole(userId,role){try{await api('/v1/organization/members/'+encodeURIComponent(userId)+'/role',{method:'POST',body:JSON.stringify({role})});toast('Rôle mis à jour','success');await render()}catch(e){toast(e.message,'error');await render()}}
 async function inviteOrganizationMember(){modal('Inviter un membre','<form id="invite-member" class="stack"><label>Email<input name="email" type="email" required autocomplete="email"></label><label>Rôle<select name="role"><option value="CLIENT">CLIENT</option><option value="ANALYST">ANALYST</option><option value="ADMIN">ADMIN</option></select></label><button class="primary">Créer l’invitation</button></form>');document.getElementById('invite-member').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget);try{const d=await api('/v1/organization/invitations',{method:'POST',body:JSON.stringify(Object.fromEntries(f))});closeModal();modal('Invitation créée','<div class="stack"><p>Le jeton d’invitation est affiché une seule fois.</p><code class="secret">'+esc(d.invitation_token)+'</code><button class="primary" onclick="closeModal()">Fermer</button></div>');await render()}catch(x){toast(x.message,'error')}}}
 function modal(title,body){const old=document.getElementById('modal');if(old)old.remove();document.body.insertAdjacentHTML('beforeend',`<div id="modal" class="modal-backdrop"><div class="modal"><button class="modal-close" onclick="closeModal()">×</button><h2>${esc(title)}</h2>${body}</div></div>`)}function closeModal(){document.getElementById('modal')?.remove()}
-window.boot=async function boot(){
+async function boot(){
  if(location.pathname==='/accept-invitation'){if(typeof invitationSignupPage==='function'){invitationSignupPage();return}}
  if(location.pathname==='/reset-password'){renderReset();return}
  if(location.pathname==='/verify-email'){renderVerify();return}
@@ -201,5 +201,4 @@ window.boot=async function boot(){
  if(typeof showPublicPage==='function')showPublicPage(page,false);else renderLogin();
 }
 if(demoMode && !location.pathname.startsWith('/app')) history.replaceState({},'', '/app?demo=1');
-}
-window.boot();
+boot();
