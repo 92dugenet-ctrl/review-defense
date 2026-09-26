@@ -330,6 +330,7 @@ function bootPublicRoute(){
  showPublicPage(page,false);
 }
 window.bootPublicRoute=bootPublicRoute;
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bootPublicRoute,{once:true}); else bootPublicRoute();
 function invitationSignupPage(){
  ensurePublicStyles();
  const p=new URLSearchParams(location.search);
