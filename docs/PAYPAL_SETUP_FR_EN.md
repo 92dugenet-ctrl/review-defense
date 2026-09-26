@@ -201,3 +201,24 @@ You can also provide existing IDs if provisioning has already been run:
 Then: **Actions → PayPal Sandbox Provisioning → Run workflow**.
 
 The workflow is manual-only and restricted to Sandbox. The result is uploaded as a temporary artifact for 7 days. GitHub Actions manages the secrets and they are never written to the repository.
+
+
+## Intégration Checkout / Checkout integration
+
+La version applicative utilise désormais les flux suivants :
+
+- **FR — Paiements ponctuels :** le navigateur envoie uniquement un `offer_id`; le serveur récupère le montant canonique, crée l’Order PayPal puis effectue la capture après approbation.
+- **EN — One-time payments:** the browser sends only an `offer_id`; the server resolves the canonical amount, creates the PayPal Order and captures it after approval.
+- **FR — Abonnements :** les plans Essential, Professional et Business utilisent les plans PayPal Sandbox provisionnés. Le plan PayPal partagé n'est pas modifié pour appliquer la fidélité individuellement.
+- **EN — Subscriptions:** Essential, Professional and Business use the provisioned PayPal Sandbox plans. A shared PayPal plan is never globally repriced to implement individual loyalty pricing.
+- **FR/EN — Webhooks :** les événements PayPal sont vérifiés cryptographiquement avant traitement et journalisés dans le ledger de facturation.
+
+### Après le premier déploiement / After the first deployment
+
+1. Déployer la version contenant `/v1/paypal/webhook` sur `https://review-defense.com`.
+2. Relancer **PayPal Sandbox Provisioning**.
+3. Le workflow crée ou réutilise le webhook `/v1/paypal/webhook` et place son identifiant dans `paypal-sandbox-config.json`.
+4. Ajouter cet identifiant comme secret GitHub `PAYPAL_WEBHOOK_ID`.
+5. Relancer le provisioning une dernière fois afin que les exécutions futures réutilisent cet identifiant.
+
+**Important / Important:** le `PAYPAL_CLIENT_SECRET` reste uniquement côté serveur et dans les secrets GitHub. Le Client ID peut être exposé au navigateur pour le SDK PayPal. PayPal recommande que la création et la capture des Orders restent côté serveur, et que les webhooks soient vérifiés avant traitement.
