@@ -487,6 +487,17 @@ class PostgresAPIRepository(PostgresRepository):
                 cur.execute("""UPDATE billing_transactions SET paypal_event_id=%s,metadata=metadata || %s::jsonb,updated_at=now() WHERE organization_id=%s AND (paypal_order_id=%s OR paypal_subscription_id=%s)""",
                 (event_id,json.dumps({"last_webhook":payload}),organization_id,payload.get("_order_id"),payload.get("_subscription_id")))
 
+    def get_billing_by_paypal_id_global(self, paypal_id: str):
+        with self._connect() as conn:
+            with conn.transaction():
+                with conn.cursor() as cur:
+                    cur.execute("""SELECT id,organization_id,offer_id,kind,status,currency,amount,paypal_order_id,paypal_subscription_id,metadata FROM billing_transactions WHERE paypal_order_id=%s OR paypal_subscription_id=%s LIMIT 1""",(paypal_id,paypal_id))
+                    row=cur.fetchone()
+                    if not row:return None
+                    return dict(zip(("id","organization_id","offer_id","kind","status","currency","amount","paypal_order_id","paypal_subscription_id","metadata"),row))
+    def update_billing_global(self, row):
+        self.update_billing_transaction(str(row["organization_id"]),row)
+
     def get_user_by_id(self, organization_id: str, user_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur: cur.execute("SELECT u.id,u.email,u.password_hash,m.role FROM users u JOIN memberships m ON m.user_id=u.id WHERE m.organization_id=%s AND u.id=%s", (organization_id,user_id)); return cur.fetchone()
