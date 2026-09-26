@@ -760,6 +760,8 @@ class ReviewDefenseAPI:
             paypal_id=str(resource.get("id") or "")
             if event_type.startswith("PAYMENT.SALE.") and resource.get("billing_agreement_id"):
                 paypal_id=str(resource.get("billing_agreement_id"))
+            if self.repository is not None and hasattr(self.repository,"billing_event_seen") and self.repository.billing_event_seen(event_id):
+                return self._json(200,{"status":"accepted","duplicate":True})
             tx=None
             # Webhooks are authoritative status signals; resolve the locally recorded
             # PayPal identifier before mutating billing state.
@@ -838,6 +840,11 @@ class ReviewDefenseAPI:
             if offer.kind!="subscription" or not subscription_id: raise APIError(422,"INVALID_SUBSCRIPTION","subscription and subscription offer are required")
             plan_id=paypal_plan_id(offer)
             if not plan_id: raise APIError(503,"PAYPAL_NOT_CONFIGURED","subscription plan is not configured")
+            existing_tx=None
+            if self.repository is not None and hasattr(self.repository,"get_billing_by_paypal_id_global"):
+                existing_tx=self.repository.get_billing_by_paypal_id_global(subscription_id)
+            if existing_tx is not None:
+                return self._json(200,{"status":existing_tx.get("status","CREATED"),"subscription_id":subscription_id,"offer_id":existing_tx.get("offer_id",offer.offer_id),"existing":True})
             try: pp=paypal_request_json("GET",f"/v1/billing/subscriptions/{subscription_id}",access_token=paypal_access_token())
             except PayPalError as exc: raise APIError(502,"PAYPAL_SUBSCRIPTION_LOOKUP_FAILED","PayPal subscription lookup failed",exc.payload)
             if str(pp.get("plan_id",""))!=plan_id: raise APIError(409,"SUBSCRIPTION_PLAN_MISMATCH","subscription plan does not match the selected offer")
