@@ -208,6 +208,9 @@
     'Observabilité uniquement':'Observability only','Cette interface ne supprime, ne publie et ne répond à aucun avis Google automatiquement.':'This interface does not automatically delete, publish or reply to any Google review.',
     'Contradiction examinée':'Contradiction reviewed','Dossier créé':'Case created','Je souhaite recevoir les ressources à cette adresse :':'I would like to receive resources at this address:'
   });
+Object.assign(extraTranslations,{
+"Paiement PayPal":"PayPal payment","Payer avec PayPal":"Pay with PayPal","PAYPAL CONNECTÉ":"PAYPAL CONNECTED","PAYPAL À CONFIGURER":"PAYPAL TO CONFIGURE","Historique":"History","Aucun paiement enregistré":"No payments recorded","Les transactions PayPal apparaîtront ici.":"PayPal transactions will appear here.","Choisir une formule":"Choose a plan","Abonnement confirmé":"Subscription confirmed","Paiement confirmé":"Payment confirmed","Paiement annulé":"Payment cancelled","Erreur de paiement PayPal":"PayPal payment error","Le paiement est séparé des actions Google.":"Payment is separate from Google actions.","Le serveur détermine le montant à partir de l’offre sélectionnée.":"The server determines the amount from the selected offer.","Gérez votre formule, vos achats et vos paiements depuis un espace unique.":"Manage your plan, purchases and payments from one place."
+});
   Object.assign(translations,extraTranslations);
   const pairs=Object.entries(translations).sort((a,b)=>b[0].length-a[0].length);
   const protectedSelector='input,textarea,select,option,[data-i18n-ignore],script,style,code,pre,.review-text,blockquote';
