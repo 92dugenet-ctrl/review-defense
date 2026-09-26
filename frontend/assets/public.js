@@ -362,6 +362,22 @@ function initPremiumInteractions(){
   if(!root || root.dataset.premiumReady==='1') return;
   root.dataset.premiumReady='1';
   const reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const revealTargets=root.querySelectorAll('.rd-section,.rd-final-cta');
+  if(reduce){
+    revealTargets.forEach(el=>el.classList.add('is-visible'));
+  }else if('IntersectionObserver' in window){
+    const revealObserver=new IntersectionObserver((entries,observer)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },{threshold:.08,rootMargin:'0px 0px -5% 0px'});
+    revealTargets.forEach(el=>revealObserver.observe(el));
+  }else{
+    revealTargets.forEach(el=>el.classList.add('is-visible'));
+  }
   root.querySelectorAll('.rd-workflow-visual article').forEach((card,index)=>{
     card.setAttribute('tabindex','0');
     card.setAttribute('role','button');
