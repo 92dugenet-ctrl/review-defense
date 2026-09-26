@@ -759,3 +759,10 @@ body.console-mode .ghost{background:#fff;border-color:var(--line);color:#5d6e86}
   .client-focus-panel{padding:16px}
   .client-focus-item{min-height:70px}
 }
+
+/* REVUE-DEFENSE-025 — priority action hierarchy */
+.client-focus-panel{border:1px solid rgba(25,99,220,.12);box-shadow:0 14px 40px rgba(15,40,80,.06)}
+.client-focus-item{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.client-focus-item:hover,.client-focus-item:focus-visible{transform:translateY(-1px);box-shadow:0 10px 28px rgba(15,40,80,.08);border-color:rgba(25,99,220,.24)}
+.client-focus-item .item-index{font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){.client-focus-item{transition:none}}
