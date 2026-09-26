@@ -2,13 +2,21 @@ from pathlib import Path
 import shutil
 import subprocess
 
-def test_public_js_is_valid_javascript():
+def test_frontend_javascript_is_valid_javascript():
     node = shutil.which("node")
     if not node:
         return
-    path = Path(__file__).resolve().parents[1] / "frontend" / "assets" / "public.js"
-    result = subprocess.run([node, "--check", str(path)], capture_output=True, text=True)
-    assert result.returncode == 0, result.stderr
+    root = Path(__file__).resolve().parents[1] / "frontend" / "assets"
+    paths = [
+        root / "public.js",
+        root / "compliance-front.js",
+        root / "ui-components.js",
+        root / "seo-articles.js",
+        root / "app.js",
+    ]
+    for path in paths:
+        result = subprocess.run([node, "--check", str(path)], capture_output=True, text=True)
+        assert result.returncode == 0, f"{path}: {result.stderr}"
 
 ROOT = Path(__file__).resolve().parents[1]
 
