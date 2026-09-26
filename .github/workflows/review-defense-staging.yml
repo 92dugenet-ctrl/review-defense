@@ -210,14 +210,27 @@ jobs:
             exit 0
           fi
           echo "Waiting for the eCloudServ webhook deployment to expose V6.40..."
-          for attempt in $(seq 1 30); do
-            if curl --fail --silent --show-error --max-time 5 "${STAGING_BASE_URL%/}/health" > /tmp/review-defense-health.json; then
+          for attempt in $(seq 1 18); do
+            set +e
+            curl_output=$(curl --silent --show-error --max-time 5 --write-out "\n%{http_code}" "${STAGING_BASE_URL%/}/health" 2>&1)
+            curl_exit=$?
+            set -e
+            http_status=$(printf "%s\n" "$curl_output" | tail -n 1)
+            response_body=$(printf "%s\n" "$curl_output" | sed "$d")
+            echo "Health attempt ${attempt}/18: curl_exit=${curl_exit}, http_status=${http_status}"
+            if [ "$curl_exit" -eq 0 ] && [ "$http_status" = "200" ]; then
               echo "Staging endpoint is reachable."
-              cat /tmp/review-defense-health.json
+              printf "%s\n" "$response_body"
+              printf "%s\n" "$response_body" > /tmp/review-defense-health.json
               break
             fi
-            if [ "${attempt}" -eq 30 ]; then
-              echo "::warning::eCloudServ staging endpoint was not reachable within the verification window; this external infrastructure condition does not fail the GitHub code pipeline."
+            if [ "$http_status" = "502" ]; then
+              echo "::warning::eCloudServ returned HTTP 502; the reverse proxy is reachable but the staging application is not healthy yet."
+            fi
+            if [ "${attempt}" -eq 18 ]; then
+              echo "::warning::eCloudServ staging health did not become HTTP 200 within the verification window."
+              echo "::warning::Last HTTP status: ${http_status}"
+              echo "::warning::Last response: ${response_body}"
               exit 0
             fi
             sleep 10
