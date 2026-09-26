@@ -806,9 +806,15 @@ class ReviewDefenseAPI:
             try:
                 pp=paypal_create_order(offer_id=offer.offer_id,name=offer.name_fr,amount=f"{offer.amount:.2f}",currency=offer.currency,reference_id=tx_id,return_url=base+"/app?paypal=success",cancel_url=base+"/app?paypal=cancel")
             except PayPalError as exc: raise APIError(502,"PAYPAL_CREATE_ORDER_FAILED","PayPal order creation failed",exc.payload)
-            row={"id":tx_id,"organization_id":user.organization_id,"user_id":user.user_id,"offer_id":offer.offer_id,"kind":offer.kind,"status":"CREATED","currency":offer.currency,"amount":str(offer.amount),"paypal_order_id":pp.get("id"),"paypal_subscription_id":None,"metadata":{}}
+            paypal_order_id=str(pp.get("id") or "").strip()
+            if not paypal_order_id: raise APIError(502,"PAYPAL_INVALID_RESPONSE","PayPal did not return an order ID")
+            row={"id":tx_id,"organization_id":user.organization_id,"user_id":user.user_id,"offer_id":offer.offer_id,"kind":offer.kind,"status":"CREATED","currency":offer.currency,"amount":str(offer.amount),"paypal_order_id":paypal_order_id,"paypal_subscription_id":None,"metadata":{}}
+            try:
+                if self.repository is not None and hasattr(self.repository,"create_billing_transaction"): self.repository.create_billing_transaction(user.organization_id,row)
+            except Exception as exc:
+                self.store.audit_event(user.organization_id,user.user_id,"PAYPAL_BILLING_LEDGER_FAILED",f"billing:{tx_id}",offer_id=offer.offer_id,error_type=type(exc).__name__)
+                raise APIError(500,"BILLING_LEDGER_FAILED","PayPal order was created but could not be recorded. Please retry; no additional capture was made.") from exc
             self.store.billing[tx_id]=row
-            if self.repository is not None and hasattr(self.repository,"create_billing_transaction"): self.repository.create_billing_transaction(user.organization_id,row)
             self.store.audit_event(user.organization_id,user.user_id,"PAYPAL_ORDER_CREATED",f"billing:{tx_id}",offer_id=offer.offer_id,paypal_order_id=pp.get("id"))
             return self._json(201,{"id":pp.get("id"),"offer_id":offer.offer_id,"amount":str(offer.amount),"currency":offer.currency})
         if method == "POST" and path.startswith("/v1/paypal/orders/") and path.endswith("/capture"):
