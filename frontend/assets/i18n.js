@@ -133,13 +133,14 @@
     if(document.getElementById('rd-language-switcher')) return;
     const host=document.querySelector('.public-actions')||document.querySelector('header .header-actions')||document.querySelector('header');
     if(!host)return;
-    const b=document.createElement('button'); b.id='rd-language-switcher'; b.type='button'; b.className='rd-language-switcher'; b.textContent=isEnglish()?'FR':'EN'; b.title=isEnglish()?'Passer en français':'Switch to English';
+    const b=document.createElement('button'); b.id='rd-language-switcher'; b.type='button'; b.className='rd-language-switcher'; b.textContent=isEnglish()?'FR':'EN'; b.setAttribute('aria-label',isEnglish()?'Passer en français':'Passer en anglais'); b.title=isEnglish()?'Passer en français':'Passer en anglais';
     b.onclick=()=>{localStorage.setItem(KEY,isEnglish()?'fr':'en');location.reload()};
     host.appendChild(b);
   }
   function run(){
-    if(!isEnglish()||!shouldTranslate()){document.documentElement.lang='fr';return;}
-    setMeta(); translateNode(document.body); addSwitcher();
+    if(!isEnglish()) document.documentElement.lang='fr';
+    if(isEnglish()&&shouldTranslate()) { setMeta(); translateNode(document.body); }
+    addSwitcher();
   }
   window.ReviewDefenseI18n={setLanguage(l){if(SUPPORTED.includes(l)){localStorage.setItem(KEY,l);location.reload()}},getLanguage:()=>isEnglish()?'en':'fr',translate:translateNode};
   const observer=new MutationObserver(muts=>{if(!isEnglish()||!shouldTranslate())return; muts.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)translateNode(n)})); addSwitcher();});
