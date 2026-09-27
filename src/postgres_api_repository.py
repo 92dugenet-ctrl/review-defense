@@ -184,6 +184,26 @@ class PostgresAPIRepository(PostgresRepository):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur: cur.execute("INSERT INTO api_approvals(organization_id,approval_id,case_id,decision_id,actor_id,actor_role,snapshot_sha256,approved_at) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)", (organization_id,a['approval_id'],a['case_id'],a['decision_id'],a['actor_id'],a['actor_role'],a['snapshot_sha256'],a['approved_at']))
 
+    def list_approvals(self, organization_id: str):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT approval_id,decision_id,case_id,organization_id,actor_id,actor_role,snapshot_sha256,approved_at "
+                    "FROM api_approvals WHERE organization_id=%s ORDER BY approved_at, approval_id",
+                    (organization_id,),
+                )
+                rows = []
+                for row in cur.fetchall():
+                    approval_id, decision_id, case_id, org, actor_id, actor_role, snapshot_sha256, approved_at = row
+                    rows.append({
+                        "approval_id": str(approval_id), "decision_id": str(decision_id),
+                        "case_id": str(case_id), "organization_id": str(org),
+                        "actor_id": str(actor_id), "actor_role": actor_role,
+                        "snapshot_sha256": snapshot_sha256,
+                        "approved_at": approved_at.isoformat() if hasattr(approved_at, "isoformat") else str(approved_at),
+                    })
+                return rows
+
     def put_submission(self, organization_id: str, s: Mapping[str,Any]):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur: cur.execute("INSERT INTO api_submissions(organization_id,submission_id,case_id,status,external_call) VALUES(%s,%s,%s,%s,%s)", (organization_id,s['submission_id'],s['case_id'],s['status'],False))

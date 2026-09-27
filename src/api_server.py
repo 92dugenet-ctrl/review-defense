@@ -25,6 +25,7 @@ from .case_service import Case, CaseService
 from .case_workspace_service import CaseWorkspaceService
 from .case_decision_service import CaseDecisionService
 from .case_submission_service import CaseSubmissionService
+from .case_approval_service import CaseApprovalService
 from .case_evidence_matrix_service import CaseEvidenceMatrixService
 from .case_operations_service import CaseOperationsService
 from .case_escalation_service import CaseEscalationService
@@ -190,6 +191,7 @@ class ReviewDefenseAPI:
             repository=self.repository,
             audit_event=self.store.audit_event,
         )
+        self.case_approvals = CaseApprovalService(store=self.store, repository=self.repository)
         self.case_evidence_matrix = CaseEvidenceMatrixService(store=self.store)
         self.case_operations = CaseOperationsService(store=self.store, repository=self.repository, audit_event=self.store.audit_event)
         self.case_escalations = CaseEscalationService(store=self.store, repository=self.repository, audit_event=self.store.audit_event)
@@ -1555,7 +1557,7 @@ class ReviewDefenseAPI:
             return self._json(200,{"notification":n.payload()})
         if method == "GET" and path == "/v1/approvals":
             self._require_role(user, "OWNER", "ADMIN")
-            rows = [asdict(a) for a in self.store.approvals if a.organization_id == user.organization_id]
+            rows = self.case_approvals.list_for_organization(organization_id=user.organization_id)
             return self._json(200, {"items": rows, "count": len(rows)})
         if method == "GET" and path == "/v1/submissions":
             self._require_role(user, "OWNER", "ADMIN")
