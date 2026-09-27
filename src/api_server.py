@@ -27,6 +27,7 @@ from .case_decision_service import CaseDecisionService
 from .case_submission_service import CaseSubmissionService
 from .case_evidence_matrix_service import CaseEvidenceMatrixService
 from .case_operations_service import CaseOperationsService
+from .case_escalation_service import CaseEscalationService
 from .review_workspace import ReviewContext, extract_claims, classify_policy_signals
 from .contradiction_engine import EvidenceFact, detect_contradictions
 from .evidence_extraction import extract_text_fact_suggestions
@@ -189,6 +190,7 @@ class ReviewDefenseAPI:
         )
         self.case_evidence_matrix = CaseEvidenceMatrixService(store=self.store)
         self.case_operations = CaseOperationsService(store=self.store, repository=self.repository, audit_event=self.store.audit_event)
+        self.case_escalations = CaseEscalationService(store=self.store, repository=self.repository, audit_event=self.store.audit_event)
 
     def _client_ip_hash(self, environ) -> str:
         import hashlib
@@ -216,19 +218,9 @@ class ReviewDefenseAPI:
         return self.store.notification_policies.get(organization_id) or validate_policy(organization_id, {})
 
     def _escalation_for(self, organization_id: str, case_id: str, sla):
-        signal = signal_from_sla(case_id, sla)
-        if signal is None:
-            return self.store.escalations.get((organization_id, case_id, "DUE")) or self.store.escalations.get((organization_id, case_id, "CRITICAL"))
-        key = (organization_id, case_id, signal.level)
-        existing = self.store.escalations.get(key)
-        if existing:
-            return existing
-        if self.repository is not None and hasattr(self.repository, "get_escalation"):
-            row = self.repository.get_escalation(organization_id, case_id, signal.level)
-            if row:
-                signal = Escalation(**row)
-        self.store.escalations[key] = signal
-        return signal
+        return self.case_escalations.for_sla(
+            organization_id=organization_id, case_id=case_id, sla=sla
+        )
 
     def seed_user(self, *, organization_id: str, email: str, password: str, role: str = "OWNER") -> User:
         if role not in {"OWNER", "ADMIN", "ANALYST", "CLIENT", "VIEWER"}:
@@ -1440,19 +1432,31 @@ class ReviewDefenseAPI:
             parts=path.split("/"); cid=parts[3]; level=str(self._body(environ).get("level","DUE")); esc=self.store.escalations.get((user.organization_id,cid,level))
             if esc is None: raise APIError(404,"NOT_FOUND","escalation not found")
             if esc.status == "RESOLVED": raise APIError(409,"STATE_CONFLICT","escalation is already resolved")
-            esc.status="ACKNOWLEDGED"; esc.acknowledged_by=user.user_id; esc.acknowledged_at=utc_now().isoformat()
-            if self.repository is not None and hasattr(self.repository,"upsert_escalation"): self.repository.upsert_escalation(user.organization_id,esc.payload())
-            self.store.audit_event(user.organization_id,user.user_id,"ESCALATION_ACKNOWLEDGED",f"case:{cid}",level=level)
-            return self._json(200,{"escalation":esc.payload()})
+            try:
+                esc = self.case_escalations.acknowledge(
+                    organization_id=user.organization_id, case_id=cid,
+                    level=level, user_id=user.user_id,
+                )
+            except KeyError as exc:
+                raise APIError(404, "NOT_FOUND", "escalation not found") from exc
+            except ValueError as exc:
+                raise APIError(409, "STATE_CONFLICT", str(exc)) from exc
+            return self._json(200, {"escalation": esc.payload()})
         if method == "POST" and path.startswith("/v1/escalations/") and path.endswith("/resolve"):
             self._require_role(user,"OWNER","ADMIN","ANALYST")
             parts=path.split("/"); cid=parts[3]; level=str(self._body(environ).get("level","DUE")); esc=self.store.escalations.get((user.organization_id,cid,level))
             if esc is None: raise APIError(404,"NOT_FOUND","escalation not found")
             if esc.status == "RESOLVED": raise APIError(409,"STATE_CONFLICT","escalation is already resolved")
-            esc.status="RESOLVED"; esc.resolved_by=user.user_id; esc.resolved_at=utc_now().isoformat()
-            if self.repository is not None and hasattr(self.repository,"upsert_escalation"): self.repository.upsert_escalation(user.organization_id,esc.payload())
-            self.store.audit_event(user.organization_id,user.user_id,"ESCALATION_RESOLVED",f"case:{cid}",level=level)
-            return self._json(200,{"escalation":esc.payload()})
+            try:
+                esc = self.case_escalations.resolve(
+                    organization_id=user.organization_id, case_id=cid,
+                    level=level, user_id=user.user_id,
+                )
+            except KeyError as exc:
+                raise APIError(404, "NOT_FOUND", "escalation not found") from exc
+            except ValueError as exc:
+                raise APIError(409, "STATE_CONFLICT", str(exc)) from exc
+            return self._json(200, {"escalation": esc.payload()})
         if method == "GET" and path == "/v1/organization/notification-policy":
             self._require_role(user, "OWNER", "ADMIN", "ANALYST")
             policy = self._notification_policy(user.organization_id)
