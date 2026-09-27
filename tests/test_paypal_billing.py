@@ -105,4 +105,4 @@ def test_billing_catalog_groups_have_expected_offer_kinds():
     from src.billing_catalog import OFFERS
     assert all(o.kind == "subscription" for o in OFFERS.values() if o.offer_id.startswith("monitoring_"))
     assert all(o.kind in {"defense_step", "defense_package"} for o in OFFERS.values() if o.offer_id.startswith("defense_"))
-    assert all(o.kind == "credit_pack" for o in OFFERS.values() if o.offer_id.startswith("pack_"))
+    assert all(o.kind in {"credit_pack", "credit_pack_quote"} for o in OFFERS.values() if o.offer_id.startswith("pack_"))
