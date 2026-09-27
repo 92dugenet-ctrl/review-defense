@@ -32,7 +32,7 @@ from .contradiction_engine import EvidenceFact, detect_contradictions
 from .evidence_extraction import extract_text_fact_suggestions
 from .evidence_ocr import extract_readable_text, ExtractionError
 from .review_queue import score_case, sort_queue
-from .review_sla import calculate_sla
+from .case_sla_service import CaseSLAService
 from .business_calendar import calendar_from_dict, default_calendar
 from .escalation_workflow import Escalation, signal_from_sla
 from .notification_outbox import Notification, create_notification
@@ -167,6 +167,7 @@ class ReviewDefenseAPI:
         self.store.sla_calendars = self.store.sla_calendars
         self.store.escalations = self.store.escalations
         self.store.notifications = self.store.notifications
+        self.case_sla = CaseSLAService(repository=self.repository, audit_event=self.store.audit_event)
 
     def _client_ip_hash(self, environ) -> str:
         import hashlib
@@ -1344,7 +1345,7 @@ class ReviewDefenseAPI:
                 missing = missing_evidence_tasks(ws, required)
                 item = score_case(case_id=cid, created_at=case.created_at, policy_statuses=[s.status for s in signals], contradiction_count=len(contradictions), missing_evidence_count=len(missing), unverified_suggestion_count=len([x for x in suggestions if not x.get("verified")]), assigned_to=case.assigned_to)
                 payload = asdict(item)
-                payload["sla"] = asdict(calculate_sla(priority=item.priority, created_at=case.created_at, paused_at=case.sla_paused_at, paused_seconds=case.sla_paused_seconds, calendar=self._calendar(user.organization_id)))
+                payload["sla"] = asdict(self.case_sla.calculate(case, item.priority, self._calendar(user.organization_id)))
                 items.append(payload)
             items.sort(key=lambda x: (-x["priority_score"], x["assigned_to"] is not None, x["case_id"]))
             return self._json(200, {"items": items, "count": len(items)})
@@ -1373,7 +1374,7 @@ class ReviewDefenseAPI:
                 row["case_count"] += 1; row["priority_score_total"] += item.priority_score
                 if item.priority == "CRITICAL": row["critical_count"] += 1
                 elif item.priority == "HIGH": row["high_count"] += 1
-                sla = calculate_sla(priority=item.priority, created_at=case.created_at, paused_at=case.sla_paused_at, paused_seconds=case.sla_paused_seconds, calendar=self._calendar(user.organization_id))
+                sla = self.case_sla.calculate(case, item.priority, self._calendar(user.organization_id))
                 if sla.status == "OVERDUE": row["overdue_count"] += 1
                 elif sla.status == "DUE_SOON": row["due_soon_count"] += 1
             items = sorted(rows.values(), key=lambda x: (-x["overdue_count"], -x["priority_score_total"], str(x["user_id"])))
@@ -1417,7 +1418,7 @@ class ReviewDefenseAPI:
                 ws=CaseWorkspace(cid,org,case.status,"NORMAL",ReviewSummary(review.review_id,review.rating,review.text,review.published_at),tuple(ClaimView(c.claim_id,c.text,c.claim_type,"UNVERIFIED") for c in claims),tuple(PolicySignalView(s.code,s.status,s.justification) for s in signals),evidence,(),tuple(Contradiction(c["contradiction_id"],c["description"],c["claim_id"],tuple(c["evidence_ids"]),True) for c in contradictions))
                 missing=missing_evidence_tasks(ws,{c.claim_id:[] for c in claims})
                 item=score_case(case_id=cid,created_at=case.created_at,policy_statuses=[s.status for s in signals],contradiction_count=len(contradictions),missing_evidence_count=len(missing),unverified_suggestion_count=len([x for x in suggestions if not x.get("verified")]),assigned_to=case.assigned_to)
-                sla=calculate_sla(priority=item.priority,created_at=case.created_at,paused_at=case.sla_paused_at,paused_seconds=case.sla_paused_seconds,calendar=self._calendar(org))
+                sla=self.case_sla.calculate(case, item.priority, self._calendar(org))
                 esc=self._escalation_for(org,cid,sla)
                 if esc: items.append(esc.payload() | {"sla":asdict(sla),"assigned_to":case.assigned_to})
             return self._json(200,{"items":items,"count":len(items)})
@@ -1685,7 +1686,7 @@ class ReviewDefenseAPI:
                 ws = CaseWorkspace(cid, user.organization_id, case.status, "NORMAL", ReviewSummary(review.review_id, review.rating, review.text, review.published_at), tuple(ClaimView(c.claim_id,c.text,c.claim_type,"UNVERIFIED") for c in claims), tuple(PolicySignalView(s.code,s.status,s.justification) for s in signals), evidence, (), tuple(Contradiction(c["contradiction_id"],c["description"],c["claim_id"],tuple(c["evidence_ids"]),True) for c in contradictions))
                 missing = missing_evidence_tasks(ws, {c.claim_id: [] for c in claims})
                 item = score_case(case_id=cid, created_at=case.created_at, policy_statuses=[s.status for s in signals], contradiction_count=len(contradictions), missing_evidence_count=len(missing), unverified_suggestion_count=len([x for x in suggestions if not x.get("verified")]), assigned_to=case.assigned_to)
-                sla = calculate_sla(priority=item.priority, created_at=case.created_at, paused_at=case.sla_paused_at, paused_seconds=case.sla_paused_seconds, calendar=self._calendar(user.organization_id))
+                sla = self.case_sla.calculate(case, item.priority, self._calendar(user.organization_id))
                 return self._json(200, {"case_id": cid, "sla": asdict(sla), "pause_reason": case.sla_pause_reason})
             if method == "POST" and len(parts) == 5 and parts[4] == "contradictions":
                 self._require_role(user, "OWNER", "ADMIN")
