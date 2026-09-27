@@ -46,3 +46,17 @@ def test_policy_blocks_queue():
     store,repo,svc=make()
     svc.policy_provider=lambda _: NotificationPolicy("org-a",enabled=False)
     with pytest.raises(PermissionError): queue(svc)
+
+
+def test_policy_list_metrics_and_worker_are_service_owned():
+    from types import SimpleNamespace
+    store, repo, svc = make(lambda notification, *, email_config: SimpleNamespace(provider="test"))
+    policy, configured = svc.policy_for_organization(organization_id="org-a")
+    assert configured is False and policy.payload()["levels"] == ["DUE", "CRITICAL"]
+    updated = svc.set_policy(organization_id="org-a", payload={"levels": ["CRITICAL"]}, actor_id="admin")
+    assert updated.payload()["levels"] == ["CRITICAL"]
+    n, _ = queue(svc)
+    assert svc.list_for_organization(organization_id="org-a")[0]["notification_id"] == n.notification_id
+    assert svc.metrics_for_organization(organization_id="org-a")["notifications"]["total"] == 1
+    result = svc.run_worker(organization_id="org-a", limit=1, actor_id="admin")
+    assert result.sent == 1

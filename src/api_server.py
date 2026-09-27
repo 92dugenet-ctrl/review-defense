@@ -161,7 +161,7 @@ class ReviewDefenseAPI:
             }
         self.delivery_func = delivery_func
         self.notification_worker = NotificationWorker(delivery_func=delivery_func, email_config=self.delivery_email_config)
-        self.notifications = NotificationService(store=self.store, repository=self.repository, audit_event=self.store.audit_event, delivery_func=self.delivery_func, email_config=self.delivery_email_config, policy_provider=self._notification_policy)
+        self.notifications = NotificationService(store=self.store, repository=self.repository, audit_event=self.store.audit_event, delivery_func=self.delivery_func, email_config=self.delivery_email_config, policy_provider=self._notification_policy, worker=self.notification_worker)
         self.session_ttl = session_ttl
         self.limiter = limiter or RateLimiter(limit=120, window_seconds=60)
         self.auth_limiter = RateLimiter(limit=8, window_seconds=300)
@@ -1453,18 +1453,15 @@ class ReviewDefenseAPI:
             return self._json(200, {"escalation": esc.payload()})
         if method == "GET" and path == "/v1/organization/notification-policy":
             self._require_role(user, "OWNER", "ADMIN", "ANALYST")
-            policy = self._notification_policy(user.organization_id)
-            return self._json(200, {"policy": policy.payload(), "configured": user.organization_id in self.store.notification_policies})
+            policy, configured = self.notifications.policy_for_organization(organization_id=user.organization_id)
+            return self._json(200, {"policy": policy.payload(), "configured": configured})
         if method == "POST" and path == "/v1/organization/notification-policy":
             self._require_role(user, "OWNER", "ADMIN")
             try:
-                policy = validate_policy(user.organization_id, self._body(environ))
+                policy = self.notifications.set_policy(organization_id=user.organization_id,
+                                                       payload=self._body(environ), actor_id=user.user_id)
             except ValueError as exc:
                 raise APIError(400, "INVALID_NOTIFICATION_POLICY", str(exc))
-            self.store.notification_policies[user.organization_id] = policy
-            if self.repository is not None and hasattr(self.repository, "upsert_notification_policy"):
-                self.repository.upsert_notification_policy(user.organization_id, policy.payload())
-            self.store.audit_event(user.organization_id, user.user_id, "NOTIFICATION_POLICY_UPDATED", f"organization:{user.organization_id}", policy=policy.payload())
             return self._json(200, {"policy": policy.payload()})
         if method == "POST" and path == "/v1/notifications/worker/run":
             self._require_role(user, "OWNER", "ADMIN")
@@ -1473,38 +1470,21 @@ class ReviewDefenseAPI:
                 limit = int(body.get("limit", 25))
             except (TypeError, ValueError):
                 raise APIError(400, "INVALID_LIMIT", "limit must be an integer")
-            if self.repository is not None and hasattr(self.repository, "list_notifications"):
-                rows = self.repository.list_notifications(user.organization_id, "PENDING")
-                for row in rows:
-                    n = Notification(**row); self.store.notifications[(user.organization_id, n.notification_id)] = n
-            notifications = [n for (org, _), n in self.store.notifications.items() if org == user.organization_id]
-            def persist(n):
-                if self.repository is not None and hasattr(self.repository, "update_notification"):
-                    self.repository.update_notification(user.organization_id, n.payload())
-            self.notification_worker.policy = self._notification_policy(user.organization_id)
-            result = self.notification_worker.run_once(
-                notifications, organization_id=user.organization_id, limit=limit, actor_id=user.user_id,
-                persist=persist, audit=self.store.audit_event
-            )
-            self.store.audit_event(user.organization_id, user.user_id, "NOTIFICATION_WORKER_RUN", "notifications", processed=result.processed, sent=result.sent, retried=result.retried, dead_lettered=result.dead_lettered, skipped=result.skipped)
+            try:
+                result = self.notifications.run_worker(organization_id=user.organization_id,
+                                                        limit=limit, actor_id=user.user_id)
+            except ValueError as exc:
+                raise APIError(400, "INVALID_LIMIT", str(exc))
             return self._json(200, {"result": asdict(result)})
         if method == "GET" and path == "/v1/notifications":
             self._require_role(user, "OWNER", "ADMIN", "ANALYST")
             status_filter = parse_qs(environ.get("QUERY_STRING", "")).get("status", [None])[0]
-            if self.repository is not None and hasattr(self.repository, "list_notifications"):
-                rows = self.repository.list_notifications(user.organization_id, status_filter)
-                for row in rows:
-                    n = Notification(**row); self.store.notifications[(user.organization_id, n.notification_id)] = n
-            items = [n.payload() for (org, _), n in self.store.notifications.items() if org == user.organization_id and (status_filter is None or n.status == status_filter)]
-            items.sort(key=lambda x: x.get("created_at") or "", reverse=True)
+            items = self.notifications.list_for_organization(organization_id=user.organization_id,
+                                                              status=status_filter)
             return self._json(200, {"items": items, "count": len(items)})
         if method == "GET" and path == "/v1/notifications/metrics":
             self._require_role(user, "OWNER", "ADMIN", "ANALYST")
-            if self.repository is not None and hasattr(self.repository, "list_notifications"):
-                rows = self.repository.list_notifications(user.organization_id, None)
-                for row in rows:
-                    n = Notification(**row); self.store.notifications[(user.organization_id, n.notification_id)] = n
-            metrics = build_notification_metrics(self.store.notifications.values(), self.store.audit, organization_id=user.organization_id)
+            metrics = self.notifications.metrics_for_organization(organization_id=user.organization_id)
             return self._json(200, {"metrics": metrics})
         if method == "POST" and path.startswith("/v1/escalations/") and path.endswith("/notify"):
             self._require_role(user, "OWNER", "ADMIN")
