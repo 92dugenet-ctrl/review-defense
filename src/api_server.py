@@ -301,13 +301,18 @@ class ReviewDefenseAPI:
                 self.store.sessions[token_hash] = session
         if session is None or not session.active():
             raise APIError(401, "AUTH_INVALID", "invalid or expired session")
-        user = self.store.users.get(session.user_id)
-        if user is None and self.repository is not None and hasattr(self.repository, "get_user_by_id"):
+        # Always refresh the effective role from the persistent membership source.
+        # A cached session must not retain elevated permissions after a role change.
+        if self.repository is not None and hasattr(self.repository, "get_user_by_id"):
             row = self.repository.get_user_by_id(session.organization_id, session.user_id)
             if row:
                 uid, email, password_hash, role = row
                 user = User(str(uid), session.organization_id, str(email), str(password_hash), str(role))
                 self.store.users[user.user_id] = user
+            else:
+                user = None
+        else:
+            user = self.store.users.get(session.user_id)
         if user is None or user.organization_id != session.organization_id:
             raise APIError(401, "AUTH_INVALID", "invalid session")
         if self.repository is not None and hasattr(self.repository, "touch_session"):

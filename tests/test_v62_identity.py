@@ -2,6 +2,7 @@ import io, json
 from wsgiref.util import setup_testing_defaults
 from src.api_server import create_app
 from src.identity import normalize_email, issue_session
+from src.security_hardening import hash_password
 
 def call(app, method, path, body=None, token=None):
     raw=json.dumps(body or {}).encode(); env={}; setup_testing_defaults(env)
@@ -64,3 +65,53 @@ def test_password_change_rejects_weak_password():
     app=create_app(); app.seed_user(organization_id='o',email='a@example.com',password='correct horse battery staple')
     token=login(app,'a@example.com')
     assert call(app,'POST','/v1/auth/change-password',{'current_password':'correct horse battery staple','new_password':'short'},token=token)[0]==422
+
+
+class RoleRefreshRepo:
+    def __init__(self):
+        self.users = {}
+        self.sessions = {}
+
+    def get_user_by_email(self, org, email):
+        return self.users.get((org, email))
+
+    def get_user_by_id(self, org, user_id):
+        for (row_org, _email), row in self.users.items():
+            if row_org == org and row[0] == user_id:
+                return row
+        return None
+
+    def put_session(self, org, token_hash, user_id, role, expires_at, user_agent=None, ip_hash=None):
+        self.sessions[token_hash] = (org, user_id, role, expires_at)
+
+    def get_session_by_token_hash(self, token_hash):
+        row = self.sessions.get(token_hash)
+        if not row:
+            return None
+        return (token_hash, row[1], row[0], row[2], row[3], None)
+
+
+def test_p3_persistent_session_uses_current_membership_role():
+    repo = RoleRefreshRepo()
+    password_hash = hash_password("correct horse battery staple")
+    repo.users[("org-p3", "admin@example.com")] = ("u-admin", "admin@example.com", password_hash, "ADMIN")
+    app = create_app(repository=repo, config=ProductionConfig(environment="development"))
+
+    status, data = call(app, "POST", "/v1/auth/login", {
+        "organization_id": "org-p3",
+        "email": "admin@example.com",
+        "password": "correct horse battery staple",
+    })
+    assert status == 200
+    token = data["access_token"]
+
+    repo.users[("org-p3", "admin@example.com")] = ("u-admin", "admin@example.com", password_hash, "VIEWER")
+
+    status, data = call(app, "POST", "/v1/organization/invitations",
+                        {"email": "blocked@example.com", "role": "CLIENT"}, token=token)
+    assert status == 403
+    assert data["error"]["code"] == "FORBIDDEN"
+
+    status, data = call(app, "GET", "/v1/me", token=token)
+    assert status == 200
+    assert data["role"] == "VIEWER"
