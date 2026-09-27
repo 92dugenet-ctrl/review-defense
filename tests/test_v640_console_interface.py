@@ -269,7 +269,7 @@ def test_v640_block8_evidence_has_integrity_registry_and_filters():
     css=(ROOT/'frontend/assets/app.css').read_text()
     for token in ['evidence-overview','evidence-hero','evidence-kpis','evidence-registry','evidence-toolbar','evidence-list','evidence-card','hash-block','evidence-integrity-note']:
         assert token in js or token in css
-    for token in ['Registre des preuves','Rechercher une preuve','Filtrer les preuves','SHA-256','Intégrité documentaire']:
+    for token in ['Preuves et justificatifs','Rechercher une preuve','Filtrer les preuves','Empreinte documentaire','Intégrité documentaire']:
         assert token in js
 
 
