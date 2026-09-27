@@ -55,7 +55,8 @@ def test_policy_list_metrics_and_worker_are_service_owned():
     assert configured is False and policy.payload()["levels"] == ["DUE", "CRITICAL"]
     updated = svc.set_policy(organization_id="org-a", payload={"levels": ["CRITICAL"]}, actor_id="admin")
     assert updated.payload()["levels"] == ["CRITICAL"]
-    n, _ = queue(svc)
+    n, _ = svc.queue(organization_id="org-a", case_id="c1", level="CRITICAL", channel="IN_APP", target="u1",
+                     subject="Alert", body="Body", actor_id="admin")
     assert svc.list_for_organization(organization_id="org-a")[0]["notification_id"] == n.notification_id
     assert svc.metrics_for_organization(organization_id="org-a")["notifications"]["total"] == 1
     result = svc.run_worker(organization_id="org-a", limit=1, actor_id="admin")
