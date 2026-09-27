@@ -1232,7 +1232,7 @@ class ReviewDefenseAPI:
                 facts.append({"fact_id": str(uuid.uuid4()), "evidence_id": evidence_id, "case_id": case_id, "organization_id": user.organization_id, "key": key, "kind": kind, "value": value, "source_location": str(f.get("source_location", "")), "verified": False, "verified_by": None, "verified_at": None})
             extracted_text = ""
             extraction_method = "not-run"
-            if content_type.lower().split(";", 1)[0].strip() in {"text/plain", "text/csv", "application/json", "application/pdf", "image/jpeg", "image/png", "image/webp"}:
+            if not facts and content_type.lower().split(";", 1)[0].strip() in {"text/plain", "text/csv", "application/json", "application/pdf", "image/jpeg", "image/png", "image/webp"}:
                 try:
                     extracted = extract_readable_text(content=content, content_type=content_type, filename=filename)
                     extracted_text = extracted.text
