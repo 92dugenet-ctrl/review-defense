@@ -88,7 +88,7 @@ function visibleNavItems(){
    ADMIN:new Set(['dashboard','reviews','cases','evidence','approvals','activity','billing','settings']),
    OWNER:new Set(['dashboard','reviews','cases','evidence','approvals','activity','billing','settings'])
  };
- return allowed[role]?navItems.filter(([id])=>allowed[role].has(id)):navItems;
+ return allowed[role]?navItems.filter(([id])=>allowed[role].has(id)):navItems.filter(([id])=>id==='dashboard');
 }
 function shell(){
  const visible=visibleNavItems();

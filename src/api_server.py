@@ -1124,6 +1124,7 @@ class ReviewDefenseAPI:
             target_id=path.split("/")[4]; body=self._body(environ); role=validate_role(str(body.get("role","")))
             target=self.store.users.get(target_id)
             if target is None or target.organization_id != user.organization_id: raise APIError(404,"NOT_FOUND","user not found")
+            if target.user_id == user.user_id: raise APIError(403,"FORBIDDEN","users cannot change their own role")
             if role=="OWNER" and user.role!="OWNER": raise APIError(403,"FORBIDDEN","only an owner can assign owner")
             if target.role=="OWNER" and role!="OWNER" and user.role!="OWNER": raise APIError(403,"FORBIDDEN","only an owner can demote an owner")
             target=User(target.user_id,target.organization_id,target.email,target.password_hash,role); self.store.users[target.user_id]=target
