@@ -854,8 +854,8 @@ class ReviewDefenseAPI:
             if offer.kind!="subscription" or not subscription_id: raise APIError(422,"INVALID_SUBSCRIPTION","subscription and subscription offer are required")
             plan_id=paypal_plan_id(offer)
             if not plan_id: raise APIError(503,"PAYPAL_NOT_CONFIGURED","subscription plan is not configured")
-            existing_tx=None
-            if self.repository is not None and hasattr(self.repository,"get_billing_by_paypal_id_global"):
+            existing_tx=next((x for x in self.store.billing.values() if x.get("paypal_subscription_id")==subscription_id),None)
+            if existing_tx is None and self.repository is not None and hasattr(self.repository,"get_billing_by_paypal_id_global"):
                 existing_tx=self.repository.get_billing_by_paypal_id_global(subscription_id)
             if existing_tx is not None:
                 if str(existing_tx.get("organization_id","")) != str(user.organization_id):
