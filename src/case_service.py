@@ -57,7 +57,7 @@ class CaseService:
                 store.cases[key] = case
         return case
     @staticmethod
-    def hydrate_context(store: Any, repository: Any, organization_id: str, case_id: str) -> tuple[Case | None, Any, list[Any], list[Any]]:
+    def hydrate_context(store: Any, repository: Any, organization_id: str, case_id: str, review_from_row: Any = None) -> tuple[Case | None, Any, list[Any], list[Any]]:
         case = CaseService.hydrate_case(store, repository, organization_id, case_id)
         if case is None:
             return None, None, [], []
@@ -77,6 +77,7 @@ class CaseService:
         if review is None and repository is not None and hasattr(repository, "get_review"):
             review = repository.get_review(organization_id, case.review_id)
             if review is not None:
+                review = review_from_row(review) if review_from_row is not None else review
                 store.reviews[(organization_id, case.review_id)] = review
 
         evidence = [

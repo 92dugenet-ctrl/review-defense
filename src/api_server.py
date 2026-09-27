@@ -1614,7 +1614,7 @@ class ReviewDefenseAPI:
             if len(parts) < 4: raise APIError(404, "NOT_FOUND", "resource not found")
             cid = parts[3]
             case, _review, _evidence, _evidence_facts = CaseService.hydrate_context(
-                self.store, self.repository, user.organization_id, cid
+                self.store, self.repository, user.organization_id, cid, _review_from_row
             )
             if not case: raise APIError(404, "NOT_FOUND", "case not found")
             if method == "GET" and len(parts) == 4:
