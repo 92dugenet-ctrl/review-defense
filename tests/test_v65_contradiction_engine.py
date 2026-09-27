@@ -14,7 +14,7 @@ def call(app, method, path, body=None, token=None):
 
 
 def setup():
-    app=ReviewDefenseAPI(); app.seed_user(organization_id="org-a",email="a@example.com",password="StrongPass123!",role="ANALYST")
+    app=ReviewDefenseAPI(); app.seed_user(organization_id="org-a",email="a@example.com",password="StrongPass123!",role="ADMIN")
     _, login=call(app,"POST","/v1/auth/login",{"email":"a@example.com","password":"StrongPass123!"})
     return app, login["access_token"]
 
