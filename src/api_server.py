@@ -26,6 +26,7 @@ from .case_workspace_service import CaseWorkspaceService
 from .case_decision_service import CaseDecisionService
 from .case_submission_service import CaseSubmissionService
 from .case_evidence_matrix_service import CaseEvidenceMatrixService
+from .case_operations_service import CaseOperationsService
 from .review_workspace import ReviewContext, extract_claims, classify_policy_signals
 from .contradiction_engine import EvidenceFact, detect_contradictions
 from .evidence_extraction import extract_text_fact_suggestions
@@ -187,6 +188,7 @@ class ReviewDefenseAPI:
             audit_event=self.store.audit_event,
         )
         self.case_evidence_matrix = CaseEvidenceMatrixService(store=self.store)
+        self.case_operations = CaseOperationsService(store=self.store, repository=self.repository, audit_event=self.store.audit_event)
 
     def _client_ip_hash(self, environ) -> str:
         import hashlib
@@ -1405,11 +1407,7 @@ class ReviewDefenseAPI:
             if not case: raise APIError(404, "NOT_FOUND", "case not found")
             if case.assigned_to and case.assigned_to != user.user_id:
                 raise APIError(409, "ALREADY_ASSIGNED", "case is already assigned")
-            case.assigned_to = user.user_id
-            self.store.case_assignments[(user.organization_id, cid)] = user.user_id
-            if self.repository is not None:
-                self.repository.assign_case(user.organization_id, cid, user.user_id)
-            self.store.audit_event(user.organization_id, user.user_id, "CASE_ASSIGNED", f"case:{cid}", assignee_id=user.user_id)
+            self.case_operations.assign(case=case, user_id=user.user_id)
             return self._json(200, {"case_id": cid, "assigned_to": user.user_id})
         if method == "POST" and path.startswith("/v1/review-queue/") and path.endswith("/unclaim"):
             self._require_role(user, "OWNER", "ADMIN", "ANALYST")
@@ -1418,11 +1416,7 @@ class ReviewDefenseAPI:
             if not case: raise APIError(404, "NOT_FOUND", "case not found")
             if case.assigned_to not in (None, user.user_id) and user.role not in {"OWNER", "ADMIN"}:
                 raise APIError(403, "FORBIDDEN", "only the assignee or manager may unclaim")
-            case.assigned_to = None
-            self.store.case_assignments[(user.organization_id, cid)] = None
-            if self.repository is not None:
-                self.repository.assign_case(user.organization_id, cid, None)
-            self.store.audit_event(user.organization_id, user.user_id, "CASE_UNASSIGNED", f"case:{cid}")
+            self.case_operations.unassign(case=case, user_id=user.user_id)
             return self._json(200, {"case_id": cid, "assigned_to": None})
         if method == "GET" and path == "/v1/escalations":
             self._require_role(user, "OWNER", "ADMIN", "ANALYST")
@@ -1679,23 +1673,18 @@ class ReviewDefenseAPI:
                 reason = str(body.get("reason", "")).strip()
                 if not reason or len(reason) > 500:
                     raise APIError(422, "VALIDATION_ERROR", "reason is required and must be at most 500 characters")
-                case.sla_paused_at = utc_now().isoformat(); case.sla_pause_reason = reason
-                if self.repository is not None:
-                    self.repository.update_case_sla(user.organization_id, cid, paused_at=case.sla_paused_at, paused_seconds=case.sla_paused_seconds, pause_reason=reason)
-                self.store.audit_event(user.organization_id, user.user_id, "CASE_SLA_PAUSED", f"case:{cid}", reason=reason)
+                self.case_operations.pause_sla(case=case, user_id=user.user_id, reason=reason, paused_at=utc_now().isoformat())
                 return self._json(200, {"case_id": cid, "sla_paused_at": case.sla_paused_at, "reason": reason})
             if method == "POST" and len(parts) == 5 and parts[4] == "resume-sla":
                 self._require_role(user, "OWNER", "ADMIN")
                 if not case.sla_paused_at:
                     raise APIError(409, "STATE_CONFLICT", "SLA is not paused")
-                paused_at = __import__("datetime").datetime.fromisoformat(case.sla_paused_at.replace("Z", "+00:00"))
-                if paused_at.tzinfo is None: paused_at = paused_at.replace(tzinfo=__import__("datetime").timezone.utc)
-                now_dt = __import__("datetime").datetime.now(__import__("datetime").timezone.utc)
-                case.sla_paused_seconds += self._calendar(user.organization_id).business_seconds_between(paused_at, now_dt)
-                case.sla_paused_at = None; case.sla_pause_reason = None
-                if self.repository is not None:
-                    self.repository.update_case_sla(user.organization_id, cid, paused_at=None, paused_seconds=case.sla_paused_seconds, pause_reason=None)
-                self.store.audit_event(user.organization_id, user.user_id, "CASE_SLA_RESUMED", f"case:{cid}", paused_seconds=round(case.sla_paused_seconds, 2))
+                from datetime import datetime, timezone
+                paused_seconds = self.case_operations.resume_sla(
+                    case=case, user_id=user.user_id,
+                    calendar=self._calendar(user.organization_id),
+                    now=datetime.now(timezone.utc),
+                )
                 return self._json(200, {"case_id": cid, "sla_paused_seconds": round(case.sla_paused_seconds, 2)})
             if method == "GET" and len(parts) == 5 and parts[4] == "sla":
                 review = self.store.reviews[(user.organization_id, case.review_id)]
