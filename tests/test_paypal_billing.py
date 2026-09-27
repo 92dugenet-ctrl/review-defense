@@ -16,10 +16,17 @@ def test_subscription_catalog_is_separate_from_one_time_orders():
     assert offer.amount == Decimal("89.00")
 
 
-def test_paypal_base_url_honors_supported_explicit_endpoint(monkeypatch):
-    monkeypatch.setenv("PAYPAL_BASE_URL", "https://api-m.sandbox.paypal.com")
+def test_paypal_base_url_is_live_by_default(monkeypatch):
+    monkeypatch.delenv("PAYPAL_BASE_URL", raising=False)
     from src.paypal_client import base_url
-    assert base_url() == "https://api-m.sandbox.paypal.com"
+    assert base_url() == "https://api-m.paypal.com"
+
+def test_paypal_base_url_rejects_sandbox(monkeypatch):
+    monkeypatch.setenv("PAYPAL_BASE_URL", "https://api-m.sandbox.paypal.com")
+    from src.paypal_client import base_url, PayPalError
+    import pytest
+    with pytest.raises(PayPalError):
+        base_url()
 
 
 def test_paypal_base_url_rejects_untrusted_endpoint(monkeypatch):
