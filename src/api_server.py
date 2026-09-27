@@ -1230,7 +1230,19 @@ class ReviewDefenseAPI:
                 if not key or not kind or not value or len(key) > 200 or len(kind) > 80 or len(value) > 5000:
                     raise APIError(422, "VALIDATION_ERROR", "each fact requires bounded key, kind and value")
                 facts.append({"fact_id": str(uuid.uuid4()), "evidence_id": evidence_id, "case_id": case_id, "organization_id": user.organization_id, "key": key, "kind": kind, "value": value, "source_location": str(f.get("source_location", "")), "verified": False, "verified_by": None, "verified_at": None})
-            row = {"evidence_id": evidence_id, "organization_id": user.organization_id, "case_id": case_id, "filename": filename, "content_type": content_type, "size_bytes": obj.size_bytes, "sha256": obj.sha256, "object_key": obj.object_key, "verified": False, "status": "PENDING", "created_by": user.user_id}
+            extracted_text = ""
+            extraction_method = "not-run"
+            if content_type.lower().split(";", 1)[0].strip() in {"text/plain", "text/csv", "application/json", "application/pdf", "image/jpeg", "image/png", "image/webp"}:
+                try:
+                    extracted = extract_readable_text(content=content, content_type=content_type, filename=filename)
+                    extracted_text = extracted.text
+                    extraction_method = extracted.method
+                    suggested = extract_text_fact_suggestions(evidence_id=evidence_id, content=extracted_text.encode("utf-8"), content_type="text/plain")
+                    for suggestion in suggested:
+                        facts.append(asdict(suggestion))
+                except ExtractionError:
+                    extraction_method = "failed"
+            row = {"evidence_id": evidence_id, "organization_id": user.organization_id, "case_id": case_id, "filename": filename, "content_type": content_type, "size_bytes": obj.size_bytes, "sha256": obj.sha256, "object_key": obj.object_key, "verified": False, "status": "PENDING", "created_by": user.user_id, "extraction_method": extraction_method, "extracted_chars": len(extracted_text)}
             self.store.evidence[(user.organization_id, evidence_id)] = row
             self.store.evidence_facts[(user.organization_id, evidence_id)] = facts
             if self.repository is not None:
@@ -1570,7 +1582,7 @@ class ReviewDefenseAPI:
             rows = [s for (org, _), s in self.store.submissions.items() if org == user.organization_id]
             return self._json(200, {"items": rows, "count": len(rows)})
         if method == "POST" and path == "/v1/cases":
-            self._require_role(user, "OWNER", "ADMIN", "ANALYST")
+            self._require_role(user, "CLIENT", "OWNER", "ADMIN", "ANALYST")
             body = self._body(environ); rid = str(body.get("review_id", ""))
             if (user.organization_id, rid) not in self.store.reviews and self.repository is not None and hasattr(self.repository, "get_review"):
                 row = self.repository.get_review(user.organization_id, rid)
