@@ -806,7 +806,7 @@ class ReviewDefenseAPI:
             items = public_catalog()
             return self._json(200, {"items": items, "count": len(items)})
         if method == "GET" and path == "/v1/paypal/config":
-            return self._json(200,{"configured":paypal_configured(),"client_id":os.getenv("PAYPAL_CLIENT_ID","").strip(),"environment":os.getenv("PAYPAL_ENVIRONMENT","sandbox").strip(),"diagnostics":paypal_configuration_status()})
+            return self._json(200,{"configured":paypal_configured(),"client_id":os.getenv("PAYPAL_CLIENT_ID","").strip(),"environment":"live","diagnostics":paypal_configuration_status()})
         if method == "POST" and path == "/v1/paypal/orders/create":
             body=self._body(environ); offer_id=str(body.get("offer_id","")).strip()
             try: offer=get_offer(offer_id)

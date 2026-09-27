@@ -99,3 +99,10 @@ def test_billing_catalog_covers_audits_defense_and_packs():
     assert catalog["audit_custom"]["amount"] is None
     assert catalog["defense_complete"]["amount"]=="399.00"
     assert catalog["pack_1000"]["amount"]=="44900.00"
+
+
+def test_billing_catalog_groups_have_expected_offer_kinds():
+    from src.billing_catalog import OFFERS
+    assert all(o.kind == "subscription" for o in OFFERS.values() if o.offer_id.startswith("monitoring_"))
+    assert all(o.kind in {"defense_step", "defense_package"} for o in OFFERS.values() if o.offer_id.startswith("defense_"))
+    assert all(o.kind == "credit_pack" for o in OFFERS.values() if o.offer_id.startswith("pack_"))
