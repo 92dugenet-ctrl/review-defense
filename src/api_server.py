@@ -430,9 +430,7 @@ class ReviewDefenseAPI:
             label_text = ",".join(f'{k}="{str(v).replace(chr(92), chr(92)+chr(92)).replace(chr(34), chr(92)+chr(34))}"' for k,v in labels)
             lines.append(f"http_request_duration_ms{{{label_text},quantile=\"avg\"}} {sum(values)/len(values):.3f}")
             lines.append(f"http_request_duration_ms{{{label_text},quantile=\"max\"}} {max(values):.3f}")
-        body = ("
-".join(lines) + "
-").encode()
+        body = ("\\n".join(lines) + "\\n").encode()
         return 200, {"Content-Type": "text/plain; version=0.0.4; charset=utf-8"}, body
 
     def handle(self, environ):
