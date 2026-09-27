@@ -87,6 +87,7 @@ def main() -> int:
                     browser_errors = []
                     browser_console = []
                     asset_responses = []
+                    api_responses = []
                     page.on("pageerror", lambda exc: browser_errors.append(str(exc)))
                     page.on("console", lambda msg: browser_console.append(f"{msg.type}: {msg.text}"))
                     page.on(
@@ -97,6 +98,11 @@ def main() -> int:
                             "content_type": response.headers.get("content-type", ""),
                         }) if "/assets/" in response.url else None,
                     )
+
+                    page.on("response", lambda response: api_responses.append({
+                        "url": response.url.split("?")[0],
+                        "status": response.status,
+                    }) if "/v1/" in response.url else None)
 
                     # Public commercialization boundary: the root URL must open the commercial landing page,
                     # and the landing page must provide a direct path into the authenticated interface.
@@ -209,8 +215,37 @@ def main() -> int:
                     # purpose of this multi-worker restoration test.
                     page.wait_for_selector(".sidebar", timeout=10000)
                     page.wait_for_selector("#console-sidebar", timeout=5000)
-                    page.wait_for_selector("#content", timeout=5000)
-                    page.wait_for_selector("#content .hero-grid", timeout=10000)
+                    try:
+                        page.wait_for_selector("#content", timeout=10000)
+                        page.wait_for_selector("#content .hero-grid", timeout=10000)
+                    except Exception as exc:
+                        report["browser_diagnostic"] = {
+                            "stage": "dashboard_render",
+                            "reason": "dashboard content did not become visible after authenticated shell appeared",
+                            "url": page.url,
+                            "ready_state": page.evaluate("document.readyState"),
+                            "render_type": page.evaluate("typeof window.reviewDefenseRender"),
+                            "boot_active": page.evaluate("Boolean(window.__RD_BOOT_ACTIVE)"),
+                            "render_waiters": page.evaluate("(window.__RD_RENDER_WAITERS__ || []).length"),
+                            "token_present": page.evaluate("Boolean(localStorage.getItem('rd_token'))"),
+                            "body_class": page.evaluate("document.body.className"),
+                            "content_state": page.evaluate("""() => {
+                                const el = document.querySelector('#content');
+                                if (!el) return {exists: false};
+                                const style = getComputedStyle(el);
+                                const rect = el.getBoundingClientRect();
+                                return {exists: true, html: el.innerHTML.slice(0, 3000),
+                                    display: style.display, visibility: style.visibility,
+                                    opacity: style.opacity, width: rect.width, height: rect.height};
+                            }"""),
+                            "shell_present": page.locator("#console-sidebar").count() > 0,
+                            "body_text": page.locator("body").inner_text()[:3000],
+                            "page_errors": browser_errors[-20:],
+                            "console": browser_console[-50:],
+                            "api_responses": [x for x in api_responses[-30:]],
+                            "asset_responses": [x for x in asset_responses[-30:]],
+                        }
+                        raise exc
 
                     def view(label: str, expected_title_fragment: str, selector: str, fallback_markers: tuple[str, ...] = ()):
                         button = page.locator(f'#nav button[data-view="{label}"]')
