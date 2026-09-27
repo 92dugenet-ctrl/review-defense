@@ -41,7 +41,7 @@ from .notification_worker import NotificationWorker
 from .notification_policy import NotificationPolicy, validate_policy, evaluate
 from .notification_observability import build_notification_metrics
 from .case_review import ReviewChecklistItem, build_checklist, assess_readiness
-from .contradiction_disposition import make_disposition, validate_disposition
+from .case_contradiction_service import CaseContradictionService
 from .case_review_matrix import build_evidence_matrix
 from .operations_ui import (
     ReviewSummary, ClaimView, PolicySignalView, EvidenceView, TimelineEvent,
@@ -168,6 +168,7 @@ class ReviewDefenseAPI:
         self.store.escalations = self.store.escalations
         self.store.notifications = self.store.notifications
         self.case_sla = CaseSLAService(repository=self.repository, audit_event=self.store.audit_event)
+        self.case_contradictions = CaseContradictionService(repository=self.repository, audit_event=self.store.audit_event)
 
     def _client_ip_hash(self, environ) -> str:
         import hashlib
@@ -1704,13 +1705,15 @@ class ReviewDefenseAPI:
                         continue
                     for f in self.store.evidence_facts.get((user.organization_id, eid), []):
                         facts.append(EvidenceFact(eid, f["key"], f["kind"], f["value"], f.get("source_location", ""), bool(f.get("verified"))))
-                findings = detect_contradictions(organization_id=user.organization_id, case_id=cid, claims=claims, evidence_facts=facts)
-                rows = [asdict(f) for f in findings]
+                rows = self.case_contradictions.analyze(
+                    organization_id=user.organization_id,
+                    case_id=cid,
+                    user_id=user.user_id,
+                    claims=claims,
+                    evidence_facts=facts,
+                    evidence_ids=sorted(selected),
+                )
                 self.store.contradictions[(user.organization_id, cid)] = rows
-                if self.repository is not None:
-                    for finding in rows:
-                        self.repository.put_contradiction(user.organization_id, finding)
-                self.store.audit_event(user.organization_id, user.user_id, "CONTRADICTIONS_ANALYZED", f"case:{cid}", contradiction_count=len(rows), evidence_ids=sorted(selected))
                 return self._json(200, {"contradictions": rows, "count": len(rows), "requires_human_review": bool(rows)})
             if method == "POST" and len(parts) == 5 and parts[4] == "extract-facts":
                 self._require_role(user, "OWNER", "ADMIN")
@@ -1844,17 +1847,16 @@ class ReviewDefenseAPI:
                     raise APIError(404,"NOT_FOUND","contradiction not found")
                 body=self._body(environ)
                 try:
-                    disp=make_disposition(organization_id=user.organization_id,case_id=cid,contradiction_id=contradiction_id,status=body.get("status"),rationale=body.get("rationale"),actor_id=user.user_id,created_at=utc_now().isoformat())
+                    d = self.case_contradictions.disposition(
+                        organization_id=user.organization_id,
+                        case_id=cid,
+                        contradiction_id=contradiction_id,
+                        status=body.get("status"),
+                        rationale=body.get("rationale"),
+                        actor_id=user.user_id,
+                    )
                 except ValueError as exc:
                     raise APIError(422,"VALIDATION_ERROR",str(exc))
-                d=asdict(disp); self.store.contradiction_dispositions[(user.organization_id,contradiction_id)]=d
-                hist=dict(d); hist["history_id"]="hist_"+__import__("hashlib").sha256(f"{d['disposition_id']}|{d['created_at']}".encode()).hexdigest()[:24]
-                self.store.contradiction_disposition_history.setdefault((user.organization_id,contradiction_id),[]).append(hist)
-                if self.repository is not None and hasattr(self.repository,"upsert_contradiction_disposition"):
-                    self.repository.upsert_contradiction_disposition(user.organization_id,d)
-                if self.repository is not None and hasattr(self.repository,"append_contradiction_disposition_history"):
-                    self.repository.append_contradiction_disposition_history(user.organization_id,hist)
-                self.store.audit_event(user.organization_id,user.user_id,"CONTRADICTION_DISPOSITIONED",f"case:{cid}",contradiction_id=contradiction_id,status=disp.status)
                 return self._json(200,{"disposition":d,"requires_human_review":True})
             if method == "POST" and len(parts) == 5 and parts[4] == "decision":
                 self._require_role(user, "OWNER", "ADMIN")
