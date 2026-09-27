@@ -1625,7 +1625,7 @@ class ReviewDefenseAPI:
             if method == "GET" and len(parts) == 5 and parts[4] == "workspace":
                 review = self.store.reviews[(user.organization_id, case.review_id)]
                 evidence_rows = [
-                    e for (e in self.store.evidence.values()
+                    e for e in self.store.evidence.values()
                     if e.get("organization_id") == user.organization_id and e.get("case_id") == cid)
                 ]
                 audit_rows = [
