@@ -11,9 +11,14 @@ from .contradiction_disposition import make_disposition
 from .security_hardening import utc_now
 
 class CaseContradictionService:
-    def __init__(self, *, repository: Any = None, audit_event: Callable[..., Any] | None = None):
+    def __init__(self, *, repository: Any = None, audit_event: Callable[..., Any] | None = None,
+                 contradiction_store: Any = None, disposition_store: Any = None,
+                 disposition_history_store: Any = None):
         self.repository = repository
         self.audit_event = audit_event
+        self.contradiction_store = contradiction_store
+        self.disposition_store = disposition_store
+        self.disposition_history_store = disposition_history_store
 
     def analyze(self, *, organization_id: str, case_id: str, user_id: str,
                 claims: Iterable[Any], evidence_facts: Iterable[EvidenceFact],
@@ -21,6 +26,8 @@ class CaseContradictionService:
         rows = [asdict(f) for f in detect_contradictions(
             organization_id=organization_id, case_id=case_id,
             claims=claims, evidence_facts=evidence_facts)]
+        if self.contradiction_store is not None:
+            self.contradiction_store[(organization_id, case_id)] = rows
         if self.repository is not None:
             for finding in rows:
                 self.repository.put_contradiction(organization_id, finding)
