@@ -1599,7 +1599,9 @@ class ReviewDefenseAPI:
             return self._json(200, {"items": rows, "count": len(rows)})
         if method == "GET" and path == "/v1/submissions":
             self._require_role(user, "OWNER", "ADMIN")
-            rows = [s for (org, _), s in self.store.submissions.items() if org == user.organization_id]
+            rows = self.case_submissions.list_for_organization(
+                organization_id=user.organization_id,
+            )
             return self._json(200, {"items": rows, "count": len(rows)})
         if method == "POST" and path == "/v1/cases":
             self._require_role(user, "CLIENT", "OWNER", "ADMIN", "ANALYST")

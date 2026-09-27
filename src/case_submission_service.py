@@ -16,6 +16,12 @@ class CaseSubmissionService:
         self.repository = repository
         self.audit_event = audit_event
 
+    def list_for_organization(self, *, organization_id: str) -> list[dict[str, Any]]:
+        return [
+            row for (org, _), row in self.store.submissions.items()
+            if org == organization_id
+        ]
+
     def prepare(self, *, case: Any, user_id: str) -> dict[str, Any]:
         if not case.decision_id:
             raise ValueError("decision required")
