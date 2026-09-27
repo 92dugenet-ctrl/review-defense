@@ -1523,7 +1523,7 @@ class ReviewDefenseAPI:
                     channel=channel,
                     target=target,
                     subject=str(body.get("subject", f"Review Defense escalation: {level}")),
-                    body=str(body.get("body", "")),
+                    body=str(body.get("body") or f"Review Defense escalation {level} for case {cid}."),
                     actor_id=user.user_id,
                 )
             except KeyError as exc:

@@ -31,7 +31,12 @@ def calculate_sla(*, priority: str, created_at: str | None, now: datetime | None
                   calendar: BusinessCalendar | None = None) -> SLAStatus:
     hours = SLA_HOURS.get(priority, SLA_HOURS["NORMAL"]); created = _parse(created_at)
     cal = calendar or default_calendar()
-    if created is None: return SLAStatus(None, "UNKNOWN", None, hours, "NONE", bool(paused_at), cal.timezone, cal != default_calendar())
+    if created is None:
+        return SLAStatus(
+            None, "UNKNOWN", None, hours, "NONE", bool(paused_at),
+            getattr(cal, "timezone", "UTC"),
+            cal != default_calendar(),
+        )
     now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc); paused_dt = _parse(paused_at)
     paused_business = max(0.0, float(paused_seconds or 0.0))
     if paused_dt is not None: paused_business += cal.business_seconds_between(paused_dt, now)
@@ -49,4 +54,7 @@ def calculate_sla(*, priority: str, created_at: str | None, now: datetime | None
     elif remaining <= max(1.0, hours*0.25): status = "DUE_SOON"
     else: status = "ON_TRACK"
     escalation = "CRITICAL" if remaining < -(hours*0.25) else "DUE" if remaining < 0 else "NONE"
-    return SLAStatus(due.isoformat(), status, round(remaining,2), hours, escalation, paused, cal.timezone, cal != default_calendar())
+    return SLAStatus(
+        due.isoformat(), status, round(remaining, 2), hours, escalation,
+        paused, getattr(cal, "timezone", "UTC"), cal != default_calendar(),
+    )
