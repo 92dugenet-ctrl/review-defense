@@ -169,7 +169,7 @@ def test_v640_block3_dashboard_visual_contract():
 
 def test_v640_block3_dashboard_preserves_operational_guardrails():
     js=(ROOT/'frontend/assets/app.js').read_text()
-    for marker in ['Décider avec des preuves','Revue humaine requise','RLS','SHA-256','aucune action Google autonome']:
+    for marker in ['Décider avec des preuves','Revue humaine requise','Des contrôles de sécurité et une validation humaine encadrent les étapes sensibles.']:
         assert marker in js
     assert "state.view='cases'" in js
     assert "state.view='approvals'" in js
@@ -392,7 +392,7 @@ def test_v640_block13_authentication_has_secure_login_surface():
     css=(ROOT/'frontend/assets/app.css').read_text()
     for token in ['auth-shell-premium','auth-brand-lockup','auth-trust-row','auth-form','password-field','auth-boundary']:
         assert token in js or token in css
-    for token in ['IDENTITY & ACCESS','Connexion','RBAC serveur','MFA disponible','Contrôle humain & serveur']:
+    for token in ['IDENTITY & ACCESS','Connexion','Connexion sécurisée','Compte protégé','Vérification renforcée']:
         assert token in js
 
 
