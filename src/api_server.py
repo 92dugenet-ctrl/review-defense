@@ -22,6 +22,7 @@ from .evidence_vault import FilesystemObjectStore, InMemoryObjectStore, sign_dow
 from .security_hardening import RateLimiter, Session, generate_session_token, hash_password, verify_password, utc_now, hash_token
 from .app_shell import SessionContext, can_access
 from .case_service import Case, CaseService
+from .case_workspace_service import CaseWorkspaceService
 from .decision_workspace import (
     attach_snapshot, approve_decision, create_decision, freeze_dossier,
     request_approval, can_approve_decision, can_create_decision,
@@ -1623,30 +1624,19 @@ class ReviewDefenseAPI:
                 return self._json(200, {"case": asdict(case), "review": asdict(review), "claims": [asdict(c) for c in claims], "policy_signals": [asdict(s) for s in signals]})
             if method == "GET" and len(parts) == 5 and parts[4] == "workspace":
                 review = self.store.reviews[(user.organization_id, case.review_id)]
-                claims = extract_claims(review)
-                signals = classify_policy_signals(claims)
-                evidence_rows = [e for (org, _), e in self.store.evidence.items() if org == user.organization_id and e["case_id"] == cid]
-                evidence = tuple(EvidenceView(e["evidence_id"], e["filename"], e.get("content_type") or "UNKNOWN", e["sha256"], "VERIFIED" if e.get("verified") else "UNVERIFIED") for e in evidence_rows)
-                claim_views = tuple(ClaimView(c.claim_id, c.text, c.claim_type, "UNVERIFIED") for c in claims)
-                policy_views = tuple(PolicySignalView(s.code, s.status, s.justification) for s in signals)
-                timeline_rows = [a for a in self.store.audit if a["organization_id"] == user.organization_id and (a["resource"] == f"case:{cid}" or a["resource"].startswith("evidence:") and a.get("meta", {}).get("case_id") == cid)]
-                timeline = tuple(TimelineEvent(a["event_id"], a["at"], a["action"], a.get("actor_id") or "system", "AUDIT") for a in timeline_rows)
-                required = {}
-                for signal in signals:
-                    for claim_id in signal.claim_ids:
-                        required.setdefault(claim_id, []).extend(signal.evidence_required)
-                tasks = missing_evidence_tasks(CaseWorkspace(
-                    cid, user.organization_id, case.status, "HIGH" if signals else "NORMAL",
-                    ReviewSummary(review.review_id, review.rating, review.text, review.published_at),
-                    claim_views, policy_views, evidence, timeline, (), 0.0
-                ), required)
-                coverage = 1.0 if not tasks else max(0.0, len({t.evidence_requirement for t in tasks if t.status != "OPEN"}) / max(1, len({r for rs in required.values() for r in rs})))
+                evidence_rows = [
+                    e for (e in self.store.evidence.values()
+                    if e.get("organization_id") == user.organization_id and e.get("case_id") == cid)
+                ]
+                audit_rows = [
+                    a for a in self.store.audit
+                    if a["organization_id"] == user.organization_id
+                    and (a["resource"] == f"case:{cid}" or a["resource"].startswith("evidence:")
+                         and a.get("meta", {}).get("case_id") == cid)
+                ]
                 stored_contradictions = self.store.contradictions.get((user.organization_id, cid), [])
-                contradiction_views = tuple(Contradiction(c["contradiction_id"], c["description"], c["claim_id"], tuple(c["evidence_ids"]), bool(c.get("requires_human_review", True))) for c in stored_contradictions)
-                workspace = CaseWorkspace(
-                    cid, user.organization_id, case.status, "HIGH" if signals or contradiction_views else "NORMAL",
-                    ReviewSummary(review.review_id, review.rating, review.text, review.published_at),
-                    claim_views, policy_views, evidence, timeline, contradiction_views, coverage
+                workspace, tasks = CaseWorkspaceService.build(
+                    case, review, evidence_rows, audit_rows, stored_contradictions
                 )
                 review_payload = asdict(workspace.review)
                 review_payload.update({"author_display_name": review.author_display_name, "source": review.source, "language": review.language, "review_url": review.review_url})
