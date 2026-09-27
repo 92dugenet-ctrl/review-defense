@@ -1776,7 +1776,7 @@ class ReviewDefenseAPI:
                 key=(user.organization_id,cid)
                 items=self.case_review.ensure_checklist(organization_id=user.organization_id, case_id=cid, has_policy_signals=bool(signals), contradiction_count=len(contradictions), unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")), missing_evidence_count=len(missing))
                 readiness=self.case_review.readiness(case_id=cid, organization_id=user.organization_id, items=items, contradiction_count=len(contradictions), unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")), missing_evidence_count=len(missing))
-                return self._json(200, {"items":[asdict(x) for x in items], "readiness":asdict(readiness)})
+                return self._json(200, {"items":items, "readiness":asdict(readiness)})
             if method == "POST" and len(parts) == 5 and parts[4] == "review-checklist":
                 self._require_role(user, "OWNER", "ADMIN", "ANALYST")
                 body=self._body(environ); code=str(body.get("code","")).strip(); completed=body.get("completed")
