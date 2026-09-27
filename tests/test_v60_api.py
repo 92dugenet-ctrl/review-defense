@@ -84,9 +84,12 @@ def test_evidence_upload_verify_and_tenant_boundary():
     status,_=call(app,"GET",f"/v1/evidence/{eid}",token=token_b); assert status==404
 
 
-def test_rbac_client_cannot_create_case_or_approve():
+def test_rbac_client_can_create_case_but_cannot_approve():
     app=create_app()
     app.seed_user(organization_id="org-a", email="client@example.com", password="correct horse battery staple", role="CLIENT")
     token=login(app,"client@example.com")
-    status,_=call(app,"POST","/v1/cases",{"review_id":"missing"},token=token); assert status==403
+    assert call(app,"POST","/v1/reviews",{"review_id":"client-review","rating":1,"text":"Avis client.","review_url":"review-link"},token=token)[0]==201
+    status,data=call(app,"POST","/v1/cases",{"review_id":"client-review"},token=token); assert status==201
+    cid=data["case"]["case_id"]
+    status,_=call(app,"POST",f"/v1/cases/{cid}/approve",{},token=token); assert status==403
     status,_=call(app,"POST","/v1/evidence",{"case_id":"missing","filename":"x.pdf","content_type":"application/pdf","content_base64":"eA=="},token=token); assert status==404
