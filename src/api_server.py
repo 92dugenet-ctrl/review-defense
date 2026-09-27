@@ -1612,25 +1612,11 @@ class ReviewDefenseAPI:
         if path.startswith("/v1/cases/"):
             parts = path.split("/")
             if len(parts) < 4: raise APIError(404, "NOT_FOUND", "resource not found")
-            cid = parts[3]; case = self.store.cases.get((user.organization_id, cid))
-            if case is None and self.repository is not None and hasattr(self.repository, "get_case_persistent"):
-                row = self.repository.get_case_persistent(user.organization_id, cid)
-                if row:
-                    case = CaseService.from_row(row)
-                    self.store.cases[(user.organization_id, cid)] = case
+            cid = parts[3]
+            case, _review, _evidence, _evidence_facts = CaseService.hydrate_context(
+                self.store, self.repository, user.organization_id, cid
+            )
             if not case: raise APIError(404, "NOT_FOUND", "case not found")
-            if self.repository is not None and hasattr(self.repository, "list_evidence"):
-                for erow in self.repository.list_evidence(user.organization_id, cid):
-                    evidence_id = str(erow[0])
-                    self.store.evidence[(user.organization_id, evidence_id)] = dict(zip(("evidence_id","organization_id","case_id","filename","content_type","size_bytes","sha256","object_key","verified","created_by","verified_by","verified_at"), erow))
-                if hasattr(self.repository, "list_evidence_facts"):
-                    for frow in self.repository.list_evidence_facts(user.organization_id, cid):
-                        fact = dict(zip(("fact_id","evidence_id","case_id","key","kind","value","source_location","verified","verified_by","verified_at"), frow))
-                        self.store.evidence_facts.setdefault((user.organization_id, str(frow[1])), []).append(fact)
-            if (user.organization_id, case.review_id) not in self.store.reviews and self.repository is not None and hasattr(self.repository, "get_review"):
-                review_row = self.repository.get_review(user.organization_id, case.review_id)
-                if review_row:
-                    self.store.reviews[(user.organization_id, case.review_id)] = _review_from_row(review_row)
             if method == "GET" and len(parts) == 4:
                 review = self.store.reviews[(user.organization_id, case.review_id)]
                 claims = extract_claims(review); signals = classify_policy_signals(claims)
