@@ -1223,7 +1223,7 @@ class ReviewDefenseAPI:
                 if not key or not kind or not value or len(key) > 200 or len(kind) > 80 or len(value) > 5000:
                     raise APIError(422, "VALIDATION_ERROR", "each fact requires bounded key, kind and value")
                 facts.append({"fact_id": str(uuid.uuid4()), "evidence_id": evidence_id, "case_id": case_id, "organization_id": user.organization_id, "key": key, "kind": kind, "value": value, "source_location": str(f.get("source_location", "")), "verified": False, "verified_by": None, "verified_at": None})
-            row = {"evidence_id": evidence_id, "organization_id": user.organization_id, "case_id": case_id, "filename": filename, "content_type": content_type, "size_bytes": obj.size_bytes, "sha256": obj.sha256, "object_key": obj.object_key, "verified": False, "created_by": user.user_id}
+            row = {"evidence_id": evidence_id, "organization_id": user.organization_id, "case_id": case_id, "filename": filename, "content_type": content_type, "size_bytes": obj.size_bytes, "sha256": obj.sha256, "object_key": obj.object_key, "verified": False, "status": "PENDING", "created_by": user.user_id}
             self.store.evidence[(user.organization_id, evidence_id)] = row
             self.store.evidence_facts[(user.organization_id, evidence_id)] = facts
             if self.repository is not None:
@@ -1234,7 +1234,7 @@ class ReviewDefenseAPI:
             row = dict(row); row["download_url"] = sign_download_url(object_key=obj.object_key, organization_id=user.organization_id, secret=self.store.download_secret)
             return self._json(201, {"evidence": row})
         if method == "GET" and path == "/v1/evidence":
-            rows = [e for (org, _), e in self.store.evidence.items() if org == user.organization_id]
+            rows = [dict(e, status=("VERIFIED" if e.get("verified") else "PENDING")) for (org, _), e in self.store.evidence.items() if org == user.organization_id]
             return self._json(200, {"items": rows, "count": len(rows)})
         if method == "GET" and path.startswith("/v1/evidence/"):
             eid = path.rsplit("/", 1)[-1]
@@ -1242,7 +1242,7 @@ class ReviewDefenseAPI:
             if not row: raise APIError(404, "NOT_FOUND", "evidence not found")
             if not verify_integrity(self.store.vault.get(organization_id=user.organization_id, object_key=row["object_key"]), row["sha256"]):
                 raise APIError(409, "INTEGRITY_FAILURE", "stored evidence integrity check failed")
-            out = dict(row); out["download_url"] = sign_download_url(object_key=row["object_key"], organization_id=user.organization_id, secret=self.store.download_secret)
+            out = dict(row); out["status"] = "VERIFIED" if row.get("verified") else "PENDING"; out["download_url"] = sign_download_url(object_key=row["object_key"], organization_id=user.organization_id, secret=self.store.download_secret)
             return self._json(200, {"evidence": out})
         if method == "POST" and path.startswith("/v1/evidence/") and path.endswith("/verify") and len(path.split("/")) == 5:
             self._require_role(user, "OWNER", "ADMIN", "ANALYST")
@@ -1255,7 +1255,7 @@ class ReviewDefenseAPI:
             if not row: raise APIError(404, "NOT_FOUND", "evidence not found")
             if not verify_integrity(self.store.vault.get(organization_id=user.organization_id, object_key=row["object_key"]), row["sha256"]):
                 raise APIError(409, "INTEGRITY_FAILURE", "stored evidence integrity check failed")
-            row["verified"] = True; row["verified_by"] = user.user_id; row["verified_at"] = utc_now().isoformat()
+            row["verified"] = True; row["status"] = "VERIFIED"; row["verified_by"] = user.user_id; row["verified_at"] = utc_now().isoformat()
             if self.repository is not None and hasattr(self.repository, "update_evidence_verification"):
                 self.repository.update_evidence_verification(user.organization_id, eid, user.user_id, row["verified_at"])
             self.store.audit_event(user.organization_id, user.user_id, "EVIDENCE_VERIFIED", f"evidence:{eid}")
