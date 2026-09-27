@@ -41,6 +41,7 @@ from .notification_worker import NotificationWorker
 from .notification_policy import NotificationPolicy, validate_policy, evaluate
 from .notification_observability import build_notification_metrics
 from .case_review import ReviewChecklistItem, build_checklist, assess_readiness
+from .case_review_service import CaseReviewService
 from .case_contradiction_service import CaseContradictionService
 from .case_review_matrix import build_evidence_matrix
 from .operations_ui import (
@@ -168,6 +169,7 @@ class ReviewDefenseAPI:
         self.store.escalations = self.store.escalations
         self.store.notifications = self.store.notifications
         self.case_sla = CaseSLAService(repository=self.repository, audit_event=self.store.audit_event)
+        self.case_review = CaseReviewService(store=self.store, repository=self.repository, audit_event=self.store.audit_event)
         self.case_contradictions = CaseContradictionService(
             repository=self.repository,
             audit_event=self.store.audit_event,
@@ -1772,15 +1774,8 @@ class ReviewDefenseAPI:
                 ws = CaseWorkspace(cid, user.organization_id, case.status, "NORMAL", ReviewSummary(review.review_id, review.rating, review.text, review.published_at), tuple(ClaimView(c.claim_id,c.text,c.claim_type,"UNVERIFIED") for c in claims), tuple(PolicySignalView(s.code,s.status,s.justification) for s in signals), evidence, (), tuple(Contradiction(c["contradiction_id"],c["description"],c["claim_id"],tuple(c["evidence_ids"]),True) for c in contradictions))
                 missing = missing_evidence_tasks(ws, required)
                 key=(user.organization_id,cid)
-                if key not in self.store.review_checklists and self.repository is not None and hasattr(self.repository, "list_case_review_checklist"):
-                    rows=self.repository.list_case_review_checklist(user.organization_id,cid)
-                    self.store.review_checklists[key]=[dict(zip(("item_id","organization_id","case_id","code","label","required","completed","completed_by","completed_at","note"), r)) for r in rows]
-                if key not in self.store.review_checklists:
-                    self.store.review_checklists[key] = [asdict(x) for x in build_checklist(organization_id=user.organization_id, case_id=cid, has_policy_signals=bool(signals), contradiction_count=len(contradictions), unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")), missing_evidence_count=len(missing))]
-                    if self.repository is not None and hasattr(self.repository, "upsert_case_review_checklist"):
-                        for x in self.store.review_checklists[key]: self.repository.upsert_case_review_checklist(user.organization_id, x)
-                items=[ReviewChecklistItem(**x) for x in self.store.review_checklists[key]]
-                readiness=assess_readiness(case_id=cid, organization_id=user.organization_id, items=items, contradiction_count=len(contradictions), unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")), missing_evidence_count=len(missing))
+                items=self.case_review.ensure_checklist(organization_id=user.organization_id, case_id=cid, has_policy_signals=bool(signals), contradiction_count=len(contradictions), unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")), missing_evidence_count=len(missing))
+                readiness=self.case_review.readiness(case_id=cid, organization_id=user.organization_id, items=items, contradiction_count=len(contradictions), unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")), missing_evidence_count=len(missing))
                 return self._json(200, {"items":[asdict(x) for x in items], "readiness":asdict(readiness)})
             if method == "POST" and len(parts) == 5 and parts[4] == "review-checklist":
                 self._require_role(user, "OWNER", "ADMIN", "ANALYST")
@@ -1793,14 +1788,11 @@ class ReviewDefenseAPI:
                 evidence=tuple(EvidenceView(e["evidence_id"],e["filename"],e.get("content_type") or "UNKNOWN",e["sha256"],"VERIFIED" if e.get("verified") else "UNVERIFIED") for e in evidence_rows)
                 ws=CaseWorkspace(cid,user.organization_id,case.status,"NORMAL",ReviewSummary(review.review_id,review.rating,review.text,review.published_at),tuple(ClaimView(c.claim_id,c.text,c.claim_type,"UNVERIFIED") for c in claims),tuple(PolicySignalView(s.code,s.status,s.justification) for s in signals),evidence,(),tuple(Contradiction(c["contradiction_id"],c["description"],c["claim_id"],tuple(c["evidence_ids"]),True) for c in contradictions))
                 missing=missing_evidence_tasks(ws,required); key=(user.organization_id,cid)
-                if key not in self.store.review_checklists:
-                    self.store.review_checklists[key]=[asdict(x) for x in build_checklist(organization_id=user.organization_id,case_id=cid,has_policy_signals=bool(signals),contradiction_count=len(contradictions),unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")),missing_evidence_count=len(missing))]
-                row=next((x for x in self.store.review_checklists[key] if x["code"]==code),None)
-                if row is None: raise APIError(404,"NOT_FOUND","checklist item not found")
-                row["completed"]=completed; row["completed_by"]=user.user_id if completed else None; row["completed_at"]=utc_now().isoformat() if completed else None; row["note"]=str(body.get("note"))[:1000] if body.get("note") is not None else None
-                if self.repository is not None and hasattr(self.repository, "upsert_case_review_checklist"):
-                    self.repository.upsert_case_review_checklist(user.organization_id, row)
-                self.store.audit_event(user.organization_id,user.user_id,"CASE_REVIEW_CHECKLIST_UPDATED",f"case:{cid}",code=code,completed=completed)
+                self.case_review.ensure_checklist(organization_id=user.organization_id, case_id=cid, has_policy_signals=bool(signals), contradiction_count=len(contradictions), unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")), missing_evidence_count=len(missing))
+                try:
+                    row=self.case_review.update_item(organization_id=user.organization_id, case_id=cid, code=code, completed=completed, user_id=user.user_id, note=body.get("note"))
+                except KeyError:
+                    raise APIError(404,"NOT_FOUND","checklist item not found")
                 return self._json(200,{"item":row})
             if method == "GET" and len(parts) == 5 and parts[4] == "review-readiness":
                 # Same advisory checklist, exposed as a compact readiness contract.
@@ -1810,8 +1802,8 @@ class ReviewDefenseAPI:
                 evidence_rows=[e for (org,_),e in self.store.evidence.items() if org==user.organization_id and e.get("case_id")==cid]; evidence=tuple(EvidenceView(e["evidence_id"],e["filename"],e.get("content_type") or "UNKNOWN",e["sha256"],"VERIFIED" if e.get("verified") else "UNVERIFIED") for e in evidence_rows)
                 ws=CaseWorkspace(cid,user.organization_id,case.status,"NORMAL",ReviewSummary(review.review_id,review.rating,review.text,review.published_at),tuple(ClaimView(c.claim_id,c.text,c.claim_type,"UNVERIFIED") for c in claims),tuple(PolicySignalView(s.code,s.status,s.justification) for s in signals),evidence,(),tuple(Contradiction(c["contradiction_id"],c["description"],c["claim_id"],tuple(c["evidence_ids"]),True) for c in contradictions)); missing=missing_evidence_tasks(ws,{c.claim_id:[] for c in claims})
                 key=(user.organization_id,cid)
-                if key not in self.store.review_checklists: self.store.review_checklists[key]=[asdict(x) for x in build_checklist(organization_id=user.organization_id,case_id=cid,has_policy_signals=bool(signals),contradiction_count=len(contradictions),unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")),missing_evidence_count=len(missing))]
-                items=[ReviewChecklistItem(**x) for x in self.store.review_checklists[key]]; readiness=assess_readiness(case_id=cid,organization_id=user.organization_id,items=items,contradiction_count=len(contradictions),unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")),missing_evidence_count=len(missing))
+                items=self.case_review.ensure_checklist(organization_id=user.organization_id, case_id=cid, has_policy_signals=bool(signals), contradiction_count=len(contradictions), unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")), missing_evidence_count=len(missing))
+                readiness=self.case_review.readiness(case_id=cid, organization_id=user.organization_id, items=items, contradiction_count=len(contradictions), unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")), missing_evidence_count=len(missing))
                 return self._json(200,{"readiness":asdict(readiness),"human_review_required":True})
             if method == "GET" and len(parts) == 5 and parts[4] == "contradictions":
                 rows = self.store.contradictions.get((user.organization_id, cid), [])
