@@ -81,3 +81,14 @@ def test_paypal_capture_is_idempotent(monkeypatch):
     first=call(); second=call()
     assert first[0]==200 and second[0]==200 and first[1]==second[1]
     assert captures==["ORDER-2"]
+
+
+def test_billing_catalog_covers_audits_defense_and_packs():
+    from src.billing_catalog import OFFERS, public_catalog
+    required={"audit_1_9","audit_1000_2499","audit_5000_9999","audit_custom","defense_01","defense_complete","pack_starter","pack_1000","pack_custom","monitoring_essential","monitoring_business"}
+    assert required.issubset(OFFERS)
+    catalog={item["offer_id"]:item for item in public_catalog()}
+    assert len(catalog)==len(OFFERS)
+    assert catalog["audit_custom"]["amount"] is None
+    assert catalog["defense_complete"]["amount"]=="399.00"
+    assert catalog["pack_1000"]["amount"]=="44900.00"

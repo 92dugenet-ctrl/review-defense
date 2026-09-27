@@ -52,7 +52,7 @@ from .recovery_email import SMTPConfig, send_recovery_email, send_verification_e
 from .deployment import DeploymentConfig, security_headers
 from .observability import InMemoryTelemetry, TraceContext, health_check
 from .seo_renderer import is_seo_path, render_page, sitemap, robots
-from .billing_catalog import get_offer, paypal_plan_id
+from .billing_catalog import get_offer, paypal_plan_id, public_catalog
 from .paypal_client import configured as paypal_configured, configuration_status as paypal_configuration_status, create_order as paypal_create_order, capture_order as paypal_capture_order, verify_webhook as paypal_verify_webhook, request_json as paypal_request_json, access_token as paypal_access_token, PayPalError
 
 
@@ -802,6 +802,9 @@ class ReviewDefenseAPI:
             if self.repository is not None and hasattr(self.repository,"list_billing_transactions"):
                 rows=self.repository.list_billing_transactions(user.organization_id,user.user_id)
             return self._json(200,{"items":rows,"count":len(rows),"paypal_configured":paypal_configured()})
+        if method == "GET" and path == "/v1/billing/catalog":
+            items = public_catalog()
+            return self._json(200, {"items": items, "count": len(items)})
         if method == "GET" and path == "/v1/paypal/config":
             return self._json(200,{"configured":paypal_configured(),"client_id":os.getenv("PAYPAL_CLIENT_ID","").strip(),"environment":os.getenv("PAYPAL_ENVIRONMENT","sandbox").strip(),"diagnostics":paypal_configuration_status()})
         if method == "POST" and path == "/v1/paypal/orders/create":
