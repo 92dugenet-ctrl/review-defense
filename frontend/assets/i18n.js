@@ -432,7 +432,8 @@ Object.assign(extraTranslations,{
     if(isEnglish()&&shouldTranslate()) { setMeta(); translateNode(document.body); }
     addSwitcher();
   }
-  window.ReviewDefenseI18n={setLanguage(l){if(SUPPORTED.includes(l)){localStorage.setItem(KEY,l);location.reload()}},getLanguage:()=>isEnglish()?'en':'fr',translate:translateNode};
+  function translateText(value){if(!isEnglish()||!value)return value;let v=String(value);for(const [fr,en] of pairs)if(v.includes(fr))v=v.split(fr).join(en);return v}
+  window.ReviewDefenseI18n={t:translateText,setLanguage(l){if(SUPPORTED.includes(l)){localStorage.setItem(KEY,l);location.reload()}},getLanguage:()=>isEnglish()?'en':'fr',translate:translateNode};
   const observer=new MutationObserver(muts=>{if(!isEnglish()||!shouldTranslate())return; muts.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)translateNode(n)})); addSwitcher();});
   observer.observe(document.documentElement,{subtree:true,childList:true});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
