@@ -36,7 +36,8 @@ from .review_queue import score_case, sort_queue
 from .case_sla_service import CaseSLAService
 from .business_calendar import calendar_from_dict, default_calendar
 from .escalation_workflow import Escalation, signal_from_sla
-from .notification_outbox import Notification, create_notification
+from .notification_outbox import Notification
+from .notification_service import NotificationService
 from .notification_delivery import deliver, DeliveryError
 from .notification_worker import NotificationWorker
 from .notification_policy import NotificationPolicy, validate_policy, evaluate
@@ -159,6 +160,7 @@ class ReviewDefenseAPI:
             }
         self.delivery_func = delivery_func
         self.notification_worker = NotificationWorker(delivery_func=delivery_func, email_config=self.delivery_email_config)
+        self.notifications = NotificationService(store=self.store, repository=self.repository, audit_event=self.store.audit_event, delivery_func=self.delivery_func, email_config=self.delivery_email_config, policy_provider=self._notification_policy)
         self.session_ttl = session_ttl
         self.limiter = limiter or RateLimiter(limit=120, window_seconds=60)
         self.auth_limiter = RateLimiter(limit=8, window_seconds=300)
@@ -1513,86 +1515,40 @@ class ReviewDefenseAPI:
             metrics = build_notification_metrics(self.store.notifications.values(), self.store.audit, organization_id=user.organization_id)
             return self._json(200, {"metrics": metrics})
         if method == "POST" and path.startswith("/v1/escalations/") and path.endswith("/notify"):
-            self._require_role(user, "OWNER", "ADMIN")
-            parts = path.split("/"); cid = parts[3]; body = self._body(environ)
-            level = str(body.get("level", "DUE")); channel = str(body.get("channel", "IN_APP")); target = str(body.get("target", user.user_id))
-            esc = self.store.escalations.get((user.organization_id, cid, level))
-            if esc is None: raise APIError(404, "NOT_FOUND", "escalation not found")
-            if esc.status == "RESOLVED": raise APIError(409, "STATE_CONFLICT", "resolved escalation cannot be notified")
-            allowed, reason = evaluate(self._notification_policy(user.organization_id), level=level, channel=channel, now=utc_now())
-            if not allowed:
-                self.store.audit_event(user.organization_id, user.user_id, "ESCALATION_NOTIFICATION_BLOCKED", f"case:{cid}", level=level, channel=channel, reason=reason)
-                raise APIError(403, "NOTIFICATION_POLICY_BLOCKED", reason)
+            self._require_role(user,"OWNER","ADMIN")
+            parts=path.split("/"); cid=parts[3]; body=self._body(environ)
+            level=str(body.get("level","DUE")); channel=str(body.get("channel","IN_APP")); target=str(body.get("target",user.user_id))
+            esc=self.store.escalations.get((user.organization_id,cid,level))
+            if esc is None: raise APIError(404,"NOT_FOUND","escalation not found")
+            if esc.status=="RESOLVED": raise APIError(409,"STATE_CONFLICT","resolved escalation cannot be notified")
             try:
-                notification = create_notification(organization_id=user.organization_id, case_id=cid, level=level, channel=channel, target=target, subject=str(body.get("subject", f"Review Defense escalation: {level}")), body=str(body.get("body", esc.reason)), actor_id=user.user_id)
-            except ValueError as exc:
-                raise APIError(400, "INVALID_NOTIFICATION", str(exc))
-            key=(user.organization_id, notification.dedupe_key)
-            for (_, _), existing in self.store.notifications.items():
-                if existing.organization_id == user.organization_id and existing.dedupe_key == notification.dedupe_key and existing.status == "PENDING":
-                    return self._json(200, {"notification": existing.payload(), "deduplicated": True})
-            self.store.notifications[(user.organization_id, notification.notification_id)] = notification
-            if self.repository is not None and hasattr(self.repository, "create_notification"):
-                self.repository.create_notification(user.organization_id, notification.payload())
-            self.store.audit_event(user.organization_id, user.user_id, "ESCALATION_NOTIFICATION_QUEUED", f"case:{cid}", notification_id=notification.notification_id, level=level, channel=notification.channel)
-            return self._json(201, {"notification": notification.payload(), "deduplicated": False})
+                n,dedup=self.notifications.queue(organization_id=user.organization_id,case_id=cid,level=level,channel=channel,target=target,
+                    subject=str(body.get("subject",f"Review Defense escalation: {level}")),body=str(body.get("body",esc.reason)),actor_id=user.user_id)
+            except PermissionError as exc: raise APIError(403,"NOTIFICATION_POLICY_BLOCKED",str(exc)) from exc
+            except ValueError as exc: raise APIError(400,"INVALID_NOTIFICATION",str(exc)) from exc
+            return self._json(200 if dedup else 201,{"notification":n.payload(),"deduplicated":dedup})
         if method == "POST" and path.startswith("/v1/notifications/") and path.endswith("/cancel"):
-            self._require_role(user, "OWNER", "ADMIN")
-            nid = path.split("/")[3]; notification = self.store.notifications.get((user.organization_id, nid))
-            if notification is None and self.repository is not None and hasattr(self.repository, "get_notification"):
-                row = self.repository.get_notification(user.organization_id, nid)
-                if row: notification = Notification(**row); self.store.notifications[(user.organization_id, nid)] = notification
-            if notification is None: raise APIError(404, "NOT_FOUND", "notification not found")
-            if notification.status != "PENDING": raise APIError(409, "STATE_CONFLICT", "only pending notifications can be cancelled")
-            notification.status = "CANCELLED"; notification.cancelled_by = user.user_id; notification.cancelled_at = utc_now().isoformat()
-            if self.repository is not None and hasattr(self.repository, "update_notification"):
-                self.repository.update_notification(user.organization_id, notification.payload())
-            self.store.audit_event(user.organization_id, user.user_id, "ESCALATION_NOTIFICATION_CANCELLED", f"case:{notification.case_id}", notification_id=nid)
-            return self._json(200, {"notification": notification.payload()})
+            self._require_role(user,"OWNER","ADMIN"); nid=path.split("/")[3]
+            try: n=self.notifications.cancel(organization_id=user.organization_id,notification_id=nid,actor_id=user.user_id)
+            except KeyError as exc: raise APIError(404,"NOT_FOUND","notification not found") from exc
+            except ValueError as exc: raise APIError(409,"STATE_CONFLICT",str(exc)) from exc
+            return self._json(200,{"notification":n.payload()})
         if method == "POST" and path.startswith("/v1/notifications/") and path.endswith("/deliver"):
-            self._require_role(user, "OWNER", "ADMIN")
-            nid = path.split("/")[3]
-            notification = self.store.notifications.get((user.organization_id, nid))
-            if notification is None and self.repository is not None and hasattr(self.repository, "get_notification"):
-                row = self.repository.get_notification(user.organization_id, nid)
-                if row:
-                    notification = Notification(**row); self.store.notifications[(user.organization_id, nid)] = notification
-            if notification is None: raise APIError(404, "NOT_FOUND", "notification not found")
-            body = self._body(environ)
-            allowed, reason = evaluate(self._notification_policy(user.organization_id), level=notification.escalation_level, channel=notification.channel, now=utc_now())
-            if not allowed:
-                self.store.audit_event(user.organization_id, user.user_id, "ESCALATION_NOTIFICATION_BLOCKED", f"case:{notification.case_id}", notification_id=nid, reason=reason)
-                raise APIError(403, "NOTIFICATION_POLICY_BLOCKED", reason)
-            try:
-                result = self.delivery_func(notification, email_config=self.delivery_email_config)
+            self._require_role(user,"OWNER","ADMIN"); nid=path.split("/")[3]
+            try: n,result=self.notifications.deliver(organization_id=user.organization_id,notification_id=nid,actor_id=user.user_id)
+            except KeyError as exc: raise APIError(404,"NOT_FOUND","notification not found") from exc
+            except PermissionError as exc: raise APIError(403,"NOTIFICATION_POLICY_BLOCKED",str(exc)) from exc
             except DeliveryError as exc:
-                notification.delivery_attempts = getattr(notification, "delivery_attempts", 0) + 1
-                notification.last_attempt_at = utc_now().isoformat()
-                notification.delivery_error = str(exc)
-                if self.repository is not None and hasattr(self.repository, "record_notification_attempt"):
-                    self.repository.record_notification_attempt(user.organization_id, notification.payload())
-                self.store.audit_event(user.organization_id, user.user_id, "ESCALATION_NOTIFICATION_DELIVERY_FAILED", f"case:{notification.case_id}", notification_id=nid, channel=notification.channel, error=str(exc))
-                return self._json(502, {"error":{"code":"DELIVERY_FAILED","message":str(exc)},"notification":notification.payload()})
-            notification.status = "SENT"; notification.sent_by = user.user_id; notification.sent_at = utc_now().isoformat()
-            notification.delivery_attempts = getattr(notification, "delivery_attempts", 0) + 1
-            notification.last_attempt_at = utc_now().isoformat(); notification.delivery_error = None
-            if self.repository is not None and hasattr(self.repository, "update_notification"):
-                self.repository.update_notification(user.organization_id, notification.payload())
-            self.store.audit_event(user.organization_id, user.user_id, "ESCALATION_NOTIFICATION_DELIVERED", f"case:{notification.case_id}", notification_id=nid, channel=notification.channel, provider=result.provider)
-            return self._json(200, {"notification": notification.payload(), "delivery": result.__dict__})
+                try: current=self.notifications._get(organization_id=user.organization_id,notification_id=nid)
+                except KeyError as missing: raise APIError(404,"NOT_FOUND","notification not found") from missing
+                return self._json(502,{"error":{"code":"DELIVERY_FAILED","message":str(exc)},"notification":current.payload()})
+            return self._json(200,{"notification":n.payload(),"delivery":result.__dict__})
         if method == "POST" and path.startswith("/v1/notifications/") and path.endswith("/mark-sent"):
-            self._require_role(user, "OWNER", "ADMIN")
-            nid = path.split("/")[3]; notification = self.store.notifications.get((user.organization_id, nid))
-            if notification is None and self.repository is not None and hasattr(self.repository, "get_notification"):
-                row = self.repository.get_notification(user.organization_id, nid)
-                if row: notification = Notification(**row); self.store.notifications[(user.organization_id, nid)] = notification
-            if notification is None: raise APIError(404, "NOT_FOUND", "notification not found")
-            if notification.status != "PENDING": raise APIError(409, "STATE_CONFLICT", "only pending notifications can be marked sent")
-            notification.status = "SENT"; notification.sent_by = user.user_id; notification.sent_at = utc_now().isoformat()
-            if self.repository is not None and hasattr(self.repository, "update_notification"):
-                self.repository.update_notification(user.organization_id, notification.payload())
-            self.store.audit_event(user.organization_id, user.user_id, "ESCALATION_NOTIFICATION_MARKED_SENT", f"case:{notification.case_id}", notification_id=nid)
-            return self._json(200, {"notification": notification.payload()})
+            self._require_role(user,"OWNER","ADMIN"); nid=path.split("/")[3]
+            try: n=self.notifications.mark_sent(organization_id=user.organization_id,notification_id=nid,actor_id=user.user_id)
+            except KeyError as exc: raise APIError(404,"NOT_FOUND","notification not found") from exc
+            except ValueError as exc: raise APIError(409,"STATE_CONFLICT",str(exc)) from exc
+            return self._json(200,{"notification":n.payload()})
         if method == "GET" and path == "/v1/approvals":
             self._require_role(user, "OWNER", "ADMIN")
             rows = [asdict(a) for a in self.store.approvals if a.organization_id == user.organization_id]
