@@ -1239,7 +1239,19 @@ class ReviewDefenseAPI:
                     extraction_method = extracted.method
                     suggested = extract_text_fact_suggestions(evidence_id=evidence_id, content=extracted_text.encode("utf-8"), content_type="text/plain")
                     for suggestion in suggested:
-                        facts.append(asdict(suggestion))
+                        facts.append({
+                            "fact_id": suggestion.suggestion_id,
+                            "evidence_id": evidence_id,
+                            "case_id": case_id,
+                            "organization_id": user.organization_id,
+                            "key": suggestion.key,
+                            "kind": suggestion.kind,
+                            "value": suggestion.value,
+                            "source_location": suggestion.source_location,
+                            "verified": False,
+                            "verified_by": None,
+                            "verified_at": None,
+                        })
                 except ExtractionError:
                     extraction_method = "failed"
             row = {"evidence_id": evidence_id, "organization_id": user.organization_id, "case_id": case_id, "filename": filename, "content_type": content_type, "size_bytes": obj.size_bytes, "sha256": obj.sha256, "object_key": obj.object_key, "verified": False, "status": "PENDING", "created_by": user.user_id, "extraction_method": extraction_method, "extracted_chars": len(extracted_text)}
