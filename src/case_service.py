@@ -65,13 +65,37 @@ class CaseService:
         key = (organization_id, case_id)
         if repository is not None and hasattr(repository, "list_evidence"):
             for row in repository.list_evidence(organization_id, case_id) or []:
-                evidence_id = str(row[0])
-                store.evidence[(organization_id, evidence_id)] = row
+                evidence = {
+                    "evidence_id": str(row[0]),
+                    "organization_id": str(row[1]),
+                    "case_id": str(row[2]),
+                    "filename": str(row[3]),
+                    "content_type": row[4],
+                    "size_bytes": int(row[5]) if row[5] is not None else 0,
+                    "sha256": str(row[6]),
+                    "object_key": str(row[7]),
+                    "verified": bool(row[8]),
+                    "created_by": row[9],
+                    "verified_by": row[10],
+                    "verified_at": CaseService._iso_value(row[11]),
+                }
+                store.evidence[(organization_id, evidence["evidence_id"])] = evidence
 
         if repository is not None and hasattr(repository, "list_evidence_facts"):
             for row in repository.list_evidence_facts(organization_id, case_id) or []:
-                fact_id = str(row[0])
-                store.evidence_facts[(organization_id, fact_id)] = row
+                fact = {
+                    "fact_id": str(row[0]),
+                    "evidence_id": str(row[1]),
+                    "case_id": str(row[2]),
+                    "key": str(row[3]),
+                    "kind": str(row[4]),
+                    "value": row[5],
+                    "source_location": row[6],
+                    "verified": bool(row[7]),
+                    "verified_by": row[8],
+                    "verified_at": CaseService._iso_value(row[9]),
+                }
+                store.evidence_facts[(organization_id, fact["fact_id"])] = fact
 
         review = store.reviews.get((organization_id, case.review_id))
         if review is None and repository is not None and hasattr(repository, "get_review"):
