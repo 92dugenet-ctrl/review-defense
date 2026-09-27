@@ -46,3 +46,14 @@ class CaseService:
         if value is None:
             return None
         return value.isoformat() if hasattr(value, "isoformat") else str(value)
+    @staticmethod
+    def hydrate_case(store: Any, repository: Any, organization_id: str, case_id: str) -> Case | None:
+        key = (organization_id, case_id)
+        case = store.cases.get(key)
+        if case is None and repository is not None and hasattr(repository, "get_case_persistent"):
+            row = repository.get_case_persistent(organization_id, case_id)
+            if row:
+                case = CaseService.from_row(row)
+                store.cases[key] = case
+        return case
+
