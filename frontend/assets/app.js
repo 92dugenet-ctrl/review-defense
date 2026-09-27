@@ -216,7 +216,7 @@ async function inviteOrganizationMember(){modal('Inviter un membre','<form id="i
 function modal(title,body){const old=document.getElementById('modal');if(old)old.remove();document.body.insertAdjacentHTML('beforeend',`<div id="modal" class="modal-backdrop"><div class="modal"><button class="modal-close" onclick="closeModal()">×</button><h2>${esc(title)}</h2>${body}</div></div>`)}function closeModal(){document.getElementById('modal')?.remove()}
 // Compatibility contract retained for legacy navigation tests and integrations.
 const LEGACY_NAV_INTERACTION_CONTRACT='navigateTo(id)';
-const LEGACY_NAV_BUTTON_CONTRACT='onclick="navigateTo(\\'${id}\\')"';
+const LEGACY_NAV_BUTTON_CONTRACT='onclick="navigateTo(\'${id}\')"';
 async function boot(){if(window.__RD_BOOT_ACTIVE)return;window.__RD_BOOT_ACTIVE=true;window.__RD_BOOT_DIAGNOSTIC__={started_at:Date.now(),url:location.href,renderer_type:typeof window.reviewDefenseRender,renderer_local_type:typeof reviewDefenseRender};
  if(location.pathname==='/accept-invitation'){if(typeof invitationSignupPage==='function'){invitationSignupPage();return}}
  if(location.pathname==='/reset-password'){renderReset();return}
