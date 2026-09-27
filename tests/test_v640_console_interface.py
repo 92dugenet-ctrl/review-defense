@@ -206,7 +206,7 @@ def test_v640_block5_cases_has_management_queue_and_filters():
     css=(ROOT/'frontend/assets/app.css').read_text()
     for token in ['case-overview','case-summary','case-mini-grid','cases-panel','case-toolbar','case-card','filterCaseCards','case-guardrail']:
         assert token in js or token in css
-    for token in ['Rechercher un dossier','Filtrer les dossiers','File des dossiers','Centre des dossiers']:
+    for token in ['Rechercher un dossier','Filtrer les dossiers','Mes dossiers','Centre des dossiers']:
         assert token in js
 
 
@@ -228,7 +228,7 @@ def test_v640_block6_case_workspace_has_operational_sections():
     css=(ROOT/'frontend/assets/app.css').read_text()
     for token in ['caseWorkspace','workspace-header','workspace-stats','workspace-main-grid','workspace-review','workspace-items','evidence-stack','matrix-grid','workspace-timeline','decision-card','workspace-guardrail']:
         assert token in js or token in css
-    for token in ['Claims','Preuves liées','Matrice preuves ↔ claims','Timeline','Décision','Readiness']:
+    for token in ['Claims','Preuves et justificatifs','Matrice preuves ↔ claims','Timeline','Décision','Readiness']:
         assert token in js
 
 
