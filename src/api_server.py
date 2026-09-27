@@ -1588,9 +1588,11 @@ class ReviewDefenseAPI:
             self.store.audit_event(user.organization_id, user.user_id, "ESCALATION_NOTIFICATION_MARKED_SENT", f"case:{notification.case_id}", notification_id=nid)
             return self._json(200, {"notification": notification.payload()})
         if method == "GET" and path == "/v1/approvals":
+            self._require_role(user, "OWNER", "ADMIN")
             rows = [asdict(a) for a in self.store.approvals if a.organization_id == user.organization_id]
             return self._json(200, {"items": rows, "count": len(rows)})
         if method == "GET" and path == "/v1/submissions":
+            self._require_role(user, "OWNER", "ADMIN")
             rows = [s for (org, _), s in self.store.submissions.items() if org == user.organization_id]
             return self._json(200, {"items": rows, "count": len(rows)})
         if method == "POST" and path == "/v1/cases":
