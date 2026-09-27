@@ -24,6 +24,7 @@ from .app_shell import SessionContext, can_access
 from .case_service import Case, CaseService
 from .case_workspace_service import CaseWorkspaceService
 from .case_decision_service import CaseDecisionService
+from .case_submission_service import CaseSubmissionService
 from .review_workspace import ReviewContext, extract_claims, classify_policy_signals
 from .contradiction_engine import EvidenceFact, detect_contradictions
 from .evidence_extraction import extract_text_fact_suggestions
@@ -175,6 +176,11 @@ class ReviewDefenseAPI:
             disposition_history_store=self.store.contradiction_disposition_history,
         )
         self.case_decisions = CaseDecisionService(
+            store=self.store,
+            repository=self.repository,
+            audit_event=self.store.audit_event,
+        )
+        self.case_submissions = CaseSubmissionService(
             store=self.store,
             repository=self.repository,
             audit_event=self.store.audit_event,
@@ -1893,15 +1899,12 @@ class ReviewDefenseAPI:
             if method == "POST" and len(parts) == 5 and parts[4] == "submit":
                 self._require_role(user, "OWNER", "ADMIN")
                 if not case.decision_id: raise APIError(409, "STATE_CONFLICT", "decision required")
-                decision = self.store.decisions[(user.organization_id, case.decision_id)]
-                if decision.status != "APPROVED": raise APIError(409, "APPROVAL_REQUIRED", "explicit human approval required before submission")
                 body = self._body(environ)
                 def submit():
-                    sid = str(uuid.uuid4()); row = {"submission_id": sid, "case_id": cid, "organization_id": user.organization_id, "status": "DRAFT", "external_call": False}
-                    self.store.submissions[(user.organization_id, sid)] = row
-                    if self.repository is not None:
-                        self.repository.put_submission(user.organization_id, row)
-                    self.store.audit_event(user.organization_id, user.user_id, "SUBMISSION_PREPARED", f"submission:{sid}")
+                    try:
+                        row = self.case_submissions.prepare(case=case, user_id=user.user_id)
+                    except ValueError as exc:
+                        raise APIError(409, "APPROVAL_REQUIRED", str(exc)) from exc
                     return {"submission": row}
                 return self._json(201, self._idem(user, environ, body, submit))
             raise APIError(404, "NOT_FOUND", "case operation not found")
