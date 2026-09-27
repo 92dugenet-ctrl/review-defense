@@ -1689,7 +1689,7 @@ class ReviewDefenseAPI:
                     "fact_suggestions": [s for (org, _), rows in self.store.fact_suggestions.items() if org == user.organization_id for s in rows if self.store.evidence.get((org, s["evidence_id"]), {}).get("case_id") == cid],
                 })
             if method == "POST" and len(parts) == 5 and parts[4] == "pause-sla":
-                self._require_role(user, "OWNER", "ADMIN", "ANALYST")
+                self._require_role(user, "OWNER", "ADMIN")
                 if case.sla_paused_at:
                     raise APIError(409, "STATE_CONFLICT", "SLA is already paused")
                 body = self._body(environ)
@@ -1702,7 +1702,7 @@ class ReviewDefenseAPI:
                 self.store.audit_event(user.organization_id, user.user_id, "CASE_SLA_PAUSED", f"case:{cid}", reason=reason)
                 return self._json(200, {"case_id": cid, "sla_paused_at": case.sla_paused_at, "reason": reason})
             if method == "POST" and len(parts) == 5 and parts[4] == "resume-sla":
-                self._require_role(user, "OWNER", "ADMIN", "ANALYST")
+                self._require_role(user, "OWNER", "ADMIN")
                 if not case.sla_paused_at:
                     raise APIError(409, "STATE_CONFLICT", "SLA is not paused")
                 paused_at = __import__("datetime").datetime.fromisoformat(case.sla_paused_at.replace("Z", "+00:00"))
@@ -1727,7 +1727,7 @@ class ReviewDefenseAPI:
                 sla = calculate_sla(priority=item.priority, created_at=case.created_at, paused_at=case.sla_paused_at, paused_seconds=case.sla_paused_seconds, calendar=self._calendar(user.organization_id))
                 return self._json(200, {"case_id": cid, "sla": asdict(sla), "pause_reason": case.sla_pause_reason})
             if method == "POST" and len(parts) == 5 and parts[4] == "contradictions":
-                self._require_role(user, "OWNER", "ADMIN", "ANALYST")
+                self._require_role(user, "OWNER", "ADMIN")
                 review = self.store.reviews[(user.organization_id, case.review_id)]
                 claims = extract_claims(review)
                 body = self._body(environ)
@@ -1751,7 +1751,7 @@ class ReviewDefenseAPI:
                 self.store.audit_event(user.organization_id, user.user_id, "CONTRADICTIONS_ANALYZED", f"case:{cid}", contradiction_count=len(rows), evidence_ids=sorted(selected))
                 return self._json(200, {"contradictions": rows, "count": len(rows), "requires_human_review": bool(rows)})
             if method == "POST" and len(parts) == 5 and parts[4] == "extract-facts":
-                self._require_role(user, "OWNER", "ADMIN", "ANALYST")
+                self._require_role(user, "OWNER", "ADMIN")
                 body = self._body(environ)
                 requested = body.get("evidence_ids")
                 if requested is not None and not isinstance(requested, list):
