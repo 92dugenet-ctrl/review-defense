@@ -168,7 +168,7 @@ class ReviewDefenseAPI:
         self.store.escalations = self.store.escalations
         self.store.notifications = self.store.notifications
         self.case_sla = CaseSLAService(repository=self.repository, audit_event=self.store.audit_event)
-        self.case_contradictions = CaseContradictionService(repository=self.repository, audit_event=self.store.audit_event)
+        self.case_contradictions = CaseContradictionService(\n            repository=self.repository,\n            audit_event=self.store.audit_event,\n            contradiction_store=self.store.contradictions,\n            disposition_store=self.store.contradiction_dispositions,\n            disposition_history_store=self.store.contradiction_disposition_history,\n        )
 
     def _client_ip_hash(self, environ) -> str:
         import hashlib

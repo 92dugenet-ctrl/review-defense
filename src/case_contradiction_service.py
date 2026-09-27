@@ -42,7 +42,7 @@ class CaseContradictionService:
         history = dict(data)
         history["history_id"] = "hist_" + sha256(
             f"{data['disposition_id']}|{data['created_at']}".encode()).hexdigest()[:24]
-        if self.repository is not None and hasattr(self.repository, "upsert_contradiction_disposition"):
+        if self.disposition_store is not None:\n            self.disposition_store[(organization_id, contradiction_id)] = data\n        if self.disposition_history_store is not None:\n            self.disposition_history_store.setdefault((organization_id, contradiction_id), []).append(history)\n        if self.repository is not None and hasattr(self.repository, "upsert_contradiction_disposition"):
             self.repository.upsert_contradiction_disposition(organization_id, data)
         if self.repository is not None and hasattr(self.repository, "append_contradiction_disposition_history"):
             self.repository.append_contradiction_disposition_history(organization_id, history)
