@@ -1895,7 +1895,7 @@ class ReviewDefenseAPI:
                 self.store.audit_event(user.organization_id,user.user_id,"CONTRADICTION_DISPOSITIONED",f"case:{cid}",contradiction_id=contradiction_id,status=disp.status)
                 return self._json(200,{"disposition":d,"requires_human_review":True})
             if method == "POST" and len(parts) == 5 and parts[4] == "decision":
-                self._require_role(user, "OWNER", "ADMIN", "ANALYST")
+                self._require_role(user, "OWNER", "ADMIN")
                 body = self._body(environ)
                 kind = body.get("kind", "HUMAN_REVIEW"); rationale = str(body.get("rationale", ""))
                 if not rationale.strip(): raise APIError(422, "VALIDATION_ERROR", "rationale is required")
@@ -1909,7 +1909,7 @@ class ReviewDefenseAPI:
                 self.store.audit_event(user.organization_id, user.user_id, "DECISION_CREATED", f"case:{cid}")
                 return self._json(201, {"decision": asdict(decision)})
             if method == "POST" and len(parts) == 5 and parts[4] == "freeze":
-                self._require_role(user, "OWNER", "ADMIN", "ANALYST")
+                self._require_role(user, "OWNER", "ADMIN")
                 if not case.decision_id: raise APIError(409, "STATE_CONFLICT", "decision required before freeze")
                 decision = self.store.decisions[(user.organization_id, case.decision_id)]
                 review = self.store.reviews[(user.organization_id, case.review_id)]
@@ -1925,7 +1925,7 @@ class ReviewDefenseAPI:
                 self.store.audit_event(user.organization_id, user.user_id, "DOSSIER_FROZEN", f"case:{cid}", sha256=snap.sha256)
                 return self._json(200, {"decision": asdict(decision), "snapshot_sha256": snap.sha256})
             if method == "POST" and len(parts) == 5 and parts[4] == "approve":
-                self._require_role(user, "OWNER", "ADMIN", "ANALYST")
+                self._require_role(user, "OWNER", "ADMIN")
                 if not case.decision_id or (user.organization_id, cid) not in self.store.snapshots: raise APIError(409, "STATE_CONFLICT", "frozen decision required")
                 decision = self.store.decisions[(user.organization_id, case.decision_id)]; snap = self.store.snapshots[(user.organization_id, cid)]
                 try:
@@ -1939,7 +1939,7 @@ class ReviewDefenseAPI:
                 self.store.audit_event(user.organization_id, user.user_id, "DECISION_APPROVED", f"case:{cid}")
                 return self._json(200, {"decision": asdict(approved), "approval": asdict(event)})
             if method == "POST" and len(parts) == 5 and parts[4] == "submit":
-                self._require_role(user, "OWNER", "ADMIN", "ANALYST")
+                self._require_role(user, "OWNER", "ADMIN")
                 if not case.decision_id: raise APIError(409, "STATE_CONFLICT", "decision required")
                 decision = self.store.decisions[(user.organization_id, case.decision_id)]
                 if decision.status != "APPROVED": raise APIError(409, "APPROVAL_REQUIRED", "explicit human approval required before submission")
