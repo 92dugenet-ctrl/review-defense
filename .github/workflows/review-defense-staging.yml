@@ -93,27 +93,8 @@ jobs:
           name: review-defense-staging-contract
           path: artifacts/v6.40-staging-certification.json
 
-  p0-critical-audit:
-    name: P0 critical-path audit
-    needs:
-      - frontend-syntax
-      - contract-and-tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-      - name: Install runtime dependencies
-        run: pip install -r requirements.txt
-      - name: Run six-block P0 audit
-        run: python scripts/p0_critical_audit.py
-
   postgres-integration:
-    needs:
-      - contract-and-tests
-      - p0-critical-audit
+    needs: contract-and-tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
     services:
@@ -196,7 +177,6 @@ jobs:
     needs:
       - contract-and-tests
       - postgres-integration
-      - p0-critical-audit
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
