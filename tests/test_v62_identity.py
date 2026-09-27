@@ -1,6 +1,7 @@
 import io, json
 from wsgiref.util import setup_testing_defaults
 from src.api_server import create_app
+from src.production_config import ProductionConfig
 from src.identity import normalize_email, issue_session
 from src.security_hardening import hash_password
 
