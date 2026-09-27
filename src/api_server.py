@@ -168,7 +168,13 @@ class ReviewDefenseAPI:
         self.store.escalations = self.store.escalations
         self.store.notifications = self.store.notifications
         self.case_sla = CaseSLAService(repository=self.repository, audit_event=self.store.audit_event)
-        self.case_contradictions = CaseContradictionService(\n            repository=self.repository,\n            audit_event=self.store.audit_event,\n            contradiction_store=self.store.contradictions,\n            disposition_store=self.store.contradiction_dispositions,\n            disposition_history_store=self.store.contradiction_disposition_history,\n        )
+        self.case_contradictions = CaseContradictionService(
+            repository=self.repository,
+            audit_event=self.store.audit_event,
+            contradiction_store=self.store.contradictions,
+            disposition_store=self.store.contradiction_dispositions,
+            disposition_history_store=self.store.contradiction_disposition_history,
+        )
 
     def _client_ip_hash(self, environ) -> str:
         import hashlib
@@ -424,7 +430,9 @@ class ReviewDefenseAPI:
             label_text = ",".join(f'{k}="{str(v).replace(chr(92), chr(92)+chr(92)).replace(chr(34), chr(92)+chr(34))}"' for k,v in labels)
             lines.append(f"http_request_duration_ms{{{label_text},quantile=\"avg\"}} {sum(values)/len(values):.3f}")
             lines.append(f"http_request_duration_ms{{{label_text},quantile=\"max\"}} {max(values):.3f}")
-        body = ("\n".join(lines) + "\n").encode()
+        body = ("
+".join(lines) + "
+").encode()
         return 200, {"Content-Type": "text/plain; version=0.0.4; charset=utf-8"}, body
 
     def handle(self, environ):
