@@ -40,3 +40,40 @@ def test_resolved_escalation_cannot_be_acknowledged_or_resolved_again():
         service.acknowledge(organization_id="org-a", case_id="c1", level="DUE", user_id="u1")
     with pytest.raises(ValueError, match="already resolved"):
         service.resolve(organization_id="org-a", case_id="c1", level="DUE", user_id="u1")
+
+
+class Calendar:
+    def business_seconds_between(self, start, end):
+        return 0.0
+
+def test_list_for_organization_materializes_escalations():
+    store = MemoryStore()
+    service = CaseEscalationService(store=store)
+    from src.case_service import Case
+    from src.review_workspace import ReviewContext
+    case = Case("c1", "org-a", "r1", "ANALYZING", "2026-09-20T12:00:00Z")
+    store.cases[("org-a", "c1")] = case
+    store.reviews[("org-a", "r1")] = ReviewContext(
+        review_id="r1", organization_id="org-a", location_id="loc",
+        author_display_name="Author", rating=1, text="Review",
+        published_at="2026-09-20T11:00:00Z",
+    )
+    rows = service.list_for_organization(organization_id="org-a", calendar=Calendar())
+    assert rows == []
+    assert all(key[0] == "org-a" for key in store.escalations)
+
+def test_queue_notification_rejects_resolved_escalation():
+    store = MemoryStore()
+    store.escalations[("org-a", "c1", "DUE")] = Escalation(
+        "c1", "DUE", "SLA breached", status="RESOLVED"
+    )
+    service = CaseEscalationService(store=store)
+    class Notifications:
+        def queue(self, **kwargs):
+            raise AssertionError("must not queue")
+    with pytest.raises(ValueError, match="resolved escalation"):
+        service.queue_notification(
+            notifications=Notifications(), organization_id="org-a",
+            case_id="c1", level="DUE", channel="IN_APP", target="u1",
+            subject="x", body="x", actor_id="u1",
+        )

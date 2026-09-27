@@ -8,6 +8,13 @@ from dataclasses import replace
 from typing import Any, Callable
 from .escalation_workflow import Escalation, signal_from_sla
 from .security_hardening import utc_now
+from .case_sla_service import CaseSLAService
+from .operations_ui import (
+    ReviewSummary, ClaimView, PolicySignalView, EvidenceView,
+    Contradiction, CaseWorkspace, missing_evidence_tasks,
+)
+from .review_workspace import extract_claims, classify_policy_signals
+from .review_queue import score_case
 
 class CaseEscalationService:
     def __init__(self, *, store: Any, repository: Any = None,
@@ -31,6 +38,88 @@ class CaseEscalationService:
                 signal = Escalation(**row)
         self.store.escalations[key] = signal
         return signal
+
+    def list_for_organization(self, *, organization_id: str, calendar: Any) -> list[dict[str, Any]]:
+        items: list[dict[str, Any]] = []
+        for (org, case_id), case in self.store.cases.items():
+            if org != organization_id:
+                continue
+            review = self.store.reviews.get((org, case.review_id))
+            if review is None:
+                continue
+            claims = extract_claims(review)
+            signals = classify_policy_signals(claims)
+            contradictions = self.store.contradictions.get((org, case_id), [])
+            suggestions = self.store.fact_suggestions.get((org, case_id), [])
+            evidence_rows = [
+                e for (eo, _), e in self.store.evidence.items()
+                if eo == org and e.get("case_id") == case_id
+            ]
+            evidence = tuple(
+                EvidenceView(
+                    e["evidence_id"], e["filename"], e.get("content_type") or "UNKNOWN",
+                    e["sha256"], "VERIFIED" if e.get("verified") else "UNVERIFIED",
+                )
+                for e in evidence_rows
+            )
+            workspace = CaseWorkspace(
+                case_id, org, case.status, "NORMAL",
+                ReviewSummary(review.review_id, review.rating, review.text, review.published_at),
+                tuple(ClaimView(c.claim_id, c.text, c.claim_type, "UNVERIFIED") for c in claims),
+                tuple(PolicySignalView(s.code, s.status, s.justification) for s in signals),
+                evidence, (), tuple(
+                    Contradiction(
+                        c["contradiction_id"], c["description"], c["claim_id"],
+                        tuple(c["evidence_ids"]), True,
+                    )
+                    for c in contradictions
+                ),
+            )
+            missing = missing_evidence_tasks(workspace, {c.claim_id: [] for c in claims})
+            queue_item = score_case(
+                case_id=case_id,
+                created_at=case.created_at,
+                policy_statuses=[s.status for s in signals],
+                contradiction_count=len(contradictions),
+                missing_evidence_count=len(missing),
+                unverified_suggestion_count=sum(1 for x in suggestions if not x.get("verified")),
+                assigned_to=case.assigned_to,
+            )
+            sla = CaseSLAService(repository=self.repository).calculate(case, queue_item.priority, calendar)
+            escalation = self.for_sla(
+                organization_id=organization_id, case_id=case_id, sla=sla,
+            )
+            if escalation:
+                items.append(
+                    escalation.payload()
+                    | {"sla": {
+                        "case_id": sla.case_id,
+                        "priority": sla.priority,
+                        "remaining_seconds": sla.remaining_seconds,
+                        "breached": sla.breached,
+                        "escalation": sla.escalation,
+                    }, "assigned_to": case.assigned_to}
+                )
+        return items
+
+    def queue_notification(self, *, notifications: Any, organization_id: str,
+                            case_id: str, level: str, channel: str, target: str,
+                            subject: str, body: str, actor_id: str) -> tuple[Any, bool]:
+        escalation = self._get(
+            organization_id=organization_id, case_id=case_id, level=level,
+        )
+        if escalation.status == "RESOLVED":
+            raise ValueError("resolved escalation cannot be notified")
+        return notifications.queue(
+            organization_id=organization_id,
+            case_id=case_id,
+            level=level,
+            channel=channel,
+            target=target,
+            subject=subject,
+            body=body,
+            actor_id=actor_id,
+        )
 
     def _get(self, *, organization_id: str, case_id: str, level: str) -> Escalation:
         key = (organization_id, case_id, level)

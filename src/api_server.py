@@ -1414,21 +1414,11 @@ class ReviewDefenseAPI:
             return self._json(200, {"case_id": cid, "assigned_to": None})
         if method == "GET" and path == "/v1/escalations":
             self._require_role(user, "OWNER", "ADMIN", "ANALYST")
-            items=[]
-            for (org,cid), case in self.store.cases.items():
-                if org != user.organization_id: continue
-                review=self.store.reviews.get((org,case.review_id))
-                if review is None: continue
-                claims=extract_claims(review); signals=classify_policy_signals(claims); contradictions=self.store.contradictions.get((org,cid),[]); suggestions=self.store.fact_suggestions.get((org,cid),[])
-                evidence_rows=[e for (eo,_),e in self.store.evidence.items() if eo==org and e.get("case_id")==cid]
-                evidence=tuple(EvidenceView(e["evidence_id"],e["filename"],e.get("content_type") or "UNKNOWN",e["sha256"],"VERIFIED" if e.get("verified") else "UNVERIFIED") for e in evidence_rows)
-                ws=CaseWorkspace(cid,org,case.status,"NORMAL",ReviewSummary(review.review_id,review.rating,review.text,review.published_at),tuple(ClaimView(c.claim_id,c.text,c.claim_type,"UNVERIFIED") for c in claims),tuple(PolicySignalView(s.code,s.status,s.justification) for s in signals),evidence,(),tuple(Contradiction(c["contradiction_id"],c["description"],c["claim_id"],tuple(c["evidence_ids"]),True) for c in contradictions))
-                missing=missing_evidence_tasks(ws,{c.claim_id:[] for c in claims})
-                item=score_case(case_id=cid,created_at=case.created_at,policy_statuses=[s.status for s in signals],contradiction_count=len(contradictions),missing_evidence_count=len(missing),unverified_suggestion_count=len([x for x in suggestions if not x.get("verified")]),assigned_to=case.assigned_to)
-                sla=self.case_sla.calculate(case, item.priority, self._calendar(org))
-                esc=self._escalation_for(org,cid,sla)
-                if esc: items.append(esc.payload() | {"sla":asdict(sla),"assigned_to":case.assigned_to})
-            return self._json(200,{"items":items,"count":len(items)})
+            items = self.case_escalations.list_for_organization(
+                organization_id=user.organization_id,
+                calendar=self._calendar(user.organization_id),
+            )
+            return self._json(200, {"items": items, "count": len(items)})
         if method == "POST" and path.startswith("/v1/escalations/") and path.endswith("/acknowledge"):
             self._require_role(user,"OWNER","ADMIN","ANALYST")
             parts=path.split("/"); cid=parts[3]; level=str(self._body(environ).get("level","DUE")); esc=self.store.escalations.get((user.organization_id,cid,level))
@@ -1515,18 +1505,32 @@ class ReviewDefenseAPI:
             metrics = build_notification_metrics(self.store.notifications.values(), self.store.audit, organization_id=user.organization_id)
             return self._json(200, {"metrics": metrics})
         if method == "POST" and path.startswith("/v1/escalations/") and path.endswith("/notify"):
-            self._require_role(user,"OWNER","ADMIN")
-            parts=path.split("/"); cid=parts[3]; body=self._body(environ)
-            level=str(body.get("level","DUE")); channel=str(body.get("channel","IN_APP")); target=str(body.get("target",user.user_id))
-            esc=self.store.escalations.get((user.organization_id,cid,level))
-            if esc is None: raise APIError(404,"NOT_FOUND","escalation not found")
-            if esc.status=="RESOLVED": raise APIError(409,"STATE_CONFLICT","resolved escalation cannot be notified")
+            self._require_role(user, "OWNER", "ADMIN")
+            parts = path.split("/")
+            cid = parts[3]
+            body = self._body(environ)
+            level = str(body.get("level", "DUE"))
+            channel = str(body.get("channel", "IN_APP"))
+            target = str(body.get("target", user.user_id))
             try:
-                n,dedup=self.notifications.queue(organization_id=user.organization_id,case_id=cid,level=level,channel=channel,target=target,
-                    subject=str(body.get("subject",f"Review Defense escalation: {level}")),body=str(body.get("body",esc.reason)),actor_id=user.user_id)
-            except PermissionError as exc: raise APIError(403,"NOTIFICATION_POLICY_BLOCKED",str(exc)) from exc
-            except ValueError as exc: raise APIError(400,"INVALID_NOTIFICATION",str(exc)) from exc
-            return self._json(200 if dedup else 201,{"notification":n.payload(),"deduplicated":dedup})
+                n, dedup = self.case_escalations.queue_notification(
+                    notifications=self.notifications,
+                    organization_id=user.organization_id,
+                    case_id=cid,
+                    level=level,
+                    channel=channel,
+                    target=target,
+                    subject=str(body.get("subject", f"Review Defense escalation: {level}")),
+                    body=str(body.get("body", "")),
+                    actor_id=user.user_id,
+                )
+            except KeyError as exc:
+                raise APIError(404, "NOT_FOUND", "escalation not found") from exc
+            except ValueError as exc:
+                raise APIError(409, "STATE_CONFLICT", str(exc)) from exc
+            except PermissionError as exc:
+                raise APIError(403, "NOTIFICATION_POLICY_BLOCKED", str(exc)) from exc
+            return self._json(200 if dedup else 201, {"notification": n.payload(), "deduplicated": dedup})
         if method == "POST" and path.startswith("/v1/notifications/") and path.endswith("/cancel"):
             self._require_role(user,"OWNER","ADMIN"); nid=path.split("/")[3]
             try: n=self.notifications.cancel(organization_id=user.organization_id,notification_id=nid,actor_id=user.user_id)
