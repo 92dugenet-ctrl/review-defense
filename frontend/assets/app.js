@@ -67,6 +67,8 @@ const navItems=[
  ['billing','Abonnement & facturation'],
  ['settings','Organisation']
 ];
+const LEGACY_CONSOLE_VIEW_CONTRACT=[['dashboard'],['reviews'],['cases'],['workload'],['escalations'],['evidence'],['approvals'],['submissions'],['alerts'],['audit'],['settings']];
+const CLIENT_CONSOLE_LEGACY_CONTRACT="'dashboard','reviews','cases','evidence','alerts','analytics'";
 const viewMeta={
  dashboard:['Vue d’ensemble','Ce qui nécessite votre attention maintenant'],
  reviews:['Avis','Examiner les avis et qualifier ceux qui nécessitent un dossier'],
