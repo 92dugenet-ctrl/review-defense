@@ -227,6 +227,7 @@ def main() -> int:
                             "render_type": page.evaluate("typeof window.reviewDefenseRender"),
                             "boot_active": page.evaluate("Boolean(window.__RD_BOOT_ACTIVE)"),
                             "render_waiters": page.evaluate("(window.__RD_RENDER_WAITERS__ || []).length"),
+                            "boot_diagnostic": page.evaluate("window.__RD_BOOT_DIAGNOSTIC__ || null"),
                             "token_present": page.evaluate("Boolean(localStorage.getItem('rd_token'))"),
                             "body_class": page.evaluate("document.body.className"),
                             "content_state": page.evaluate("""() => {
