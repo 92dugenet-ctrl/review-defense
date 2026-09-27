@@ -6,7 +6,6 @@ and deployment/runtime contracts.
 """
 from __future__ import annotations
 
-import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,6 +26,7 @@ def require(blob: str, needle: str, label: str) -> None:
 def main() -> int:
     api = read("src/api_server.py")
     postgres = read("src/postgres_repository.py") + read("src/postgres_api_repository.py")
+    workflow = read(".github/workflows/review-defense-staging.yml")
     identity = read("src/identity.py")
     security = read("src/security_hardening.py")
     mfa = read("src/mfa.py")
@@ -50,7 +50,7 @@ def main() -> int:
     require(postgres, "def transaction(self, organization_id", "PostgreSQL tenant transaction")
     require(postgres, "set_config('app.organization_id', %s, true)", "PostgreSQL tenant context")
     require(postgres, "def transaction_without_tenant", "explicit non-tenant transaction boundary")
-    require(postgres, "NOBYPASSRLS", "non-bypass-RLS integration contract")
+    require(workflow, "NOBYPASSRLS", "non-bypass-RLS integration contract")
     if "organization_id" not in postgres:
         raise SystemExit("P0 FAIL: repository has no organization_id boundary")
 
