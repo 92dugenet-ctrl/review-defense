@@ -17,10 +17,14 @@ class CaseSubmissionService:
         self.audit_event = audit_event
 
     def list_for_organization(self, *, organization_id: str) -> list[dict[str, Any]]:
-        return [
-            row for (org, _), row in self.store.submissions.items()
-            if org == organization_id
-        ]
+        rows: dict[str, dict[str, Any]] = {}
+        if self.repository is not None and hasattr(self.repository, "list_submissions"):
+            for row in self.repository.list_submissions(organization_id):
+                rows[str(row["submission_id"])] = dict(row)
+        for (org, submission_id), row in self.store.submissions.items():
+            if org == organization_id:
+                rows[str(submission_id)] = row
+        return list(rows.values())
 
     def prepare(self, *, case: Any, user_id: str) -> dict[str, Any]:
         if not case.decision_id:

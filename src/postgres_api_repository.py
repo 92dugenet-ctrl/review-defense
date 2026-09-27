@@ -188,6 +188,26 @@ class PostgresAPIRepository(PostgresRepository):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur: cur.execute("INSERT INTO api_submissions(organization_id,submission_id,case_id,status,external_call) VALUES(%s,%s,%s,%s,%s)", (organization_id,s['submission_id'],s['case_id'],s['status'],False))
 
+    def list_submissions(self, organization_id: str):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT submission_id,organization_id,case_id,status,external_call "
+                    "FROM api_submissions WHERE organization_id=%s ORDER BY submission_id",
+                    (organization_id,),
+                )
+                rows = []
+                for row in cur.fetchall():
+                    submission_id, org, case_id, status, external_call = row
+                    rows.append({
+                        "submission_id": str(submission_id),
+                        "organization_id": str(org),
+                        "case_id": str(case_id),
+                        "status": status,
+                        "external_call": bool(external_call),
+                    })
+                return rows
+
     def put_idempotency(self, organization_id: str, key: str, fingerprint: str, response: Any):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
