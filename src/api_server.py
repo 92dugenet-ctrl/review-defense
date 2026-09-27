@@ -21,6 +21,7 @@ from urllib.parse import parse_qs, urlsplit
 from .evidence_vault import FilesystemObjectStore, InMemoryObjectStore, sign_download_url, verify_integrity
 from .security_hardening import RateLimiter, Session, generate_session_token, hash_password, verify_password, utc_now, hash_token
 from .app_shell import SessionContext, can_access
+from .case_service import Case, CaseService
 from .decision_workspace import (
     attach_snapshot, approve_decision, create_decision, freeze_dossier,
     request_approval, can_approve_decision, can_create_decision,
@@ -70,20 +71,6 @@ class User:
     password_hash: str
     role: str
 
-
-@dataclass
-class Case:
-    case_id: str
-    organization_id: str
-    review_id: str
-    status: str = "NEW"
-    decision_id: str | None = None
-    snapshot_sha256: str | None = None
-    assigned_to: str | None = None
-    created_at: str | None = None
-    sla_paused_at: str | None = None
-    sla_paused_seconds: float = 0.0
-    sla_pause_reason: str | None = None
 
 
 class MemoryStore:
@@ -1205,7 +1192,7 @@ class ReviewDefenseAPI:
             if case_key not in self.store.cases and self.repository is not None and hasattr(self.repository, "get_case_persistent"):
                 row = self.repository.get_case_persistent(user.organization_id, case_id)
                 if row:
-                    self.store.cases[case_key] = Case(case_id=str(row[0]), organization_id=str(row[1]), review_id=str(row[2]), status=str(row[3]), decision_id=str(row[4]) if row[4] is not None else None, snapshot_sha256=str(row[5]) if row[5] is not None else None, created_at=_iso_value(row[6]))
+                    self.store.cases[case_key] = CaseService.from_row(row)
             if case_key not in self.store.cases:
                 raise APIError(404, "NOT_FOUND", "case not found")
             filename = str(body.get("filename", "")); content_type = str(body.get("content_type", "")); encoded = body.get("content_base64")
@@ -1619,15 +1606,7 @@ class ReviewDefenseAPI:
                 for row in self.repository.list_cases(user.organization_id):
                     cid = str(row[0])
                     if (user.organization_id, cid) not in self.store.cases:
-                        self.store.cases[(user.organization_id, cid)] = Case(
-                            case_id=cid,
-                            organization_id=str(row[1]),
-                            review_id=str(row[2]),
-                            status=str(row[3]),
-                            decision_id=str(row[4]) if row[4] is not None else None,
-                            snapshot_sha256=str(row[5]) if row[5] is not None else None,
-                            created_at=_iso_value(row[6]),
-                        )
+                        self.store.cases[(user.organization_id, cid)] = CaseService.from_row(row)
                 rows = [c for (org, _), c in self.store.cases.items() if org == user.organization_id]
             return self._json(200, {"items": [asdict(c) for c in rows], "count": len(rows)})
         if path.startswith("/v1/cases/"):
@@ -1637,15 +1616,7 @@ class ReviewDefenseAPI:
             if case is None and self.repository is not None and hasattr(self.repository, "get_case_persistent"):
                 row = self.repository.get_case_persistent(user.organization_id, cid)
                 if row:
-                    case = Case(
-                        case_id=str(row[0]),
-                        organization_id=str(row[1]),
-                        review_id=str(row[2]),
-                        status=str(row[3]),
-                        decision_id=str(row[4]) if row[4] is not None else None,
-                        snapshot_sha256=str(row[5]) if row[5] is not None else None,
-                        created_at=_iso_value(row[6]),
-                    )
+                    case = CaseService.from_row(row)
                     self.store.cases[(user.organization_id, cid)] = case
             if not case: raise APIError(404, "NOT_FOUND", "case not found")
             if self.repository is not None and hasattr(self.repository, "list_evidence"):
