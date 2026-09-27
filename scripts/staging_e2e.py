@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """V6.40 live HTTPS/auth/MFA/browser UAT for a dedicated staging account."""
 from __future__ import annotations
-import argparse, json, os, sys, urllib.request, urllib.error
+import argparse, json, os, sys, time, urllib.request, urllib.error
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -19,16 +19,21 @@ def api_login(base: str, email: str, org: str, password: str, mfa_code: str | No
         headers={"Content-Type": "application/json", "Accept": "application/json"},
         method="POST",
     )
-    try:
-        with urllib.request.urlopen(req, timeout=15) as r:
-            return r.status, json.loads(r.read().decode())
-    except urllib.error.HTTPError as e:
-        raw = e.read().decode(errors="replace")
+    for attempt in range(3):
         try:
-            payload = json.loads(raw)
-        except json.JSONDecodeError:
-            payload = {"raw": raw[:1000]}
-        return e.code, payload
+            with urllib.request.urlopen(req, timeout=15) as r:
+                return r.status, json.loads(r.read().decode())
+        except urllib.error.HTTPError as e:
+            raw = e.read().decode(errors="replace")
+            try:
+                payload = json.loads(raw)
+            except json.JSONDecodeError:
+                payload = {"raw": raw[:1000]}
+            return e.code, payload
+        except (urllib.error.URLError, TimeoutError, ConnectionResetError):
+            if attempt == 2:
+                raise
+            time.sleep(2 ** attempt)
 
 def main() -> int:
     ap = argparse.ArgumentParser()
