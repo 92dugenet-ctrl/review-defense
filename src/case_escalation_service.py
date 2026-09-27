@@ -90,13 +90,17 @@ class CaseEscalationService:
                 organization_id=organization_id, case_id=case_id, sla=sla,
             )
             if escalation:
+                remaining_seconds = (
+                    round((sla.remaining_hours or 0.0) * 3600, 2)
+                    if sla.remaining_hours is not None else None
+                )
                 items.append(
                     escalation.payload()
                     | {"sla": {
-                        "case_id": sla.case_id,
-                        "priority": sla.priority,
-                        "remaining_seconds": sla.remaining_seconds,
-                        "breached": sla.breached,
+                        "case_id": case_id,
+                        "priority": queue_item.priority,
+                        "remaining_seconds": remaining_seconds,
+                        "breached": sla.status == "OVERDUE",
                         "escalation": sla.escalation,
                     }, "assigned_to": case.assigned_to}
                 )
