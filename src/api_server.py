@@ -23,10 +23,7 @@ from .security_hardening import RateLimiter, Session, generate_session_token, ha
 from .app_shell import SessionContext, can_access
 from .case_service import Case, CaseService
 from .case_workspace_service import CaseWorkspaceService
-from .decision_workspace import (
-    attach_snapshot, approve_decision, create_decision, freeze_dossier,
-    request_approval, can_approve_decision, can_create_decision,
-)
+from .case_decision_service import CaseDecisionService
 from .review_workspace import ReviewContext, extract_claims, classify_policy_signals
 from .contradiction_engine import EvidenceFact, detect_contradictions
 from .evidence_extraction import extract_text_fact_suggestions
@@ -176,6 +173,11 @@ class ReviewDefenseAPI:
             contradiction_store=self.store.contradictions,
             disposition_store=self.store.contradiction_dispositions,
             disposition_history_store=self.store.contradiction_disposition_history,
+        )
+        self.case_decisions = CaseDecisionService(
+            store=self.store,
+            repository=self.repository,
+            audit_event=self.store.audit_event,
         )
 
     def _client_ip_hash(self, environ) -> str:
@@ -1861,44 +1863,32 @@ class ReviewDefenseAPI:
                 body = self._body(environ)
                 kind = body.get("kind", "HUMAN_REVIEW"); rationale = str(body.get("rationale", ""))
                 if not rationale.strip(): raise APIError(422, "VALIDATION_ERROR", "rationale is required")
-                decision = create_decision(decision_id=str(uuid.uuid4()), case_id=cid, organization_id=user.organization_id, kind=kind, rationale=rationale, created_at=utc_now().isoformat(), created_by=user.user_id)
-                self.store.decisions[(user.organization_id, decision.decision_id)] = decision
-                if self.repository is not None:
-                    self.repository.put_decision(user.organization_id, asdict(decision))
-                case.decision_id = decision.decision_id; case.status = "ANALYZED"
-                if self.repository is not None:
-                    self.repository.update_case(user.organization_id, cid, status=case.status, decision_id=case.decision_id)
-                self.store.audit_event(user.organization_id, user.user_id, "DECISION_CREATED", f"case:{cid}")
+                decision = self.case_decisions.create(
+                    case=case,
+                    user_id=user.user_id,
+                    kind=kind,
+                    rationale=rationale,
+                )
                 return self._json(201, {"decision": asdict(decision)})
             if method == "POST" and len(parts) == 5 and parts[4] == "freeze":
                 self._require_role(user, "OWNER", "ADMIN")
                 if not case.decision_id: raise APIError(409, "STATE_CONFLICT", "decision required before freeze")
-                decision = self.store.decisions[(user.organization_id, case.decision_id)]
-                review = self.store.reviews[(user.organization_id, case.review_id)]
-                claims = [asdict(c) for c in extract_claims(review)]; signals = [asdict(s) for s in classify_policy_signals(extract_claims(review))]
-                payload = {"case": asdict(case), "review": asdict(review), "claims": claims, "policy_signals": signals, "decision": asdict(decision)}
-                snap = freeze_dossier(case_id=cid, organization_id=user.organization_id, payload=payload, frozen_at=utc_now().isoformat(), frozen_by=user.user_id)
-                decision = attach_snapshot(decision, snap); decision = request_approval(decision)
-                self.store.snapshots[(user.organization_id, cid)] = snap; self.store.decisions[(user.organization_id, case.decision_id)] = decision; case.snapshot_sha256 = snap.sha256; case.status = "HUMAN_REVIEW"
-                if self.repository is not None:
-                    self.repository.put_snapshot(user.organization_id, cid, snap.sha256, payload, user.user_id, snap.frozen_at)
-                    self.repository.put_decision(user.organization_id, asdict(decision))
-                    self.repository.update_case(user.organization_id, cid, status=case.status, snapshot_sha256=case.snapshot_sha256)
-                self.store.audit_event(user.organization_id, user.user_id, "DOSSIER_FROZEN", f"case:{cid}", sha256=snap.sha256)
+                decision, snap = self.case_decisions.freeze(
+                    case=case,
+                    user_id=user.user_id,
+                )
                 return self._json(200, {"decision": asdict(decision), "snapshot_sha256": snap.sha256})
             if method == "POST" and len(parts) == 5 and parts[4] == "approve":
                 self._require_role(user, "OWNER", "ADMIN")
                 if not case.decision_id or (user.organization_id, cid) not in self.store.snapshots: raise APIError(409, "STATE_CONFLICT", "frozen decision required")
-                decision = self.store.decisions[(user.organization_id, case.decision_id)]; snap = self.store.snapshots[(user.organization_id, cid)]
                 try:
-                    approved, event = approve_decision(decision=decision, snapshot=snap, actor_id=user.user_id, actor_role=user.role, approval_id=str(uuid.uuid4()), approved_at=utc_now().isoformat())
-                except (ValueError, PermissionError) as exc: raise APIError(409, "APPROVAL_REJECTED", str(exc)) from exc
-                self.store.decisions[(user.organization_id, case.decision_id)] = approved; case.status = "READY_TO_SUBMIT"; self.store.approvals.append(event)
-                if self.repository is not None:
-                    self.repository.put_decision(user.organization_id, asdict(approved))
-                    self.repository.put_approval(user.organization_id, asdict(event))
-                    self.repository.update_case(user.organization_id, cid, status=case.status)
-                self.store.audit_event(user.organization_id, user.user_id, "DECISION_APPROVED", f"case:{cid}")
+                    approved, event = self.case_decisions.approve(
+                        case=case,
+                        user_id=user.user_id,
+                        user_role=user.role,
+                    )
+                except (ValueError, PermissionError) as exc:
+                    raise APIError(409, "APPROVAL_REJECTED", str(exc)) from exc
                 return self._json(200, {"decision": asdict(approved), "approval": asdict(event)})
             if method == "POST" and len(parts) == 5 and parts[4] == "submit":
                 self._require_role(user, "OWNER", "ADMIN")
