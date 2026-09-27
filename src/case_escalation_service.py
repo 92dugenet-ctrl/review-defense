@@ -4,6 +4,7 @@ Owns escalation signal materialization and human acknowledgement/resolution
 persistence. HTTP authorization and response serialization remain in the API.
 """
 from __future__ import annotations
+from dataclasses import replace
 from typing import Any, Callable
 from .escalation_workflow import Escalation, signal_from_sla
 from .security_hardening import utc_now
@@ -55,7 +56,7 @@ class CaseEscalationService:
         if self.audit_event is not None:
             self.audit_event(organization_id, user_id, "ESCALATION_ACKNOWLEDGED",
                              f"case:{case_id}", level=level)
-        return escalation
+        return replace(escalation)
 
     def resolve(self, *, organization_id: str, case_id: str, level: str, user_id: str) -> Escalation:
         escalation = self._get(organization_id=organization_id, case_id=case_id, level=level)
@@ -69,4 +70,4 @@ class CaseEscalationService:
         if self.audit_event is not None:
             self.audit_event(organization_id, user_id, "ESCALATION_RESOLVED",
                              f"case:{case_id}", level=level)
-        return escalation
+        return replace(escalation)
