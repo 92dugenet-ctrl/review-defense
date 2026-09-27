@@ -25,6 +25,7 @@ from .case_service import Case, CaseService
 from .case_workspace_service import CaseWorkspaceService
 from .case_decision_service import CaseDecisionService
 from .case_submission_service import CaseSubmissionService
+from .case_evidence_matrix_service import CaseEvidenceMatrixService
 from .review_workspace import ReviewContext, extract_claims, classify_policy_signals
 from .contradiction_engine import EvidenceFact, detect_contradictions
 from .evidence_extraction import extract_text_fact_suggestions
@@ -185,6 +186,7 @@ class ReviewDefenseAPI:
             repository=self.repository,
             audit_event=self.store.audit_event,
         )
+        self.case_evidence_matrix = CaseEvidenceMatrixService(store=self.store)
 
     def _client_ip_hash(self, environ) -> str:
         import hashlib
@@ -1834,14 +1836,13 @@ class ReviewDefenseAPI:
             if method == "GET" and len(parts) == 5 and parts[4] == "evidence-matrix":
                 case=self.store.cases.get((user.organization_id,cid))
                 if case is None: raise APIError(404,"NOT_FOUND","case not found")
-                review=self.store.reviews.get((user.organization_id,case.review_id))
-                if review is None: raise APIError(404,"NOT_FOUND","review not found")
-                claims=extract_claims(review)
-                evidence=list(self.store.evidence.values())
-                evidence=[e for (o,_),e in self.store.evidence.items() if o==user.organization_id and e.get("case_id")==cid]
-                contradictions=self.store.contradictions.get((user.organization_id,cid),[])
-                dispositions=self.store.contradiction_dispositions
-                matrix=build_evidence_matrix(claims=claims,evidence=evidence,contradictions=contradictions,dispositions=dispositions)
+                try:
+                    matrix=self.case_evidence_matrix.build(
+                        organization_id=user.organization_id,
+                        case=case,
+                    )
+                except KeyError as exc:
+                    raise APIError(404,"NOT_FOUND",str(exc)) from exc
                 return self._json(200,{"case_id":cid,"matrix":matrix,"count":len(matrix),"requires_human_review":True})
             if method == "GET" and len(parts) == 6 and parts[4] == "contradictions" and parts[5] in {x["contradiction_id"] for x in self.store.contradictions.get((user.organization_id,cid), [])}:
                 contradiction_id=parts[5]
