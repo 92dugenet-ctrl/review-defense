@@ -112,3 +112,10 @@ def test_subscription_catalog_contains_paypal_plan_ids():
     assert get_offer("monitoring_essential").paypal_plan_id == "P-48445016NC686822DNK5DFKI"
     assert get_offer("monitoring_professional").paypal_plan_id == "P-09J30923C56343623NK5DGGI"
     assert get_offer("monitoring_business").paypal_plan_id == "P-81F64203WR266014XNK5DGZQ"
+
+
+def test_defense_offers_share_paypal_hosted_buttons():
+    for offer_id in ("defense_01", "defense_02", "defense_03", "defense_04", "defense_05"):
+        assert get_offer(offer_id).paypal_hosted_button_id == "QBUG4FU99DHRG"
+    for offer_id in ("defense_standard", "defense_plus", "defense_complete"):
+        assert get_offer(offer_id).paypal_hosted_button_id == "MKMBJPT7JPHCQ"
