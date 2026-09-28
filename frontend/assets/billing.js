@@ -41,9 +41,16 @@ async function renderSubscriptionButton(offerId,en){
   style:{layout:'vertical',label:'subscribe'},
   createSubscription:(data,actions)=>actions.subscription.create({plan_id:cfg.plan_id}),
   onApprove:async data=>{
-   await api('/v1/paypal/subscription/confirm',{method:'POST',body:JSON.stringify({offer_id:offerId,subscription_id:data.subscriptionID})});
-   toast(en?'Subscription confirmed':'Abonnement confirmé','success');
-   closeModal();await window.reviewDefenseRender();
+   try{
+    await api('/v1/paypal/subscription/confirm',{method:'POST',body:JSON.stringify({offer_id:offerId,subscription_id:data.subscriptionID})});
+    toast(en?'Subscription confirmed':'Abonnement confirmé','success');
+    closeModal();await window.reviewDefenseRender();
+   }catch(e){
+    const msg=e?.message||(en?'Subscription confirmation failed':'Échec de la confirmation de l’abonnement');
+    toast(msg,'error');
+    const box=document.getElementById('paypal-button-container');
+    if(box)box.insertAdjacentHTML('beforeend','<div class="error-state" style="margin-top:12px">'+esc(msg)+'</div>');
+   }
   },
   onCancel:()=>toast(en?'Payment cancelled':'Paiement annulé','error'),
   onError:e=>toast(e?.message||(en?'PayPal payment error':'Erreur de paiement PayPal'),'error')
