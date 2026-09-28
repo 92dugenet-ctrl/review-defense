@@ -83,7 +83,7 @@ const viewMeta={
 function visibleNavItems(){
  const role=state.me?.role||'';
  const allowed={
-   CLIENT:new Set(['dashboard','reviews','cases','evidence','activity']),
+   CLIENT:new Set(['dashboard','reviews','cases','evidence','activity','billing']),
    VIEWER:new Set(['dashboard','reviews','cases','activity']),
    ANALYST:new Set(['dashboard','reviews','cases','evidence','approvals','activity']),
    ADMIN:new Set(['dashboard','reviews','cases','evidence','approvals','activity','billing','settings']),
