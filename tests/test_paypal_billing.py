@@ -119,3 +119,20 @@ def test_defense_offers_share_paypal_hosted_buttons():
         assert get_offer(offer_id).paypal_hosted_button_id == "QBUG4FU99DHRG"
     for offer_id in ("defense_standard", "defense_plus", "defense_complete"):
         assert get_offer(offer_id).paypal_hosted_button_id == "MKMBJPT7JPHCQ"
+
+
+def test_audit_offers_share_paypal_hosted_buttons():
+    for offer_id in ("audit_1_9", "audit_10_49", "audit_50_99", "audit_100_249", "audit_250_499"):
+        assert get_offer(offer_id).paypal_hosted_button_id == "6XQ5EXDMKXBF2"
+    for offer_id in ("audit_500_999", "audit_1000_2499", "audit_2500_4999", "audit_5000_9999", "audit_custom"):
+        assert get_offer(offer_id).paypal_hosted_button_id == "ZNRWMCRAFMB4E"
+
+
+def test_public_catalog_exposes_paypal_checkout_identifiers():
+    from src.billing_catalog import public_catalog
+    catalog={item["offer_id"]:item for item in public_catalog()}
+    assert catalog["defense_01"]["paypal_hosted_button_id"] == "QBUG4FU99DHRG"
+    assert catalog["defense_complete"]["paypal_hosted_button_id"] == "MKMBJPT7JPHCQ"
+    assert catalog["audit_1_9"]["paypal_hosted_button_id"] == "6XQ5EXDMKXBF2"
+    assert catalog["audit_500_999"]["paypal_hosted_button_id"] == "ZNRWMCRAFMB4E"
+    assert catalog["monitoring_professional"]["paypal_plan_id"] == "P-09J30923C56343623NK5DGGI"

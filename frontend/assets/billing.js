@@ -1,10 +1,87 @@
 // Billing and PayPal integration isolated from the console shell.
-function selectClientBillingOffer(type,name,price,offerId){try{localStorage.setItem('rd_selected_offer',JSON.stringify({type,name,price,offer_id:offerId||null,selected_at:new Date().toISOString()}))}catch(_){}toast(name+' sélectionné','success');if(offerId)showBillingPayment();}
-async function loadPayPalSdk(subscription,locale){if(window.paypal)return window.paypal;const c=await api('/v1/paypal/config');if(!c.configured)throw new Error(locale==='en_GB'?'PayPal is not configured.':'PayPal n’est pas configuré.');const components=subscription?'buttons':'buttons,card-fields';const src='https://www.paypal.com/sdk/js?client-id='+encodeURIComponent(c.client_id)+'&components='+components+'&currency=EUR&locale='+locale+(subscription?'&vault=true&intent=subscription':'');await new Promise((resolve,reject)=>{const el=document.createElement('script');el.src=src;el.onload=resolve;el.onerror=()=>reject(new Error(locale==='en_GB'?'Unable to load PayPal.':'Impossible de charger PayPal.'));document.head.appendChild(el)});return window.paypal;}
+const PAYPAL_HOSTED_CLIENT_ID='BAAftx79q4rSHY7vc2aYy_hgx3KB6GB15k__TBghUQyd1_ixXSqv71UHw1RXZvkR4cli25WsSirUKWt7zs';
+const PAYPAL_SUBSCRIPTION_CLIENT_ID='BAADwFz5aRpmMnNRVADMoONwkWyHzC3Y-l75vTda13-4tfwv2gSa4TdAq_jguOBTz2kBqsU1ARHCQ7nz6k';
+
+function selectClientBillingOffer(type,name,price,offerId){try{localStorage.setItem('rd_selected_offer',JSON.stringify({type,name,price,offer_id:offerId||null,selected_at:new Date().toISOString()}))}catch(_){}if(offerId)showBillingPayment()}
+
 function selectedBillingOffer(){try{return JSON.parse(localStorage.getItem('rd_selected_offer')||'null')}catch(_){return null}}
-async function createOneTimePayPalOrder(offerId){return api('/v1/paypal/orders/create',{method:'POST',headers:{'Idempotency-Key':crypto.randomUUID()},body:JSON.stringify({offer_id:offerId})}).then(x=>x.id)}
-function validatePayPalCapture(orderData,en){const transaction=orderData?.purchase_units?.[0]?.payments?.captures?.[0]||orderData?.purchase_units?.[0]?.payments?.authorizations?.[0];const detail=orderData?.details?.[0];if(detail?.issue==='INSTRUMENT_DECLINED'){const error=new Error(detail.description||detail.issue);error.paypalIssue=detail.issue;throw error}if(detail||!transaction||transaction.status==='DECLINED'){const reason=transaction?('Transaction '+transaction.status+': '+transaction.id):detail?(detail.description+' ('+(orderData?.debug_id||'PayPal')+')'):JSON.stringify(orderData);throw new Error(reason)}return transaction}
-async function captureOneTimePayPalOrder(orderId,en){const result=await api('/v1/paypal/orders/'+encodeURIComponent(orderId)+'/capture',{method:'POST',body:'{}'});const transaction=validatePayPalCapture(result,en);toast((en?'Payment confirmed: ':'Paiement confirmé : ')+(transaction.id||orderId),'success');closeModal();window.reviewDefenseRender()}
-async function renderPayPalCardFields(pp,offerId,en){const form=document.getElementById('paypal-card-form');const message=document.getElementById('paypal-card-message');if(!form||!pp.CardFields)return;const cardField=pp.CardFields({createOrder:()=>createOneTimePayPalOrder(offerId),onApprove:data=>captureOneTimePayPalOrder(data.orderID,en),onError:e=>{if(message)message.textContent=e?.message||'PayPal card payment error';}});if(!cardField.isEligible()){form.hidden=true;return}const nameField=cardField.NameField();nameField.render('#card-name-field-container');const numberField=cardField.NumberField();numberField.render('#card-number-field-container');const expiryField=cardField.ExpiryField();expiryField.render('#card-expiry-field-container');const cvvField=cardField.CVVField();cvvField.render('#card-cvv-field-container');form.hidden=false;document.getElementById('card-field-submit-button')?.addEventListener('click',async()=>{const value=id=>document.getElementById(id)?.value||'';try{await cardField.submit({billingAddress:{addressLine1:value('card-billing-address-line-1'),addressLine2:value('card-billing-address-line-2'),adminArea1:value('card-billing-address-admin-area-line-1'),adminArea2:value('card-billing-address-admin-area-line-2'),countryCode:value('card-billing-address-country-code'),postalCode:value('card-billing-address-postal-code')}})}catch(e){if(message)message.textContent=e?.message||'Paiement refusé'}})}
-async function showBillingPayment(){const selected=selectedBillingOffer();const offerId=selected?.offer_id||'monitoring_professional';const subscription=offerId.startsWith('monitoring_');const en=window.ReviewDefenseI18n?.getLanguage?.()==='en';const locale=en?'en_GB':'fr_FR';modal(en?'PayPal payment':'Paiement PayPal','<div class="stack"><p>'+esc(en?'Secure PayPal checkout. The server validates the selected offer and amount.':'Paiement PayPal sécurisé. Le serveur valide l’offre et le montant.')+'</p><div id="paypal-button-container"></div>'+(!subscription?'<form id="paypal-card-form" class="stack" hidden><div class="eyebrow">'+(en?'CARD PAYMENT':'PAIEMENT PAR CARTE')+'</div><div id="card-name-field-container"></div><div id="card-number-field-container"></div><div id="card-expiry-field-container"></div><div id="card-cvv-field-container"></div><label>'+(en?'Billing address':'Adresse de facturation')+'<input id="card-billing-address-line-1" autocomplete="address-line1"></label><label>'+(en?'Address line 2':'Complément d’adresse')+'<input id="card-billing-address-line-2" autocomplete="address-line2"></label><div class="billing-card-grid"><label>'+(en?'State / region':'Région')+'<input id="card-billing-address-admin-area-line-1" autocomplete="address-level1"></label><label>'+(en?'City':'Ville')+'<input id="card-billing-address-admin-area-line-2" autocomplete="address-level2"></label></div><div class="billing-card-grid"><label>'+(en?'Postal code':'Code postal')+'<input id="card-billing-address-postal-code" autocomplete="postal-code"></label><label>'+(en?'Country':'Pays')+'<input id="card-billing-address-country-code" value="FR" maxlength="2" autocomplete="country"></label></div><button id="card-field-submit-button" class="primary" type="button">'+(en?'Pay by card':'Payer par carte')+'</button><div id="paypal-card-message" class="error-state"></div></form>':'')+'<p class="human-note">'+esc(en?'Payment is separate from Google actions.':'Le paiement est séparé des actions Google.')+'</p></div>');try{const pp=await loadPayPalSdk(subscription,locale);if(subscription){const cfg=await api('/v1/paypal/subscription/config?offer_id='+encodeURIComponent(offerId));pp.Buttons({style:{layout:'vertical',label:'subscribe'},createSubscription:(data,actions)=>actions.subscription.create({plan_id:cfg.plan_id}),onApprove:async data=>{await api('/v1/paypal/subscription/confirm',{method:'POST',body:JSON.stringify({offer_id:offerId,subscription_id:data.subscriptionID})});toast(en?'Subscription confirmed':'Abonnement confirmé','success');closeModal();await window.reviewDefenseRender()},onCancel:()=>toast(en?'Payment cancelled':'Paiement annulé','error'),onError:()=>toast(en?'PayPal payment error':'Erreur de paiement PayPal','error')}).render('#paypal-button-container')}else{pp.Buttons({style:{layout:'vertical',label:'paypal'},createOrder:()=>createOneTimePayPalOrder(offerId),onApprove:async(data,actions)=>{try{return await captureOneTimePayPalOrder(data.orderID,en)}catch(e){if(e?.paypalIssue==='INSTRUMENT_DECLINED'&&!data.card&&actions)return actions.restart();toast(e.message||'PayPal payment error','error')}},onCancel:()=>toast(en?'Payment cancelled':'Paiement annulé','error'),onError:e=>toast(e?.message|| (en?'PayPal payment error':'Erreur de paiement PayPal'),'error')}).render('#paypal-button-container');await renderPayPalCardFields(pp,offerId,en)}}catch(e){const msg=e?.message||'PayPal error';toast(msg,'error');const box=document.getElementById('paypal-button-container');if(box)box.insertAdjacentHTML('beforeend','<div class="error-state" style="margin-top:12px">'+esc(msg)+'</div>')}}
-async function openBillingPlanSelector(){const en=window.ReviewDefenseI18n?.getLanguage?.()==='en';try{const catalog=await api('/v1/billing/catalog');const items=(catalog.items||[]).filter(x=>x.kind==='subscription');const html='<div class="billing-selector">'+items.map(x=>'<article class="billing-option"><div><strong>'+esc(en?x.name_en:x.name_fr)+'</strong><span>'+esc(x.offer_id)+'</span></div><div><b>'+esc(x.amount||'—')+' €</b></div><button class="primary billing-offer-btn" data-billing-offer="subscription" data-billing-name="'+esc(en?x.name_en:x.name_fr)+'" data-billing-price="'+esc(x.amount||'')+'" data-billing-id="'+esc(x.offer_id)+'">Choisir</button></article>').join('')+'</div>';modal(en?'Choose a plan':'Choisir une formule',html)}catch(e){toast(e.message||'Catalogue indisponible','error')}}
+
+async function loadPayPalSdk(clientId,components,locale,extra=''){
+ const key=clientId+'|'+components+'|'+locale;
+ if(window.__rdPayPalSdkKey===key&&window.paypal)return window.paypal;
+ const src='https://www.paypal.com/sdk/js?client-id='+encodeURIComponent(clientId)+'&components='+components+'&currency=EUR&locale='+locale+extra;
+ await new Promise((resolve,reject)=>{
+  const old=document.querySelector('script[data-review-defense-paypal]');
+  if(old)old.remove();
+  const el=document.createElement('script');el.src=src;el.async=true;el.dataset.reviewDefensePaypal='1';
+  el.onload=resolve;el.onerror=()=>reject(new Error(locale==='en_GB'?'Unable to load PayPal.':'Impossible de charger PayPal.'));
+  document.head.appendChild(el);
+ });
+ if(!window.paypal)throw new Error(locale==='en_GB'?'PayPal is unavailable.':'PayPal est indisponible.');
+ window.__rdPayPalSdkKey=key;
+ return window.paypal;
+}
+
+async function loadBillingCatalog(){return api('/v1/billing/catalog')}
+
+async function renderHostedButton(buttonId,en){
+ const hostId='paypal-hosted-'+String(buttonId).replace(/[^a-zA-Z0-9_-]/g,'');
+ const box=document.getElementById('paypal-button-container');
+ if(!box)throw new Error(en?'PayPal checkout container is missing.':'Conteneur de paiement PayPal introuvable.');
+ box.innerHTML='<div id="'+hostId+'"></div>';
+ const pp=await loadPayPalSdk(PAYPAL_HOSTED_CLIENT_ID,'hosted-buttons',en?'en_GB':'fr_FR');
+ if(!pp.HostedButtons)throw new Error(en?'Hosted PayPal buttons are unavailable.':'Les boutons PayPal hébergés sont indisponibles.');
+ pp.HostedButtons({hostedButtonId:buttonId}).render('#'+hostId);
+}
+
+async function renderSubscriptionButton(offerId,en){
+ const cfg=await api('/v1/paypal/subscription/config?offer_id='+encodeURIComponent(offerId));
+ const pp=await loadPayPalSdk(PAYPAL_SUBSCRIPTION_CLIENT_ID,'buttons',en?'en_GB':'fr_FR','&vault=true&intent=subscription');
+ pp.Buttons({
+  style:{layout:'vertical',label:'subscribe'},
+  createSubscription:(data,actions)=>actions.subscription.create({plan_id:cfg.plan_id}),
+  onApprove:async data=>{
+   await api('/v1/paypal/subscription/confirm',{method:'POST',body:JSON.stringify({offer_id:offerId,subscription_id:data.subscriptionID})});
+   toast(en?'Subscription confirmed':'Abonnement confirmé','success');
+   closeModal();await window.reviewDefenseRender();
+  },
+  onCancel:()=>toast(en?'Payment cancelled':'Paiement annulé','error'),
+  onError:e=>toast(e?.message||(en?'PayPal payment error':'Erreur de paiement PayPal'),'error')
+ }).render('#paypal-button-container');
+}
+
+async function showBillingPayment(){
+ const selected=selectedBillingOffer();
+ const offerId=selected?.offer_id||'monitoring_professional';
+ const en=window.ReviewDefenseI18n?.getLanguage?.()==='en';
+ let catalog;
+ try{catalog=await loadBillingCatalog()}catch(e){toast(e.message||'Catalogue indisponible','error');return}
+ const offer=(catalog.items||[]).find(x=>x.offer_id===offerId);
+ if(!offer){toast(en?'This offer is unavailable.':'Cette offre est indisponible.','error');return}
+ const subscription=offer.kind==='subscription';
+ const configured=subscription?Boolean(offer.paypal_plan_id):Boolean(offer.paypal_hosted_button_id);
+ if(!configured){toast(en?'This payment is not configured yet.':'Ce paiement n’est pas encore configuré.','error');return}
+ const title=en?'PayPal payment':'Paiement PayPal';
+ const label=en?(offer.name_en||offer.offer_id):(offer.name_fr||offer.offer_id);
+ const price=offer.amount===null?(en?'Custom quote':'Sur devis'):(offer.amount+' €'+(subscription?' / month':''));
+ modal(title,'<div class="stack"><div class="billing-checkout-summary"><strong>'+esc(label)+'</strong><span>'+esc(price)+'</span></div><p>'+esc(en?'Secure checkout powered directly by PayPal.':'Paiement sécurisé directement via PayPal.')+'</p><div id="paypal-button-container"></div><p class="human-note">'+esc(en?'Payment does not trigger external Google action.':'Le paiement ne déclenche aucune action externe Google.')+'</p></div>');
+ try{
+  if(subscription)await renderSubscriptionButton(offerId,en);
+  else await renderHostedButton(offer.paypal_hosted_button_id,en);
+ }catch(e){
+  const msg=e?.message||'PayPal error';
+  toast(msg,'error');
+  const box=document.getElementById('paypal-button-container');
+  if(box)box.insertAdjacentHTML('beforeend','<div class="error-state" style="margin-top:12px">'+esc(msg)+'</div>');
+ }
+}
+
+async function openBillingPlanSelector(){
+ const en=window.ReviewDefenseI18n?.getLanguage?.()==='en';
+ try{
+  const catalog=await loadBillingCatalog();
+  const items=(catalog.items||[]).filter(x=>x.kind==='subscription');
+  const html='<div class="billing-selector">'+items.map(x=>'<article class="billing-option"><div><strong>'+esc(en?x.name_en:x.name_fr)+'</strong><span>'+esc(x.offer_id)+'</span></div><div><b>'+esc(x.amount||'—')+' €</b></div><button class="primary billing-offer-btn" data-billing-offer="subscription" data-billing-name="'+esc(en?x.name_en:x.name_fr)+'" data-billing-price="'+esc(x.amount||'')+'" data-billing-id="'+esc(x.offer_id)+'">'+(en?'Choose':'Choisir')+'</button></article>').join('')+'</div>';
+  modal(en?'Choose a plan':'Choisir une formule',html)
+ }catch(e){toast(e.message||'Catalogue indisponible','error')}
+}

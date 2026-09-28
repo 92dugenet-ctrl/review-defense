@@ -15,16 +15,16 @@ class Offer:
     paypal_hosted_button_id: str | None = None
 
 OFFERS = {
-    "audit_1_9": Offer("audit_1_9","audit","Audit 1–9 avis","Audit 1–9 reviews",Decimal("79.00")),
-    "audit_10_49": Offer("audit_10_49","audit","Audit 10–49 avis","Audit 10–49 reviews",Decimal("149.00")),
-    "audit_50_99": Offer("audit_50_99","audit","Audit 50–99 avis","Audit 50–99 reviews",Decimal("249.00")),
-    "audit_100_249": Offer("audit_100_249","audit","Audit 100–249 avis","Audit 100–249 reviews",Decimal("399.00")),
-    "audit_250_499": Offer("audit_250_499","audit","Audit 250–499 avis","Audit 250–499 reviews",Decimal("599.00")),
-    "audit_500_999": Offer("audit_500_999","audit","Audit 500–999 avis","Audit 500–999 reviews",Decimal("899.00")),
-    "audit_1000_2499": Offer("audit_1000_2499","audit","Audit 1 000–2 499 avis","Audit 1,000–2,499 reviews",Decimal("1290.00")),
-    "audit_2500_4999": Offer("audit_2500_4999","audit","Audit 2 500–4 999 avis","Audit 2,500–4,999 reviews",Decimal("1790.00")),
-    "audit_5000_9999": Offer("audit_5000_9999","audit","Audit 5 000–9 999 avis","Audit 5,000–9,999 reviews",Decimal("2490.00")),
-    "audit_custom": Offer("audit_custom","audit_quote","Audit 10 000+ avis / sur devis","10,000+ reviews / custom quote",None),
+    "audit_1_9": Offer("audit_1_9","audit","Audit 1–9 avis","Audit 1–9 reviews",Decimal("79.00"),paypal_hosted_button_id="6XQ5EXDMKXBF2"),
+    "audit_10_49": Offer("audit_10_49","audit","Audit 10–49 avis","Audit 10–49 reviews",Decimal("149.00"),paypal_hosted_button_id="6XQ5EXDMKXBF2"),
+    "audit_50_99": Offer("audit_50_99","audit","Audit 50–99 avis","Audit 50–99 reviews",Decimal("249.00"),paypal_hosted_button_id="6XQ5EXDMKXBF2"),
+    "audit_100_249": Offer("audit_100_249","audit","Audit 100–249 avis","Audit 100–249 reviews",Decimal("399.00"),paypal_hosted_button_id="6XQ5EXDMKXBF2"),
+    "audit_250_499": Offer("audit_250_499","audit","Audit 250–499 avis","Audit 250–499 reviews",Decimal("599.00"),paypal_hosted_button_id="6XQ5EXDMKXBF2"),
+    "audit_500_999": Offer("audit_500_999","audit","Audit 500–999 avis","Audit 500–999 reviews",Decimal("899.00"),paypal_hosted_button_id="ZNRWMCRAFMB4E"),
+    "audit_1000_2499": Offer("audit_1000_2499","audit","Audit 1 000–2 499 avis","Audit 1,000–2,499 reviews",Decimal("1290.00"),paypal_hosted_button_id="ZNRWMCRAFMB4E"),
+    "audit_2500_4999": Offer("audit_2500_4999","audit","Audit 2 500–4 999 avis","Audit 2,500–4,999 reviews",Decimal("1790.00"),paypal_hosted_button_id="ZNRWMCRAFMB4E"),
+    "audit_5000_9999": Offer("audit_5000_9999","audit","Audit 5 000–9 999 avis","Audit 5,000–9,999 reviews",Decimal("2490.00"),paypal_hosted_button_id="ZNRWMCRAFMB4E"),
+    "audit_custom": Offer("audit_custom","audit_quote","Audit 10 000+ avis / sur devis","10,000+ reviews / custom quote",None,paypal_hosted_button_id="ZNRWMCRAFMB4E"),
     "defense_01": Offer("defense_01","defense_step","Analyse initiale et qualification","Initial analysis and qualification",Decimal("49.00"),paypal_hosted_button_id="QBUG4FU99DHRG"),
     "defense_02": Offer("defense_02","defense_step","Préparation du dossier","Case file preparation",Decimal("49.00"),paypal_hosted_button_id="QBUG4FU99DHRG"),
     "defense_03": Offer("defense_03","defense_step","Première soumission","First submission",Decimal("59.00"),paypal_hosted_button_id="QBUG4FU99DHRG"),
@@ -50,7 +50,11 @@ def get_offer(offer_id: str) -> Offer:
     try: return OFFERS[str(offer_id)]
     except KeyError: raise ValueError("unknown billing offer")
 def public_catalog() -> list[dict[str, str | None]]:
-    return [{"offer_id":o.offer_id,"kind":o.kind,"name_fr":o.name_fr,"name_en":o.name_en,"amount":str(o.amount) if o.amount is not None else None,"currency":o.currency,"recurring":"true" if o.kind=="subscription" else "false"} for o in OFFERS.values()]
+    return [{"offer_id":o.offer_id,"kind":o.kind,"name_fr":o.name_fr,"name_en":o.name_en,"amount":str(o.amount) if o.amount is not None else None,"currency":o.currency,"recurring":"true" if o.kind=="subscription" else "false","paypal_plan_id":o.paypal_plan_id,"paypal_hosted_button_id":o.paypal_hosted_button_id} for o in OFFERS.values()]
 
 def paypal_plan_id(offer: Offer) -> str | None:
     return offer.paypal_plan_id
+
+
+def paypal_hosted_button_id(offer: Offer) -> str | None:
+    return offer.paypal_hosted_button_id
