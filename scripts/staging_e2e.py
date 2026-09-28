@@ -163,6 +163,40 @@ def main() -> int:
                         "root_url": base + "/",
                         "login_cta": "PASS",
                     }
+
+                    # Public marketing functional contract: every primary public route must
+                    # resolve to its intended editorial page, expose the scene system, and
+                    # remain navigable without falling back to the authenticated app shell.
+                    public_routes = {
+                        "features": "/produit/",
+                        "how": "/comment-ca-marche/",
+                        "services": "/services/",
+                        "pricing": "/tarifs/",
+                        "resources": "/ressources/",
+                        "contact": "/contact/",
+                        "compliance": "/conformite/",
+                        "analyze": "/analyse-avis-google/",
+                        "ai": "/ia-et-controle-humain/",
+                    }
+                    public_contract = {}
+                    for route_name, route_path in public_routes.items():
+                        page.goto(base + route_path, wait_until="networkidle")
+                        page.wait_for_selector(".marketing main", timeout=10000)
+                        page.wait_for_selector(".rd-story-scene", timeout=10000)
+                        if page.url.rstrip("/") != (base + route_path).rstrip("/"):
+                            raise AssertionError(f"public route redirected unexpectedly: {route_name}")
+                        scene_count = page.locator(".rd-story-scene").count()
+                        body = page.locator("body").inner_text().strip()
+                        if scene_count < 1 or not body:
+                            raise AssertionError(f"public route rendered without editorial content: {route_name}")
+                        public_contract[route_name] = {
+                            "status": "PASS",
+                            "path": route_path,
+                            "scene_count": scene_count,
+                        }
+                    report["public_marketing_contract"] = public_contract
+                    page.goto(base + "/", wait_until="networkidle")
+                    page.wait_for_selector(".rd-home-hero", timeout=10000)
                     # The API login above creates the real server-side session, but
                     # the browser has its own localStorage token. Seed that browser
                     # context with the token returned by the authenticated API login
