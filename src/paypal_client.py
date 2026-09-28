@@ -1,6 +1,6 @@
 """Small stdlib-only PayPal REST client for Review Defense."""
 from __future__ import annotations
-import base64, json, os, urllib.error, urllib.request, uuid
+import base64, json, os, urllib.error, urllib.request
 
 class PayPalError(RuntimeError):
     def __init__(self, message, status=None, payload=None):
@@ -49,19 +49,6 @@ def access_token():
         try: data=json.loads(raw.decode())
         except Exception: data={}
         raise PayPalError("PayPal authentication failed",exc.code,data) from exc
-
-def create_order(*, offer_id, name, amount, currency, reference_id, return_url, cancel_url):
-    token=access_token()
-    payload={"intent":"CAPTURE","purchase_units":[{"reference_id":reference_id,"description":name[:127],
-        "amount":{"currency_code":currency,"value":amount},"custom_id":offer_id}],
-        "application_context":{"brand_name":"Review Defense","landing_page":"LOGIN","user_action":"PAY_NOW",
-        "return_url":return_url,"cancel_url":cancel_url}}
-    return request_json("POST","/v2/checkout/orders",payload,
-        headers={"PayPal-Request-Id":str(uuid.uuid4())},access_token=token)
-
-def capture_order(order_id):
-    return request_json("POST",f"/v2/checkout/orders/{order_id}/capture",{},
-        headers={"PayPal-Request-Id":str(uuid.uuid4())},access_token=access_token())
 
 def verify_webhook(*,raw_body,headers):
     webhook_id=os.getenv("PAYPAL_WEBHOOK_ID","").strip()
