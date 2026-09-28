@@ -34,6 +34,8 @@ def test_public_boot_is_not_short_circuited_by_console_boot_guard():
     assert "const publicPage=typeof publicPathPage" not in text
     assert "Object.values(PUBLIC_ROUTES)" not in text
     assert "showPublicPage(publicPage||'home',false)" not in text
+    assert "const __RD_PUBLIC_ROUTE=typeof publicPathPage" in text
+    assert "if(__RD_PUBLIC_ROUTE)return;" in text
 
 
 def test_public_scene_enrichment_runs_before_optional_visual_interactions():
