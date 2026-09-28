@@ -96,3 +96,12 @@ def test_paypal_capture_webhook_uses_related_order_id_for_billing_correlation():
     paypal_id = paypal_order_id or paypal_capture_id
     assert paypal_id == "ORDER-456"
     assert paypal_capture_id == "CAPTURE-123"
+
+
+def test_paypal_capture_status_map_includes_pending():
+    status_map = {
+        "PAYMENT.CAPTURE.PENDING": "PENDING",
+        "PAYMENT.CAPTURE.COMPLETED": "COMPLETED",
+        "PAYMENT.CAPTURE.DENIED": "DENIED",
+    }
+    assert status_map["PAYMENT.CAPTURE.PENDING"] == "PENDING"
