@@ -428,3 +428,21 @@ body{font-size:16px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLe
 .marketing main>section:nth-child(odd){background:var(--rd-muse-bg)}
 .marketing main>section+section{border-top:0}
 @media(max-width:700px){.marketing main>section,.marketing main>section:first-child,.marketing .page-hero,.marketing .product-hero,.marketing .services-hero,.marketing .contact-layout{min-height:auto;padding-block:72px}.marketing .page-hero h1,.marketing .product-hero h1,.marketing .contact-layout h1{font-size:clamp(46px,13vw,72px)}}
+
+/* RD complete redesign — scene system */
+.marketing .rd-story-scene{position:relative;overflow:clip;isolation:isolate}
+.marketing .rd-story-scene::before{content:attr(data-scene);position:absolute;top:clamp(28px,4vw,64px);left:clamp(18px,5vw,80px);font-size:11px;font-weight:800;letter-spacing:.16em;color:rgba(16,24,40,.34);font-variant-numeric:tabular-nums}
+.marketing .rd-story-scene::after{content:"";position:absolute;inset:auto -12% -45% auto;width:55vw;height:55vw;border-radius:50%;background:radial-gradient(circle,rgba(23,105,255,.07),transparent 68%);pointer-events:none;z-index:-1}
+.marketing .rd-story-scene .rd-scene-kicker{display:block;margin-bottom:20px;color:#1769ff;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+.marketing .rd-story-scene h2{font-size:clamp(42px,5.6vw,82px);line-height:.96;letter-spacing:-.065em;max-width:980px}
+.marketing .rd-story-scene h3{letter-spacing:-.035em}
+.marketing .rd-story-scene .rd-container{position:relative;z-index:1}
+.marketing .rd-story-scene .product-pillar-grid,.marketing .rd-story-scene .feature-grid{gap:18px}
+.marketing .rd-story-scene .product-pillar-card,.marketing .rd-story-scene .service-card,.marketing .rd-story-scene .legal-hub-card{border:1px solid rgba(16,24,40,.08);border-radius:24px;background:rgba(255,255,255,.76);box-shadow:0 24px 70px rgba(16,24,40,.07);backdrop-filter:blur(16px);transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease}
+.marketing .rd-story-scene .product-pillar-card:hover,.marketing .rd-story-scene .service-card:hover,.marketing .rd-story-scene .legal-hub-card:hover{transform:translateY(-7px);box-shadow:0 32px 90px rgba(16,24,40,.11);border-color:rgba(23,105,255,.22)}
+.marketing .rd-story-scene .interface-illustration,.marketing .rd-story-scene .product-hero-visual,.marketing .rd-story-scene .rd-product-stage{filter:drop-shadow(0 38px 80px rgba(16,24,40,.15))}
+.marketing .rd-story-scene .how-steps article{border-radius:28px;background:#fff;box-shadow:0 20px 60px rgba(16,24,40,.06)}
+.marketing .rd-story-scene .reference-panel{border-radius:28px;box-shadow:0 24px 80px rgba(16,24,40,.08);border:1px solid rgba(16,24,40,.07)}
+.marketing .rd-story-scene:nth-child(3n){background:linear-gradient(180deg,#fff 0%,#f5f6f8 100%)}
+.marketing .rd-story-scene:nth-child(3n+1){background:linear-gradient(180deg,#f5f6f8 0%,#fff 100%)}
+@media(max-width:700px){.marketing .rd-story-scene::before{top:20px;left:18px}.marketing .rd-story-scene .rd-scene-kicker{margin-bottom:14px}.marketing .rd-story-scene h2{font-size:clamp(38px,11vw,60px)}.marketing .rd-story-scene .product-pillar-card,.marketing .rd-story-scene .service-card,.marketing .rd-story-scene .legal-hub-card{border-radius:20px;box-shadow:0 16px 42px rgba(16,24,40,.06)}}
