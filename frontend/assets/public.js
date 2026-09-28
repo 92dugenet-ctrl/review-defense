@@ -288,8 +288,11 @@ function marketingLayout(active,body){
  publicCta?.addEventListener('click',e=>{e.preventDefault();location.href='/analyse-avis-google/'});
  publicCta?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();location.href='/analyse-avis-google/'}});
  const menu=document.getElementById('mobile-menu');
- menu?.addEventListener('click',()=>{const nav=document.getElementById('public-nav');const open=nav?.classList.toggle('open')||false;menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Fermer le menu':'Ouvrir le menu')});
- document.querySelectorAll('.public-nav [data-public]').forEach(x=>x.addEventListener('click',()=>{document.getElementById('public-nav')?.classList.remove('open');document.getElementById('mobile-menu')?.setAttribute('aria-expanded','false')}));
+ const nav=document.getElementById('public-nav');
+ const closePublicMenu=()=>{nav?.classList.remove('open');menu?.setAttribute('aria-expanded','false');menu?.setAttribute('aria-label','Ouvrir le menu')};
+ menu?.addEventListener('click',()=>{const open=nav?.classList.toggle('open')||false;menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Fermer le menu':'Ouvrir le menu')});
+ menu?.addEventListener('keydown',e=>{if(e.key==='Escape'&&nav?.classList.contains('open')){e.preventDefault();closePublicMenu();menu.focus()}});
+ document.querySelectorAll('.public-nav [data-public]').forEach(x=>x.addEventListener('click',()=>{closePublicMenu();menu?.focus()}));
  initPremiumInteractions();
 }
 function publicLoadingState(){
