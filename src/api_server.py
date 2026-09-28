@@ -92,7 +92,16 @@ class MemoryStore:
         self.idempotency: dict[tuple[str, str], tuple[str, Any]] = {}
         self.audit: list[dict[str, Any]] = []
         evidence_root = os.environ.get("REVIEW_DEFENSE_EVIDENCE_ROOT", "").strip()
-        self.vault = FilesystemObjectStore(evidence_root) if evidence_root else InMemoryObjectStore()
+        # Production runs with multiple Gunicorn workers. A process-local in-memory
+        # vault makes evidence uploaded by one worker invisible to another worker.
+        # Use a shared filesystem vault in production; deployments can override the
+        # path with REVIEW_DEFENSE_EVIDENCE_ROOT on persistent storage.
+        if evidence_root:
+            self.vault = FilesystemObjectStore(evidence_root)
+        elif os.environ.get("REVIEW_DEFENSE_ENV", "").strip().lower() in {"production", "prod"}:
+            self.vault = FilesystemObjectStore("/tmp/review-defense-evidence")
+        else:
+            self.vault = InMemoryObjectStore()
         self.evidence: dict[tuple[str, str], dict[str, Any]] = {}
         self.evidence_facts: dict[tuple[str, str], list[dict[str, Any]]] = {}
         self.contradictions: dict[tuple[str, str], list[dict[str, Any]]] = {}
