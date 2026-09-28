@@ -58,7 +58,7 @@ function setPublicMeta(page){
  setMeta('meta[name="twitter:description"]',{name:'twitter:description'},m[1]);
 }
 const PUBLIC_NAV_ITEMS=[
- ['features','Produit'],['how','Comment ça marche'],['services','Services'],['pricing','Tarifs'],['resources','Ressources']
+ ['features','Produit'],['how','Parcours'],['services','Services'],['pricing','Tarifs']
 ];
 const PUBLIC_FOOTER_GROUPS=[
  ['Produit',[['Fonctionnalités','/produit/'],['Comment ça marche','/comment-ca-marche/'],['Tarifs','/tarifs/']]],
@@ -67,7 +67,7 @@ const PUBLIC_FOOTER_GROUPS=[
  ['Juridique',[['Mentions légales','/mentions-legales/'],['CGV','/cgv/'],['CGU','/cgu/'],['Cookies','/cookies/'],['Droits RGPD','/droits-rgpd/'],['Violations de données','/violation-donnees/']]]
 ];
 function publicHeader(active){
- return '<header class="public-header rd-muse-header" data-public-shell="header"><div class="rd-nav-inner"><a class="public-brand" href="/" aria-label="Review Defense accueil"><b class="brand-mark">RD</b><span>Review Defense</span></a><nav class="public-nav" id="public-nav" aria-label="Navigation principale">'+PUBLIC_NAV_ITEMS.map(x=>'<a class="'+(active===x[0]?'active':'')+'" href="'+PUBLIC_ROUTES[x[0]]+'" data-public="'+x[0]+'">'+x[1]+'</a>').join('')+'</nav><div class="public-actions"><a class="btn-secondary" id="public-login" href="/app">Espace client</a><a class="btn-primary" id="public-cta">Analyser un avis</a></div><button class="mobile-menu" id="mobile-menu" type="button" aria-label="Ouvrir le menu" aria-controls="public-nav" aria-expanded="false">☰</button></div></header>'
+ return '<header class="public-header rd-muse-header rd-editorial-header" data-public-shell="header"><div class="rd-nav-inner"><a class="public-brand" href="/" aria-label="Review Defense accueil"><b class="brand-mark">RD</b><span>Review Defense</span></a><nav class="public-nav" id="public-nav" aria-label="Navigation principale">'+PUBLIC_NAV_ITEMS.map(x=>'<a class="'+(active===x[0]?'active':'')+'" href="'+PUBLIC_ROUTES[x[0]]+'" data-public="'+x[0]+'">'+x[1]+'</a>').join('')+'</nav><div class="public-actions"><a class="btn-secondary" id="public-login" href="/app">Espace client</a><a class="btn-primary" id="public-cta">Analyser un avis</a></div><button class="mobile-menu" id="mobile-menu" type="button" aria-label="Ouvrir le menu" aria-controls="public-nav" aria-expanded="false">☰</button></div></header>'
 }
 function publicFooter(){
  return '<footer class="public-footer" data-public-shell="footer"><div class="rd-footer-inner"><div class="footer-brand"><a class="public-brand" href="/"><b class="brand-mark">RD</b><span>Review Defense</span></a><p>Analyse, qualification et préparation de dossiers liés aux avis en ligne.</p><small>Préparation ≠ exécution. Les décisions externes restent sous contrôle humain.</small></div>'+PUBLIC_FOOTER_GROUPS.map(g=>'<div><b>'+g[0]+'</b>'+g[1].map(x=>'<a href="'+x[1]+'">'+x[0]+'</a>').join('')+'</div>').join('')+'</div><div class="footer-bottom"><span>© 2026 Review Defense</span><span>Plateforme d’aide et de préparation — aucune suppression garantie.</span></div></footer>';
