@@ -284,20 +284,29 @@ function editorializePublicPage(active){
  if(!main)return;
  const sections=[...main.querySelectorAll(':scope > section')];
  const labels=['Introduction','Comprendre','Analyser','Structurer','Documenter','Décider','Valider','Suivre'];
+ const layouts=['immersive','split','feature','editorial','proof','decision','validation','closing'];
  sections.forEach((section,index)=>{
-   section.classList.add('rd-story-scene','rd-story-scene-'+Math.min(index+1,8));
-   section.dataset.scene=String(index+1).padStart(2,'0');
+   const sceneIndex=Math.min(index+1,8);
+   section.classList.add('rd-story-scene','rd-story-scene-'+sceneIndex);
+   section.dataset.scene=String(sceneIndex).padStart(2,'0');
    section.dataset.sceneType=index===0?'opening':index===sections.length-1?'closing':'chapter';
+   section.dataset.sceneLayout=layouts[Math.min(index,layouts.length-1)];
+   if(section.querySelector('video,img,.rd-product-stage,.console-showcase,.evidence-card,.rd-workflow-visual')){
+     section.dataset.sceneMedia='true';
+   }
    const heading=section.querySelector('h1,h2,h3');
    if(heading&&!section.querySelector(':scope > .rd-scene-kicker')){
      const kicker=document.createElement('span');
      kicker.className='rd-scene-kicker';
-     kicker.textContent=String(index+1).padStart(2,'0')+' / '+(labels[index]||'Suite');
+     kicker.textContent=String(sceneIndex).padStart(2,'0')+' / '+(labels[index]||'Suite');
      heading.parentNode.insertBefore(kicker,heading);
    }
  });
  const shell=document.querySelector('.marketing');
- if(shell)shell.dataset.storyPage=active||'home';
+ if(shell){
+   shell.dataset.storyPage=active||'home';
+   shell.dataset.storyScenes=String(sections.length);
+ }
 }
 function marketingLayout(active,body){
  ensurePublicStyles();setPublicMeta(active||'home');
