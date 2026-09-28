@@ -283,7 +283,10 @@ function marketingLayout(active,body){
  document.body.innerHTML=publicShell(active,body);
  document.querySelectorAll('[data-public]').forEach(x=>x.addEventListener('click',e=>{if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();showPublicPage(x.dataset.public)}));
  const publicCta=document.getElementById('public-cta');
+ publicCta?.setAttribute('role','button');
+ publicCta?.setAttribute('tabindex','0');
  publicCta?.addEventListener('click',e=>{e.preventDefault();location.href='/analyse-avis-google/'});
+ publicCta?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();location.href='/analyse-avis-google/'}});
  const menu=document.getElementById('mobile-menu');
  menu?.addEventListener('click',()=>{const nav=document.getElementById('public-nav');const open=nav?.classList.toggle('open')||false;menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Fermer le menu':'Ouvrir le menu')});
  document.querySelectorAll('.public-nav [data-public]').forEach(x=>x.addEventListener('click',()=>{document.getElementById('public-nav')?.classList.remove('open');document.getElementById('mobile-menu')?.setAttribute('aria-expanded','false')}));
