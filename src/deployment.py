@@ -35,8 +35,8 @@ class DeploymentConfig:
 CSP = (
     "default-src 'self'; "
     "base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; "
-    "script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; "
-    "img-src 'self' data:; font-src 'self' data:; connect-src 'self'; "
+    "script-src 'self' 'unsafe-inline' https://*.paypal.com https://*.paypalobjects.com; style-src 'self' 'unsafe-inline' https://*.paypal.com https://*.paypalobjects.com; "
+    "img-src 'self' data: https://*.paypal.com https://*.paypalobjects.com; font-src 'self' data: https://*.paypalobjects.com; connect-src 'self' https://*.paypal.com https://*.paypalobjects.com; frame-src 'self' https://*.paypal.com https://*.paypalobjects.com; child-src 'self' https://*.paypal.com https://*.paypalobjects.com; "
     "media-src 'none'; worker-src 'none'; manifest-src 'self'"
 )
 
@@ -45,7 +45,7 @@ def security_headers(*, production: bool) -> dict[str, str]:
     headers = {
         "Content-Security-Policy": CSP,
         "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
-        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
         "Cross-Origin-Resource-Policy": "same-origin",
         "X-Content-Type-Options": "nosniff",
         "X-Frame-Options": "DENY",
