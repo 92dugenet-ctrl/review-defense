@@ -6,8 +6,12 @@ def request(path):
     def start(s,h,exc_info=None): status.append(s); headers.extend(h)
     env={"REQUEST_METHOD":"GET","PATH_INFO":path,"QUERY_STRING":"","wsgi.input":io.BytesIO(),"SERVER_NAME":"localhost","SERVER_PORT":"8080","wsgi.url_scheme":"http"}
     body=b"".join(application(env,start)); return status[0],dict(headers),body
-def test_health(): assert json.loads(request("/health")[2])["status"]=="ok"
-def test_ready(): assert json.loads(request("/ready")[2])["status"]=="ready"
+def test_health():
+    status,headers,body=request("/health"); assert status=="200 OK"; assert json.loads(body)["status"]=="ok"; assert headers["X-Content-Type-Options"]=="nosniff"
+def test_api_health():
+    status,_,body=request("/api/v1/health"); assert status=="200 OK"; assert json.loads(body)["data"]["status"]=="ok"
+def test_not_found_is_standard_json():
+    status,headers,body=request("/api/v1/unknown"); assert status=="404 Not Found"; assert json.loads(body)["error"]["code"]=="NOT_FOUND"; assert headers["Content-Type"].startswith("application/json")
 def test_frontend_shell(): assert b"Review Defense" in request("/")[2]
 def test_frontend_is_only_new_files():
     actual={p.relative_to(ROOT).as_posix() for p in (ROOT/"frontend").rglob("*") if p.is_file()}
