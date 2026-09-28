@@ -106,3 +106,9 @@ def test_billing_catalog_groups_have_expected_offer_kinds():
     assert all(o.kind == "subscription" for o in OFFERS.values() if o.offer_id.startswith("monitoring_"))
     assert all(o.kind in {"defense_step", "defense_package"} for o in OFFERS.values() if o.offer_id.startswith("defense_"))
     assert all(o.kind in {"credit_pack", "credit_pack_quote"} for o in OFFERS.values() if o.offer_id.startswith("pack_"))
+
+
+def test_subscription_catalog_contains_paypal_plan_ids():
+    assert get_offer("monitoring_essential").paypal_plan_id == "P-48445016NC686822DNK5DFKI"
+    assert get_offer("monitoring_professional").paypal_plan_id == "P-09J30923C56343623NK5DGGI"
+    assert get_offer("monitoring_business").paypal_plan_id == "P-81F64203WR266014XNK5DGZQ"

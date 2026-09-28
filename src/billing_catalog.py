@@ -11,7 +11,7 @@ class Offer:
     name_en: str
     amount: Decimal | None
     currency: str = "EUR"
-    paypal_plan_env: str | None = None
+    paypal_plan_id: str | None = None
 
 OFFERS = {
     "audit_1_9": Offer("audit_1_9","audit","Audit 1–9 avis","Audit 1–9 reviews",Decimal("79.00")),
@@ -41,9 +41,9 @@ OFFERS = {
     "pack_500": Offer("pack_500","credit_pack","Pack 500 dossiers","500-case pack",Decimal("23900.00")),
     "pack_1000": Offer("pack_1000","credit_pack","Pack 1 000 dossiers","1,000-case pack",Decimal("44900.00")),
     "pack_custom": Offer("pack_custom","credit_pack_quote","Pack 1 000+ dossiers / sur devis","1,000+ case pack / custom quote",None),
-    "monitoring_essential": Offer("monitoring_essential","subscription","Essential","Essential",Decimal("49.00"),paypal_plan_env="PAYPAL_PLAN_ESSENTIAL_ID"),
-    "monitoring_professional": Offer("monitoring_professional","subscription","Professional","Professional",Decimal("89.00"),paypal_plan_env="PAYPAL_PLAN_PROFESSIONAL_ID"),
-    "monitoring_business": Offer("monitoring_business","subscription","Business","Business",Decimal("159.00"),paypal_plan_env="PAYPAL_PLAN_BUSINESS_ID"),
+    "monitoring_essential": Offer("monitoring_essential","subscription","Essential / Essentiel","Essential / Essentiel",Decimal("49.00"),paypal_plan_id="P-48445016NC686822DNK5DFKI"),
+    "monitoring_professional": Offer("monitoring_professional","subscription","Professional / Professionnel","Professional / Professionnel",Decimal("89.00"),paypal_plan_id="P-09J30923C56343623NK5DGGI"),
+    "monitoring_business": Offer("monitoring_business","subscription","Business / Entreprise","Business / Entreprise",Decimal("159.00"),paypal_plan_id="P-81F64203WR266014XNK5DGZQ"),
 }
 def get_offer(offer_id: str) -> Offer:
     try: return OFFERS[str(offer_id)]
@@ -52,5 +52,4 @@ def public_catalog() -> list[dict[str, str | None]]:
     return [{"offer_id":o.offer_id,"kind":o.kind,"name_fr":o.name_fr,"name_en":o.name_en,"amount":str(o.amount) if o.amount is not None else None,"currency":o.currency,"recurring":"true" if o.kind=="subscription" else "false"} for o in OFFERS.values()]
 
 def paypal_plan_id(offer: Offer) -> str | None:
-    import os
-    return os.getenv(offer.paypal_plan_env, "").strip() if offer.paypal_plan_env else None
+    return offer.paypal_plan_id
