@@ -219,8 +219,6 @@ const LEGACY_NAV_BUTTON_CONTRACT='onclick="navigateTo(\'${id}\')"' ; // onclick=
 const LEGACY_MOBILE_NAV_CONTRACT='closeMobileNav()';
 const LEGACY_WINDOW_EVENT_CONTRACT='window.addEventListener';
 async function boot(){
- const __RD_PUBLIC_ROUTE=typeof publicPathPage==='function'&&Boolean(publicPathPage(location.pathname));
-if(__RD_PUBLIC_ROUTE)return;
 if(window.__RD_BOOT_ACTIVE)return;window.__RD_BOOT_ACTIVE=true;window.__RD_BOOT_DIAGNOSTIC__={started_at:Date.now(),url:location.href,renderer_type:typeof window.reviewDefenseRender,renderer_local_type:typeof reviewDefenseRender};
  if(location.pathname==='/accept-invitation'){if(typeof invitationSignupPage==='function'){invitationSignupPage();return}}
  if(location.pathname==='/reset-password'){renderReset();return}

@@ -26,3 +26,9 @@ def test_public_css_has_navigation_loading_fallback():
     assert ".public-loading" in text
     assert ".marketing.is-navigating" in text
     assert "prefers-reduced-motion:reduce" in text
+
+
+def test_public_boot_is_not_short_circuited_by_console_boot_guard():
+    text = (ROOT / "frontend/assets/app.js").read_text()
+    assert "const __RD_PUBLIC_ROUTE=" not in text
+    assert "if(typeof showPublicPage==='function') showPublicPage(publicPage||'home',false);" in text
