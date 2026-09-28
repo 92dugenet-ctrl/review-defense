@@ -446,3 +446,129 @@ body{font-size:16px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLe
 .marketing .rd-story-scene:nth-child(3n){background:linear-gradient(180deg,#fff 0%,#f5f6f8 100%)}
 .marketing .rd-story-scene:nth-child(3n+1){background:linear-gradient(180deg,#f5f6f8 0%,#fff 100%)}
 @media(max-width:700px){.marketing .rd-story-scene::before{top:20px;left:18px}.marketing .rd-story-scene .rd-scene-kicker{margin-bottom:14px}.marketing .rd-story-scene h2{font-size:clamp(38px,11vw,60px)}.marketing .rd-story-scene .product-pillar-card,.marketing .rd-story-scene .service-card,.marketing .rd-story-scene .legal-hub-card{border-radius:20px;box-shadow:0 16px 42px rgba(16,24,40,.06)}}
+
+
+/* RD Muse composition engine — semantic scene layouts */
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="immersive"]{
+  min-height:calc(100vh - 72px);
+  display:flex;
+  align-items:center;
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="immersive"] .rd-container{
+  width:min(1180px,calc(100% - 48px));
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="split"] .rd-container{
+  display:grid;
+  grid-template-columns:minmax(0,.82fr) minmax(360px,1.18fr);
+  align-items:center;
+  gap:clamp(40px,8vw,120px);
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="split"]:has(.rd-container > :only-child) .rd-container{
+  display:block;
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="feature"] .rd-container{
+  width:min(1280px,calc(100% - 48px));
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="feature"] .rd-section-heading{
+  max-width:860px;
+  margin-inline:auto;
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="feature"] .rd-product-stage,
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="feature"] .console-showcase,
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="feature"] .interface-illustration{
+  margin-top:clamp(40px,6vw,88px);
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="editorial"]{
+  background:#0b0d12;
+  color:#fff;
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="editorial"] .rd-scene-kicker,
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="editorial"] .rd-eyebrow{
+  color:#9dbbff;
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="editorial"] p{
+  color:rgba(255,255,255,.68);
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="editorial"]::before{
+  color:rgba(255,255,255,.35);
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="editorial"]::after{
+  background:radial-gradient(circle,rgba(70,120,255,.18),transparent 68%);
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="proof"] .rd-container{
+  width:min(1180px,calc(100% - 48px));
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="proof"] .feature-grid,
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="proof"] .product-pillar-grid,
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="proof"] .security-grid{
+  margin-top:clamp(42px,6vw,82px);
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="decision"]{
+  min-height:72vh;
+  display:flex;
+  align-items:center;
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="decision"] .rd-section-heading{
+  max-width:900px;
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="validation"]{
+  background:linear-gradient(135deg,#eef4ff 0%,#fff 55%,#f6f8fb 100%);
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="validation"] .human-gate{
+  width:min(1080px,calc(100% - 48px));
+  margin-inline:auto;
+  border-radius:32px;
+  box-shadow:0 30px 90px rgba(16,24,40,.12);
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="closing"]{
+  min-height:70vh;
+  display:flex;
+  align-items:center;
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="closing"] .rd-final-cta{
+  width:min(1080px,calc(100% - 48px));
+  margin-inline:auto;
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-media="true"]{
+  --rd-scene-media-depth:1;
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-media="true"] .rd-product-stage,
+.marketing[data-story-scenes] .rd-story-scene[data-scene-media="true"] .console-showcase,
+.marketing[data-story-scenes] .rd-story-scene[data-scene-media="true"] .product-hero-visual,
+.marketing[data-story-scenes] .rd-story-scene[data-scene-media="true"] .interface-illustration{
+  transform:translateY(0) scale(var(--rd-scene-media-depth));
+  transition:transform .6s cubic-bezier(.2,.7,.2,1),filter .6s ease;
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-media="true"]:hover .rd-product-stage,
+.marketing[data-story-scenes] .rd-story-scene[data-scene-media="true"]:hover .console-showcase,
+.marketing[data-story-scenes] .rd-story-scene[data-scene-media="true"]:hover .product-hero-visual,
+.marketing[data-story-scenes] .rd-story-scene[data-scene-media="true"]:hover .interface-illustration{
+  --rd-scene-media-depth:1.012;
+  filter:drop-shadow(0 42px 88px rgba(16,24,40,.18));
+}
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="editorial"] .rd-product-stage,
+.marketing[data-story-scenes] .rd-story-scene[data-scene-layout="editorial"] .console-showcase{
+  filter:drop-shadow(0 38px 90px rgba(0,0,0,.35));
+}
+@media(max-width:820px){
+  .marketing[data-story-scenes] .rd-story-scene[data-scene-layout="split"] .rd-container{
+    grid-template-columns:1fr;
+    gap:42px;
+  }
+  .marketing[data-story-scenes] .rd-story-scene[data-scene-layout="immersive"],
+  .marketing[data-story-scenes] .rd-story-scene[data-scene-layout="decision"],
+  .marketing[data-story-scenes] .rd-story-scene[data-scene-layout="closing"]{
+    min-height:auto;
+  }
+  .marketing[data-story-scenes] .rd-story-scene[data-scene-layout="editorial"]{
+    min-height:auto;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .marketing[data-story-scenes] .rd-story-scene[data-scene-media="true"] .rd-product-stage,
+  .marketing[data-story-scenes] .rd-story-scene[data-scene-media="true"] .console-showcase,
+  .marketing[data-story-scenes] .rd-story-scene[data-scene-media="true"] .product-hero-visual,
+  .marketing[data-story-scenes] .rd-story-scene[data-scene-media="true"] .interface-illustration{
+    transition:none;
+  }
+}
