@@ -1,0 +1,173 @@
+from src import seo_site
+
+COMMERCIAL = ["/", "/produit/", "/comment-ca-marche/", "/services/", "/tarifs/", "/ressources/", "/contact/"]
+
+
+def test_server_renders_all_commercial_routes():
+    assert list(seo_site.COMMERCIAL) == COMMERCIAL
+    for route in COMMERCIAL:
+        status, headers, body = seo_site.render(route)
+        assert status == 200
+        assert headers["Content-Type"].startswith("text/html")
+        assert b"Review Defense" in body
+
+
+def test_commercial_pages_are_crawlable_and_canonical():
+    for route in COMMERCIAL:
+        _, _, body = seo_site.render(route)
+        text = body.decode()
+        assert 'name="robots" content="index,follow"' in text
+        assert 'rel="canonical"' in text
+        assert 'application/ld+json' in text
+
+
+def test_sitemap_includes_commercial_routes_and_seo_network():
+    _, _, body = seo_site.render("/sitemap.xml")
+    xml = body.decode()
+    assert xml.count("<url>") == 69
+    for route in COMMERCIAL:
+        assert route in xml
+    for route in ["/analyse-avis-google/", "/faux-avis-google/", "/signaler-un-avis-google/"]:
+        assert route in xml
+
+
+def test_seo_network_uses_clean_commercial_urls():
+    _, _, body = seo_site.render("/faux-avis-google/")
+    text = body.decode()
+    for old in ["/?page=features", "?page=how", "?page=pricing", "?page=resources"]:
+        assert old not in text
+    for route in ["/produit/", "/comment-ca-marche/", "/services/", "/tarifs/", "/ressources/", "/contact/"]:
+        assert route in text
+
+
+def test_conversion_page_has_form_and_tracking_contract():
+    _, _, body = seo_site.render("/analyse-avis-google/")
+    text = body.decode()
+    assert 'id="rd-analysis-form"' in text
+    assert "analysis_start" in text
+    assert "analysis_submit" in text
+    assert "Aucune action Google n’est exécutée automatiquement." in text
+    assert "la plateforme concernée" in text
+
+
+def test_legacy_commercial_query_urls_redirect():
+    from wsgi import app
+    captured = {}
+    def start_response(status, headers):
+        captured["status"] = status
+        captured["headers"] = dict(headers)
+    body = app({"PATH_INFO": "/", "QUERY_STRING": "page=pricing"}, start_response)
+    assert captured["status"] == "301 Moved Permanently"
+    assert captured["headers"]["Location"] == "/tarifs/"
+    assert body == [b""]
+
+
+def test_duplicate_seo_url_families_redirect_to_canonical():
+    from wsgi import app
+    for source, target in [
+        ("/google-refuse-de-supprimer-mon-faux-avis-que-faire/", "/google-refuse-de-supprimer-mon-faux-avis/"),
+        ("/pourquoi-mon-avis-google-reste-en-ligne-conversationnel/", "/pourquoi-mon-avis-google-reste-en-ligne/"),
+    ]:
+        captured = {}
+        def start_response(status, headers):
+            captured["status"] = status
+            captured["headers"] = dict(headers)
+        assert app({"PATH_INFO": source, "QUERY_STRING": ""}, start_response) == [b""]
+        assert captured["status"] == "301 Moved Permanently"
+        assert captured["headers"]["Location"] == target
+
+
+def test_all_seo_articles_have_unique_titles_faq_cta_and_canonical():
+    pages = seo_site._pages()
+    documents = []
+    for page in pages:
+        if page["path"] == "/analyse-avis-google/":
+            continue
+        _, _, body = seo_site.render(page["path"])
+        text = body.decode()
+        documents.append(text)
+        assert "<title>" in text
+        assert 'rel="canonical"' in text
+        assert "Questions fréquentes" in text
+        assert "/analyse-avis-google/" in text
+        assert "/?page=" not in text
+    titles = [x.split("<title>", 1)[1].split("</title>", 1)[0] for x in documents]
+    assert len(titles) == len(set(titles))
+
+
+def test_robots_excludes_non_public_application_routes():
+    _, _, body = seo_site.render("/robots.txt")
+    robots = body.decode()
+    for route in ["/app", "/v1/", "/reset-password", "/verify-email", "/accept-invitation"]:
+        assert "Disallow: " + route in robots
+    assert "Sitemap: " in robots
+
+
+def test_direct_frontend_shell_routes_are_served_by_wsgi():
+    from wsgi import app
+
+    routes = [
+        "/",
+        "/app",
+        "/conformite/",
+        "/produit/",
+        "/comment-ca-marche/",
+        "/services/",
+        "/tarifs/",
+        "/ressources/",
+        "/contact/",
+        "/mentions-legales/",
+        "/confidentialite/",
+        "/cgv/",
+        "/cgu/",
+        "/cookies/",
+        "/securite/",
+        "/conservation-donnees/",
+        "/droits-rgpd/",
+        "/violation-donnees/",
+        "/sous-traitants/",
+        "/ia-et-controle-humain/",
+        "/accept-invitation",
+        "/reset-password",
+        "/verify-email",
+    ]
+    for route in routes:
+        captured = {}
+
+        def start_response(status, headers):
+            captured["status"] = status
+            captured["headers"] = dict(headers)
+
+        body = app(
+            {
+                "PATH_INFO": route,
+                "QUERY_STRING": "",
+                "REQUEST_METHOD": "GET",
+                "wsgi.url_scheme": "https",
+                "SERVER_NAME": "review-defense.test",
+                "SERVER_PORT": "443",
+                "SCRIPT_NAME": "",
+                "REMOTE_ADDR": "127.0.0.1",
+                "wsgi.input": __import__("io").BytesIO(),
+            },
+            start_response,
+        )
+        assert captured["status"] == "200 OK"
+        assert body and b"Review Defense" in body[0]
+
+
+def test_login_route_redirects_to_application():
+    from wsgi import app
+    captured = {}
+    def start_response(status, headers):
+        captured["status"] = status
+        captured["headers"] = dict(headers)
+    assert app({"PATH_INFO": "/login", "QUERY_STRING": ""}, start_response) == [b""]
+    assert captured["status"] == "301 Moved Permanently"
+    assert captured["headers"]["Location"] == "/app"
+
+
+def test_seo_pack_has_no_duplicate_public_paths():
+    paths = [p["path"] for p in seo_site._pages()]
+    assert len(paths) == 62
+    assert len(paths) == len(set(paths))

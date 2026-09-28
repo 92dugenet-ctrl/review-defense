@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: review_defense
+      POSTGRES_USER: review_defense
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+    volumes:
+      - review_defense_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U review_defense -d review_defense"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    environment:
+      REVIEW_DEFENSE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 8080
+      DATABASE_URL: postgresql://review_defense:${POSTGRES_PASSWORD:-change-me}@postgres:5432/review_defense
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["sh", "-c", "python scripts/migrate.py && gunicorn --bind 0.0.0.0:8080 --workers 2 --threads 4 --timeout 60 wsgi:app"]
+
+volumes:
+  review_defense_pg:

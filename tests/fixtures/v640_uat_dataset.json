@@ -1,0 +1,109 @@
+{
+  "version": "6.40",
+  "dataset": "UAT-DETERMINISTIC-01",
+  "external_actions_enabled": false,
+  "tenants": [
+    {
+      "key": "A",
+      "slug": "alpha",
+      "roles": [
+        "OWNER",
+        "ADMIN",
+        "ANALYST",
+        "CLIENT",
+        "VIEWER"
+      ],
+      "reviews": [
+        {
+          "key": "critical",
+          "review_id": "uat-a-review-critical",
+          "rating": 1,
+          "text": "Le service était très mauvais et la commande incomplète."
+        },
+        {
+          "key": "neutral",
+          "review_id": "uat-a-review-neutral",
+          "rating": 3,
+          "text": "Expérience correcte, quelques points à améliorer."
+        },
+        {
+          "key": "positive",
+          "review_id": "uat-a-review-positive",
+          "rating": 5,
+          "text": "Accueil excellent et service rapide."
+        }
+      ],
+      "cases": [
+        {
+          "key": "open",
+          "case_id": "uat-a-case-a-open",
+          "review_id": "uat-a-review-critical",
+          "status": "OPEN"
+        },
+        {
+          "key": "frozen",
+          "case_id": "uat-a-case-a-frozen",
+          "review_id": "uat-a-review-neutral",
+          "status": "FROZEN"
+        },
+        {
+          "key": "approved",
+          "case_id": "uat-a-case-a-approved",
+          "review_id": "uat-a-review-positive",
+          "status": "APPROVED"
+        }
+      ]
+    },
+    {
+      "key": "B",
+      "slug": "beta",
+      "roles": [
+        "OWNER",
+        "ADMIN",
+        "ANALYST",
+        "CLIENT",
+        "VIEWER"
+      ],
+      "reviews": [
+        {
+          "key": "critical",
+          "review_id": "uat-b-review-critical",
+          "rating": 1,
+          "text": "Le service était très mauvais et la commande incomplète."
+        },
+        {
+          "key": "neutral",
+          "review_id": "uat-b-review-neutral",
+          "rating": 3,
+          "text": "Expérience correcte, quelques points à améliorer."
+        },
+        {
+          "key": "positive",
+          "review_id": "uat-b-review-positive",
+          "rating": 5,
+          "text": "Accueil excellent et service rapide."
+        }
+      ],
+      "cases": [
+        {
+          "key": "open",
+          "case_id": "uat-b-case-b-open",
+          "review_id": "uat-b-review-critical",
+          "status": "OPEN"
+        },
+        {
+          "key": "frozen",
+          "case_id": "uat-b-case-b-frozen",
+          "review_id": "uat-b-review-neutral",
+          "status": "FROZEN"
+        },
+        {
+          "key": "approved",
+          "case_id": "uat-b-case-b-approved",
+          "review_id": "uat-b-review-positive",
+          "status": "APPROVED"
+        }
+      ]
+    }
+  ]
+}
