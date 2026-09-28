@@ -400,3 +400,6 @@ body{font-size:16px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLe
  html{scroll-behavior:auto}
  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+.console-demo-label{display:inline-flex;align-items:center;margin-bottom:10px;padding:6px 9px;border:1px solid #d9e5f1;border-radius:999px;background:#f7fbff;color:#5f6f85;font-size:7px;font-weight:800;letter-spacing:.08em}
+.console-kpis em{display:block;margin-top:5px;color:#7a8798;font-size:7px;font-style:normal}
