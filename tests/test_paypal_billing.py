@@ -105,3 +105,12 @@ def test_paypal_capture_status_map_includes_pending():
         "PAYMENT.CAPTURE.DENIED": "DENIED",
     }
     assert status_map["PAYMENT.CAPTURE.PENDING"] == "PENDING"
+
+
+def test_paypal_capture_refund_and_reversal_statuses_are_supported():
+    status_map = {
+        "PAYMENT.CAPTURE.REFUNDED": "REFUNDED",
+        "PAYMENT.CAPTURE.REVERSED": "REVERSED",
+    }
+    assert status_map["PAYMENT.CAPTURE.REFUNDED"] == "REFUNDED"
+    assert status_map["PAYMENT.CAPTURE.REVERSED"] == "REVERSED"

@@ -793,7 +793,7 @@ class ReviewDefenseAPI:
                     "BILLING.SUBSCRIPTION.ACTIVATED":"ACTIVE","BILLING.SUBSCRIPTION.UPDATED":"ACTIVE",
                     "BILLING.SUBSCRIPTION.CANCELLED":"CANCELLED","BILLING.SUBSCRIPTION.SUSPENDED":"SUSPENDED",
                     "BILLING.SUBSCRIPTION.EXPIRED":"EXPIRED","BILLING.SUBSCRIPTION.PAYMENT.FAILED":"PAYMENT_FAILED",
-                    "PAYMENT.SALE.REFUNDED":"REFUNDED","PAYMENT.SALE.REVERSED":"REVERSED"}
+                    "PAYMENT.SALE.REFUNDED":"REFUNDED","PAYMENT.SALE.REVERSED":"REVERSED","PAYMENT.CAPTURE.REFUNDED":"REFUNDED","PAYMENT.CAPTURE.REVERSED":"REVERSED"}
                 tx["status"]=status_map.get(event_type,tx.get("status","PENDING")); tx["paypal_event_id"]=event_id
                 existing_metadata=tx.get("metadata") if isinstance(tx.get("metadata"),dict) else {}
                 tx["paypal_order_id"]=paypal_order_id or tx.get("paypal_order_id")
