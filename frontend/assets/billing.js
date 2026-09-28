@@ -15,7 +15,7 @@ function selectedBillingOffer(){try{return JSON.parse(localStorage.getItem('rd_s
 async function loadPayPalSdk(clientId,components,locale,extra=''){
  const key=clientId+'|'+components+'|'+locale;
  if(window.__rdPayPalSdkKey===key&&window.paypal)return window.paypal;
- const src='https://www.paypal.com/sdk/js?client-id='+encodeURIComponent(clientId)+'&components='+components+'&currency=EUR&locale='+locale+'&locale.x='+locale+'&country.x=FR'+extra;
+ const src='https://www.paypal.com/sdk/js?client-id='+encodeURIComponent(clientId)+'&components='+components+'&currency=EUR&locale='+locale+extra;
  await new Promise((resolve,reject)=>{
   const old=document.querySelector('script[data-review-defense-paypal]');
   if(old)old.remove();
