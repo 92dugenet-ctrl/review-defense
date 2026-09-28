@@ -403,3 +403,13 @@ body{font-size:16px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLe
 
 .console-demo-label{display:inline-flex;align-items:center;margin-bottom:10px;padding:6px 9px;border:1px solid #d9e5f1;border-radius:999px;background:#f7fbff;color:#5f6f85;font-size:7px;font-weight:800;letter-spacing:.08em}
 .console-kpis em{display:block;margin-top:5px;color:#7a8798;font-size:7px;font-style:normal}
+
+/* RD visual direction — immersive product storytelling foundation */
+.marketing{--rd-muse-bg:#f7f8fb;--rd-muse-ink:#101828;--rd-muse-muted:#667085;--rd-muse-accent:#1769ff;background:var(--rd-muse-bg);color:var(--rd-muse-ink);overflow:hidden}
+.marketing main{position:relative}
+.marketing main>section{position:relative}
+.marketing .page-hero,.marketing .product-hero,.marketing .services-hero,.marketing .contact-layout{min-height:72vh;display:flex;flex-direction:column;justify-content:center}
+.marketing .page-hero h1,.marketing .product-hero h1,.marketing .contact-layout h1{letter-spacing:-.055em;text-wrap:balance}
+.marketing .page-hero p,.marketing .product-hero p,.marketing .contact-layout p{max-width:720px;color:var(--rd-muse-muted)}
+.marketing main>section+section{border-top:1px solid rgba(16,24,40,.07)}
+@media(max-width:640px){.marketing .page-hero,.marketing .product-hero,.marketing .services-hero,.marketing .contact-layout{min-height:auto}}
