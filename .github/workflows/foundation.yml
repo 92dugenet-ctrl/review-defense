@@ -1,0 +1,36 @@
+name: Review Defense — foundation
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  foundation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install
+        run: python -m pip install -r requirements.txt
+      - name: Python compile
+        run: python -m compileall -q src scripts wsgi.py main.py start.py
+      - name: JavaScript syntax
+        run: node --check frontend/assets/public.js
+      - name: Foundation tests
+        run: pytest -q
+      - name: Repository shape
+        run: |
+          test -f Dockerfile
+          test -f docker-compose.yml
+          test -f docker-compose.staging.yml
+          test -f Caddyfile
+          test -f src/app.py
+          test -f wsgi.py
+          test ! -f src/api_server.py
+          test ! -f tests/conftest.py
