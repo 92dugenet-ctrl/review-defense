@@ -1549,6 +1549,7 @@ class ReviewDefenseAPI:
             return self._json(200, {"items": rows, "count": len(rows)})
         if method == "POST" and path == "/v1/cases":
             self._require_role(user, "CLIENT", "OWNER", "ADMIN", "ANALYST")
+            self.case_lifecycle.repository = self.repository
             body = self._body(environ); rid = str(body.get("review_id", ""))
             if (user.organization_id, rid) not in self.store.reviews and self.repository is not None and hasattr(self.repository, "get_review"):
                 row = self.repository.get_review(user.organization_id, rid)
@@ -1566,6 +1567,7 @@ class ReviewDefenseAPI:
                 return {"case": asdict(case)}
             return self._json(201, self._idem(user, environ, body, create))
         if method == "GET" and path == "/v1/cases":
+            self.case_lifecycle.repository = self.repository
             rows = self.case_lifecycle.list_for_organization(
                 organization_id=user.organization_id,
             )
