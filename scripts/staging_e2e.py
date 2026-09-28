@@ -182,7 +182,7 @@ def main() -> int:
                     for route_name, route_path in public_routes.items():
                         page.goto(base + route_path, wait_until="networkidle")
                         page.wait_for_selector(".marketing main", timeout=10000)
-                        page.wait_for_selector(".rd-story-scene", timeout=10000)
+                        page.wait_for_selector(".rd-story-scene", state="attached", timeout=10000)
                         if page.url.rstrip("/") != (base + route_path).rstrip("/"):
                             raise AssertionError(f"public route redirected unexpectedly: {route_name}")
                         scene_count = page.locator(".rd-story-scene").count()
