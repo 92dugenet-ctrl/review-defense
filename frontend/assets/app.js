@@ -218,7 +218,7 @@ const LEGACY_NAV_INTERACTION_CONTRACT='navigateTo(id)';
 const LEGACY_NAV_BUTTON_CONTRACT='onclick="navigateTo(\'${id}\')"' ; // onclick="navigateTo('${id}')"
 const LEGACY_MOBILE_NAV_CONTRACT='closeMobileNav()';
 const LEGACY_WINDOW_EVENT_CONTRACT='window.addEventListener';
-async function boot(){if(window.__RD_BOOT_ACTIVE)return;window.__RD_BOOT_ACTIVE=true;window.__RD_BOOT_DIAGNOSTIC__={started_at:Date.now(),url:location.href,renderer_type:typeof window.reviewDefenseRender,renderer_local_type:typeof reviewDefenseRender};
+async function boot(){if(window.__RD_PUBLIC_MARKETING_ACTIVE)return;if(window.__RD_BOOT_ACTIVE)return;window.__RD_BOOT_ACTIVE=true;window.__RD_BOOT_DIAGNOSTIC__={started_at:Date.now(),url:location.href,renderer_type:typeof window.reviewDefenseRender,renderer_local_type:typeof reviewDefenseRender};
  if(location.pathname==='/accept-invitation'){if(typeof invitationSignupPage==='function'){invitationSignupPage();return}}
  if(location.pathname==='/reset-password'){renderReset();return}
  if(location.pathname==='/verify-email'){renderVerify();return}
