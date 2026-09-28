@@ -1,5 +1,5 @@
 const PUBLIC_MARKETING_BOUNDARIES=['Aucune suppression garantie','La décision finale appartient toujours à la plateforme','Structurez votre dossier avant toute démarche externe.'];
-const PUBLIC_ASSET_VERSION='6713';
+const PUBLIC_ASSET_VERSION='6715';
 let __seoArticlesPromise=null;
 let __publicNavigationToken=0;
 function ensureSeoArticles(){
@@ -276,7 +276,7 @@ function submitPublicContact(event){event.preventDefault();const f=new FormData(
 function contactPage(){return '<section class="contact-layout premium-contact"><div class="page-mountain"></div><div><span>BESOIN D’AIDE ?</span><h1>Besoin de voir<br><span>comment le dossier fonctionne ?</span></h1><p>Présentez-nous votre besoin. L’équipe peut vous aider à comprendre le parcours et le périmètre de Review Defense.</p><div class="contact-points"><span>✉ contact@review-defense.com</span><span>⌕ France</span><span>◷ Réponse selon disponibilité de l’équipe</span></div></div><form class="contact-form" onsubmit="submitPublicContact(event)"><h3>Parlons de votre besoin</h3><label>Nom complet<input name="name" autocomplete="name" required></label><label>E-mail<input name="email" type="email" autocomplete="email" required></label><label>Entreprise<input name="company" autocomplete="organization"></label><label>Message<textarea name="message" rows="5" required></textarea></label><button class="btn-primary" type="submit">Préparer le message</button><small class="form-note">L’envoi final est effectué depuis votre client e-mail.</small></form></section>'}
 function editorializePublicPage(active){
 const main=document.querySelector('.marketing main');if(!main)return;
-const sections=[...main.querySelectorAll(':scope > section')];
+const sections=[...main.children].filter(node=>node.tagName==='SECTION');
 sections.forEach((s,i)=>{s.classList.add('rd-story-scene');s.dataset.scene=String(i+1).padStart(2,'0');s.style.visibility='visible';s.style.opacity='1'});
 const shell=document.querySelector('.marketing');if(shell){shell.dataset.storyPage=active||'home';shell.dataset.storyScenes=String(sections.length);shell.setAttribute('data-story-scenes',String(sections.length))}
 }
