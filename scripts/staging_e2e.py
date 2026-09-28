@@ -115,8 +115,8 @@ def main() -> int:
                     page.wait_for_selector(".rd-home-hero", timeout=10000)
                     landing_text = page.locator("body").inner_text()
                     current_root_markers = (
-                        "Reprenez le contrôle de",
-                        "votre réputation.",
+                        "Comprendre avant",
+                        "d’agir.",
                         "Analyser un avis",
                         "validation humaine",
                     )
