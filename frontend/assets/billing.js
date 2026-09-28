@@ -14,7 +14,7 @@ async function loadPayPalSdk(clientId,components,locale,extra=''){
   const old=document.querySelector('script[data-review-defense-paypal]');
   if(old)old.remove();
   const el=document.createElement('script');el.src=src;el.async=true;el.dataset.reviewDefensePaypal='1';
-  el.onload=resolve;el.onerror=()=>reject(new Error(locale==='en_GB'?'Unable to load PayPal.':'Impossible de charger PayPal.'));
+  el.onload=()=>resolve();el.onerror=()=>reject(new Error(locale==='en_GB'?'Unable to load PayPal SDK. Check the Live Client ID, browser/network blocking, or Content Security Policy.':'Impossible de charger le SDK PayPal. Vérifiez le Client ID Live, un éventuel blocage navigateur/réseau ou la Content Security Policy.'));
   document.head.appendChild(el);
  });
  if(!window.paypal)throw new Error(locale==='en_GB'?'PayPal is unavailable.':'PayPal est indisponible.');
