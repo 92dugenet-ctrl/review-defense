@@ -24,8 +24,9 @@ def application(environ,start_response):
         db=check_connection()
         if not db: return j(start_response,"503 Service Unavailable",{"status":"not_ready","dependencies":{"http":"ok","database":"unavailable"}})
         return j(start_response,"200 OK",{"status":"ready","dependencies":{"http":"ok","database":"ok"}})
-    if method=="GET" and path.startswith("/api/v1/"):
-        if path=="/api/v1/health": return j(start_response,"200 OK",{"data":{"status":"ok"}})
+    if path.startswith("/api/v1/"):
+        if path=="/api/v1/health" and method=="GET": return j(start_response,"200 OK",{"data":{"status":"ok"}})
+        if path=="/api/v1/health": return api_error(start_response,"405 Method Not Allowed","METHOD_NOT_ALLOWED","Method not allowed")
         return api_error(start_response,"404 Not Found","NOT_FOUND","API route not found")
     if method=="GET" and path in {"/","/app","/app/"}: return static(start_response,"index.html")
     if method=="GET" and path=="/landing.html": return static(start_response,"landing.html")
