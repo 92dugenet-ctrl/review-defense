@@ -45,7 +45,7 @@ def security_headers(*, production: bool) -> dict[str, str]:
     headers = {
         "Content-Security-Policy": CSP,
         "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
-        "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
+        "Cross-Origin-Opener-Policy": "same-origin",
         "Cross-Origin-Resource-Policy": "same-origin",
         "X-Content-Type-Options": "nosniff",
         "X-Frame-Options": "DENY",
