@@ -42,3 +42,13 @@ def test_public_scene_enrichment_runs_before_optional_visual_interactions():
     block = text[start:end]
     assert block.index("editorializePublicPage(active);") < block.index("initPremiumInteractions()")
     assert "try{initPremiumInteractions()}catch(e){console.warn('Review Defense visual interaction init failed',e)}" in block
+
+
+def test_public_routes_have_one_boot_owner():
+    public = (ROOT / "frontend/assets/public.js").read_text()
+    app = (ROOT / "frontend/assets/app.js").read_text()
+    assert "function bootPublicRoute()" in public
+    assert "showPublicPage(page,false);" in public
+    assert "const publicPage=typeof publicPathPage" not in app
+    assert "Object.values(PUBLIC_ROUTES)" not in app
+    assert "showPublicPage(publicPage||'home',false)" not in app

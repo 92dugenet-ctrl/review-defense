@@ -1,5 +1,5 @@
 const PUBLIC_MARKETING_BOUNDARIES=['Aucune suppression garantie','La décision finale appartient toujours à la plateforme','Structurez votre dossier avant toute démarche externe.'];
-const PUBLIC_ASSET_VERSION='6715';
+const PUBLIC_ASSET_VERSION='6716';
 let __seoArticlesPromise=null;
 let __publicNavigationToken=0;
 function ensureSeoArticles(){
@@ -333,9 +333,12 @@ else if(navigationToken===__publicNavigationToken)render();
 }
 
 window.addEventListener('popstate',()=>{const page=publicPathPage(location.pathname);if(!page)return;showPublicPage(page,false)});
+let __publicInitialBooted=false;
 function bootPublicRoute(){
+ if(__publicInitialBooted)return;
  const page=publicPathPage(location.pathname);
  if(!page)return;
+ __publicInitialBooted=true;
  showPublicPage(page,false);
 }
 window.bootPublicRoute=bootPublicRoute;

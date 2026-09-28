@@ -228,12 +228,6 @@ if(window.__RD_BOOT_ACTIVE)return;window.__RD_BOOT_ACTIVE=true;window.__RD_BOOT_
   if(demoMode)state.token='demo-token';
   try{state.me=await api('/v1/me');shell();if(demoMode)document.getElementById('content').insertAdjacentHTML('beforebegin','<div class="demo-banner">MODE DÉMO · données fictives · aucune action externe exécutée</div>');document.getElementById('logout').onclick=async()=>{try{await api('/v1/logout',{method:'POST'})}finally{state.token=null;localStorage.removeItem('rd_token');location.href='/'}};await reviewDefenseRender()}catch(e){window.__RD_BOOT_DIAGNOSTIC__={...(window.__RD_BOOT_DIAGNOSTIC__||{}),failed_at:Date.now(),error:String(e?.message||e),stack:String(e?.stack||''),renderer_type:typeof window.reviewDefenseRender,renderer_value:String(window.reviewDefenseRender),renderer_local_type:typeof reviewDefenseRender,token_present:!!state.token};throw e}return
  }
- const publicPage=typeof publicPathPage==='function' ? publicPathPage(location.pathname) : null;
- const publicRoutes=typeof PUBLIC_ROUTES!=='undefined' ? Object.values(PUBLIC_ROUTES) : [];
- if(publicPage || publicRoutes.includes(location.pathname)){
-  if(typeof showPublicPage==='function') showPublicPage(publicPage||'home',false);
-  return;
- }
  const page=new URLSearchParams(location.search).get('page')||'home';
  if(typeof showPublicPage==='function')showPublicPage(page,false);else renderLogin();
 }
