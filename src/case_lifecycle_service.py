@@ -6,10 +6,9 @@ authorization, response formatting and routing remain outside this module.
 from __future__ import annotations
 
 import uuid
-from dataclasses import asdict
 from typing import Any, Callable
 
-from .case_service import Case
+from .case_service import Case, CaseService
 from .security_hardening import utc_now
 
 
@@ -56,8 +55,3 @@ class CaseLifecycleService:
             for (org, _), case in self.store.cases.items()
             if org == organization_id
         ]
-
-
-# Import kept local to avoid making the lifecycle module responsible for the
-# Case contract definition while preserving the existing hydration seam.
-from .case_service import CaseService
