@@ -24,6 +24,6 @@ def test_public_asset_version_is_consistent_after_p2():
     js = (ROOT / "frontend/assets/public.js").read_text()
     index = (ROOT / "frontend/index.html").read_text()
     landing = (ROOT / "frontend/landing.html").read_text()
-    assert "PUBLIC_ASSET_VERSION='6711'" in js
-    assert "public.js?v=6711" in index
-    assert "public.js?v=6711" in landing
+    assert "PUBLIC_ASSET_VERSION='6713'" in js
+    assert "public.js?v=6713" in index
+    assert "public.js?v=6713" in landing
