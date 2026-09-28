@@ -281,7 +281,7 @@ function contactPage(){return '<section class="contact-layout premium-contact"><
 function marketingLayout(active,body){
  ensurePublicStyles();setPublicMeta(active||'home');
  document.body.innerHTML=publicShell(active,body);
- document.querySelectorAll('[data-public]').forEach(x=>x.addEventListener('click',e=>{e.preventDefault();showPublicPage(x.dataset.public)}));
+ document.querySelectorAll('[data-public]').forEach(x=>x.addEventListener('click',e=>{if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();showPublicPage(x.dataset.public)}));
  const publicCta=document.getElementById('public-cta');
  publicCta?.addEventListener('click',e=>{e.preventDefault();location.href='/analyse-avis-google/'});
  const menu=document.getElementById('mobile-menu');
