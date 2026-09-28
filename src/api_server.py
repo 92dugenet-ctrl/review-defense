@@ -22,6 +22,7 @@ from .evidence_vault import FilesystemObjectStore, InMemoryObjectStore, sign_dow
 from .security_hardening import RateLimiter, Session, generate_session_token, hash_password, verify_password, utc_now, hash_token
 from .app_shell import SessionContext, can_access
 from .case_service import Case, CaseService
+from .case_lifecycle_service import CaseLifecycleService
 from .case_workspace_service import CaseWorkspaceService
 from .case_decision_service import CaseDecisionService
 from .case_submission_service import CaseSubmissionService
@@ -172,6 +173,7 @@ class ReviewDefenseAPI:
         self.store.sla_calendars = self.store.sla_calendars
         self.store.escalations = self.store.escalations
         self.store.notifications = self.store.notifications
+        self.case_lifecycle = CaseLifecycleService(store=self.store, repository=self.repository, audit_event=self.store.audit_event)
         self.case_sla = CaseSLAService(repository=self.repository, audit_event=self.store.audit_event)
         self.case_review = CaseReviewService(store=self.store, repository=self.repository, audit_event=self.store.audit_event)
         self.case_contradictions = CaseContradictionService(
@@ -1556,21 +1558,17 @@ class ReviewDefenseAPI:
             if (user.organization_id, rid) not in self.store.reviews:
                 raise APIError(404, "NOT_FOUND", "review not found")
             def create():
-                cid = str(uuid.uuid4()); case = Case(cid, user.organization_id, rid, "ANALYZING", created_at=utc_now().isoformat())
-                self.store.cases[(user.organization_id, cid)] = case
-                if self.repository is not None:
-                    self.repository.create_case_persistent(user.organization_id, cid, rid, case.status, user.user_id)
-                self.store.audit_event(user.organization_id, user.user_id, "CASE_CREATED", f"case:{cid}", review_id=rid)
+                case = self.case_lifecycle.create(
+                    organization_id=user.organization_id,
+                    review_id=rid,
+                    actor_id=user.user_id,
+                )
                 return {"case": asdict(case)}
             return self._json(201, self._idem(user, environ, body, create))
         if method == "GET" and path == "/v1/cases":
-            rows = [c for (org, _), c in self.store.cases.items() if org == user.organization_id]
-            if self.repository is not None and hasattr(self.repository, "list_cases"):
-                for row in self.repository.list_cases(user.organization_id):
-                    cid = str(row[0])
-                    if (user.organization_id, cid) not in self.store.cases:
-                        self.store.cases[(user.organization_id, cid)] = CaseService.from_row(row)
-                rows = [c for (org, _), c in self.store.cases.items() if org == user.organization_id]
+            rows = self.case_lifecycle.list_for_organization(
+                organization_id=user.organization_id,
+            )
             return self._json(200, {"items": [asdict(c) for c in rows], "count": len(rows)})
         if path.startswith("/v1/cases/"):
             parts = path.split("/")
