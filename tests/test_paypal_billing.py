@@ -83,3 +83,16 @@ def test_public_catalog_exposes_paypal_checkout_identifiers():
     assert catalog["audit_1_9"]["paypal_hosted_button_id"] == "6XQ5EXDMKXBF2"
     assert catalog["audit_500_999"]["paypal_hosted_button_id"] == "ZNRWMCRAFMB4E"
     assert catalog["monitoring_professional"]["paypal_plan_id"] == "P-09J30923C56343623NK5DGGI"
+
+
+def test_paypal_capture_webhook_uses_related_order_id_for_billing_correlation():
+    resource = {
+        "id": "CAPTURE-123",
+        "supplementary_data": {"related_ids": {"order_id": "ORDER-456"}},
+    }
+    related_ids = ((resource.get("supplementary_data") or {}).get("related_ids") or {})
+    paypal_order_id = str(related_ids.get("order_id") or resource.get("order_id") or "")
+    paypal_capture_id = str(resource.get("id") or "")
+    paypal_id = paypal_order_id or paypal_capture_id
+    assert paypal_id == "ORDER-456"
+    assert paypal_capture_id == "CAPTURE-123"

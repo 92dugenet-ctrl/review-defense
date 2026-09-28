@@ -770,7 +770,10 @@ class ReviewDefenseAPI:
             if not event_id: raise APIError(400,"PAYPAL_WEBHOOK_INVALID","missing PayPal event id")
             event_type=str(event.get("event_type",""))
             resource=event.get("resource") or {}
-            paypal_id=str(resource.get("id") or "")
+            related_ids=((resource.get("supplementary_data") or {}).get("related_ids") or {})
+            paypal_order_id=str(related_ids.get("order_id") or resource.get("order_id") or "")
+            paypal_capture_id=str(resource.get("id") or "")
+            paypal_id=paypal_order_id or paypal_capture_id
             if event_type.startswith("PAYMENT.SALE.") and resource.get("billing_agreement_id"):
                 paypal_id=str(resource.get("billing_agreement_id"))
             if self.repository is not None and hasattr(self.repository,"billing_event_seen") and self.repository.billing_event_seen(event_id):
@@ -793,7 +796,9 @@ class ReviewDefenseAPI:
                     "PAYMENT.SALE.REFUNDED":"REFUNDED","PAYMENT.SALE.REVERSED":"REVERSED"}
                 tx["status"]=status_map.get(event_type,tx.get("status","PENDING")); tx["paypal_event_id"]=event_id
                 existing_metadata=tx.get("metadata") if isinstance(tx.get("metadata"),dict) else {}
-                tx["metadata"]={**existing_metadata,"last_webhook_type":event_type,"last_webhook_at":utc_now().isoformat()}
+                tx["paypal_order_id"]=paypal_order_id or tx.get("paypal_order_id")
+                tx["metadata"]={**existing_metadata,"last_webhook_type":event_type,"last_webhook_at":utc_now().isoformat(),
+                                **({"paypal_capture_id":paypal_capture_id} if paypal_capture_id and paypal_capture_id != paypal_id else {})}
                 if self.repository is not None:
                     try:
                         self.repository.update_billing_transaction(tx["organization_id"],tx)
