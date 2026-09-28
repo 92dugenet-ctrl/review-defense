@@ -278,6 +278,26 @@ function compliancePage(){
 
 function submitPublicContact(event){event.preventDefault();const f=new FormData(event.currentTarget);const name=String(f.get('name')||'').trim();const email=String(f.get('email')||'').trim();const company=String(f.get('company')||'').trim();const message=String(f.get('message')||'').trim();const subject=encodeURIComponent('Contact Review Defense'+(company?' · '+company:''));const body=encodeURIComponent('Nom : '+name+'\nE-mail : '+email+'\nEntreprise : '+company+'\n\n'+message);location.href='mailto:contact@review-defense.com?subject='+subject+'&body='+body;toast('Votre client e-mail va s’ouvrir pour finaliser l’envoi.','success')}
 function contactPage(){return '<section class="contact-layout premium-contact"><div class="page-mountain"></div><div><span>BESOIN D’AIDE ?</span><h1>Une question ?<br><span>Une démonstration ?</span></h1><p>Présentez-nous votre besoin. L’équipe peut vous aider à comprendre le parcours et le périmètre de Review Defense.</p><div class="contact-points"><span>✉ contact@review-defense.com</span><span>⌕ France</span><span>◷ Réponse selon disponibilité de l’équipe</span></div></div><form class="contact-form" onsubmit="submitPublicContact(event)"><h3>Parlons de votre besoin</h3><label>Nom complet<input name="name" autocomplete="name" required></label><label>E-mail<input name="email" type="email" autocomplete="email" required></label><label>Entreprise<input name="company" autocomplete="organization"></label><label>Message<textarea name="message" rows="5" required></textarea></label><button class="btn-primary" type="submit">Préparer le message</button><small class="form-note">L’envoi final est effectué depuis votre client e-mail.</small></form></section>'}
+function editorializePublicPage(active){
+ const main=document.querySelector('.marketing main');
+ if(!main)return;
+ const sections=[...main.querySelectorAll(':scope > section')];
+ const labels=['Introduction','Comprendre','Analyser','Structurer','Documenter','Décider','Valider','Suivre'];
+ sections.forEach((section,index)=>{
+   section.classList.add('rd-story-scene','rd-story-scene-'+Math.min(index+1,8));
+   section.dataset.scene=String(index+1).padStart(2,'0');
+   section.dataset.sceneType=index===0?'opening':index===sections.length-1?'closing':'chapter';
+   const heading=section.querySelector('h1,h2,h3');
+   if(heading&&!section.querySelector(':scope > .rd-scene-kicker')){
+     const kicker=document.createElement('span');
+     kicker.className='rd-scene-kicker';
+     kicker.textContent=String(index+1).padStart(2,'0')+' / '+(labels[index]||'Suite');
+     heading.parentNode.insertBefore(kicker,heading);
+   }
+ });
+ const shell=document.querySelector('.marketing');
+ if(shell)shell.dataset.storyPage=active||'home';
+}
 function marketingLayout(active,body){
  ensurePublicStyles();setPublicMeta(active||'home');
  document.body.innerHTML=publicShell(active,body);
@@ -294,6 +314,7 @@ function marketingLayout(active,body){
  menu?.addEventListener('keydown',e=>{if(e.key==='Escape'&&nav?.classList.contains('open')){e.preventDefault();closePublicMenu();menu.focus()}});
  document.querySelectorAll('.public-nav [data-public]').forEach(x=>x.addEventListener('click',()=>{closePublicMenu();menu?.focus()}));
  initPremiumInteractions();
+ editorializePublicPage(active);
 }
 function publicLoadingState(){
  if(document.body.dataset.publicLoading==='1') return;
