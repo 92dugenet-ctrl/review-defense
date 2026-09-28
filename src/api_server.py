@@ -1883,7 +1883,7 @@ class ReviewDefenseAPI:
                 elapsed = (_time.perf_counter() - started) * 1000
                 self.telemetry.increment("http_requests_total", labels={"method": environ.get("REQUEST_METHOD", "GET"), "path": path, "status": "200"})
                 self.telemetry.observe_ms("http_request_duration_ms", elapsed, labels={"method": environ.get("REQUEST_METHOD", "GET"), "path": path})
-                start_response("200 OK", [("Content-Type", ctype), ("Content-Length", str(len(body))), ("X-Request-ID", trace_id), ("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0"), ("Pragma", "no-cache")])
+                start_response("200 OK", [("Content-Type", ctype), ("Content-Length", str(len(body))), ("X-Request-ID", trace_id)])
                 return [body]
         try:
             status, headers, body = self.handle(environ)

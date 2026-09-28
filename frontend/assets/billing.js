@@ -1,6 +1,12 @@
 // Billing and PayPal integration isolated from the console shell.
 const PAYPAL_HOSTED_CLIENT_ID='BAAftx79q4rSHY7vc2aYy_hgx3KB6GB15k__TBghUQyd1_ixXSqv71UHw1RXZvkR4cli25WsSirUKWt7zs';
 const PAYPAL_SUBSCRIPTION_CLIENT_ID='BAADwFz5aRpmMnNRVADMoONwkWyHzC3Y-l75vTda13-4tfwv2gSa4TdAq_jguOBTz2kBqsU1ARHCQ7nz6k';
+let PAYPAL_RUNTIME_CLIENT_ID='';
+async function paypalClientId(){
+ if(PAYPAL_RUNTIME_CLIENT_ID)return PAYPAL_RUNTIME_CLIENT_ID;
+ try{const cfg=await api('/v1/paypal/config');if(cfg?.client_id)PAYPAL_RUNTIME_CLIENT_ID=String(cfg.client_id)}catch(_){}
+ return PAYPAL_RUNTIME_CLIENT_ID||PAYPAL_HOSTED_CLIENT_ID;
+}
 
 function selectClientBillingOffer(type,name,price,offerId){try{localStorage.setItem('rd_selected_offer',JSON.stringify({type,name,price,offer_id:offerId||null,selected_at:new Date().toISOString()}))}catch(_){}if(offerId)showBillingPayment()}
 
@@ -29,7 +35,7 @@ async function renderHostedButton(buttonId,en){
  const box=document.getElementById('paypal-button-container');
  if(!box)throw new Error(en?'PayPal checkout container is missing.':'Conteneur de paiement PayPal introuvable.');
  box.innerHTML='<div id="'+hostId+'"></div>';
- const pp=await loadPayPalSdk(PAYPAL_HOSTED_CLIENT_ID,'hosted-buttons',en?'en_GB':'fr_FR');
+ const pp=await loadPayPalSdk(await paypalClientId(),'hosted-buttons',en?'en_GB':'fr_FR');
  if(!pp.HostedButtons)throw new Error(en?'Hosted PayPal buttons are unavailable.':'Les boutons PayPal hébergés sont indisponibles.');
  pp.HostedButtons({hostedButtonId:buttonId}).render('#'+hostId);
 }
