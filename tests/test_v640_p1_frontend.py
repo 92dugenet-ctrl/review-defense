@@ -8,7 +8,7 @@ def test_public_shell_does_not_eagerly_load_seo_editorial_payload():
     for name in ("frontend/index.html", "frontend/landing.html"):
         text = (ROOT / name).read_text()
         assert "seo-articles.js" not in text
-        assert "public.js?v=6715" in text
+        assert "public.js?v=6716" in text
 
 
 def test_public_js_has_deferred_seo_loader_and_single_history_listener():
@@ -31,7 +31,9 @@ def test_public_css_has_navigation_loading_fallback():
 def test_public_boot_is_not_short_circuited_by_console_boot_guard():
     text = (ROOT / "frontend/assets/app.js").read_text()
     assert "const __RD_PUBLIC_ROUTE=" not in text
-    assert "if(typeof showPublicPage==='function') showPublicPage(publicPage||'home',false);" in text
+    assert "const publicPage=typeof publicPathPage" not in text
+    assert "Object.values(PUBLIC_ROUTES)" not in text
+    assert "showPublicPage(publicPage||'home',false)" not in text
 
 
 def test_public_scene_enrichment_runs_before_optional_visual_interactions():
