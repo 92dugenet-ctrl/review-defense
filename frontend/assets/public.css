@@ -373,7 +373,7 @@ body{font-size:16px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLe
  .rd-product-stage{padding-top:10px}
  .rd-floating-card{right:8px}
 }
-@media(max-width:640px){.rd-hero-microcopy{text-align:center}\n 
+@media(max-width:640px){.rd-hero-microcopy{text-align:center} 
  .rd-container,.rd-nav-inner{width:calc(100% - 32px)}
  .public-actions{gap:6px}
  .public-actions .btn-secondary{display:none}
