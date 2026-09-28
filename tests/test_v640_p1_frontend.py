@@ -32,3 +32,13 @@ def test_public_boot_is_not_short_circuited_by_console_boot_guard():
     text = (ROOT / "frontend/assets/app.js").read_text()
     assert "const __RD_PUBLIC_ROUTE=" not in text
     assert "if(typeof showPublicPage==='function') showPublicPage(publicPage||'home',false);" in text
+
+
+def test_public_scene_enrichment_runs_before_optional_visual_interactions():
+    text = (ROOT / "frontend/assets/public.js").read_text()
+    marker = "document.body.innerHTML=publicShell(active,body);"
+    start = text.index(marker)
+    end = text.index("\n}", start)
+    block = text[start:end]
+    assert block.index("editorializePublicPage(active);") < block.index("initPremiumInteractions()")
+    assert "try{initPremiumInteractions()}catch(e){console.warn('Review Defense visual interaction init failed',e)}" in block

@@ -296,8 +296,8 @@ function marketingLayout(active,body){
  menu?.addEventListener('click',()=>{const open=nav?.classList.toggle('open')||false;menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Fermer le menu':'Ouvrir le menu')});
  menu?.addEventListener('keydown',e=>{if(e.key==='Escape'&&nav?.classList.contains('open')){e.preventDefault();closePublicMenu();menu.focus()}});
  document.querySelectorAll('.public-nav [data-public]').forEach(x=>x.addEventListener('click',()=>{closePublicMenu();menu?.focus()}));
- initPremiumInteractions();
  editorializePublicPage(active);
+ try{initPremiumInteractions()}catch(e){console.warn('Review Defense visual interaction init failed',e)}
 }
 function publicLoadingState(){
  if(document.body.dataset.publicLoading==='1') return;
