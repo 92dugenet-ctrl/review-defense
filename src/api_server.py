@@ -60,7 +60,7 @@ from .deployment import DeploymentConfig, security_headers
 from .observability import InMemoryTelemetry, TraceContext, health_check
 from .seo_renderer import is_seo_path, render_page, sitemap, robots
 from .billing_catalog import get_offer, paypal_plan_id, public_catalog
-from .paypal_client import configured as paypal_configured, configuration_status as paypal_configuration_status, create_order as paypal_create_order, capture_order as paypal_capture_order, verify_webhook as paypal_verify_webhook, request_json as paypal_request_json, access_token as paypal_access_token, PayPalError
+from .paypal_client import configured as paypal_configured, configuration_status as paypal_configuration_status, verify_webhook as paypal_verify_webhook, request_json as paypal_request_json, access_token as paypal_access_token, PayPalError
 
 
 class APIError(Exception):
@@ -815,45 +815,6 @@ class ReviewDefenseAPI:
             return self._json(200, {"items": items, "count": len(items)})
         if method == "GET" and path == "/v1/paypal/config":
             return self._json(200,{"configured":paypal_configured(),"client_id":os.getenv("PAYPAL_CLIENT_ID","").strip(),"environment":"live","diagnostics":paypal_configuration_status()})
-        if method == "POST" and path == "/v1/paypal/orders/create":
-            body=self._body(environ); offer_id=str(body.get("offer_id","")).strip()
-            try: offer=get_offer(offer_id)
-            except ValueError as exc: raise APIError(422,"INVALID_OFFER","unknown billing offer") from exc
-            if offer.amount is None or offer.kind=="subscription": raise APIError(422,"INVALID_OFFER","this offer is not a one-time PayPal order")
-            if not paypal_configured(): raise APIError(503,"PAYPAL_NOT_CONFIGURED","PayPal is not configured")
-            def create_billing_order():
-                tx_id=str(uuid.uuid4()); base=self.config.public_base_url.rstrip("/")
-                try:
-                    pp=paypal_create_order(offer_id=offer.offer_id,name=offer.name_fr,amount=f"{offer.amount:.2f}",currency=offer.currency,reference_id=tx_id,return_url=base+"/app?paypal=success",cancel_url=base+"/app?paypal=cancel")
-                except PayPalError as exc: raise APIError(502,"PAYPAL_CREATE_ORDER_FAILED","PayPal order creation failed",exc.payload)
-                paypal_order_id=str(pp.get("id") or "").strip()
-                if not paypal_order_id: raise APIError(502,"PAYPAL_INVALID_RESPONSE","PayPal did not return an order ID")
-                row={"id":tx_id,"organization_id":user.organization_id,"user_id":user.user_id,"offer_id":offer.offer_id,"kind":offer.kind,"status":"CREATED","currency":offer.currency,"amount":str(offer.amount),"paypal_order_id":paypal_order_id,"paypal_subscription_id":None,"metadata":{}}
-                try:
-                    if self.repository is not None and hasattr(self.repository,"create_billing_transaction"): self.repository.create_billing_transaction(user.organization_id,row)
-                except Exception as exc:
-                    self.store.audit_event(user.organization_id,user.user_id,"PAYPAL_BILLING_LEDGER_FAILED",f"billing:{tx_id}",offer_id=offer.offer_id,error_type=type(exc).__name__)
-                    raise APIError(500,"BILLING_LEDGER_FAILED","PayPal order was created but could not be recorded. Please retry; no additional capture was made.") from exc
-                self.store.billing[tx_id]=row
-                self.store.audit_event(user.organization_id,user.user_id,"PAYPAL_ORDER_CREATED",f"billing:{tx_id}",offer_id=offer.offer_id,paypal_order_id=pp.get("id"))
-                return self._json(201,{"id":pp.get("id"),"offer_id":offer.offer_id,"amount":str(offer.amount),"currency":offer.currency})
-            return self._idem(user,environ,body,create_billing_order)
-        if method == "POST" and path.startswith("/v1/paypal/orders/") and path.endswith("/capture"):
-            order_id=path.split("/")[4]
-            row=next((x for x in self.store.billing.values() if x.get("paypal_order_id")==order_id and x.get("organization_id")==user.organization_id),None)
-            if row is None and self.repository is not None and hasattr(self.repository,"get_billing_by_order"):
-                row=self.repository.get_billing_by_order(user.organization_id,order_id)
-            if row is None: raise APIError(404,"PAYMENT_NOT_FOUND","PayPal order not found")
-            if row.get("status")=="COMPLETED": return self._json(200,{"status":"COMPLETED","id":order_id,"offer_id":row["offer_id"]})
-            def capture_billing_order():
-                try: pp=paypal_capture_order(order_id)
-                except PayPalError as exc: raise APIError(502,"PAYPAL_CAPTURE_FAILED","PayPal capture failed",exc.payload)
-                row["status"]=pp.get("status","UNKNOWN"); row["metadata"]={"capture":pp}
-                self.store.billing[str(row["id"])]=row
-                if self.repository is not None and hasattr(self.repository,"update_billing_transaction"): self.repository.update_billing_transaction(user.organization_id,row)
-                self.store.audit_event(user.organization_id,user.user_id,"PAYPAL_ORDER_CAPTURED",f"billing:{row['id']}",paypal_order_id=order_id,status=row["status"])
-                return self._json(200,{"status":row["status"],"id":order_id,"offer_id":row["offer_id"]})
-            return self._idem(user,environ,{"order_id":order_id},capture_billing_order)
         if method == "GET" and path == "/v1/paypal/subscription/config":
             offer_id=str(parse_qs(environ.get("QUERY_STRING","")).get("offer_id",[""])[0])
             try: offer=get_offer(offer_id)
