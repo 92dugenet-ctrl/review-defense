@@ -58,7 +58,7 @@ function setPublicMeta(page){
  setMeta('meta[name="twitter:description"]',{name:'twitter:description'},m[1]);
 }
 const PUBLIC_NAV_ITEMS=[
- ['features','Produit'],['how','Parcours'],['services','Services'],['pricing','Tarifs']
+ ['features','Produit'],['how','Parcours'],['services','Services'],['resources','Ressources'],['pricing','Tarifs']
 ];
 const PUBLIC_FOOTER_GROUPS=[
  ['Produit',[['Fonctionnalités','/produit/'],['Comment ça marche','/comment-ca-marche/'],['Tarifs','/tarifs/']]],
@@ -75,7 +75,8 @@ function publicFooter(){
 function publicShell(active,body){
  return '<div class="marketing" data-public-shell="site"><div class="public-shell-header">'+publicHeader(active)+'</div><main>'+body+'</main><div class="public-shell-footer">'+publicFooter()+'</div></div>';
 }
-function ensureMuseLandingStyles(){if(document.getElementById('rd-muse-landing-styles'))return;const s=document.createElement('style');s.id='rd-muse-landing-styles';s.textContent='.rd-muse-header{position:absolute!important;top:0;left:0;right:0;background:rgba(255,255,255,.72)!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(16,24,40,.06)}.rd-muse-home{padding-top:0!important}.rd-muse-media-banner{position:relative;min-height:calc(100vh - 24px);margin:0;overflow:hidden;background:#0b0d12}.rd-muse-hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.rd-muse-video-scrim{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,8,14,.74) 0%,rgba(5,8,14,.36) 46%,rgba(5,8,14,.08) 100%),linear-gradient(0deg,rgba(5,8,14,.42),transparent 42%)}.rd-muse-video-copy{position:absolute;z-index:2;left:clamp(24px,8vw,128px);top:50%;transform:translateY(-50%);max-width:760px;color:#fff}.rd-muse-video-copy .rd-eyebrow-pill{border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.1);color:#fff}.rd-muse-video-copy h1{margin:20px 0;font-size:clamp(58px,8vw,126px);line-height:.9;letter-spacing:-.075em}.rd-muse-video-copy h1 span{color:#dfe8ff}.rd-muse-video-copy p{max-width:600px;font-size:clamp(17px,1.6vw,24px);line-height:1.45;color:rgba(255,255,255,.82)}.rd-muse-video-copy .btn-secondary{border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:#fff}.rd-muse-video-caption{position:absolute;z-index:2;left:clamp(24px,8vw,128px);right:clamp(24px,8vw,128px);bottom:28px;display:flex;justify-content:space-between;gap:20px;color:rgba(255,255,255,.72);font-size:10px;letter-spacing:.12em}.rd-muse-video-caption b{font-weight:600}.rd-muse-home>.mountain-wash{display:none}.rd-muse-home>.rd-container.rd-hero-grid{display:none}.rd-muse-home>.hero-confidence{display:none}@media(max-width:760px){.rd-muse-header{position:absolute!important}.rd-muse-header .public-nav{top:70px}.rd-muse-media-banner{min-height:calc(100svh - 12px)}.rd-muse-video-copy{left:24px;right:24px;top:auto;bottom:90px;transform:none}.rd-muse-video-copy h1{font-size:clamp(52px,16vw,78px)}.rd-muse-video-caption{left:24px;right:24px;bottom:24px}.rd-muse-video-caption b{display:none}}';document.head.appendChild(s)}
+function ensureMuseLandingStyles(){const x=document.getElementById('rd-muse-landing-styles');if(x)x.remove()}
+
 function ensurePublicStyles(){ensureMuseLandingStyles();if(document.getElementById('public-styles'))return;const link=document.createElement('link');link.id='public-styles';link.rel='stylesheet';link.href='/assets/public.css?v='+PUBLIC_ASSET_VERSION;document.head.appendChild(link)}
 function productMockup(){
  return '<div class="rd-product-stage"><div class="rd-product-glow"></div><div class="rd-product-window"><div class="rd-window-top"><div class="window-dots"><i></i><i></i><i></i></div><b>Review Defense</b><span>Workspace</span></div><div class="rd-window-body"><aside><strong>RD</strong><span class="active">⌂ Tableau</span><span>◌ Mes avis</span><span>⌕ Analyse</span><span>□ Dossiers</span><span>◇ Preuves</span><span>✓ Suivi</span><span>◫ Rapports</span></aside><div class="rd-preview-main"><div class="preview-toolbar"><div><small>ANALYSE · DOSSIER REV-88421</small><h3>Avis Google à vérifier</h3></div><span class="rd-mini-badge">À VÉRIFIER</span></div><div class="preview-review"><div class="stars">★☆☆☆☆</div><b>« Service déplorable, une arnaque totale. »</b><span>Exemple · source publique</span></div><div class="preview-kpis"><div><small>SIGNAUX</small><strong>03</strong><span>à examiner</span></div><div><small>PREUVES</small><strong>07</strong><span>associées</span></div><div><small>STATUT</small><strong>Gel</strong><span>validation requise</span></div></div><div class="preview-chain"><span class="done">01 Analyse</span><span class="done">02 Décision</span><span class="current">03 Gel</span><span>04 Approbation</span><span>05 Préparation</span></div><div class="preview-chart"><div class="chart-line"></div><div class="chart-labels"><span>Éléments factuels</span><span>Contradictions</span><span>Preuves</span></div></div></div></div></div><div class="rd-floating-card"><span>HUMAN APPROVAL</span><strong>Validation requise</strong><small>Avant toute étape contrôlée</small></div><div class="hero-signal-card"><span class="signal-dot"></span><div><small>SIGNAL DE DOSSIER</small><strong>03 éléments à vérifier</strong></div><b>DEMO</b></div></div>';
@@ -274,34 +275,12 @@ function compliancePage(){
 function submitPublicContact(event){event.preventDefault();const f=new FormData(event.currentTarget);const name=String(f.get('name')||'').trim();const email=String(f.get('email')||'').trim();const company=String(f.get('company')||'').trim();const message=String(f.get('message')||'').trim();const subject=encodeURIComponent('Contact Review Defense'+(company?' · '+company:''));const body=encodeURIComponent('Nom : '+name+'\nE-mail : '+email+'\nEntreprise : '+company+'\n\n'+message);location.href='mailto:contact@review-defense.com?subject='+subject+'&body='+body;toast('Votre client e-mail va s’ouvrir pour finaliser l’envoi.','success')}
 function contactPage(){return '<section class="contact-layout premium-contact"><div class="page-mountain"></div><div><span>BESOIN D’AIDE ?</span><h1>Besoin de voir<br><span>comment le dossier fonctionne ?</span></h1><p>Présentez-nous votre besoin. L’équipe peut vous aider à comprendre le parcours et le périmètre de Review Defense.</p><div class="contact-points"><span>✉ contact@review-defense.com</span><span>⌕ France</span><span>◷ Réponse selon disponibilité de l’équipe</span></div></div><form class="contact-form" onsubmit="submitPublicContact(event)"><h3>Parlons de votre besoin</h3><label>Nom complet<input name="name" autocomplete="name" required></label><label>E-mail<input name="email" type="email" autocomplete="email" required></label><label>Entreprise<input name="company" autocomplete="organization"></label><label>Message<textarea name="message" rows="5" required></textarea></label><button class="btn-primary" type="submit">Préparer le message</button><small class="form-note">L’envoi final est effectué depuis votre client e-mail.</small></form></section>'}
 function editorializePublicPage(active){
- const main=document.querySelector('.marketing main');
- if(!main)return;
- const sections=[...main.querySelectorAll(':scope > section')];
- const labels=['Introduction','Comprendre','Analyser','Structurer','Documenter','Décider','Valider','Suivre'];
- const layouts=['immersive','split','feature','editorial','proof','decision','validation','closing'];
- sections.forEach((section,index)=>{
-   const sceneIndex=Math.min(index+1,8);
-   section.classList.add('rd-story-scene','rd-story-scene-'+sceneIndex);
-   section.dataset.scene=String(sceneIndex).padStart(2,'0');
-   section.dataset.sceneType=index===0?'opening':index===sections.length-1?'closing':'chapter';
-   section.dataset.sceneLayout=layouts[Math.min(index,layouts.length-1)];
-   if(section.querySelector('video,img,.rd-product-stage,.console-showcase,.evidence-card,.rd-workflow-visual')){
-     section.dataset.sceneMedia='true';
-   }
-   const heading=section.querySelector('h1,h2,h3');
-   if(heading&&!section.querySelector(':scope > .rd-scene-kicker')){
-     const kicker=document.createElement('span');
-     kicker.className='rd-scene-kicker';
-     kicker.textContent=String(sceneIndex).padStart(2,'0')+' / '+(labels[index]||'Suite');
-     heading.parentNode.insertBefore(kicker,heading);
-   }
- });
- const shell=document.querySelector('.marketing');
- if(shell){
-   shell.dataset.storyPage=active||'home';
-   shell.dataset.storyScenes=String(sections.length);
- }
+const main=document.querySelector('.marketing main');if(!main)return;
+const sections=[...main.querySelectorAll(':scope > section')];
+sections.forEach((s,i)=>{s.classList.add('rd-story-scene');s.dataset.scene=String(i+1).padStart(2,'0');s.style.visibility='visible';s.style.opacity='1'});
+const shell=document.querySelector('.marketing');if(shell){shell.dataset.storyPage=active||'home';shell.dataset.storyScenes=String(sections.length);shell.setAttribute('data-story-scenes',String(sections.length))}
 }
+
 function marketingLayout(active,body){
  ensurePublicStyles();setPublicMeta(active||'home');
  document.body.innerHTML=publicShell(active,body);
@@ -333,36 +312,26 @@ function clearPublicLoading(){
  document.body.removeAttribute('aria-busy');
  document.querySelector('.marketing')?.classList.remove('is-navigating');
 }
-function showPublicPage(page,push=true){
- const navigationToken=++__publicNavigationToken;
- if(page==='accept-invitation'){clearPublicLoading();invitationSignupPage();return}
- const render=()=>{
-   if(window.REVIEW_DEFENSE_RENDER_ARTICLE&&window.REVIEW_DEFENSE_ARTICLE_META&&window.REVIEW_DEFENSE_ARTICLE_META(page)){
-     if(push&&PUBLIC_ROUTES[page]&&location.pathname!==PUBLIC_ROUTES[page])history.pushState({publicPage:page},'',PUBLIC_ROUTES[page]);
-     marketingLayout('resources',window.REVIEW_DEFENSE_RENDER_ARTICLE(page));clearPublicLoading();return;
-   }
-   const p={home:['',homePage],compliance:['compliance',compliancePage],features:['features',featuresPage],how:['how',howPage],services:['services',servicesPage],pricing:['pricing',pricingPage],resources:['resources',resourcesPage],contact:['contact',contactPage],analyze:['analyze',analyzePage],legal:['legal',()=>legalPage('legal')],privacy:['privacy',()=>legalPage('privacy')],cgv:['cgv',()=>legalPage('cgv')],cgu:['cgu',()=>legalPage('cgu')],cookies:['cookies',()=>legalPage('cookies')],security:['security',()=>legalPage('security')],retention:['retention',()=>legalPage('retention')],rights:['rights',()=>legalPage('rights')],breach:['breach',()=>legalPage('breach')],subprocessors:['subprocessors',()=>legalPage('subprocessors')],ai:['ai',()=>legalPage('ai')]};
-   const x=p[page]||p.home;
-   if(push&&PUBLIC_ROUTES[page]&&location.pathname!==PUBLIC_ROUTES[page])history.pushState({publicPage:page},'',PUBLIC_ROUTES[page]);
-   marketingLayout(x[0],x[1]());clearPublicLoading();
- };
- const needsSeo=page==='resources'||!PUBLIC_ROUTES[page];
- if(needsSeo){
-   publicLoadingState();
-   ensureSeoArticles().then(()=>{
-     if(navigationToken!==__publicNavigationToken)return;
-     Object.keys(window.REVIEW_DEFENSE_SEO_ARTICLES||{}).forEach(slug=>{PUBLIC_ROUTES[slug]='/'+slug+'/'});
-     render();
-   }).catch(()=>{
-     if(navigationToken!==__publicNavigationToken)return;
-     clearPublicLoading();marketingLayout('resources',publicLoadError());
-   });
- }else{
-   publicLoadingState();
-   if(navigationToken!==__publicNavigationToken)return;
-   render();
- }
+function commercialPage(page){
+const d={features:['PRODUIT','Le produit transforme un avis en dossier.',['Analyser','Qualifier','Documenter','Décider','Approuver','Suivre']],how:['PARCOURS','Commencez par l’avis. Terminez avec une décision claire.',['Collecter','Analyser','Qualifier','Documenter','Décider','Approuver']],services:['SERVICES','Du premier signal au dossier que votre équipe maîtrise.',['Analyse de situation','Qualification','Dossier de preuves','Validation','Suivi','Préparation contrôlée']],pricing:['TARIFS','Un dossier clair avant toute décision.',['1–9 · 79 €','10–49 · 149 €','50–99 · 249 €','100–249 · 399 €','250–499 · 599 €','500–999 · 899 €','1 000–2 499 · 1 290 €','2 500+ · Sur devis']],resources:['RESSOURCES','Comprendre le sujet avant de prendre position.',['Analyse d’avis','Preuves & chronologie','Gestion du dossier','Contrôle humain','Conformité','IA']],analyze:['ANALYSER UN AVIS','Un avis arrive. Comprenez-le avant d’agir.',['Examiner l’avis','Qualifier les éléments','Relier les preuves','Faire valider la suite']]}[page]||['REVIEW DEFENSE','Comprendre avant d’agir.',['Analyse','Preuves','Décision']];
+const cards=d[2].map((x,i)=>'<article><b>0'+(i+1)+'</b><small>'+x+'</small><span>→</span></article>').join('');
+return '<section class="rd-v3-hero rd-v3-subhero"><div><small>01 / '+d[0]+'</small><h1>'+d[1]+'</h1><p>Review Defense rassemble analyse, contexte, preuves, décision et validation humaine dans une même expérience de travail.</p><div class="rd-cta-row"><a class="btn-primary" href="/app">Ouvrir l’espace client →</a><a class="btn-secondary" href="/contact/">Parler du besoin</a></div></div></section><section class="rd-v3-scene"><div><small>02 / PARCOURS</small><h2>Une situation. Des étapes visibles.</h2><p>Le site présente le produit comme un parcours éditorial : comprendre, documenter, décider, puis valider.</p></div><div class="rd-v3-list">'+cards+'</div></section><section class="rd-v3-scene rd-v3-dark"><div><small>03 / CONTRÔLE</small><h2>Préparation ≠ exécution.</h2><p>Le produit peut assister l’analyse et la préparation, mais les actions externes sensibles restent sous contrôle humain.</p></div><div class="rd-v3-approval"><b>HUMAN GATE</b><strong>Validation requise</strong><span>Aucune action externe sensible n’est déclenchée automatiquement.</span></div></section><section class="rd-v3-scene"><div><small>04 / INTERFACE</small><h2>Le site commercial mène au logiciel existant.</h2><p>Cette reconstruction concerne uniquement l’expérience web commerciale. Le logiciel client et les interfaces administrateur restent séparés et inchangés.</p><a class="btn-primary" href="/app">Espace client →</a></div></section><section class="rd-v3-close"><small>05 / COMMENCER</small><h2>Voir Review Defense en situation.</h2><a class="btn-primary" href="/app">Entrer dans le logiciel →</a></section>';
 }
+function showPublicPage(page,push=true){
+const navigationToken=++__publicNavigationToken;
+if(page==='accept-invitation'){clearPublicLoading();invitationSignupPage();return}
+const render=()=>{
+if(window.REVIEW_DEFENSE_RENDER_ARTICLE&&window.REVIEW_DEFENSE_ARTICLE_META&&window.REVIEW_DEFENSE_ARTICLE_META(page)){if(push&&PUBLIC_ROUTES[page]&&location.pathname!==PUBLIC_ROUTES[page])history.pushState({publicPage:page},'',PUBLIC_ROUTES[page]);marketingLayout('resources',window.REVIEW_DEFENSE_RENDER_ARTICLE(page));clearPublicLoading();return}
+const commercial=['features','how','services','pricing','resources','analyze'];
+const route=page==='home'?['',homePage]:commercial.includes(page)?[page,()=>commercialPage(page)]:page==='compliance'?['compliance',compliancePage]:page==='contact'?['contact',contactPage]:page==='legal'?['legal',()=>legalPage('legal')]:page==='privacy'?['privacy',()=>legalPage('privacy')]:page==='cgv'?['cgv',()=>legalPage('cgv')]:page==='cgu'?['cgu',()=>legalPage('cgu')]:page==='cookies'?['cookies',()=>legalPage('cookies')]:page==='security'?['security',()=>legalPage('security')]:page==='retention'?['retention',()=>legalPage('retention')]:page==='rights'?['rights',()=>legalPage('rights')]:page==='breach'?['breach',()=>legalPage('breach')]:page==='subprocessors'?['subprocessors',()=>legalPage('subprocessors')]:page==='ai'?['ai',()=>legalPage('ai')]:['',homePage];
+if(push&&PUBLIC_ROUTES[page]&&location.pathname!==PUBLIC_ROUTES[page])history.pushState({publicPage:page},'',PUBLIC_ROUTES[page]);
+marketingLayout(route[0],route[1]());clearPublicLoading();
+};
+publicLoadingState();
+if(page==='resources'||!PUBLIC_ROUTES[page])ensureSeoArticles().then(()=>{if(navigationToken!==__publicNavigationToken)return;Object.keys(window.REVIEW_DEFENSE_SEO_ARTICLES||{}).forEach(slug=>PUBLIC_ROUTES[slug]='/'+slug+'/');render()}).catch(()=>{if(navigationToken!==__publicNavigationToken)return;clearPublicLoading();marketingLayout('resources',publicLoadError())});
+else if(navigationToken===__publicNavigationToken)render();
+}
+
 window.addEventListener('popstate',()=>{const page=publicPathPage(location.pathname);if(!page)return;showPublicPage(page,false)});
 function bootPublicRoute(){
  const page=publicPathPage(location.pathname);
