@@ -1,33 +1,125 @@
-import io,json,pathlib,subprocess
+import io
+import json
+import pathlib
+import subprocess
+
 from src.app import application
-ROOT=pathlib.Path(__file__).resolve().parents[1]
-def request(path,method="GET"):
-    status=[]; headers=[]
-    def start(s,h,exc_info=None): status.append(s); headers.extend(h)
-    env={"REQUEST_METHOD":method,"PATH_INFO":path,"QUERY_STRING":"","wsgi.input":io.BytesIO(),"SERVER_NAME":"localhost","SERVER_PORT":"8080","wsgi.url_scheme":"http"}
-    body=b"".join(application(env,start)); return status[0],dict(headers),body
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+
+
+def request(path, method="GET", headers=None):
+    status = []
+    response_headers = []
+
+    def start(response_status, response_header_list, exc_info=None):
+        status.append(response_status)
+        response_headers.extend(response_header_list)
+
+    env = {
+        "REQUEST_METHOD": method,
+        "PATH_INFO": path,
+        "QUERY_STRING": "",
+        "wsgi.input": io.BytesIO(),
+        "SERVER_NAME": "localhost",
+        "SERVER_PORT": "8080",
+        "wsgi.url_scheme": "http",
+    }
+    for key, value in (headers or {}).items():
+        env[f"HTTP_{key.upper().replace('-', '_')}"] = value
+
+    body = b"".join(application(env, start))
+    return status[0], dict(response_headers), body
+
+
 def test_health():
-    status,headers,body=request("/health"); assert status=="200 OK"; assert json.loads(body)["status"]=="ok"; assert headers["X-Content-Type-Options"]=="nosniff"
+    status, headers, body = request("/health")
+    assert status == "200 OK"
+    assert json.loads(body)["status"] == "ok"
+    assert headers["X-Content-Type-Options"] == "nosniff"
+    assert headers["X-Request-ID"]
+
+
+def test_request_id_is_propagated():
+    status, headers, body = request("/health", headers={"X-Request-ID": "test-request-123"})
+    assert status == "200 OK"
+    assert headers["X-Request-ID"] == "test-request-123"
+
+
 def test_api_metadata():
-    status,_,body=request("/api/v1/metadata"); assert status=="200 OK"; assert json.loads(body)["data"]=={"service":"review-defense","api_version":"v1"}
+    status, _, body = request("/api/v1/metadata")
+    assert status == "200 OK"
+    data = json.loads(body)["data"]
+    assert data["service"] == "review-defense"
+    assert data["api_version"] == "v1"
+
 
 def test_api_metadata_method_not_allowed():
-    status,_,body=request("/api/v1/metadata","POST"); assert status=="405 Method Not Allowed"; assert json.loads(body)["error"]["code"]=="METHOD_NOT_ALLOWED"
+    status, _, body = request("/api/v1/metadata", "POST")
+    assert status == "405 Method Not Allowed"
+    assert json.loads(body)["error"]["code"] == "METHOD_NOT_ALLOWED"
+
 
 def test_api_health():
-    status,_,body=request("/api/v1/health"); assert status=="200 OK"; assert json.loads(body)["data"]["status"]=="ok"
+    status, _, body = request("/api/v1/health")
+    assert status == "200 OK"
+    assert json.loads(body)["data"]["status"] == "ok"
+
+
+def test_api_ready_without_database():
+    status, _, body = request("/api/v1/ready")
+    assert status in {"200 OK", "503 Service Unavailable"}
+    payload = json.loads(body)
+    assert payload["data"]["dependencies"]["http"] == "ok"
+
+
 def test_not_found_is_standard_json():
-    status,headers,body=request("/api/v1/unknown"); assert status=="404 Not Found"; assert json.loads(body)["error"]["code"]=="NOT_FOUND"; assert headers["Content-Type"].startswith("application/json")
+    status, headers, body = request("/api/v1/unknown")
+    assert status == "404 Not Found"
+    payload = json.loads(body)
+    assert payload["error"]["code"] == "NOT_FOUND"
+    assert payload["request_id"]
+    assert headers["Content-Type"].startswith("application/json")
+
+
 def test_method_not_allowed():
-    status,_,body=request("/api/v1/health","POST"); assert status=="405 Method Not Allowed"; assert json.loads(body)["error"]["code"]=="METHOD_NOT_ALLOWED"
-def test_frontend_shell(): assert b"Review Defense" in request("/")[2]
+    status, _, body = request("/api/v1/health", "POST")
+    assert status == "405 Method Not Allowed"
+    assert json.loads(body)["error"]["code"] == "METHOD_NOT_ALLOWED"
+
+
+def test_frontend_shell():
+    assert b"Review Defense" in request("/")[2]
+
+
 def test_frontend_is_only_new_files():
-    actual={p.relative_to(ROOT).as_posix() for p in (ROOT/"frontend").rglob("*") if p.is_file()}
-    assert actual=={"frontend/index.html","frontend/landing.html","frontend/assets/public.js","frontend/assets/public.css","frontend/assets/seo-articles.js"}
+    actual = {p.relative_to(ROOT).as_posix() for p in (ROOT / "frontend").rglob("*") if p.is_file()}
+    assert actual == {
+        "frontend/index.html",
+        "frontend/landing.html",
+        "frontend/assets/public.js",
+        "frontend/assets/public.css",
+        "frontend/assets/seo-articles.js",
+    }
+
+
 def test_js_syntax():
-    r=subprocess.run(["node","--check",str(ROOT/"frontend/assets/public.js")],capture_output=True,text=True); assert r.returncode==0,r.stderr
+    result = subprocess.run(
+        ["node", "--check", str(ROOT / "frontend/assets/public.js")],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stderr
+
+
 def test_migration_runner_tracks_versions():
-    text=(ROOT/"scripts/migrate.py").read_text(encoding="utf-8")
+    text = (ROOT / "scripts/migrate.py").read_text(encoding="utf-8")
     assert "schema_migrations" in text
     assert "applied_at" in text
     assert "INSERT INTO schema_migrations" in text
+    assert "pg_advisory_xact_lock" in text
+
+
+def test_migration_files_are_deterministic():
+    from scripts.migrate import migration_files
+    assert [path.name for path in migration_files()] == sorted(path.name for path in migration_files())

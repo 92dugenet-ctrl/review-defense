@@ -1,34 +1,52 @@
 from __future__ import annotations
+
 import os
 from pathlib import Path
+
 import psycopg
 
-ROOT=Path(__file__).resolve().parents[1]
-MIGRATIONS=ROOT/"migrations"
+ROOT = Path(__file__).resolve().parents[1]
+MIGRATIONS = ROOT / "migrations"
+
+
+def database_url() -> str:
+    value = os.environ.get("DATABASE_URL", "").strip()
+    if not value:
+        raise SystemExit("DATABASE_URL is required")
+    return value
+
+
+def migration_files() -> list[Path]:
+    return sorted(MIGRATIONS.glob("*.sql"), key=lambda path: path.name)
+
 
 def main() -> None:
-    dsn=os.environ.get("DATABASE_URL","").strip()
-    if not dsn:
-        raise SystemExit("DATABASE_URL is required")
-    files=sorted(MIGRATIONS.glob("*.sql"))
-    with psycopg.connect(dsn) as conn:
-        conn.execute("""
+    files = migration_files()
+    with psycopg.connect(database_url(), connect_timeout=5) as conn:
+        conn.execute(
+            """
             CREATE TABLE IF NOT EXISTS schema_migrations (
                 version TEXT PRIMARY KEY,
                 applied_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
             )
-        """)
+            """
+        )
+        conn.execute("SELECT pg_advisory_xact_lock(hashtext('review-defense:migrations'))")
         for path in files:
-            version=path.stem
-            applied=conn.execute(
+            version = path.stem
+            applied = conn.execute(
                 "SELECT 1 FROM schema_migrations WHERE version=%s",
                 (version,),
             ).fetchone()
             if applied:
                 continue
             conn.execute(path.read_text(encoding="utf-8"))
-            conn.execute("INSERT INTO schema_migrations(version) VALUES (%s)",(version,))
+            conn.execute(
+                "INSERT INTO schema_migrations(version) VALUES (%s)",
+                (version,),
+            )
         conn.commit()
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()
