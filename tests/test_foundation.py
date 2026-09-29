@@ -90,10 +90,12 @@ def test_method_not_allowed():
 
 
 def test_frontend_shell():
-    assert b"Review Defense" in request("/")[2]
+    status, _, body = request("/")
+    assert status == "200 OK"
+    assert b"Review Defense" in body
 
 
-def test_frontend_is_only_new_files():
+def test_frontend_is_only_expected_files():
     actual = {p.relative_to(ROOT).as_posix() for p in (ROOT / "frontend").rglob("*") if p.is_file()}
     assert actual == {
         "frontend/index.html",
@@ -101,12 +103,31 @@ def test_frontend_is_only_new_files():
         "frontend/assets/public.js",
         "frontend/assets/public.css",
         "frontend/assets/seo-articles.js",
+        "frontend/assets/billing.js",
     }
+
+
+def test_frontend_shell_keeps_public_assets_and_billing_hook():
+    html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
+    assert "/assets/public.css?v=6711" in html
+    assert "/assets/public.js?v=6711" in html
+    assert 'data-public-shell="bootstrap"' in html
+    assert "/assets/billing.js?v=2" in html
+    assert "paypal-button-container" in html
 
 
 def test_js_syntax():
     result = subprocess.run(
         ["node", "--check", str(ROOT / "frontend/assets/public.js")],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stderr
+
+
+def test_billing_js_syntax():
+    result = subprocess.run(
+        ["node", "--check", str(ROOT / "frontend/assets/billing.js")],
         capture_output=True,
         text=True,
     )
@@ -148,13 +169,15 @@ def test_full_legacy_data_model_is_restored():
         "privacy_consents",
         "billing_transactions",
     }
-    sql = "\n".join(path.read_text(encoding="utf-8") for path in files)
+    sql = "
+".join(path.read_text(encoding="utf-8") for path in files)
     for table in required_tables:
         assert f"CREATE TABLE IF NOT EXISTS {table}" in sql
 
 
 def test_data_model_security_contract():
-    sql = "\n".join(path.read_text(encoding="utf-8") for path in MIGRATIONS.glob("*.sql"))
+    sql = "
+".join(path.read_text(encoding="utf-8") for path in MIGRATIONS.glob("*.sql"))
     assert "ENABLE ROW LEVEL SECURITY" in sql
     assert "FORCE ROW LEVEL SECURITY" in sql
     assert "current_setting('app.organization_id'" in sql
