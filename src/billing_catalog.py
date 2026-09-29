@@ -2,7 +2,9 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from decimal import Decimal
-import os
+
+PAYPAL_SUBSCRIPTION_CLIENT_ID = "BAADwFz5aRpmMnNRVADMoONwkWyHzC3Y-l75vTda13-4tfwv2gSa4TdAq_jguOBTz2kBqsU1ARHCQ7nz6k"
+PAYPAL_HOSTED_CLIENT_ID = "BAAftx79q4rSHY7vc2aYy_hgx3KB6GB15k__TBghUQyd1_ixXSqv71UHw1RXZvkR4cli25WsSirUKWt7zs"
 
 @dataclass(frozen=True)
 class Offer:
@@ -34,15 +36,6 @@ OFFERS = {
     "defense_standard": Offer("defense_standard","defense_package","Défense standard d’un avis","Standard review defense",Decimal("149.00"),paypal_hosted_button_id="MKMBJPT7JPHCQ"),
     "defense_plus": Offer("defense_plus","defense_package","Défense renforcée d’un avis","Enhanced review defense",Decimal("249.00"),paypal_hosted_button_id="MKMBJPT7JPHCQ"),
     "defense_complete": Offer("defense_complete","defense_package","Défense complète d’un avis","Complete review defense",Decimal("399.00"),paypal_hosted_button_id="MKMBJPT7JPHCQ"),
-    "pack_starter": Offer("pack_starter","credit_pack","Pack 5 dossiers","5-case pack",Decimal("490.00")),
-    "pack_plus": Offer("pack_plus","credit_pack","Pack 10 dossiers","10-case pack",Decimal("990.00")),
-    "pack_pro": Offer("pack_pro","credit_pack","Pack 25 dossiers","25-case pack",Decimal("1990.00")),
-    "pack_business": Offer("pack_business","credit_pack","Pack 50 dossiers","50-case pack",Decimal("3490.00")),
-    "pack_enterprise": Offer("pack_enterprise","credit_pack","Pack 100 dossiers","100-case pack",Decimal("5900.00")),
-    "pack_250": Offer("pack_250","credit_pack","Pack 250 dossiers","250-case pack",Decimal("12900.00")),
-    "pack_500": Offer("pack_500","credit_pack","Pack 500 dossiers","500-case pack",Decimal("23900.00")),
-    "pack_1000": Offer("pack_1000","credit_pack","Pack 1 000 dossiers","1,000-case pack",Decimal("44900.00")),
-    "pack_custom": Offer("pack_custom","credit_pack_quote","Pack 1 000+ dossiers / sur devis","1,000+ case pack / custom quote",None),
     "monitoring_essential": Offer("monitoring_essential","subscription","Essential / Essentiel","Essential / Essentiel",Decimal("49.00"),paypal_plan_id="P-48445016NC686822DNK5DFKI"),
     "monitoring_professional": Offer("monitoring_professional","subscription","Professional / Professionnel","Professional / Professionnel",Decimal("89.00"),paypal_plan_id="P-09J30923C56343623NK5DGGI"),
     "monitoring_business": Offer("monitoring_business","subscription","Business / Entreprise","Business / Entreprise",Decimal("159.00"),paypal_plan_id="P-81F64203WR266014XNK5DGZQ"),
@@ -50,18 +43,8 @@ OFFERS = {
 def get_offer(offer_id: str) -> Offer:
     try: return OFFERS[str(offer_id)]
     except KeyError: raise ValueError("unknown billing offer")
-_PAYPAL_PLAN_ENV = {
-    "monitoring_essential": "PAYPAL_PLAN_ESSENTIAL_ID",
-    "monitoring_professional": "PAYPAL_PLAN_PROFESSIONAL_ID",
-    "monitoring_business": "PAYPAL_PLAN_BUSINESS_ID",
-}
-
 def paypal_plan_id(offer: Offer) -> str | None:
-    env_name = _PAYPAL_PLAN_ENV.get(offer.offer_id)
-    if env_name:
-        configured = os.getenv(env_name, "").strip()
-        if configured:
-            return configured
+    """Return the canonical PayPal subscription plan assigned to the offer."""
     return offer.paypal_plan_id
 
 def public_catalog() -> list[dict[str, str | None]]:

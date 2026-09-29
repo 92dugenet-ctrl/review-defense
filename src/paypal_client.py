@@ -7,10 +7,10 @@ class PayPalError(RuntimeError):
         super().__init__(message); self.status=status; self.payload=payload or {}
 
 def configured():
-    return bool(os.getenv("PAYPAL_CLIENT_ID","").strip() and os.getenv("PAYPAL_CLIENT_SECRET","").strip())
+    return bool(PAYPAL_SUBSCRIPTION_CLIENT_ID and os.getenv("PAYPAL_CLIENT_SECRET","").strip())
 
 def configuration_status():
-    return {"configured":configured(),"environment":"live","client_id_present":bool(os.getenv("PAYPAL_CLIENT_ID","").strip()),"client_secret_present":bool(os.getenv("PAYPAL_CLIENT_SECRET","").strip()),"product_id_present":bool(os.getenv("PAYPAL_PRODUCT_ID","").strip()),"plan_essential_present":bool(os.getenv("PAYPAL_PLAN_ESSENTIAL_ID","").strip()),"plan_professional_present":bool(os.getenv("PAYPAL_PLAN_PROFESSIONAL_ID","").strip()),"plan_business_present":bool(os.getenv("PAYPAL_PLAN_BUSINESS_ID","").strip()),"webhook_id_present":bool(os.getenv("PAYPAL_WEBHOOK_ID","").strip())}
+    return {"configured":configured(),"environment":"live","client_id_present":bool(PAYPAL_SUBSCRIPTION_CLIENT_ID),"client_secret_present":bool(os.getenv("PAYPAL_CLIENT_SECRET","").strip()),"webhook_id_present":bool(os.getenv("PAYPAL_WEBHOOK_ID","").strip())}
 
 def base_url():
     configured_url=os.getenv("PAYPAL_BASE_URL","").strip().rstrip("/")
@@ -36,7 +36,7 @@ def request_json(method, path, payload=None, headers=None, access_token=None):
         raise PayPalError("PayPal is unreachable") from exc
 
 def access_token():
-    cid=os.getenv("PAYPAL_CLIENT_ID","").strip(); secret=os.getenv("PAYPAL_CLIENT_SECRET","").strip()
+    cid=PAYPAL_SUBSCRIPTION_CLIENT_ID; secret=os.getenv("PAYPAL_CLIENT_SECRET","").strip()
     if not cid or not secret: raise PayPalError("PayPal credentials are not configured")
     raw=base64.b64encode((cid+":"+secret).encode()).decode()
     req=urllib.request.Request(base_url()+"/v1/oauth2/token",data=b"grant_type=client_credentials",

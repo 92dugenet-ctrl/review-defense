@@ -59,7 +59,7 @@ from .recovery_email import SMTPConfig, send_recovery_email, send_verification_e
 from .deployment import DeploymentConfig, security_headers
 from .observability import InMemoryTelemetry, TraceContext, health_check
 from .seo_renderer import is_seo_path, render_page, sitemap, robots
-from .billing_catalog import get_offer, paypal_plan_id, public_catalog
+from .billing_catalog import PAYPAL_SUBSCRIPTION_CLIENT_ID, get_offer, paypal_plan_id, public_catalog
 from .billing_service import account_status, plan_for_offer, public_plans
 from .paypal_client import configured as paypal_configured, configuration_status as paypal_configuration_status, verify_webhook as paypal_verify_webhook, request_json as paypal_request_json, access_token as paypal_access_token, PayPalError
 
@@ -892,7 +892,7 @@ class ReviewDefenseAPI:
             items = public_catalog()
             return self._json(200, {"items": items, "count": len(items)})
         if method == "GET" and path == "/v1/paypal/config":
-            return self._json(200,{"configured":paypal_configured(),"client_id":os.getenv("PAYPAL_CLIENT_ID","").strip(),"environment":"live","diagnostics":paypal_configuration_status()})
+            return self._json(200,{"configured":paypal_configured(),"client_id":PAYPAL_SUBSCRIPTION_CLIENT_ID,"environment":"live","diagnostics":paypal_configuration_status()})
         if method == "GET" and path == "/v1/paypal/subscription/config":
             offer_id=str(parse_qs(environ.get("QUERY_STRING","")).get("offer_id",[""])[0])
             try: offer=get_offer(offer_id)
