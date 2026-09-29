@@ -2,6 +2,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from decimal import Decimal
+import os
 
 @dataclass(frozen=True)
 class Offer:
@@ -49,11 +50,22 @@ OFFERS = {
 def get_offer(offer_id: str) -> Offer:
     try: return OFFERS[str(offer_id)]
     except KeyError: raise ValueError("unknown billing offer")
-def public_catalog() -> list[dict[str, str | None]]:
-    return [{"offer_id":o.offer_id,"kind":o.kind,"name_fr":o.name_fr,"name_en":o.name_en,"amount":str(o.amount) if o.amount is not None else None,"currency":o.currency,"recurring":"true" if o.kind=="subscription" else "false","paypal_plan_id":o.paypal_plan_id,"paypal_hosted_button_id":o.paypal_hosted_button_id} for o in OFFERS.values()]
+_PAYPAL_PLAN_ENV = {
+    "monitoring_essential": "PAYPAL_PLAN_ESSENTIAL_ID",
+    "monitoring_professional": "PAYPAL_PLAN_PROFESSIONAL_ID",
+    "monitoring_business": "PAYPAL_PLAN_BUSINESS_ID",
+}
 
 def paypal_plan_id(offer: Offer) -> str | None:
+    env_name = _PAYPAL_PLAN_ENV.get(offer.offer_id)
+    if env_name:
+        configured = os.getenv(env_name, "").strip()
+        if configured:
+            return configured
     return offer.paypal_plan_id
+
+def public_catalog() -> list[dict[str, str | None]]:
+    return [{"offer_id":o.offer_id,"kind":o.kind,"name_fr":o.name_fr,"name_en":o.name_en,"amount":str(o.amount) if o.amount is not None else None,"currency":o.currency,"recurring":"true" if o.kind=="subscription" else "false","paypal_plan_id":paypal_plan_id(o),"paypal_hosted_button_id":o.paypal_hosted_button_id} for o in OFFERS.values()]
 
 
 def paypal_hosted_button_id(offer: Offer) -> str | None:
