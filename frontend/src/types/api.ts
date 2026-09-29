@@ -22,6 +22,7 @@ export type Review = {
   text: string;
   source: string;
   review_url?: string | null;
+  published_at?: string | null;
 };
 
 export type Case = {
