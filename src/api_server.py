@@ -856,7 +856,7 @@ class ReviewDefenseAPI:
                     event_row={"event_id":str(uuid.uuid4()),"paypal_event_id":event_id,
                                "paypal_subscription_id":tx.get("paypal_subscription_id"),
                                "event_type":event_type,"status":tx.get("status"),
-                               "offer_id":tx.get("offer_id"),"payload":payload}
+                               "offer_id":tx.get("offer_id"),"payload":event}
                     self.billing_events.append(event_row)
                     if self.repository is not None:
                         if hasattr(self.repository,"upsert_billing_account"):
@@ -1626,6 +1626,25 @@ class ReviewDefenseAPI:
                 review = self.store.reviews[(user.organization_id, case.review_id)]
                 claims = extract_claims(review); signals = classify_policy_signals(claims)
                 return self._json(200, {"case": asdict(case), "review": asdict(review), "claims": [asdict(c) for c in claims], "policy_signals": [asdict(s) for s in signals]})
+            if method == "GET" and len(parts) == 5 and parts[4] == "history":
+                events = []
+                if self.repository is not None and hasattr(self.repository, "list_case_events"):
+                    events = self.repository.list_case_events(user.organization_id, cid)
+                if not events:
+                    events = [
+                        {
+                            "event_id": e["event_id"],
+                            "event_type": e["action"],
+                            "actor_user_id": e.get("actor_id"),
+                            "payload": e.get("meta", {}),
+                            "created_at": e["at"],
+                        }
+                        for e in self.store.audit
+                        if e["organization_id"] == user.organization_id
+                        and (e["resource"] == f"case:{cid}" or e.get("meta", {}).get("case_id") == cid)
+                    ]
+                return self._json(200, {"case_id": cid, "items": events, "count": len(events)})
+
             if method == "GET" and len(parts) == 5 and parts[4] == "workspace":
                 review = self.store.reviews[(user.organization_id, case.review_id)]
                 evidence_rows = [

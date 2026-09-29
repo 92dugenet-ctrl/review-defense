@@ -141,6 +141,31 @@ class PostgresAPIRepository(PostgresRepository):
                 cur.execute("INSERT INTO case_events(organization_id,case_id,event_type,actor_user_id,payload) VALUES(%s,%s,%s,%s,%s::jsonb)", (organization_id,case_id,'CASE_CREATED',actor_user_id,'{}'))
                 return row
 
+    def list_case_events(self, organization_id: str, case_id: str):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """SELECT id, case_id, event_type, actor_user_id, payload, created_at
+                       FROM case_events
+                       WHERE organization_id=%s AND case_id=%s
+                       ORDER BY created_at, id""",
+                    (organization_id, case_id),
+                )
+                rows = []
+                for row in cur.fetchall():
+                    payload = row[4]
+                    if isinstance(payload, str):
+                        payload = json.loads(payload)
+                    rows.append({
+                        "id": int(row[0]),
+                        "case_id": str(row[1]),
+                        "event_type": str(row[2]),
+                        "actor_user_id": str(row[3]) if row[3] is not None else None,
+                        "payload": payload or {},
+                        "created_at": row[5].isoformat() if hasattr(row[5], "isoformat") else str(row[5]),
+                    })
+                return rows
+
     def list_cases(self, organization_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
