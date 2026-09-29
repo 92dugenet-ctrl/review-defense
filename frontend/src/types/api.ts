@@ -30,3 +30,19 @@ export type Case = {
   status: string;
   priority?: string;
 };
+export type ReviewQueueItem = {
+  case_id: string;
+  priority?: string;
+  priority_score?: number;
+  status: string;
+  assigned_to?: string | null;
+  sla?: { status?: string; due_at?: string | null };
+};
+
+export type NotificationItem = {
+  notification_id: string;
+  status: string;
+  created_at?: string | null;
+  subject?: string;
+  body?: string;
+};

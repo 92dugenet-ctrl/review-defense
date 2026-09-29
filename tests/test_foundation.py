@@ -190,3 +190,16 @@ def test_data_model_security_contract():
 def test_migration_files_are_deterministic():
     from scripts.migrate import migration_files
     assert [path.name for path in migration_files()] == sorted(path.name for path in migration_files())
+
+def test_dashboard_frontend_contract():
+    page = (FRONTEND / "src/pages/DashboardPage.tsx").read_text(encoding="utf-8")
+    types = (FRONTEND / "src/types/api.ts").read_text(encoding="utf-8")
+    assert '"/v1/reviews"' in page
+    assert '"/v1/cases"' in page
+    assert '"/v1/review-queue"' in page
+    assert '"/v1/notifications"' in page
+    assert "Promise.all" in page
+    assert "ReviewQueueItem" in types
+    assert "NotificationItem" in types
+    assert "dashboard-kpis" in page
+    assert "dashboard-card" in page
