@@ -32,5 +32,5 @@ jobs:
           test -f Caddyfile
           test -f src/app.py
           test -f wsgi.py
-          test ! -f src/api_server.py
+          test -f src/api_server.py
           test ! -f tests/conftest.py
