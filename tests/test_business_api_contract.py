@@ -91,8 +91,8 @@ def test_legacy_auth_register_and_authenticated_me():
 
     status, _, me = request("/v1/me", headers={"Authorization": f"Bearer {token}"})
     assert status == "200 OK", me
-    assert me["user"]["email"] == email
-    assert me["user"]["role"] == "OWNER"
+    assert me["email"] == email
+    assert me["role"] == "OWNER"
 
 
 def test_business_api_preserves_health_and_readiness():
