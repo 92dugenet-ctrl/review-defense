@@ -231,3 +231,11 @@ def test_frontend_modules_6_to_10_contract():
     assert '"/v1/notifications"' in notifications
     assert '"/v1/billing"' in billing and '"/v1/billing/catalog"' in billing
     assert '"/v1/privacy/export"' in privacy and '"/v1/privacy/requests"' in privacy
+
+
+def test_dashboard_visual_contract():
+    page=(FRONTEND/"src/pages/DashboardPage.tsx").read_text(encoding="utf-8")
+    css=(FRONTEND/"src/styles/global.css").read_text(encoding="utf-8")
+    assert "dashboard-hero" in page and "dashboard-metrics" in page
+    assert "dashboard-main-grid" in page and "dashboard-surface" in page
+    assert "dashboard-metric-focus" in css and "dashboard-next-content" in css

@@ -3,96 +3,35 @@ import { Button } from "@/components/ui/Button";
 import { ApiError, api } from "@/services/api/client";
 import type { Case, NotificationItem, Review, ReviewQueueItem } from "@/types/api";
 
-type DashboardState = { reviews: Review[]; cases: Case[]; queue: ReviewQueueItem[]; notifications: NotificationItem[] };
+type State={reviews:Review[];cases:Case[];queue:ReviewQueueItem[];notifications:NotificationItem[]};
+const date=(v?:string|null)=>{if(!v)return "—";const d=new Date(v);return Number.isNaN(d.getTime())?v:new Intl.DateTimeFormat("fr-FR",{day:"2-digit",month:"short",year:"numeric"}).format(d)};
+const label=(v?:string)=>v?v.replaceAll("_"," ").toLowerCase().replace(/^./,c=>c.toUpperCase()):"Inconnu";
+const priority=(v?:string)=>{const p=v?.toUpperCase();return p==="CRITICAL"||p==="HIGH"?"dashboard-priority dashboard-priority-high":p==="MEDIUM"||p==="NORMAL"?"dashboard-priority dashboard-priority-medium":"dashboard-priority dashboard-priority-low"};
 
-function formatDate(value?: string | null) {
-  if (!value) return "—";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat("fr-FR", { day: "2-digit", month: "short", year: "numeric" }).format(date);
-}
-function statusLabel(status?: string) {
-  if (!status) return "Inconnu";
-  return status.replaceAll("_", " ").toLowerCase().replace(/^./, (char) => char.toUpperCase());
-}
-function priorityClass(priority?: string) {
-  const value = priority?.toUpperCase();
-  if (value === "CRITICAL" || value === "HIGH") return "dashboard-priority dashboard-priority-high";
-  if (value === "MEDIUM" || value === "NORMAL") return "dashboard-priority dashboard-priority-medium";
-  return "dashboard-priority dashboard-priority-low";
-}
-
-export function DashboardPage() {
-  const [state, setState] = useState<DashboardState>({ reviews: [], cases: [], queue: [], notifications: [] });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<ApiError | null>(null);
-
-  const loadDashboard = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const [reviews, cases, queue, notifications] = await Promise.all([
-        api.get<{ items: Review[] }>("/v1/reviews"),
-        api.get<{ items: Case[] }>("/v1/cases"),
-        api.get<{ items: ReviewQueueItem[] }>("/v1/review-queue"),
-        api.get<{ items: NotificationItem[] }>("/v1/notifications"),
-      ]);
-      setState({ reviews: reviews.items ?? [], cases: cases.items ?? [], queue: queue.items ?? [], notifications: notifications.items ?? [] });
-    } catch (caught) {
-      setError(caught instanceof ApiError ? caught : new ApiError("Impossible de charger le tableau de bord.", 0));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => { void loadDashboard(); }, []);
-
-  const averageRating = useMemo(() => {
-    if (!state.reviews.length) return "—";
-    return (state.reviews.reduce((sum, review) => sum + review.rating, 0) / state.reviews.length).toFixed(1);
-  }, [state.reviews]);
-  const openCases = state.cases.filter((item) => !["CLOSED", "RESOLVED"].includes(item.status.toUpperCase())).length;
-  const pendingNotifications = state.notifications.filter((item) => !["SENT", "CANCELLED", "DELIVERED"].includes(item.status.toUpperCase())).length;
-  const recentReviews = [...state.reviews].sort((a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime()).slice(0, 5);
-
-  return (
-    <section className="dashboard-page">
-      <div className="dashboard-heading">
-        <div><span className="eyebrow">REVIEW DEFENSE · PILOTAGE</span><h1>Vue d’ensemble</h1><p>Suivez vos avis, dossiers et actions prioritaires depuis un seul espace.</p></div>
-        <Button variant="secondary" onClick={() => void loadDashboard()} disabled={loading}>{loading ? "Actualisation…" : "Actualiser"}</Button>
-      </div>
-
-      {error && <div className="dashboard-error" role="alert"><div><strong>Le tableau de bord n’a pas pu être actualisé.</strong><span>{error.message}</span></div><Button variant="secondary" onClick={() => void loadDashboard()}>Réessayer</Button></div>}
-
-      <div className="dashboard-kpis" aria-label="Indicateurs principaux">
-        <article className="dashboard-kpi"><span className="dashboard-kpi-label">Avis suivis</span><strong>{loading ? "…" : state.reviews.length}</strong><span className="dashboard-kpi-meta">Toutes sources</span></article>
-        <article className="dashboard-kpi"><span className="dashboard-kpi-label">Note moyenne</span><strong>{loading ? "…" : averageRating}</strong><span className="dashboard-kpi-meta">{state.reviews.length ? "Sur 5" : "Aucun avis"}</span></article>
-        <article className="dashboard-kpi"><span className="dashboard-kpi-label">Dossiers ouverts</span><strong>{loading ? "…" : openCases}</strong><span className="dashboard-kpi-meta">À traiter</span></article>
-        <article className="dashboard-kpi dashboard-kpi-accent"><span className="dashboard-kpi-label">Actions en attente</span><strong>{loading ? "…" : pendingNotifications}</strong><span className="dashboard-kpi-meta">Notifications</span></article>
-      </div>
-
-      <div className="dashboard-grid">
-        <article className="dashboard-card">
-          <div className="dashboard-card-heading"><div><span className="dashboard-card-kicker">ACTIVITÉ</span><h2>Derniers avis</h2></div><a href="/app/reviews">Voir tous les avis</a></div>
-          {loading ? <div className="dashboard-empty">Chargement des avis…</div> : recentReviews.length ? <div className="dashboard-review-list">{recentReviews.map((review) => <div className="dashboard-review-row" key={review.review_id}><div className="dashboard-rating">{review.rating}/5</div><div className="dashboard-review-content"><strong>{review.text || "Avis sans texte"}</strong><span>{review.source} · {formatDate(review.published_at)}</span></div><span className="dashboard-review-source">{review.review_url ? "Voir" : "—"}</span></div>)}</div> : <div className="dashboard-empty"><strong>Aucun avis pour le moment</strong><span>Les avis disponibles apparaîtront ici dès leur synchronisation.</span></div>}
-        </article>
-
-        <article className="dashboard-card">
-          <div className="dashboard-card-heading"><div><span className="dashboard-card-kicker">PRIORITÉS</span><h2>File de traitement</h2></div><a href="/app/cases">Dossiers</a></div>
-          {loading ? <div className="dashboard-empty">Chargement…</div> : state.queue.length ? <div className="dashboard-queue">{state.queue.slice(0, 5).map((item) => <div className="dashboard-queue-row" key={item.case_id}><div><strong>{item.case_id.slice(0, 12)}</strong><span>{statusLabel(item.status)}{item.assigned_to ? " · " + item.assigned_to : ""}</span></div><span className={priorityClass(item.priority)}>{statusLabel(item.priority)}</span></div>)}</div> : <div className="dashboard-empty"><strong>File vide</strong><span>Aucun dossier prioritaire à afficher.</span></div>}
-        </article>
-      </div>
-
-      <div className="dashboard-footer-grid">
-        <article className="dashboard-card">
-          <div className="dashboard-card-heading"><div><span className="dashboard-card-kicker">DOSSIERS</span><h2>État du portefeuille</h2></div><a href="/app/cases">Ouvrir</a></div>
-          <div className="dashboard-status-list">{["OPEN", "IN_REVIEW", "RESOLVED", "CLOSED"].map((status) => <div key={status}><span>{statusLabel(status)}</span><strong>{loading ? "…" : state.cases.filter((item) => item.status.toUpperCase() === status).length}</strong></div>)}</div>
-        </article>
-
-        <article className="dashboard-card">
-          <div className="dashboard-card-heading"><div><span className="dashboard-card-kicker">SUIVI</span><h2>Dernière activité</h2></div><a href="/app/notifications">Notifications</a></div>
-          {state.notifications.length ? <div className="dashboard-notification"><span className="dashboard-notification-dot" /><div><strong>{pendingNotifications ? pendingNotifications + " action" + (pendingNotifications > 1 ? "s" : "") + " en attente" : "Aucune action urgente"}</strong><span>Dernier élément : {formatDate(state.notifications[0].created_at)}</span></div></div> : <div className="dashboard-empty"><strong>Aucune notification</strong><span>Votre activité récente apparaîtra ici.</span></div>}
-        </article>
-      </div>
-    </section>
-  );
+export function DashboardPage(){
+ const [state,setState]=useState<State>({reviews:[],cases:[],queue:[],notifications:[]}),[loading,setLoading]=useState(true),[error,setError]=useState<ApiError|null>(null);
+ const load=async()=>{setLoading(true);setError(null);try{const [reviews,cases,queue,notifications]=await Promise.all([api.get<{items:Review[]}>("/v1/reviews"),api.get<{items:Case[]}>("/v1/cases"),api.get<{items:ReviewQueueItem[]}>("/v1/review-queue"),api.get<{items:NotificationItem[]}>("/v1/notifications")]);setState({reviews:reviews.items??[],cases:cases.items??[],queue:queue.items??[],notifications:notifications.items??[]})}catch(e){setError(e instanceof ApiError?e:new ApiError("Impossible de charger le tableau de bord.",0))}finally{setLoading(false)}};
+ useEffect(()=>{void load()},[]);
+ const average=useMemo(()=>state.reviews.length?(state.reviews.reduce((s,r)=>s+r.rating,0)/state.reviews.length).toFixed(1):"—",[state.reviews]);
+ const openCases=state.cases.filter(c=>!["CLOSED","RESOLVED"].includes(c.status.toUpperCase())).length;
+ const pending=state.notifications.filter(n=>!["SENT","CANCELLED","DELIVERED"].includes(n.status.toUpperCase())).length;
+ const urgent=state.queue.filter(q=>["CRITICAL","HIGH"].includes(q.priority?.toUpperCase()??"")).length;
+ const recent=[...state.reviews].sort((a,b)=>new Date(b.published_at??0).getTime()-new Date(a.published_at??0).getTime()).slice(0,5);
+ return <section className="dashboard-page">
+  <div className="dashboard-hero"><div className="dashboard-hero-copy"><span className="eyebrow">REVIEW DEFENSE · WORKSPACE</span><h1>Votre activité, en un coup d’œil.</h1><p>Analysez les avis, structurez les preuves et gardez chaque dossier sous contrôle.</p></div><div className="dashboard-hero-actions"><Button variant="secondary" onClick={()=>void load()} disabled={loading}>{loading?"Actualisation…":"Actualiser"}</Button><a className="dashboard-hero-link" href="/app/reviews">Ouvrir les avis →</a></div></div>
+  {error&&<div className="dashboard-error" role="alert"><div><strong>Le tableau de bord n’a pas pu être actualisé.</strong><span>{error.message}</span></div><Button variant="secondary" onClick={()=>void load()}>Réessayer</Button></div>}
+  <div className="dashboard-metrics"><article><span>Avis suivis</span><strong>{loading?"…":state.reviews.length}</strong><small>Toutes sources</small></article><article><span>Note moyenne</span><strong>{loading?"…":average}</strong><small>{state.reviews.length?"Sur 5":"Aucun avis"}</small></article><article><span>Dossiers ouverts</span><strong>{loading?"…":openCases}</strong><small>À traiter</small></article><article className="dashboard-metric-focus"><span>Priorités élevées</span><strong>{loading?"…":urgent}</strong><small>{pending} action{pending>1?"s":""} en attente</small></article></div>
+  <div className="dashboard-main-grid">
+   <article className="dashboard-surface"><div className="dashboard-section-heading"><div><span>ACTIVITÉ RÉCENTE</span><h2>Derniers avis</h2></div><a href="/app/reviews">Tout voir</a></div>
+    {loading?<div className="dashboard-empty">Chargement des avis…</div>:recent.length?<div>{recent.map(r=><a className="dashboard-review-row" href={`/app/reviews/${r.review_id}`} key={r.review_id}><div className="dashboard-rating">{r.rating}<small>/5</small></div><div className="dashboard-review-content"><strong>{r.text||"Avis sans texte"}</strong><span>{r.author_display_name||"Auteur non renseigné"} · {r.source}</span></div><time>{date(r.published_at)}</time><b>→</b></a>)}</div>:<div className="dashboard-empty"><strong>Aucun avis pour le moment</strong><span>Les avis apparaîtront ici dès leur synchronisation.</span></div>}
+   </article>
+   <article className="dashboard-surface"><div className="dashboard-section-heading"><div><span>À SURVEILLER</span><h2>File prioritaire</h2></div><a href="/app/analysis">Analyse</a></div>
+    {loading?<div className="dashboard-empty">Chargement…</div>:state.queue.length?<div>{state.queue.slice(0,5).map(q=><a className="dashboard-queue-row" href={`/app/cases/${q.case_id}`} key={q.case_id}><i>{String(q.priority_score??"—")}</i><div><strong>{q.case_id.slice(0,14)}</strong><span>{label(q.status)}{q.assigned_to?` · ${q.assigned_to}`:" · Non assigné"}</span></div><em className={priority(q.priority)}>{label(q.priority)}</em></a>)}</div>:<div className="dashboard-empty"><strong>File vide</strong><span>Aucun dossier prioritaire.</span></div>}
+   </article>
+  </div>
+  <div className="dashboard-lower-grid">
+   <article className="dashboard-surface"><div className="dashboard-section-heading"><div><span>PORTEFEUILLE</span><h2>État des dossiers</h2></div><a href="/app/cases">Dossiers →</a></div><div className="dashboard-status-list">{["OPEN","IN_REVIEW","RESOLVED","CLOSED"].map(s=><div key={s}><span>{label(s)}</span><strong>{loading?"…":state.cases.filter(c=>c.status.toUpperCase()===s).length}</strong></div>)}</div></article>
+   <article className="dashboard-surface"><div className="dashboard-section-heading"><div><span>PROCHAINE ACTION</span><h2>Garder le contrôle</h2></div></div><div className="dashboard-next-content"><i>✓</i><div><strong>{pending?`${pending} action${pending>1?"s":""} à vérifier`:"Tout est à jour"}</strong><span>{state.notifications.length?`Dernière activité · ${date(state.notifications[0].created_at)}`:"Aucune notification récente."}</span></div><a href="/app/notifications">Voir →</a></div></article>
+  </div>
+ </section>
 }
