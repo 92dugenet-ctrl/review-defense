@@ -126,3 +126,57 @@ a { color: inherit; text-decoration: none; }
 .admin-denied a{font-weight:700}
 @media (max-width:900px){.admin-grid{grid-template-columns:1fr}.admin-security-grid{grid-template-columns:1fr}.admin-hero{align-items:flex-start;flex-direction:column}}
 @media (max-width:640px){.admin-page{padding-top:0}.admin-member-row{align-items:flex-start;flex-direction:column}.admin-member-actions{width:100%;justify-content:flex-start}.admin-member-actions select{flex:1;min-width:140px}}
+
+
+/* UX refinement — shared interaction language */
+:focus-visible{outline:3px solid rgb(37 99 235 / 24%);outline-offset:2px}
+button:disabled{cursor:not-allowed;opacity:.55}
+.button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:0 14px;border:1px solid transparent;border-radius:10px;font-size:11px;font-weight:800;line-height:1;transition:transform .15s ease,background .15s ease,border-color .15s ease,box-shadow .15s ease,opacity .15s ease}
+.button:not(:disabled):hover{transform:translateY(-1px)}
+.button-primary{background:var(--rd-primary);color:#fff;box-shadow:0 1px 2px rgb(16 24 40 / 8%)}
+.button-primary:not(:disabled):hover{background:var(--rd-primary-strong);box-shadow:0 5px 14px rgb(37 99 235 / 16%)}
+.button-secondary{border-color:var(--rd-border);background:var(--rd-surface);color:var(--rd-ink)}
+.button-secondary:not(:disabled):hover{border-color:#cbd5e1;background:var(--rd-surface-soft)}
+.button-ghost{background:transparent;color:var(--rd-muted)}
+.button-ghost:not(:disabled):hover{background:var(--rd-surface-soft);color:var(--rd-ink)}
+.module-refresh,.module-primary,.module-secondary,.notification-actions button{transition:transform .15s ease,background .15s ease,border-color .15s ease,box-shadow .15s ease}
+.module-refresh:hover:not(:disabled),.module-primary:hover:not(:disabled),.module-secondary:hover:not(:disabled),.notification-actions button:hover:not(:disabled){transform:translateY(-1px)}
+.module-secondary{min-height:36px;padding:0 11px;border:1px solid var(--rd-border);border-radius:9px;background:var(--rd-surface);color:var(--rd-ink);font-size:9px;font-weight:800}
+input,select,textarea{font-family:inherit}
+input::placeholder{color:#98a2b3}
+select{cursor:pointer}
+.reviews-toolbar input,.reviews-toolbar select,.module-create select,.admin-form input,.admin-form select{transition:border-color .15s ease,box-shadow .15s ease,background .15s ease}
+.reviews-toolbar input:hover,.reviews-toolbar select:hover,.module-create select:hover,.admin-form input:hover,.admin-form select:hover{border-color:#cbd5e1}
+.module-table,.reviews-table-wrap{scrollbar-width:thin}
+.module-table tbody tr,.reviews-table tbody tr{transition:background .12s ease}
+.module-table tbody tr:hover,.reviews-table tbody tr:hover{background:#fafbfc}
+.dashboard-card,.plan-card,.notification-row,.workspace-grid>.dashboard-card,.admin-grid>.dashboard-card{transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease}
+.dashboard-card:hover,.plan-card:hover{border-color:#d9e0ea;box-shadow:0 5px 18px rgb(16 24 40 / 7%)}
+.dashboard-empty,.reviews-table-empty,.module-empty{animation:rd-fade-in .22s ease both}
+.dashboard-error{animation:rd-fade-in .18s ease both}
+.status-pill,.priority-pill,.review-signal{white-space:nowrap}
+.back-link{display:inline-flex;align-items:center;gap:5px;width:max-content;padding:4px 0}
+.back-link:hover,.review-open:hover,.review-external:hover{color:var(--rd-primary)}
+.module-heading,.reviews-heading,.review-detail-heading,.dashboard-heading,.admin-hero{animation:rd-fade-in .2s ease both}
+@keyframes rd-fade-in{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+@media(max-width:900px){
+  .module-heading,.reviews-heading,.review-detail-heading{align-items:flex-start}
+  .analysis-kpis{grid-template-columns:repeat(2,1fr)}
+  .plan-grid{grid-template-columns:1fr 1fr}
+  .module-create{align-items:stretch;flex-wrap:wrap}
+  .module-create>div{min-width:100%}
+  .module-create select{max-width:none}
+}
+@media(max-width:640px){
+  .module-heading,.reviews-heading,.review-detail-heading{gap:14px}
+  .module-heading h1,.reviews-heading h1,.review-detail-heading h1{font-size:26px}
+  .module-heading>.button,.module-heading>.module-refresh,.module-heading>.module-primary{width:100%}
+  .analysis-kpis,.plan-grid{grid-template-columns:1fr}
+  .module-create{display:grid;grid-template-columns:1fr}
+  .module-create select{width:100%;max-width:none}
+  .module-create>.button{width:100%}
+  .notification-row{align-items:stretch;flex-direction:column}
+  .notification-actions{width:100%}
+  .notification-actions button{flex:1}
+}
