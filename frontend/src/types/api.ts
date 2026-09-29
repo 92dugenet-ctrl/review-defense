@@ -34,6 +34,8 @@ export type Case = {
   organization_id: string;
   status: string;
   priority?: string;
+  created_at?: string | null;
+  review_id?: string;
 };
 export type ReviewQueueItem = {
   case_id: string;

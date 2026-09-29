@@ -7,6 +7,12 @@ import { RegisterPage } from "@/pages/RegisterPage";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { ReviewsPage } from "@/pages/ReviewsPage";
 import { ReviewDetailPage } from "@/pages/ReviewDetailPage";
+import { CasesPage } from "@/pages/CasesPage";
+import { CaseDetailPage } from "@/pages/CaseDetailPage";
+import { AnalysisPage } from "@/pages/AnalysisPage";
+import { NotificationsPage } from "@/pages/NotificationsPage";
+import { BillingPage } from "@/pages/BillingPage";
+import { PrivacyPage } from "@/pages/PrivacyPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 
 const Placeholder = ({ title }: { title: string }) => (
@@ -31,11 +37,12 @@ export const router = createBrowserRouter([
         { path: "dashboard", element: <DashboardPage /> },
         { path: "reviews", element: <ReviewsPage /> },
         { path: "reviews/:reviewId", element: <ReviewDetailPage /> },
-        { path: "cases", element: <Placeholder title="Dossiers" /> },
-        { path: "analysis", element: <Placeholder title="Analyse" /> },
-        { path: "notifications", element: <Placeholder title="Notifications" /> },
-        { path: "billing", element: <Placeholder title="Facturation" /> },
-        { path: "settings", element: <Placeholder title="Paramètres" /> },
+        { path: "cases", element: <CasesPage /> },
+        { path: "cases/:caseId", element: <CaseDetailPage /> },
+        { path: "analysis", element: <AnalysisPage /> },
+        { path: "notifications", element: <NotificationsPage /> },
+        { path: "billing", element: <BillingPage /> },
+        { path: "settings", element: <PrivacyPage /> },
         { path: "admin", element: <Placeholder title="Administration" /> },
       ],
     }],

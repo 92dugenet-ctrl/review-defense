@@ -214,3 +214,20 @@ def test_reviews_frontend_contract():
     assert "reviews-toolbar" in page
     assert "policy_signals" in detail
     assert "claims" in detail
+
+def test_frontend_modules_6_to_10_contract():
+    router = (FRONTEND / "src/app/router.tsx").read_text(encoding="utf-8")
+    expected = ["CasesPage", "CaseDetailPage", "AnalysisPage", "NotificationsPage", "BillingPage", "PrivacyPage"]
+    for name in expected:
+        assert name in router
+    cases = (FRONTEND / "src/pages/CasesPage.tsx").read_text(encoding="utf-8")
+    detail = (FRONTEND / "src/pages/CaseDetailPage.tsx").read_text(encoding="utf-8")
+    analysis = (FRONTEND / "src/pages/AnalysisPage.tsx").read_text(encoding="utf-8")
+    notifications = (FRONTEND / "src/pages/NotificationsPage.tsx").read_text(encoding="utf-8")
+    billing = (FRONTEND / "src/pages/BillingPage.tsx").read_text(encoding="utf-8")
+    privacy = (FRONTEND / "src/pages/PrivacyPage.tsx").read_text(encoding="utf-8")
+    assert '"/v1/cases"' in cases and '"/v1/cases/"' in detail
+    assert '"/v1/review-queue"' in analysis and '"/v1/review-queue/workload"' in analysis
+    assert '"/v1/notifications"' in notifications
+    assert '"/v1/billing"' in billing and '"/v1/billing/catalog"' in billing
+    assert '"/v1/privacy/export"' in privacy and '"/v1/privacy/requests"' in privacy
