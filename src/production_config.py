@@ -67,6 +67,8 @@ class ProductionConfig:
         return self.environment in {"production", "prod"}
 
     def validate_startup(self, *, require_database: bool | None = None) -> None:
+        if self.production and not self.secure_headers:
+            raise ValueError("SECURE_HEADERS cannot be disabled in production")
         if self.production and not self.database_dsn and (require_database is not False):
             raise ValueError("DATABASE_URL is required in production")
         if self.production and self.host in {"127.0.0.1", "localhost", "::1"}:

@@ -7,6 +7,7 @@ import hashlib
 import hmac
 import secrets
 import time
+import threading
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -29,12 +30,16 @@ def hash_password(password: str, *, salt: bytes | None = None,
                   iterations: int = PBKDF2_ITERATIONS) -> str:
     if not isinstance(password, str) or len(password) < 12:
         raise ValueError("password must contain at least 12 characters")
+    if len(password) > 256:
+        raise ValueError("password must not exceed 256 characters")
     salt = salt or secrets.token_bytes(16)
     digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, iterations)
     return f"pbkdf2_sha256${iterations}${salt.hex()}${digest.hex()}"
 
 
 def verify_password(password: str, encoded: str) -> bool:
+    if not isinstance(password, str) or len(password) > 256:
+        return False
     try:
         scheme, iterations, salt_hex, digest_hex = encoded.split("$", 3)
         if scheme != "pbkdf2_sha256":
@@ -53,8 +58,10 @@ def generate_session_token() -> tuple[str, str]:
 
 
 def hash_token(token: str) -> str:
-    if not token:
+    if not isinstance(token, str) or not token:
         raise ValueError("token is required")
+    if len(token) > 4096:
+        raise ValueError("token is too long")
     return hashlib.sha256(token.encode()).hexdigest()
 
 
@@ -83,25 +90,31 @@ def require_tenant(session: Session, organization_id: str) -> None:
 
 
 class RateLimiter:
-    """Small deterministic in-memory fixed-window limiter for the reference layer."""
-    def __init__(self, *, limit: int, window_seconds: int = 60):
-        if limit <= 0 or window_seconds <= 0:
-            raise ValueError("limit and window_seconds must be positive")
+    """Thread-safe bounded fixed-window limiter."""
+    def __init__(self, *, limit: int, window_seconds: int = 60, max_keys: int = 10000):
+        if limit <= 0 or window_seconds <= 0 or max_keys <= 0:
+            raise ValueError("limit, window_seconds and max_keys must be positive")
         self.limit = limit
         self.window_seconds = window_seconds
+        self.max_keys = max_keys
         self._hits: dict[str, list[float]] = {}
+        self._lock = threading.RLock()
 
     def allow(self, key: str, *, now: float | None = None) -> bool:
-        if not key:
-            raise ValueError("rate-limit key is required")
+        if not key or len(key) > 1024:
+            raise ValueError("rate-limit key is invalid")
         now = time.time() if now is None else now
-        hits = [t for t in self._hits.get(key, []) if now - t < self.window_seconds]
-        if len(hits) >= self.limit:
+        with self._lock:
+            hits = [t for t in self._hits.get(key, []) if now - t < self.window_seconds]
+            if len(hits) >= self.limit:
+                self._hits[key] = hits
+                return False
+            if key not in self._hits and len(self._hits) >= self.max_keys:
+                oldest = min(self._hits, key=lambda k: self._hits[k][-1] if self._hits[k] else now)
+                self._hits.pop(oldest, None)
+            hits.append(now)
             self._hits[key] = hits
-            return False
-        hits.append(now)
-        self._hits[key] = hits
-        return True
+            return True
 
 
 def validate_upload(*, size_bytes: int, content_type: str, filename: str) -> None:

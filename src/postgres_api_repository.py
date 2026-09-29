@@ -425,11 +425,17 @@ class PostgresAPIRepository(PostgresRepository):
     def get_mfa_state(self, organization_id: str, user_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT mfa_enabled,mfa_secret_enc FROM users WHERE id=%s", (user_id,)); return cur.fetchone()
+                cur.execute("SELECT mfa_enabled,mfa_secret_enc,mfa_last_counter FROM users WHERE id=%s", (user_id,)); return cur.fetchone()
 
     def set_mfa_secret(self, organization_id: str, user_id: str, secret_enc: str, enabled: bool):
         with self.transaction(organization_id) as conn:
-            with conn.cursor() as cur: cur.execute("UPDATE users SET mfa_secret_enc=%s,mfa_enabled=%s,mfa_enabled_at=CASE WHEN %s THEN now() ELSE NULL END WHERE id=%s", (secret_enc,enabled,enabled,user_id))
+            with conn.cursor() as cur: cur.execute("UPDATE users SET mfa_secret_enc=%s,mfa_enabled=%s,mfa_last_counter=NULL,mfa_enabled_at=CASE WHEN %s THEN now() ELSE NULL END WHERE id=%s", (secret_enc,enabled,enabled,user_id))
+
+    def consume_mfa_counter(self, organization_id: str, user_id: str, counter: int) -> bool:
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("UPDATE users SET mfa_last_counter=%s WHERE id=%s AND (mfa_last_counter IS NULL OR mfa_last_counter < %s)", (counter,user_id,counter))
+                return cur.rowcount == 1
 
     def disable_mfa(self, organization_id: str, user_id: str):
         with self.transaction(organization_id) as conn:

@@ -54,7 +54,7 @@ from .operations_ui import (
 )
 from .identity import normalize_email, validate_role, issue_session, can_manage_org
 from .production_config import ProductionConfig
-from .mfa import generate_secret, verify_totp, otpauth_uri, encrypt_secret, decrypt_secret, recovery_token
+from .mfa import generate_secret, verify_totp, totp_code, otpauth_uri, encrypt_secret, decrypt_secret, recovery_token
 from .recovery_email import SMTPConfig, send_recovery_email, send_verification_email, RecoveryEmailError
 from .deployment import DeploymentConfig, security_headers
 from .observability import InMemoryTelemetry, TraceContext, health_check
@@ -394,16 +394,34 @@ class ReviewDefenseAPI:
         if self.repository is not None and hasattr(self.repository, "get_mfa_state"):
             row = self.repository.get_mfa_state(user.organization_id, user.user_id)
             if row:
-                state = {"enabled": bool(row[0]), "secret_enc": row[1]}
+                state = {"enabled": bool(row[0]), "secret_enc": row[1], "last_counter": row[2] if len(row) > 2 else None}
                 self.store.mfa[user.user_id] = state
                 return state
-        return {"enabled": False, "secret_enc": None}
+        return {"enabled": False, "secret_enc": None, "last_counter": None}
 
     def _mfa_secret(self, user: User) -> str | None:
         state = self._mfa_state(user)
         if not state.get("enabled") or not state.get("secret_enc"):
             return None
         return decrypt_secret(state["secret_enc"], self._mfa_key())
+
+    def _consume_mfa_code(self, user: User, code: str) -> bool:
+        secret = self._mfa_secret(user)
+        if secret is None:
+            return True
+        if not verify_totp(secret, code):
+            return False
+        counter = int(time.time() // 30)
+        state = self._mfa_state(user)
+        previous = state.get("last_counter")
+        if previous is not None and counter <= int(previous):
+            return False
+        if self.repository is not None and hasattr(self.repository, "consume_mfa_counter"):
+            if not self.repository.consume_mfa_counter(user.organization_id, user.user_id, counter):
+                return False
+        state["last_counter"] = counter
+        self.store.mfa[user.user_id] = state
+        return True
 
     def _smtp_config(self) -> SMTPConfig:
         cfg = self.delivery_email_config
@@ -684,7 +702,7 @@ class ReviewDefenseAPI:
             # over from an older account policy.
             mfa_secret = self._mfa_secret(user) if user.role in {"OWNER", "ADMIN"} else None
             if mfa_secret is not None:
-                if not verify_totp(mfa_secret, str(body.get("mfa_code", ""))):
+                if not self._consume_mfa_code(user, str(body.get("mfa_code", ""))):
                     raise APIError(401, "MFA_REQUIRED", "valid MFA code is required")
             raw, session = issue_session(user_id=user.user_id, organization_id=user.organization_id, role=user.role, ttl_seconds=self.session_ttl)
             hashed = session.token_hash
@@ -894,7 +912,7 @@ class ReviewDefenseAPI:
             state=self._mfa_state(user)
             if not state.get("secret_enc"): raise APIError(400,"MFA_NOT_ENROLLED","MFA enrollment has not been started")
             secret=decrypt_secret(state["secret_enc"],self._mfa_key())
-            if not verify_totp(secret,str(self._body(environ).get("code",""))): raise APIError(401,"MFA_INVALID","invalid MFA code")
+            if not self._consume_mfa_code(user, str(self._body(environ).get("code",""))): raise APIError(401,"MFA_INVALID","invalid MFA code")
             state={"enabled":True,"secret_enc":state["secret_enc"]}; self.store.mfa[user.user_id]=state
             if self.repository is not None and hasattr(self.repository,"set_mfa_secret"): self.repository.set_mfa_secret(user.organization_id,user.user_id,state["secret_enc"],True)
             self.store.audit_event(user.organization_id,user.user_id,"MFA_ENABLED",f"user:{user.user_id}")
