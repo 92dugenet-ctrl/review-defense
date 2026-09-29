@@ -109,8 +109,8 @@ def test_frontend_layout_contract():
     assert "NavLink" in shell
     assert "Outlet" in shell
     assert "mobileOpen" in shell
-    assert "aria-label="Navigation principale"" in shell
-    assert "role === "admin"" in shell
+    assert 'aria-label="Navigation principale"' in shell
+    assert 'role === "admin"' in shell
     assert ".sidebar.mobile-open" in css
     assert ".sidebar-backdrop" in css
     assert ".topbar" in css
