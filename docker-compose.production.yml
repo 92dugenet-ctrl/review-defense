@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: review_defense
+      POSTGRES_USER: review_defense
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - review_defense_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U review_defense -d review_defense"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      REVIEW_DEFENSE_ENV: production
+      HOST: 0.0.0.0
+      REVIEW_DEFENSE_PUBLIC_BASE_URL: ${REVIEW_DEFENSE_PUBLIC_BASE_URL:?set public URL}
+      TRUST_PROXY: "true"
+      DATABASE_URL: postgresql://review_defense:${POSTGRES_PASSWORD}@postgres:5432/review_defense
+      REVIEW_DEFENSE_MFA_ENCRYPTION_KEY: ${REVIEW_DEFENSE_MFA_ENCRYPTION_KEY:?set MFA key}
+      PAYPAL_CLIENT_ID: ${PAYPAL_CLIENT_ID:-}
+      PAYPAL_CLIENT_SECRET: ${PAYPAL_CLIENT_SECRET:-}
+      REVIEW_DEFENSE_EVIDENCE_ROOT: /data/evidence
+    volumes:
+      - review_defense_evidence:/data/evidence
+    ports:
+      - "${PORT:-8080}:8080"
+
+volumes:
+  review_defense_pg:
+  review_defense_evidence:

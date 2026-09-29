@@ -1,4 +1,4 @@
-name: Review Defense — billing
+name: Review Defense — production verification
 on:
   push:
     branches: [main]
@@ -6,7 +6,7 @@ on:
 permissions:
   contents: read
 jobs:
-  billing:
+  production:
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -29,14 +29,13 @@ jobs:
           cache: pip
       - run: python -m pip install -r requirements.txt
       - run: python -m compileall -q src scripts wsgi.py main.py start.py
-      - name: Apply migrations and create non-owner integration role
+      - name: Apply migrations and create integration role
         env:
           ADMIN_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/review_defense
         run: |
           DATABASE_URL="$ADMIN_DATABASE_URL" python scripts/migrate.py
           python - <<'PY'
-          import os
-          import psycopg
+          import os, psycopg
           with psycopg.connect(os.environ["ADMIN_DATABASE_URL"], autocommit=True) as conn:
               conn.execute("CREATE ROLE review_defense_app LOGIN PASSWORD 'review_defense_app' NOSUPERUSER NOCREATEDB NOCREATEROLE")
               conn.execute("GRANT USAGE ON SCHEMA public TO review_defense_app")
@@ -44,8 +43,18 @@ jobs:
               conn.execute("GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO review_defense_app")
               conn.execute("GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO review_defense_app")
           PY
-      - name: Integration tests
+      - name: Production configuration contract
+        env:
+          REVIEW_DEFENSE_ENV: production
+          HOST: 0.0.0.0
+          REVIEW_DEFENSE_PUBLIC_BASE_URL: https://example.test
+          TRUST_PROXY: "true"
+          DATABASE_URL: postgresql://review_defense_app:review_defense_app@localhost:5432/review_defense
+          REVIEW_DEFENSE_MFA_ENCRYPTION_KEY: "01234567890123456789012345678901"
+        run: python scripts/production_check.py
+      - name: Full integration and production operations
         env:
           DATABASE_URL: postgresql://review_defense_app:review_defense_app@localhost:5432/review_defense
-        run: python -m pytest -q tests/test_integration.py
-      - run: python -m pytest -q tests/test_billing.py tests/test_processing_jobs.py tests/test_security.py tests/test_business_api_contract.py tests/test_foundation.py
+        run: python -m pytest -q tests/test_integration.py tests/test_production_operations.py
+      - name: Full regression suite
+        run: python -m pytest -q tests/test_billing.py tests/test_processing_jobs.py tests/test_security.py tests/test_business_api_contract.py tests/test_foundation.py
