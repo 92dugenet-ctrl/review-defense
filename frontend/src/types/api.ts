@@ -23,6 +23,10 @@ export type Review = {
   source: string;
   review_url?: string | null;
   published_at?: string | null;
+  author_display_name?: string | null;
+  location_id?: string;
+  language?: string | null;
+  updated_at?: string | null;
 };
 
 export type Case = {
