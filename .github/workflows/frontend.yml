@@ -6,10 +6,15 @@ on:
     paths:
       - "frontend/**"
       - ".github/workflows/frontend.yml"
+      - "!frontend/dist/**"
   pull_request:
     paths:
       - "frontend/**"
       - ".github/workflows/frontend.yml"
+      - "!frontend/dist/**"
+
+permissions:
+  contents: write
 
 jobs:
   validate:
@@ -27,3 +32,18 @@ jobs:
       - run: npm install
       - run: npm run typecheck
       - run: npm run build
+
+      - name: Publish production frontend build
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        working-directory: .
+        run: |
+          set -eu
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add frontend/dist
+          if git diff --cached --quiet; then
+            echo "frontend/dist is already up to date"
+            exit 0
+          fi
+          git commit -m "build(frontend): update production dist"
+          git push
