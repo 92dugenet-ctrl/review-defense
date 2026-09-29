@@ -203,21 +203,33 @@ def test_admin_workspace_permissions_and_session_revocation():
     assert status == "200 OK"
     assert changed["role"] == "ANALYST"
 
-    # The persistent membership role is refreshed on authenticated requests.
-    status, _, refreshed = request(app, "/v1/me", token=admin_token)
+    # A role change invalidates the previous elevated session.
+    status, _, stale = request(app, "/v1/me", token=admin_token)
+    assert status == "401 Unauthorized"
+    assert stale["error"]["code"] == "AUTH_INVALID"
+
+    status, _, refreshed_login = request(
+        app, "/v1/auth/login", "POST",
+        {"email": admin_email, "organization_id": organization_id, "password": password},
+    )
+    assert status == "200 OK"
+    refreshed_token = refreshed_login["access_token"]
+    assert refreshed_login["role"] == "ANALYST"
+
+    status, _, refreshed = request(app, "/v1/me", token=refreshed_token)
     assert status == "200 OK"
     assert refreshed["role"] == "ANALYST"
 
     status, _, forbidden = request(
         app, f"/v1/organization/members/{owner['user_id']}/role", "POST",
-        {"role": "ADMIN"}, admin_token,
+        {"role": "ADMIN"}, refreshed_token,
     )
     assert status == "403 Forbidden"
     assert forbidden["error"]["code"] == "FORBIDDEN"
 
     status, _, forbidden_owner = request(
         app, "/v1/organization/invitations", "POST",
-        {"email": f"owner-invite-{uuid.uuid4().hex[:8]}@example.test", "role": "OWNER"}, admin_token,
+        {"email": f"owner-invite-{uuid.uuid4().hex[:8]}@example.test", "role": "OWNER"}, refreshed_token,
     )
     assert status == "403 Forbidden"
     assert forbidden_owner["error"]["code"] == "FORBIDDEN"
