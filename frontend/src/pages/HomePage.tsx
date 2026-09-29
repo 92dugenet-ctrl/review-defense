@@ -40,6 +40,15 @@ function Preview() {
 }
 
 
+
+function Header() {
+  const [open,setOpen]=useState(false);
+  return <header className="rd-header"><div className="rd-head-left"><button className="rd-menu" aria-label="Menu" aria-expanded={open} onClick={()=>setOpen(!open)}><span /></button><Link className="rd-brand" to="/"><span className="rd-mark">RD</span><span>Review Defense</span></Link></div><nav className="rd-nav"><Link to="/produit">Produit</Link><Link to="/fonctionnement">Fonctionnement</Link><Link to="/securite">Sécurité</Link><Link to="/tarifs">Tarifs</Link></nav><div className="rd-actions"><Link className="rd-login" to="/login">Connexion</Link><Link className="rd-head-cta" to="/register">Commencer →</Link></div>{open&&<div className="rd-panel"><Link to="/produit" onClick={()=>setOpen(false)}>Produit <span>→</span></Link><Link to="/fonctionnement" onClick={()=>setOpen(false)}>Fonctionnement <span>→</span></Link><Link to="/securite" onClick={()=>setOpen(false)}>Sécurité <span>→</span></Link><Link to="/tarifs" onClick={()=>setOpen(false)}>Tarifs <span>→</span></Link><Link to="/login" onClick={()=>setOpen(false)}>Connexion <span>→</span></Link></div>}</header>;
+}
+function Footer() {
+  return <footer className="rd-footer"><div><strong>Review Defense</strong><span>Analyse · Preuves · Dossiers · Validation</span></div><div><Link to="/securite">Sécurité</Link><Link to="/tarifs">Tarifs</Link><Link to="/login">Connexion</Link></div></footer>;
+}
+
 function ProductMockup({ mode = "review" }: { mode?: "review" | "evidence" | "cases" | "approval" }) {
   const titles = { review: "Avis à vérifier", evidence: "Éléments du dossier", cases: "Dossiers actifs", approval: "Validation requise" };
   return <div className="rd-product-frame"><div className="rd-window-bar"><span>● ● ●</span><b>Review Defense</b><small>Espace entreprise</small></div><div className="rd-window"><aside className="rd-side"><strong>RD</strong><span className="sel">Tableau</span><span>Avis</span><span>Dossiers</span><span>Preuves</span><span>Suivi</span><i /></aside><main className="rd-ui"><div className="rd-ui-head"><div><small>ESPACE DE TRAVAIL</small><h3>{titles[mode]}</h3></div><button>Ouvrir →</button></div>
@@ -94,7 +103,7 @@ function SecurityPage() {
 }
 
 function PricingPage() {
-  const plans=[["Essential","Pour commencer à structurer vos avis.","À partir de 49 € / mois",["Gestion des avis","Dossiers et preuves","Historique","Validation humaine"]],["Professional","Pour les équipes qui traitent régulièrement des dossiers.","À partir de 99 € / mois",["Tout Essential","Analyse avancée","Suivi des dossiers","Espace équipe"]],["Business","Pour les organisations avec plusieurs équipes ou volumes.","Sur mesure",["Tout Professional","Organisation avancée","Accompagnement","Conditions adaptées"]]];
+  const plans: Array<[string,string,string,string[]]>=[["Essential","Pour commencer à structurer vos avis.","À partir de 49 € / mois",["Gestion des avis","Dossiers et preuves","Historique","Validation humaine"]],["Professional","Pour les équipes qui traitent régulièrement des dossiers.","À partir de 99 € / mois",["Tout Essential","Analyse avancée","Suivi des dossiers","Espace équipe"]],["Business","Pour les organisations avec plusieurs équipes ou volumes.","Sur mesure",["Tout Professional","Organisation avancée","Accompagnement","Conditions adaptées"]]];
   return <PageFrame><Header /><section className="rd-page-intro"><div><span className="rd-eyebrow">TARIFS</span><h1>Un cadre simple pour<br /><em>commencer à avancer.</em></h1></div><div><p>Des offres pensées autour du niveau d’usage. Les fonctions essentielles restent lisibles, sans empiler des options incompréhensibles.</p></div></section>
     <section className="rd-pricing"><div className="rd-pricing-grid">{plans.map(([name,desc,price,features],i)=><article className={i===1?"featured":""} key={name}><span className="rd-plan-label">{i===1?"LE PLUS COMPLET":"OFFRE"}</span><h2>{name}</h2><p>{desc}</p><strong>{price}</strong><ul>{features.map(f=><li key={f}>✓ {f}</li>)}</ul><Link to="/register">{i===2?"Parler du besoin":"Commencer"} →</Link></article>)}</div></section>
     <section className="rd-comparison"><span className="rd-eyebrow">COMPARER</span><h2>Choisissez le niveau<br /><em>qui correspond à votre usage.</em></h2><div className="rd-compare-table"><div><b>Fonction</b><b>Essential</b><b>Professional</b><b>Business</b></div>{["Avis et dossiers","Preuves et historique","Analyse avancée","Équipe et permissions","Accompagnement"].map((x,i)=><div key={x}><span>{x}</span><span>✓</span><span>{i<4?"✓":"—"}</span><span>✓</span></div>)}</div></section><section className="rd-faq"><span className="rd-eyebrow">BESOIN D’AIDE ?</span><h2>Encore une question ?</h2><p>Commencez par créer votre espace. Vous pourrez ensuite préciser votre besoin et choisir le cadre adapté.</p><Link className="rd-blue-button" to="/register">Créer mon espace →</Link></section><Footer /></PageFrame>;
