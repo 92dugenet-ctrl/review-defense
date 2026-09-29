@@ -13,6 +13,7 @@ import { AnalysisPage } from "@/pages/AnalysisPage";
 import { NotificationsPage } from "@/pages/NotificationsPage";
 import { BillingPage } from "@/pages/BillingPage";
 import { PrivacyPage } from "@/pages/PrivacyPage";
+import { SettingsPage } from "@/pages/SettingsPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { AdminPage } from "@/pages/AdminPage";
 
@@ -35,7 +36,8 @@ export const router = createBrowserRouter([
         { path: "analysis", element: <AnalysisPage /> },
         { path: "notifications", element: <NotificationsPage /> },
         { path: "billing", element: <BillingPage /> },
-        { path: "settings", element: <PrivacyPage /> },
+        { path: "settings", element: <SettingsPage /> },
+        { path: "privacy", element: <PrivacyPage /> },
         { path: "admin", element: <AdminPage /> },
       ],
     }],

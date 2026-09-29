@@ -269,3 +269,14 @@ def test_frontend_all_core_routes_are_declared():
     router = (FRONTEND / "src/app/router.tsx").read_text(encoding="utf-8")
     for route in ("dashboard", "reviews", "cases", "analysis", "notifications", "billing", "settings", "admin"):
         assert 'path: "' + route + '"' in router
+
+
+def test_settings_frontend_contract():
+    router = (FRONTEND / "src/app/router.tsx").read_text(encoding="utf-8")
+    page = (FRONTEND / "src/pages/SettingsPage.tsx").read_text(encoding="utf-8")
+    assert "SettingsPage" in router
+    assert 'path: "settings"' in router
+    assert 'path: "privacy"' in router
+    assert "useAuth" in page
+    assert '"/app/privacy"' in page
+    assert "Se déconnecter" in page

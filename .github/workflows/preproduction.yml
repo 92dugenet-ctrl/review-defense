@@ -1,8 +1,7 @@
 name: Review Defense — real preproduction
 
 on:
-  push:
-    branches: [main]
+  # Automatic pushes are paused until preproduction credentials are restored.
   workflow_dispatch:
 
 permissions:
