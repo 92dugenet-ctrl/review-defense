@@ -13,9 +13,6 @@ def configuration_status():
     return {"configured":configured(),"environment":"live","client_id_present":bool(PAYPAL_SUBSCRIPTION_CLIENT_ID),"client_secret_present":bool(os.getenv("PAYPAL_CLIENT_SECRET","").strip()),"webhook_id_present":bool(os.getenv("PAYPAL_WEBHOOK_ID","").strip())}
 
 def base_url():
-    configured_url=os.getenv("PAYPAL_BASE_URL","").strip().rstrip("/")
-    if configured_url and configured_url != "https://api-m.paypal.com":
-        raise PayPalError("PAYPAL_BASE_URL must use the PayPal Live API endpoint")
     return "https://api-m.paypal.com"
 
 def request_json(method, path, payload=None, headers=None, access_token=None):

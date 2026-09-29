@@ -900,7 +900,7 @@ class ReviewDefenseAPI:
             if offer.kind!="subscription": raise APIError(422,"INVALID_OFFER","not a subscription offer")
             plan_id=paypal_plan_id(offer)
             if not paypal_configured() or not plan_id: raise APIError(503,"PAYPAL_NOT_CONFIGURED","PayPal subscription plan is not configured")
-            return self._json(200,{"offer_id":offer.offer_id,"plan_id":plan_id,"client_id":os.getenv("PAYPAL_CLIENT_ID","").strip(),"currency":offer.currency,"amount":str(offer.amount)})
+            return self._json(200,{"offer_id":offer.offer_id,"plan_id":plan_id,"client_id":PAYPAL_SUBSCRIPTION_CLIENT_ID,"currency":offer.currency,"amount":str(offer.amount)})
         if method == "POST" and path == "/v1/paypal/subscription/confirm":
             body=self._body(environ); offer_id=str(body.get("offer_id","")).strip(); subscription_id=str(body.get("subscription_id","")).strip()
             try: offer=get_offer(offer_id)
