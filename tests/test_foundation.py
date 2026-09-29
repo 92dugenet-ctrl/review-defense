@@ -261,7 +261,8 @@ def test_frontend_ux_contract():
     assert ":focus-visible" in css
     assert "prefers-reduced-motion" in css
     assert "@media(max-width:640px)" in css
-    assert "disabled" in button
+    assert "ButtonHTMLAttributes" in button
+    assert "disabled" not in button
     assert "variant" in button
 
 def test_frontend_all_core_routes_are_declared():
