@@ -1,0 +1,19 @@
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/Button";
+import { ApiError, api } from "@/services/api/client";
+import type { Review } from "@/types/api";
+
+const dateLabel=(value?:string|null)=>{if(!value)return "—";const d=new Date(value);return Number.isNaN(d.getTime())?value:new Intl.DateTimeFormat("fr-FR",{day:"2-digit",month:"short",year:"numeric"}).format(d)};
+export function ReviewsPage(){
+ const [items,setItems]=useState<Review[]>([]),[search,setSearch]=useState(""),[rating,setRating]=useState("all"),[source,setSource]=useState("all"),[loading,setLoading]=useState(true),[error,setError]=useState<ApiError|null>(null);
+ const load=async()=>{setLoading(true);setError(null);try{const r=await api.get<{items:Review[]}>("/v1/reviews");setItems(r.items??[])}catch(e){setError(e instanceof ApiError?e:new ApiError("Impossible de charger les avis.",0))}finally{setLoading(false)}};
+ useEffect(()=>{void load()},[]);
+ const sources=useMemo(()=>[...new Set(items.map(x=>x.source).filter(Boolean))].sort(),[items]);
+ const filtered=useMemo(()=>{const q=search.trim().toLowerCase();return [...items].filter(x=>rating==="all"||String(x.rating)===rating).filter(x=>source==="all"||x.source===source).filter(x=>!q||x.text.toLowerCase().includes(q)||(x.author_display_name??"").toLowerCase().includes(q)).sort((a,b)=>new Date(b.published_at??0).getTime()-new Date(a.published_at??0).getTime())},[items,search,rating,source]);
+ return <section className="reviews-page"><div className="reviews-heading"><div><span className="eyebrow">REVIEW DEFENSE · AVIS</span><h1>Vos avis</h1><p>Centralisez les avis suivis par votre organisation.</p></div><Button variant="secondary" onClick={()=>void load()} disabled={loading}>{loading?"Actualisation…":"Actualiser"}</Button></div>
+ <div className="reviews-toolbar"><label><span>Rechercher</span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Texte ou auteur…" /></label><label><span>Note</span><select value={rating} onChange={e=>setRating(e.target.value)}><option value="all">Toutes</option>{[5,4,3,2,1].map(v=><option key={v} value={v}>{v}/5</option>)}</select></label><label><span>Source</span><select value={source} onChange={e=>setSource(e.target.value)}><option value="all">Toutes</option>{sources.map(v=><option key={v} value={v}>{v.replaceAll("_"," ")}</option>)}</select></label></div>
+ {error&&<div className="dashboard-error" role="alert"><div><strong>Les avis n’ont pas pu être chargés.</strong><span>{error.message}</span></div><Button variant="secondary" onClick={()=>void load()}>Réessayer</Button></div>}
+ <div className="reviews-summary"><strong>{loading?"…":filtered.length}</strong><span>avis affiché{filtered.length>1?"s":""}</span></div>
+ <div className="reviews-table-wrap"><table className="reviews-table"><thead><tr><th>Avis</th><th>Note</th><th>Source</th><th>Date</th><th/></tr></thead><tbody>{loading?<tr><td colSpan={5}><div className="reviews-table-empty">Chargement…</div></td></tr>:filtered.length?filtered.map(x=><tr key={x.review_id}><td><div className="review-cell"><strong>{x.author_display_name||"Auteur non renseigné"}</strong><span>{x.text||"Avis sans texte"}</span></div></td><td><span className="review-rating">{x.rating}/5</span></td><td><span className="review-source">{x.source}</span></td><td><span className="review-date">{dateLabel(x.published_at)}</span></td><td><Link className="review-open" to={"/app/reviews/"+x.review_id}>Ouvrir</Link></td></tr>):<tr><td colSpan={5}><div className="reviews-table-empty"><strong>Aucun avis trouvé</strong><span>Modifiez les filtres ou attendez une synchronisation.</span></div></td></tr>}</tbody></table></div></section>
+}

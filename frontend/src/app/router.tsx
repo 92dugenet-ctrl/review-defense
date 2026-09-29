@@ -4,7 +4,7 @@ import { RequireAuth } from "@/auth/RequireAuth";
 import { HomePage } from "@/pages/HomePage";
 import { LoginPage } from "@/pages/LoginPage";
 import { RegisterPage } from "@/pages/RegisterPage";
-import { DashboardPage } from "@/pages/DashboardPage";
+import { DashboardPage } from "@/pages/DashboardPage";\nimport { ReviewsPage } from "@/pages/ReviewsPage";\nimport { ReviewDetailPage } from "@/pages/ReviewDetailPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 
 const Placeholder = ({ title }: { title: string }) => (
@@ -27,7 +27,7 @@ export const router = createBrowserRouter([
       children: [
         { index: true, element: <Navigate to="/app/dashboard" replace /> },
         { path: "dashboard", element: <DashboardPage /> },
-        { path: "reviews", element: <Placeholder title="Avis" /> },
+        { path: "reviews", element: <ReviewsPage /> },\n        { path: "reviews/:reviewId", element: <ReviewDetailPage /> },
         { path: "cases", element: <Placeholder title="Dossiers" /> },
         { path: "analysis", element: <Placeholder title="Analyse" /> },
         { path: "notifications", element: <Placeholder title="Notifications" /> },

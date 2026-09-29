@@ -203,3 +203,14 @@ def test_dashboard_frontend_contract():
     assert "NotificationItem" in types
     assert "dashboard-kpis" in page
     assert "dashboard-card" in page
+
+def test_reviews_frontend_contract():
+    page = (FRONTEND / "src/pages/ReviewsPage.tsx").read_text(encoding="utf-8")
+    detail = (FRONTEND / "src/pages/ReviewDetailPage.tsx").read_text(encoding="utf-8")
+    router = (FRONTEND / "src/app/router.tsx").read_text(encoding="utf-8")
+    assert '"/v1/reviews"' in page
+    assert '"/v1/reviews/"' in detail
+    assert "reviews/:reviewId" in router
+    assert "reviews-toolbar" in page
+    assert "policy_signals" in detail
+    assert "claims" in detail
