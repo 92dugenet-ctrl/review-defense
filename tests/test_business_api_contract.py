@@ -61,38 +61,70 @@ def test_legacy_business_route_families_are_implemented():
 
 def test_business_api_requires_authentication():
     for path in (
-        "/v1/me",
-        "/v1/reviews",
-        "/v1/evidence",
-        "/v1/cases",
-        "/v1/review-queue",
-        "/v1/escalations",
-        "/v1/notifications",
-        "/v1/approvals",
-        "/v1/submissions",
-        "/v1/billing",
-        "/v1/privacy/export",
+        "/v1/me", "/v1/reviews", "/v1/evidence", "/v1/cases",
+        "/v1/review-queue", "/v1/escalations", "/v1/notifications",
+        "/v1/approvals", "/v1/submissions", "/v1/billing", "/v1/privacy/export",
     ):
         status, _, body = request(path)
         assert status == "401 Unauthorized", (path, body)
         assert body["error"]["code"] in {"AUTH_REQUIRED", "AUTH_INVALID"}
 
 
-def test_legacy_auth_register_and_authenticated_me():
+def test_auth_register_me_login_logout_contract():
     email = f"ci-{uuid.uuid4().hex[:12]}@example.test"
-    status, _, body = request(
-        "/v1/auth/register",
-        "POST",
-        {"email": email, "organization_name": "CI Review Defense", "password": "StrongPassword123!"},
-    )
-    assert status == "201 Created", body
-    assert body["status"] == "created"
-    token = body["access_token"]
+    password = "StrongPassword123!"
+    organization = "CI Auth Organization"
 
-    status, _, me = request("/v1/me", headers={"Authorization": f"Bearer {token}"})
-    assert status == "200 OK", me
+    status, _, created = request("/v1/auth/register", "POST", {
+        "email": email, "organization_name": organization, "password": password,
+    })
+    assert status == "201 Created", created
+    assert created["status"] == "created"
+    assert created["token_type"] == "Bearer"
+    assert created["access_token"]
+    assert created["organization_id"]
+
+    token = created["access_token"]
+    org_id = created["organization_id"]
+    auth = {"Authorization": f"Bearer {token}"}
+
+    status, _, me = request("/v1/me", headers=auth)
+    assert status == "200 OK"
     assert me["email"] == email
     assert me["role"] == "OWNER"
+    assert me["organization_id"] == org_id
+
+    status, _, logged_in = request("/v1/auth/login", "POST", {
+        "email": email, "password": password, "organization_id": org_id,
+    })
+    assert status == "200 OK", logged_in
+    assert logged_in["access_token"]
+    assert logged_in["token_type"] == "Bearer"
+
+    status, _, current = request("/v1/me", headers={"Authorization": f"Bearer {logged_in['access_token']}"})
+    assert status == "200 OK"
+    assert current["email"] == email
+
+    status, _, logged_out = request("/v1/logout", "POST", headers={"Authorization": f"Bearer {logged_in['access_token']}"})
+    assert status == "200 OK"
+    assert logged_out["status"] == "logged_out"
+
+    status, _, invalid = request("/v1/me", headers={"Authorization": f"Bearer {logged_in['access_token']}"})
+    assert status == "401 Unauthorized"
+    assert invalid["error"]["code"] == "AUTH_INVALID"
+
+
+def test_auth_rejects_wrong_password():
+    email = f"ci-{uuid.uuid4().hex[:12]}@example.test"
+    status, _, created = request("/v1/auth/register", "POST", {
+        "email": email, "organization_name": "CI Auth Wrong Password", "password": "StrongPassword123!",
+    })
+    assert status == "201 Created"
+    status, _, body = request("/v1/auth/login", "POST", {
+        "email": email, "password": "WrongPassword123!", "organization_id": created["organization_id"],
+    })
+    assert status == "401 Unauthorized"
+    assert body["error"]["code"] == "AUTH_INVALID"
 
 
 def test_business_api_preserves_health_and_readiness():

@@ -97,6 +97,10 @@ def test_frontend_build_contract():
     assert (FRONTEND / "src/app/router.tsx").is_file()
     assert (FRONTEND / "vite.config.ts").is_file()
     assert (FRONTEND / "dist/index.html").is_file()
+    assert (FRONTEND / "src/auth/AuthContext.tsx").is_file()
+    assert (FRONTEND / "src/auth/RequireAuth.tsx").is_file()
+    assert (FRONTEND / "src/pages/LoginPage.tsx").is_file()
+    assert (FRONTEND / "src/pages/RegisterPage.tsx").is_file()
 
 
 def test_frontend_shell_serves_built_react_app():
