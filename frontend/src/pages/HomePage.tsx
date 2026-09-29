@@ -123,77 +123,45 @@ function PricingPage() {
   const [error, setError] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
   const [message, setMessage] = useState("");
-  const plans = [
-    { offer: "monitoring_essential", name: "Essential", desc: "Pour commencer à structurer vos avis et vos dossiers.", features: ["Jusqu’à 10 dossiers", "Gestion des avis", "Dossiers et preuves", "Historique et validation"] },
-    { offer: "monitoring_professional", name: "Professional", desc: "Pour les équipes qui traitent régulièrement des dossiers.", features: ["Jusqu’à 100 dossiers", "Tout Essential", "Analyse avancée", "Suivi et exports", "Espace équipe"] },
-    { offer: "monitoring_business", name: "Business", desc: "Pour les organisations avec plusieurs équipes ou volumes.", features: ["Dossiers sans limite de plan", "Tout Professional", "Organisation avancée", "Équipe et permissions", "Support prioritaire"] },
+  const groups = [
+    { key:"subscription", eyebrow:"MONITORING", title:"Abonnements", description:"Surveillance continue de votre réputation.", kinds:["subscription"] },
+    { key:"audit", eyebrow:"AUDIT", title:"Audits de réputation", description:"Mesurez et documentez l’état de votre réputation selon le volume d’avis.", kinds:["audit"] },
+    { key:"defense", eyebrow:"DÉFENSE / SUPPRESSION", title:"Défense d’un avis", description:"Un parcours à la carte, de l’analyse initiale au traitement avancé.", kinds:["defense_step","defense_package"] },
+    { key:"packs", eyebrow:"PACKS", title:"Packs de défense", description:"Des crédits prépayés pour traiter plusieurs dossiers.", kinds:["credit_pack"] },
   ] as const;
-
-  useEffect(() => {
-    api.get<any>("/v1/billing/catalog").then((data) => setCatalog(data.items ?? [])).catch((e) => setError(e instanceof Error ? e.message : "Tarifs indisponibles."));
-  }, []);
-
-  const subscribe = async (offerId: string) => {
-    setError(""); setMessage(""); setSelected(offerId);
-    const token = authToken();
-    if (!token) {
-      setSelected(null);
-      window.location.href = "/register?next=/tarifs";
-      return;
-    }
-    try {
-      const cfg = await api.get<any>("/v1/paypal/config");
-      if (!cfg.configured || !cfg.client_id) throw new Error("PayPal n’est pas encore configuré.");
-      const plan = await api.get<any>("/v1/paypal/subscription/config?offer_id=" + encodeURIComponent(offerId));
-      await loadPricingPayPal(cfg.client_id);
-      const nodeId = "paypal-" + offerId;
-      const node = document.getElementById(nodeId);
-      if (!node) throw new Error("Conteneur PayPal introuvable.");
-      node.innerHTML = "";
-      await window.paypal!.Buttons({
-        style: { layout: "vertical", shape: "rect", label: "subscribe", color: "gold" },
-        createSubscription: (_data: any, actions: any) => actions.subscription.create({ plan_id: plan.plan_id }),
-        onApprove: async (paypalData: any) => {
-          await api.post("/v1/paypal/subscription/confirm", { subscription_id: paypalData.subscriptionID, offer_id: offerId }, { headers: { Authorization: "Bearer " + token } });
-          setMessage("Abonnement confirmé. Votre espace sera synchronisé avec PayPal.");
-          setSelected(null);
-        },
-        onError: (e: any) => setError(e instanceof Error ? e.message : "Paiement PayPal impossible."),
-      }).render("#" + nodeId);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "PayPal indisponible.");
-      setSelected(null);
-    }
+  useEffect(() => { api.get<any>("/v1/billing/catalog").then(d=>setCatalog(d.items??[])).catch(e=>setError(e instanceof Error?e.message:"Catalogue tarifaire indisponible.")); }, []);
+  const loadPayPal = async (clientId:string, components:string, extra="") => {
+    const old=document.querySelector<HTMLScriptElement>("script[data-rd-paypal]"); if(old) old.remove();
+    await new Promise<void>((resolve,reject)=>{const s=document.createElement("script");s.src="https://www.paypal.com/sdk/js?client-id="+encodeURIComponent(clientId)+"&components="+components+"&currency=EUR&locale=fr_FR"+extra;s.async=true;s.dataset.rdPaypal="1";s.onload=()=>resolve();s.onerror=()=>reject(new Error("Impossible de charger PayPal."));document.head.appendChild(s)});
+    if(!window.paypal) throw new Error("PayPal est indisponible.");
   };
-
+  const payOneTime = async (offer:any) => {
+    setError("");setMessage("");setSelected(offer.offer_id);
+    try {
+      if(!offer.paypal_hosted_button_id) throw new Error("Le paiement PayPal de cette offre n’est pas encore configuré.");
+      await loadPayPal("BAAftx79q4rSHY7vc2aYy_hgx3KB6GB15k__TBghUQyd1_ixXSqv71UHw1RXZvkR4cli25WsSirUKWt7zs","hosted-buttons");
+      const id="paypal-"+offer.offer_id,node=document.getElementById(id); if(!node) throw new Error("Conteneur PayPal introuvable.");
+      node.innerHTML=""; const pp=window.paypal as any; if(!pp.HostedButtons) throw new Error("Les boutons PayPal hébergés sont indisponibles.");
+      pp.HostedButtons({hostedButtonId:offer.paypal_hosted_button_id}).render("#"+id);
+    } catch(e) { setError(e instanceof Error?e.message:"Paiement PayPal impossible.");setSelected(null); }
+  };
+  const subscribe = async (offer:any) => {
+    setError("");setMessage("");setSelected(offer.offer_id);
+    const token=authToken(); if(!token){setSelected(null);window.location.href="/register?next=/tarifs";return;}
+    try {
+      const cfg=await api.get<any>("/v1/paypal/config"); if(!cfg.configured||!cfg.client_id) throw new Error("PayPal n’est pas encore configuré.");
+      const plan=await api.get<any>("/v1/paypal/subscription/config?offer_id="+encodeURIComponent(offer.offer_id));
+      await loadPayPal(cfg.client_id,"buttons","&vault=true&intent=subscription");
+      const id="paypal-"+offer.offer_id,node=document.getElementById(id);if(!node)throw new Error("Conteneur PayPal introuvable.");
+      node.innerHTML="";(window.paypal as any).Buttons({style:{layout:"vertical",label:"subscribe"},createSubscription:(_d:any,a:any)=>a.subscription.create({plan_id:plan.plan_id}),onApprove:async(data:any)=>{await api.post("/v1/paypal/subscription/confirm",{subscription_id:data.subscriptionID,offer_id:offer.offer_id},{headers:{Authorization:"Bearer "+token}});setMessage("Abonnement confirmé. Votre espace sera synchronisé avec PayPal.");setSelected(null)},onCancel:()=>setSelected(null),onError:(e:any)=>setError(e?.message??"Erreur de paiement PayPal.")}).render("#"+id);
+    } catch(e){setError(e instanceof Error?e.message:"PayPal indisponible.");setSelected(null);}
+  };
   return <PageFrame><Header />
-    <section className="rd-page-intro"><div><span className="rd-eyebrow">TARIFS</span><h1>Un cadre simple pour<br /><em>commencer à avancer.</em></h1></div><div><p>Trois niveaux d’usage, avec un abonnement mensuel récurrent. Le montant affiché ici provient du catalogue de facturation du produit.</p></div></section>
-    <section className="rd-pricing">
-      {error && <div role="alert" style={{maxWidth:1220,margin:"0 auto 18px",padding:"12px 14px",border:"1px solid #e2caca",background:"#fff7f7",color:"#8b3030",fontSize:12}}>{error}</div>}
-      {message && <div role="status" style={{maxWidth:1220,margin:"0 auto 18px",padding:"12px 14px",border:"1px solid #cfe1d4",background:"#f4faf5",color:"#28623c",fontSize:12}}>{message}</div>}
-      <div className="rd-pricing-grid">{plans.map((plan) => {
-        const offer = catalog.find((x) => x.offer_id === plan.offer);
-        const price = offer?.amount ? Number(offer.amount).toLocaleString("fr-FR", { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + " € / mois" : "—";
-        const active = selected === plan.offer;
-        return <article className={plan.offer === "monitoring_professional" ? "featured" : ""} key={plan.offer}>
-          <span className="rd-plan-label">{plan.offer === "monitoring_professional" ? "LE PLUS COMPLET" : "ABONNEMENT"}</span>
-          <h2>{plan.name}</h2><p>{plan.desc}</p><strong>{price}</strong>
-          <ul>{plan.features.map((feature) => <li key={feature}>✓ {feature}</li>)}</ul>
-          <div className="rd-paypal-action">
-            {!active ? <button type="button" onClick={() => void subscribe(plan.offer)}>S’abonner avec PayPal →</button> : <div id={"paypal-" + plan.offer} />}
-          </div>
-        </article>;
-      })}</div>
-    </section>
-    <section className="rd-comparison"><span className="rd-eyebrow">COMPARER</span><h2>Un niveau adapté<br /><em>à votre usage.</em></h2><div className="rd-compare-table"><div><b>Fonction</b><b>Essential</b><b>Professional</b><b>Business</b></div>{[
-      ["Dossiers", "10", "100", "Sans limite de plan"],
-      ["Avis et preuves", "✓", "✓", "✓"],
-      ["Analyse avancée", "—", "✓", "✓"],
-      ["Exports", "—", "✓", "✓"],
-      ["Équipe et permissions", "—", "✓", "✓"],
-      ["Support prioritaire", "—", "—", "✓"],
-    ].map(([x,a,b,d]) => <div key={x}><span>{x}</span><span>{a}</span><span>{b}</span><span>{d}</span></div>)}</div></section>
-    <section className="rd-faq"><span className="rd-eyebrow">PAIEMENT</span><h2>PayPal pour l’abonnement.<br /><em>Vous gardez la main.</em></h2><p>Le paiement récurrent est présenté par PayPal. Le serveur vérifie l’offre, confirme l’abonnement et synchronise son état avec votre espace.</p><Link className="rd-blue-button" to="/register">Créer mon espace →</Link></section><Footer /></PageFrame>;
+    <section className="rd-page-intro"><div><span className="rd-eyebrow">TARIFS</span><h1>Votre réputation.<br /><em>Un cadre pour chaque besoin.</em></h1></div><div><p>Abonnements, audits de réputation, défense d’un avis et packs de dossiers : choisissez le niveau adapté à votre situation.</p></div></section>
+    {error&&<div role="alert" style={{maxWidth:1220,margin:"0 auto 18px",padding:"12px 14px",border:"1px solid #e2caca",background:"#fff7f7",color:"#8b3030",fontSize:12}}>{error}</div>}
+    {message&&<div role="status" style={{maxWidth:1220,margin:"0 auto 18px",padding:"12px 14px",border:"1px solid #cfe1d4",background:"#f4faf5",color:"#28623c",fontSize:12}}>{message}</div>}
+    <section className="rd-billing-categories">{groups.map(group=>{const offers=catalog.filter(o=>group.kinds.includes(o.kind));return <section className="rd-billing-category" key={group.key}><div className="rd-billing-category-head"><div><span className="rd-eyebrow">{group.eyebrow}</span><h2>{group.title}</h2><p>{group.description}</p></div><span>{offers.length} offres</span></div><div className="rd-billing-grid">{offers.map(offer=>{const active=selected===offer.offer_id,isQuote=offer.amount===null,configured=Boolean(offer.paypal_hosted_button_id||offer.paypal_plan_id),price=isQuote?"Sur devis":Number(offer.amount).toLocaleString("fr-FR",{minimumFractionDigits:0,maximumFractionDigits:2})+" €"+(offer.recurring==="true"?" / mois":"");return <article className={"rd-billing-card"+(offer.offer_id==="monitoring_professional"||offer.offer_id==="defense_plus"?" featured":"")} key={offer.offer_id}><span className="rd-plan-label">{offer.kind==="subscription"?"ABONNEMENT":offer.kind==="audit"?"AUDIT":offer.kind==="credit_pack"?"PACK":"DÉFENSE"}</span><h3>{offer.name_fr}</h3><strong>{price}</strong><p>{offer.kind==="audit"?"Audit structuré de réputation.":offer.kind==="credit_pack"?"Crédits utilisables pour plusieurs dossiers.":offer.kind==="subscription"?"Abonnement récurrent.":"Étape ou niveau de défense d’un avis."}</p>{isQuote?<Link to="/register" className="rd-billing-button">Parler de mon besoin →</Link>:!configured?<button type="button" className="rd-billing-button disabled" disabled>Paiement indisponible</button>:active?<div id={"paypal-"+offer.offer_id} className="rd-paypal-hosted"/>:<button type="button" className="rd-billing-button" onClick={()=>offer.kind==="subscription"?void subscribe(offer):void payOneTime(offer)}>{offer.kind==="subscription"?"S’abonner avec PayPal →":"Payer avec PayPal →"}</button>}</article>})}</div></section>})}</section>
+    <section className="rd-billing-note"><span className="rd-eyebrow">COMMENT CHOISIR</span><h2>Commencez par ce dont vous avez besoin.<br /><em>Le reste peut venir ensuite.</em></h2><div className="rd-billing-note-grid"><div><strong>Audit</strong><p>Pour obtenir une lecture structurée d’un volume d’avis.</p></div><div><strong>Défense</strong><p>Pour travailler sur un avis précis, étape par étape.</p></div><div><strong>Pack</strong><p>Pour plusieurs dossiers et un usage récurrent.</p></div><div><strong>Abonnement</strong><p>Pour disposer d’un espace de suivi continu.</p></div></div></section><Footer /></PageFrame>;
 }
 
 
@@ -242,7 +210,7 @@ export function HomePage() {
 @media(max-width:1000px){.rd-page-intro,.rd-tab-copy,.rd-method,.rd-case,.rd-contrast{grid-template-columns:1fr}.rd-page-intro{gap:35px}.rd-tab-copy{gap:35px}.rd-feature-grid{grid-template-columns:repeat(2,1fr)}.rd-feature:nth-child(2){border-right:0}.rd-feature:nth-child(3),.rd-feature:nth-child(4){border-top:1px solid var(--line)}.rd-method-intro{position:relative;top:auto}.rd-security-cards{grid-template-columns:1fr}}
 @media(max-width:650px){.rd-page-intro{padding-top:75px;padding-bottom:65px}.rd-page-intro h1{font-size:50px}.rd-tabs{grid-template-columns:1fr 1fr}.rd-tabs button{font-size:11px}.rd-tab-copy{padding-top:35px}.rd-window{grid-template-columns:1fr;min-height:370px}.rd-side{display:none}.rd-ui{padding:13px}.rd-ui-grid{grid-template-columns:1fr 1fr}.rd-ui-grid div:last-child{grid-column:1/-1}.rd-feature-grid{grid-template-columns:1fr}.rd-feature{border-right:0!important;border-bottom:1px solid var(--line);padding-right:0;margin-right:0}.rd-feature:last-child{border-bottom:0}.rd-contrast{padding:80px 20px;gap:45px}.rd-method,.rd-case{padding:75px 20px}.rd-timeline article{grid-template-columns:35px 1fr 18px}.rd-pricing{padding-bottom:75px}.rd-pricing-grid{grid-template-columns:1fr}.rd-pricing-grid article{min-height:0}.rd-pricing-grid h2{margin-top:35px}.rd-comparison{padding:75px 20px;overflow:auto}.rd-compare-table{min-width:620px}.rd-faq{padding:75px 20px}.rd-security-card{padding:27px}.rd-security-card h3{margin-bottom:45px}}
 
-    `}</style>
+    .rd-billing-categories{padding:0 clamp(20px,5vw,68px) 110px;background:var(--paper);display:grid;gap:75px}.rd-billing-category{max-width:1220px;width:100%;margin:auto}.rd-billing-category-head{display:flex;justify-content:space-between;align-items:end;gap:40px;border-bottom:1px solid var(--line);padding-bottom:28px;margin-bottom:12px}.rd-billing-category-head h2{margin:12px 0 8px;font-size:clamp(36px,4.5vw,62px);line-height:.98;letter-spacing:-.06em}.rd-billing-category-head p{margin:0;color:#66737c;font-size:13px;line-height:1.65}.rd-billing-category-head>span{color:#7a8580;font-size:10px;text-transform:uppercase;letter-spacing:.1em;white-space:nowrap}.rd-billing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.rd-billing-card{min-height:315px;padding:28px;border:1px solid var(--line);border-radius:16px;background:#fbfbf8;display:flex;flex-direction:column}.rd-billing-card.featured{background:#eef4ff;border-color:#c9dcfb}.rd-billing-card h3{margin:32px 0 12px;font-size:22px;line-height:1.05;letter-spacing:-.04em;font-weight:500}.rd-billing-card strong{font-size:24px;letter-spacing:-.04em}.rd-billing-card p{margin:15px 0 24px;color:#66737c;font-size:11px;line-height:1.65}.rd-billing-button{margin-top:auto;width:100%;min-height:44px;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:#172126;color:#fff;font-size:10px;font-weight:700;cursor:pointer;text-decoration:none}.rd-billing-button.disabled{opacity:.45;cursor:not-allowed}.rd-paypal-hosted{margin-top:auto;min-height:55px}.rd-billing-note{padding:110px clamp(20px,8vw,120px);background:var(--cream)}.rd-billing-note h2{max-width:850px;margin:18px 0 55px;font-size:clamp(42px,5.4vw,75px);line-height:.97;letter-spacing:-.06em}.rd-billing-note-grid{max-width:1100px;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}.rd-billing-note-grid div{padding:25px 20px 10px 0;border-right:1px solid var(--line);margin-right:20px}.rd-billing-note-grid div:last-child{border-right:0}.rd-billing-note-grid strong{font-size:18px}.rd-billing-note-grid p{color:#66737c;font-size:12px;line-height:1.65}@media(max-width:1000px){.rd-billing-grid{grid-template-columns:repeat(2,1fr)}.rd-billing-note-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.rd-billing-category-head{display:block}.rd-billing-category-head>span{display:block;margin-top:18px}.rd-billing-grid{grid-template-columns:1fr}.rd-billing-note-grid{grid-template-columns:1fr}.rd-billing-note-grid div{border-right:0;border-bottom:1px solid var(--line);padding-bottom:18px}.rd-billing-card{min-height:280px}}`}</style>
 
     <section className="rd-hero">
       <video autoPlay muted loop playsInline preload="metadata" poster={heroPoster} aria-hidden="true"><source src={heroVideo} type="video/mp4" /></video>
