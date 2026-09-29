@@ -75,7 +75,7 @@ export function AppShell() {
   }
 
   const initials = user?.email.slice(0, 2).toUpperCase() ?? "RD";
-  const isAdmin = user?.role === "admin" || user?.role === "owner";
+  const isAdmin = user?.role === "ADMIN" || user?.role === "OWNER";
   const pageTitle = pageTitles[location.pathname] ?? "Workspace";
   const closeMobile = () => setMobileOpen(false);
 

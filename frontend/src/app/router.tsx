@@ -14,6 +14,7 @@ import { NotificationsPage } from "@/pages/NotificationsPage";
 import { BillingPage } from "@/pages/BillingPage";
 import { PrivacyPage } from "@/pages/PrivacyPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
+import { AdminPage } from "@/pages/AdminPage";
 
 const Placeholder = ({ title }: { title: string }) => (
   <section className="page-placeholder">
@@ -43,7 +44,7 @@ export const router = createBrowserRouter([
         { path: "notifications", element: <NotificationsPage /> },
         { path: "billing", element: <BillingPage /> },
         { path: "settings", element: <PrivacyPage /> },
-        { path: "admin", element: <Placeholder title="Administration" /> },
+        { path: "admin", element: <AdminPage /> },
       ],
     }],
   },

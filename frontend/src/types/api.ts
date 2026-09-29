@@ -53,3 +53,19 @@ export type NotificationItem = {
   subject?: string;
   body?: string;
 };
+
+export type AdminMember = {
+  user_id: string;
+  email: string;
+  role: string;
+};
+
+export type InvitationResponse = {
+  invitation_id?: string;
+  organization_id?: string;
+  email?: string;
+  role?: string;
+  expires_at?: string;
+  invited_by?: string;
+  invitation_token?: string;
+};

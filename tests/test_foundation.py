@@ -239,3 +239,15 @@ def test_dashboard_visual_contract():
     assert "dashboard-hero" in page and "dashboard-metrics" in page
     assert "dashboard-main-grid" in page and "dashboard-surface" in page
     assert "dashboard-metric-focus" in css and "dashboard-next-content" in css
+
+def test_admin_frontend_contract():
+    page = (FRONTEND / "src/pages/AdminPage.tsx").read_text(encoding="utf-8")
+    router = (FRONTEND / "src/app/router.tsx").read_text(encoding="utf-8")
+    shell = (FRONTEND / "src/components/layout/AppShell.tsx").read_text(encoding="utf-8")
+    assert "AdminPage" in router
+    assert '"/v1/organization/members"' in page
+    assert '"/v1/organization/invitations"' in page
+    assert '"/v1/auth/revoke-all"' in page
+    assert '"/v1/organization/members/"' in page
+    assert 'user?.role === "ADMIN"' in shell
+    assert 'user?.role === "OWNER"' in shell
