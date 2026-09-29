@@ -11,6 +11,7 @@ from .errors import api_error
 
 ROOT = Path(__file__).resolve().parents[1]
 FRONTEND = ROOT / "frontend"
+FRONTEND_DIST = FRONTEND / "dist"
 API_VERSION = "v1"
 SERVICE_NAME = "review-defense"
 
@@ -23,13 +24,11 @@ def _headers(body: bytes, content_type: str = "application/json; charset=utf-8")
         ("Cache-Control", "no-store"),
     ]
     if settings.secure_headers:
-        headers.extend(
-            [
-                ("X-Content-Type-Options", "nosniff"),
-                ("X-Frame-Options", "DENY"),
-                ("Referrer-Policy", "strict-origin-when-cross-origin"),
-            ]
-        )
+        headers.extend([
+            ("X-Content-Type-Options", "nosniff"),
+            ("X-Frame-Options", "DENY"),
+            ("Referrer-Policy", "strict-origin-when-cross-origin"),
+        ])
     return headers
 
 
@@ -47,19 +46,41 @@ def j(start_response, status: str, data: dict, request_id: str | None = None):
 
 
 def static(start_response, path: str, request_id: str):
+    if not FRONTEND_DIST.is_dir():
+        return api_error(start_response, "503 Service Unavailable", "FRONTEND_NOT_BUILT", "Frontend build is not available", request_id)
+
     requested = unquote(path.lstrip("/")) or "index.html"
-    candidate = (FRONTEND / requested).resolve()
-    frontend_root = FRONTEND.resolve()
-    if frontend_root not in candidate.parents or not candidate.is_file():
+    candidate = (FRONTEND_DIST / requested).resolve()
+    frontend_root = FRONTEND_DIST.resolve()
+
+    if frontend_root not in candidate.parents:
         return api_error(start_response, "404 Not Found", "NOT_FOUND", "Resource not found", request_id)
-    content_type = {
-        ".html": "text/html; charset=utf-8",
-        ".css": "text/css; charset=utf-8",
-        ".js": "application/javascript; charset=utf-8",
-        ".svg": "image/svg+xml",
-        ".json": "application/json; charset=utf-8",
-    }.get(candidate.suffix.lower(), "application/octet-stream")
-    return response(start_response, "200 OK", candidate.read_bytes(), content_type, request_id)
+
+    if candidate.is_file():
+        content_type = {
+            ".html": "text/html; charset=utf-8",
+            ".css": "text/css; charset=utf-8",
+            ".js": "application/javascript; charset=utf-8",
+            ".json": "application/json; charset=utf-8",
+            ".svg": "image/svg+xml",
+            ".ico": "image/x-icon",
+            ".png": "image/png",
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
+            ".webp": "image/webp",
+            ".woff": "font/woff",
+            ".woff2": "font/woff2",
+        }.get(candidate.suffix.lower(), "application/octet-stream")
+        return response(start_response, "200 OK", candidate.read_bytes(), content_type, request_id)
+
+    if path.startswith("/assets/"):
+        return api_error(start_response, "404 Not Found", "NOT_FOUND", "Resource not found", request_id)
+
+    index = FRONTEND_DIST / "index.html"
+    if index.is_file():
+        return response(start_response, "200 OK", index.read_bytes(), "text/html; charset=utf-8", request_id)
+
+    return api_error(start_response, "404 Not Found", "NOT_FOUND", "Resource not found", request_id)
 
 
 def _method_not_allowed(start_response, request_id: str):
@@ -84,48 +105,21 @@ def application(environ, start_response):
         db = check_connection()
         status = "ready" if db else "not_ready"
         http_status = "200 OK" if db else "503 Service Unavailable"
-        return j(
-            start_response,
-            http_status,
-            {"data": {"status": status, "dependencies": {"http": "ok", "database": "ok" if db else "unavailable"}}},
-            request_id,
-        )
+        return j(start_response, http_status, {"data": {"status": status, "dependencies": {"http": "ok", "database": "ok" if db else "unavailable"}}}, request_id)
 
     if path == "/api/v1/metadata":
         if method != "GET":
             return _method_not_allowed(start_response, request_id)
         settings = get_settings()
-        return j(
-            start_response,
-            "200 OK",
-            {"data": {"service": SERVICE_NAME, "api_version": API_VERSION, "environment": settings.environment}},
-            request_id,
-        )
+        return j(start_response, "200 OK", {"data": {"service": SERVICE_NAME, "api_version": API_VERSION, "environment": settings.environment}}, request_id)
 
     if path.startswith("/api/v1/"):
         return api_error(start_response, "404 Not Found", "NOT_FOUND", "API route not found", request_id)
 
-    if method == "GET" and path in {"/", "/app", "/app/"}:
-        return static(start_response, "index.html", request_id)
-    if method == "GET" and path == "/landing.html":
-        return static(start_response, "landing.html", request_id)
-    if method == "GET" and path.startswith("/assets/"):
+    if method == "GET":
         return static(start_response, path, request_id)
-    if method == "GET" and path in {
-        "/produit/",
-        "/comment-ca-marche/",
-        "/services/",
-        "/tarifs/",
-        "/ressources/",
-        "/contact/",
-        "/analyse-avis-google/",
-        "/ia-et-controle-humain/",
-        "/securite/",
-        "/confidentialite/",
-    }:
-        return static(start_response, "index.html", request_id)
 
-    return api_error(start_response, "404 Not Found", "NOT_FOUND", "Resource not found", request_id)
+    return api_error(start_response, "405 Method Not Allowed", "METHOD_NOT_ALLOWED", "Method not allowed", request_id)
 
 
 app = application

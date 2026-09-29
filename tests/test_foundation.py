@@ -1,12 +1,12 @@
 import io
 import json
 import pathlib
-import subprocess
 
 from src.app import application
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 MIGRATIONS = ROOT / "migrations"
+FRONTEND = ROOT / "frontend"
 
 
 def request(path, method="GET", headers=None):
@@ -89,49 +89,48 @@ def test_method_not_allowed():
     assert json.loads(body)["error"]["code"] == "METHOD_NOT_ALLOWED"
 
 
-def test_frontend_shell():
-    status, _, body = request("/")
+def test_frontend_build_contract():
+    package = json.loads((FRONTEND / "package.json").read_text(encoding="utf-8"))
+    assert package["type"] == "module"
+    assert package["scripts"]["build"] == "tsc -b && vite build"
+    assert (FRONTEND / "src/main.tsx").is_file()
+    assert (FRONTEND / "src/app/router.tsx").is_file()
+    assert (FRONTEND / "vite.config.ts").is_file()
+    assert (FRONTEND / "dist/index.html").is_file()
+
+
+def test_frontend_shell_serves_built_react_app():
+    status, headers, body = request("/")
     assert status == "200 OK"
+    assert headers["Content-Type"].startswith("text/html")
+    assert b'<div id="root"></div>' in body
     assert b"Review Defense" in body
+    assert b"/assets/" in body
 
 
-def test_frontend_is_only_expected_files():
-    actual = {p.relative_to(ROOT).as_posix() for p in (ROOT / "frontend").rglob("*") if p.is_file()}
-    assert actual == {
-        "frontend/index.html",
-        "frontend/landing.html",
-        "frontend/assets/public.js",
-        "frontend/assets/public.css",
-        "frontend/assets/seo-articles.js",
-        "frontend/assets/billing.js",
-    }
+def test_frontend_spa_routes_serve_built_shell():
+    for path in ("/app", "/app/dashboard", "/reviews", "/login", "/register"):
+        status, headers, body = request(path)
+        assert status == "200 OK", path
+        assert headers["Content-Type"].startswith("text/html"), path
+        assert b'<div id="root"></div>' in body, path
 
 
-def test_frontend_shell_keeps_public_assets_and_billing_hook():
-    html = (ROOT / "frontend/index.html").read_text(encoding="utf-8")
-    assert "/assets/public.css?v=6711" in html
-    assert "/assets/public.js?v=6711" in html
-    assert 'data-public-shell="bootstrap"' in html
-    assert "/assets/billing.js?v=2" in html
-    assert "paypal-button-container" in html
+def test_frontend_missing_asset_is_not_hidden_by_spa_fallback():
+    status, _, body = request("/assets/does-not-exist.js")
+    assert status == "404 Not Found"
+    assert json.loads(body)["error"]["code"] == "NOT_FOUND"
 
 
-def test_js_syntax():
-    result = subprocess.run(
-        ["node", "--check", str(ROOT / "frontend/assets/public.js")],
-        capture_output=True,
-        text=True,
-    )
-    assert result.returncode == 0, result.stderr
-
-
-def test_billing_js_syntax():
-    result = subprocess.run(
-        ["node", "--check", str(ROOT / "frontend/assets/billing.js")],
-        capture_output=True,
-        text=True,
-    )
-    assert result.returncode == 0, result.stderr
+def test_legacy_frontend_files_are_not_required():
+    for path in (
+        FRONTEND / "landing.html",
+        FRONTEND / "assets" / "public.js",
+        FRONTEND / "assets" / "public.css",
+        FRONTEND / "assets" / "billing.js",
+        FRONTEND / "assets" / "seo-articles.js",
+    ):
+        assert not path.exists(), path
 
 
 def test_migration_runner_tracks_versions():
@@ -149,25 +148,11 @@ def test_full_legacy_data_model_is_restored():
     assert files[-1].name == "030_v644_billing_account_state.sql"
 
     required_tables = {
-        "organizations",
-        "users",
-        "memberships",
-        "cases",
-        "case_events",
-        "google_reviews",
-        "background_jobs",
-        "api_sessions",
-        "api_reviews",
-        "api_cases",
-        "api_decisions",
-        "api_evidence",
-        "evidence_facts",
-        "contradiction_findings",
-        "case_escalations",
-        "notification_outbox",
-        "privacy_requests",
-        "privacy_consents",
-        "billing_transactions",
+        "organizations", "users", "memberships", "cases", "case_events",
+        "google_reviews", "background_jobs", "api_sessions", "api_reviews",
+        "api_cases", "api_decisions", "api_evidence", "evidence_facts",
+        "contradiction_findings", "case_escalations", "notification_outbox",
+        "privacy_requests", "privacy_consents", "billing_transactions",
     }
     sql = "\n".join(path.read_text(encoding="utf-8") for path in files)
     for table in required_tables:
