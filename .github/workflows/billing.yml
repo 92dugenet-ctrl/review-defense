@@ -39,6 +39,14 @@ jobs:
           npm run typecheck
           npm run build
       - run: python -m pip install -r requirements.txt
+      - name: Build deployable production image
+        run: |
+          docker build --pull -t review-defense:${GITHUB_SHA} .
+          docker run --rm --entrypoint sh review-defense:${GITHUB_SHA} -c '
+            test -f /app/frontend/dist/index.html
+            test -f /app/wsgi.py
+            python -m compileall -q /app/src /app/scripts /app/wsgi.py
+          '
       - run: python -m compileall -q src scripts wsgi.py main.py start.py
       - name: Apply migrations and create integration role
         env:
