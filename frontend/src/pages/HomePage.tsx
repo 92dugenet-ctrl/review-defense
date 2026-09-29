@@ -49,7 +49,13 @@ function Header() {
   return <header className="rd-header"><div className="rd-head-left"><button type="button" className="rd-menu" aria-label="Ouvrir le menu principal" aria-expanded={open} onClick={()=>setOpen(!open)}><span /></button><Link className="rd-brand" to="/"><span className="rd-mark">RD</span><span>Review Defense</span></Link></div><div className="rd-actions"><Link className="rd-head-cta" to="/register">Commencer →</Link></div>{open&&<div className="rd-panel"><Link to="/#solutions" onClick={()=>setOpen(false)}>Solutions <span>→</span></Link><Link to="/#ressources" onClick={()=>setOpen(false)}>Ressources <span>→</span></Link><Link to="/tarifs" onClick={()=>setOpen(false)}>Tarifs <span>→</span></Link><Link to="/login" onClick={()=>setOpen(false)}>Connexion <span>→</span></Link></div>}</header>;
 }
 function Footer() {
-  return <footer className="rd-footer"><div><strong>Review Defense</strong><span>Analyse · Preuves · Dossiers · Validation</span></div><div><Link to="/securite">Sécurité</Link><Link to="/tarifs">Tarifs</Link><Link to="/login">Connexion</Link></div></footer>;
+  return <footer className="rd-footer">
+    <div className="rd-footer-brand"><strong>Review Defense</strong><span>Analyse · Preuves · Dossiers · Validation</span><small>Service SaaS destiné à aider les professionnels à analyser, documenter et suivre leurs avis. Les décisions et validations restent sous le contrôle du client.</small></div>
+    <div className="rd-footer-col"><b>Produit</b><Link to="/produit">Produit</Link><Link to="/fonctionnement">Fonctionnement</Link><Link to="/securite">Sécurité</Link><Link to="/tarifs">Tarifs</Link><Link to="/login">Connexion</Link></div>
+    <div className="rd-footer-col"><b>Informations légales</b><Link to="/mentions-legales">Mentions légales</Link><Link to="/confidentialite">Politique de confidentialité</Link><Link to="/cookies">Cookies et traceurs</Link><Link to="/cgu">Conditions générales d'utilisation</Link><Link to="/cgv">Conditions générales de vente</Link></div>
+    <div className="rd-footer-col"><b>Conformité</b><Link to="/confidentialite">Protection des données — RGPD</Link><Link to="/cgv#mediation">Réclamations et médiation</Link><Link to="/accessibilite">Accessibilité</Link><Link to="/contact-juridique">Contact juridique</Link></div>
+    <div className="rd-footer-bottom"><span>© 2026 Review Defense. Tous droits réservés.</span><span>Les informations entre crochets dans les pages légales doivent être remplacées par les données exactes de l’éditeur avant publication commerciale.</span></div>
+  </footer>;
 }
 
 function ProductMockup({ mode = "review" }: { mode?: "review" | "evidence" | "cases" | "approval" }) {
