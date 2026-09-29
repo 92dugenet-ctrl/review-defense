@@ -203,6 +203,13 @@ def test_admin_workspace_permissions_and_session_revocation():
     assert status == "200 OK"
     assert changed["role"] == "ANALYST"
 
+    with psycopg.connect(dsn) as conn:
+        persisted_role = conn.execute(
+            "SELECT role FROM memberships WHERE organization_id=%s AND user_id=%s",
+            (organization_id, admin_id),
+        ).fetchone()[0]
+    assert persisted_role == "ANALYST"
+
     # A role change invalidates the previous elevated session.
     status, _, stale = request(app, "/v1/me", token=admin_token)
     assert status == "401 Unauthorized"

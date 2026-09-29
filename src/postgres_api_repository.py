@@ -62,6 +62,18 @@ class PostgresAPIRepository(PostgresRepository):
                 cur.execute("SELECT u.id,u.email,m.role FROM users u JOIN memberships m ON m.user_id=u.id WHERE m.organization_id=%s ORDER BY u.email", (organization_id,))
                 return cur.fetchall()
 
+
+    def update_role(self, organization_id: str, user_id: str, role: str):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "UPDATE memberships SET role=%s WHERE organization_id=%s AND user_id=%s",
+                    (role, organization_id, user_id),
+                )
+                if cur.rowcount != 1:
+                    raise RepositoryError("membership not found")
+                return role
+
     def put_session(self, organization_id: str, token_hash: str, user_id: str, role: str, expires_at: str, user_agent: str | None = None, ip_hash: str | None = None):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
