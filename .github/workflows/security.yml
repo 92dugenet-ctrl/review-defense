@@ -1,7 +1,5 @@
 name: Review Defense — security
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
