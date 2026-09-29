@@ -482,6 +482,10 @@ class ReviewDefenseAPI:
     def handle(self, environ):
         path = urlsplit(environ.get("PATH_INFO", "/")).path.rstrip("/") or "/"
         method = environ.get("REQUEST_METHOD", "GET").upper()
+        if path.startswith("/v1/") and method in {"POST", "PUT", "PATCH"} and path != "/v1/paypal/webhook":
+            content_type = environ.get("CONTENT_TYPE", "").split(";", 1)[0].strip().lower()
+            if content_type != "application/json":
+                raise APIError(415, "UNSUPPORTED_MEDIA_TYPE", "application/json content type is required")
         if not self.limiter.allow(environ.get("REMOTE_ADDR", "unknown")):
             raise APIError(429, "RATE_LIMITED", "rate limit exceeded")
         if method == "GET" and path == "/health":
