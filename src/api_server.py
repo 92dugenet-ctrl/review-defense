@@ -890,6 +890,9 @@ class ReviewDefenseAPI:
                 self.store.audit_event(user.organization_id,user.user_id,"PAYPAL_SUBSCRIPTION_LEDGER_FAILED",f"billing:{tx_id}",offer_id=offer.offer_id,error_type=type(exc).__name__)
                 raise APIError(500,"BILLING_LEDGER_FAILED","PayPal subscription was created but could not be recorded. Please retry; the subscription was not cancelled automatically.") from exc
             self.store.billing[tx_id]=row
+            acct={"organization_id":user.organization_id,"plan_code":plan_for_offer(offer.offer_id).code,"status":account_status({"status":row["status"]}),"paypal_subscription_id":subscription_id,"offer_id":offer.offer_id}
+            self.billing_accounts[user.organization_id]=acct
+            if self.repository is not None and hasattr(self.repository,"upsert_billing_account"): self.repository.upsert_billing_account(user.organization_id,acct)
             self.store.audit_event(user.organization_id,user.user_id,"PAYPAL_SUBSCRIPTION_CONFIRMED",f"billing:{tx_id}",paypal_subscription_id=subscription_id,offer_id=offer.offer_id)
             return self._json(201,{"status":row["status"],"subscription_id":subscription_id,"offer_id":offer.offer_id})
 

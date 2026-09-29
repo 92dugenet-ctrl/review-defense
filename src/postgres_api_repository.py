@@ -547,3 +547,26 @@ class PostgresAPIRepository(PostgresRepository):
     def get_user_by_id(self, organization_id: str, user_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur: cur.execute("SELECT u.id,u.email,u.password_hash,m.role FROM users u JOIN memberships m ON m.user_id=u.id WHERE m.organization_id=%s AND u.id=%s", (organization_id,user_id)); return cur.fetchone()
+
+    def get_billing_account(self, organization_id):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT organization_id,plan_code,status,paypal_subscription_id,offer_id,current_period_start,current_period_end,cancel_at_period_end,created_at,updated_at FROM billing_accounts WHERE organization_id=%s",(organization_id,)); row=cur.fetchone()
+                if not row:return None
+                d=dict(zip(("organization_id","plan_code","status","paypal_subscription_id","offer_id","current_period_start","current_period_end","cancel_at_period_end","created_at","updated_at"),row)); d["organization_id"]=str(d["organization_id"])
+                for k in ("current_period_start","current_period_end","created_at","updated_at"):
+                    if d[k] is not None and hasattr(d[k],"isoformat"): d[k]=d[k].isoformat()
+                return d
+    def upsert_billing_account(self, organization_id, row):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur: cur.execute("INSERT INTO billing_accounts(organization_id,plan_code,status,paypal_subscription_id,offer_id) VALUES(%s,%s,%s,%s,%s) ON CONFLICT(organization_id) DO UPDATE SET plan_code=EXCLUDED.plan_code,status=EXCLUDED.status,paypal_subscription_id=EXCLUDED.paypal_subscription_id,offer_id=EXCLUDED.offer_id,updated_at=now()",(organization_id,row.get("plan_code","essential"),row.get("status","trial"),row.get("paypal_subscription_id"),row.get("offer_id")))
+    def create_billing_event(self, organization_id, row):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur: cur.execute("INSERT INTO billing_events(event_id,organization_id,paypal_event_id,paypal_subscription_id,event_type,status,offer_id,payload) VALUES(%s,%s,%s,%s,%s,%s,%s,%s) ON CONFLICT(paypal_event_id) DO NOTHING",(row["event_id"],organization_id,row.get("paypal_event_id"),row.get("paypal_subscription_id"),row["event_type"],row.get("status"),row.get("offer_id"),json.dumps(row.get("payload",{}))))
+    def list_billing_events(self, organization_id):
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT event_id,paypal_event_id,paypal_subscription_id,event_type,status,offer_id,payload,created_at FROM billing_events WHERE organization_id=%s ORDER BY created_at DESC LIMIT 200",(organization_id,)); names=("event_id","paypal_event_id","paypal_subscription_id","event_type","status","offer_id","payload","created_at"); out=[]
+                for x in cur.fetchall():
+                    d=dict(zip(names,x)); d["event_id"]=str(d["event_id"]); d["created_at"]=d["created_at"].isoformat() if hasattr(d["created_at"],"isoformat") else str(d["created_at"]); out.append(d)
+                return out

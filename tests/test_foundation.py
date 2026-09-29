@@ -123,9 +123,9 @@ def test_migration_runner_tracks_versions():
 
 def test_full_legacy_data_model_is_restored():
     files = sorted(MIGRATIONS.glob("*.sql"))
-    assert len(files) == 29
+    assert len(files) == 30
     assert files[0].name == "001_initial.sql"
-    assert files[-1].name == "029_v643_processing_architecture.sql"
+    assert files[-1].name == "030_v644_billing_account_state.sql"
 
     required_tables = {
         "organizations",
