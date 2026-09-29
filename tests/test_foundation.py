@@ -6,6 +6,7 @@ import subprocess
 from src.app import application
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+MIGRATIONS = ROOT / "migrations"
 
 
 def request(path, method="GET", headers=None):
@@ -41,7 +42,7 @@ def test_health():
 
 
 def test_request_id_is_propagated():
-    status, headers, body = request("/health", headers={"X-Request-ID": "test-request-123"})
+    status, headers, _ = request("/health", headers={"X-Request-ID": "test-request-123"})
     assert status == "200 OK"
     assert headers["X-Request-ID"] == "test-request-123"
 
@@ -118,6 +119,48 @@ def test_migration_runner_tracks_versions():
     assert "applied_at" in text
     assert "INSERT INTO schema_migrations" in text
     assert "pg_advisory_xact_lock" in text
+
+
+def test_full_legacy_data_model_is_restored():
+    files = sorted(MIGRATIONS.glob("*.sql"))
+    assert len(files) == 27
+    assert files[0].name == "001_initial.sql"
+    assert files[-1].name == "027_v642_billing_identifier_integrity.sql"
+
+    required_tables = {
+        "organizations",
+        "users",
+        "memberships",
+        "cases",
+        "case_events",
+        "google_reviews",
+        "background_jobs",
+        "api_sessions",
+        "api_reviews",
+        "api_cases",
+        "api_decisions",
+        "api_evidence",
+        "evidence_facts",
+        "contradiction_findings",
+        "case_escalations",
+        "notification_outbox",
+        "privacy_requests",
+        "privacy_consents",
+        "billing_transactions",
+    }
+    sql = "\n".join(path.read_text(encoding="utf-8") for path in files)
+    for table in required_tables:
+        assert f"CREATE TABLE IF NOT EXISTS {table}" in sql
+
+
+def test_data_model_security_contract():
+    sql = "\n".join(path.read_text(encoding="utf-8") for path in MIGRATIONS.glob("*.sql"))
+    assert "ENABLE ROW LEVEL SECURITY" in sql
+    assert "FORCE ROW LEVEL SECURITY" in sql
+    assert "current_setting('app.organization_id'" in sql
+    assert "lookup_api_session_by_token_hash" in sql
+    assert "privacy_requests" in sql
+    assert "billing_transactions" in sql
 
 
 def test_migration_files_are_deterministic():
