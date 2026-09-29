@@ -60,6 +60,7 @@ from .deployment import DeploymentConfig, security_headers
 from .observability import InMemoryTelemetry, TraceContext, health_check
 from .seo_renderer import is_seo_path, render_page, sitemap, robots
 from .billing_catalog import get_offer, paypal_plan_id, public_catalog
+from .billing_service import account_status, plan_for_offer, public_plans
 from .paypal_client import configured as paypal_configured, configuration_status as paypal_configuration_status, verify_webhook as paypal_verify_webhook, request_json as paypal_request_json, access_token as paypal_access_token, PayPalError
 
 
@@ -123,6 +124,8 @@ class MemoryStore:
         self.privacy_consents: list[dict[str, Any]] = []
         self.email_verified: dict[str, bool] = {}
         self.billing: dict[str, dict[str, Any]] = {}
+        self.billing_accounts: dict[str, dict[str, Any]] = {}
+        self.billing_events: list[dict[str, Any]] = []
 
     def audit_event(self, org: str, actor: str | None, action: str, resource: str, **meta: Any) -> None:
         self.audit.append({
@@ -176,6 +179,8 @@ class ReviewDefenseAPI:
         self.limiter = limiter or RateLimiter(limit=120, window_seconds=60)
         self.auth_limiter = RateLimiter(limit=8, window_seconds=300)
         self.recovery_limiter = RateLimiter(limit=5, window_seconds=3600)
+        self.billing_accounts = self.store.billing_accounts
+        self.billing_events = self.store.billing_events
         self._idem_lock = __import__("threading").RLock()
         self.telemetry = InMemoryTelemetry()
         DeploymentConfig(public_base_url=self.config.public_base_url, environment=self.config.environment, trust_proxy=self.config.trust_proxy).validate() if self.config.production else None
@@ -842,6 +847,22 @@ class ReviewDefenseAPI:
                         self.repository.update_billing_transaction(tx["organization_id"],tx)
                     except Exception as exc:
                         raise APIError(500,"BILLING_WEBHOOK_PERSIST_FAILED","PayPal webhook was verified but billing state could not be persisted; PayPal should retry.") from exc
+                if tx.get("kind") == "subscription" and tx.get("offer_id"):
+                    acct={"organization_id":tx["organization_id"],"plan_code":plan_for_offer(tx["offer_id"]).code,
+                          "status":account_status({"status":tx.get("status")}),
+                          "paypal_subscription_id":tx.get("paypal_subscription_id"),
+                          "offer_id":tx.get("offer_id")}
+                    self.billing_accounts[tx["organization_id"]]=acct
+                    event_row={"event_id":str(uuid.uuid4()),"paypal_event_id":event_id,
+                               "paypal_subscription_id":tx.get("paypal_subscription_id"),
+                               "event_type":event_type,"status":tx.get("status"),
+                               "offer_id":tx.get("offer_id"),"payload":payload}
+                    self.billing_events.append(event_row)
+                    if self.repository is not None:
+                        if hasattr(self.repository,"upsert_billing_account"):
+                            self.repository.upsert_billing_account(tx["organization_id"],acct)
+                        if hasattr(self.repository,"create_billing_event"):
+                            self.repository.create_billing_event(tx["organization_id"],event_row)
                 self.store.audit_event(tx["organization_id"],None,"PAYPAL_WEBHOOK_PROCESSED",f"billing:{tx['id']}",event_type=event_type,paypal_id=paypal_id)
             return self._json(200,{"status":"accepted"})
         user = self._auth(environ)
@@ -850,9 +871,23 @@ class ReviewDefenseAPI:
 
         if method == "GET" and path == "/v1/billing":
             rows=list(self.store.billing.values())
-            if self.repository is not None and hasattr(self.repository,"list_billing_transactions"):
-                rows=self.repository.list_billing_transactions(user.organization_id,user.user_id)
-            return self._json(200,{"items":rows,"count":len(rows),"paypal_configured":paypal_configured()})
+            account=self.billing_accounts.get(user.organization_id)
+            events=list(self.billing_events)
+            if self.repository is not None:
+                if hasattr(self.repository,"list_billing_transactions"):
+                    rows=self.repository.list_billing_transactions(user.organization_id,user.user_id)
+                if hasattr(self.repository,"get_billing_account"):
+                    account=self.repository.get_billing_account(user.organization_id) or account
+                if hasattr(self.repository,"list_billing_events"):
+                    events=self.repository.list_billing_events(user.organization_id)
+            return self._json(200,{"account":account,"items":rows,"events":events,"count":len(rows),"paypal_configured":paypal_configured()})
+        if method == "GET" and path == "/v1/billing/plans":
+            return self._json(200,{"items":public_plans()})
+        if method == "GET" and path == "/v1/billing/events":
+            events=list(self.billing_events)
+            if self.repository is not None and hasattr(self.repository,"list_billing_events"):
+                events=self.repository.list_billing_events(user.organization_id)
+            return self._json(200,{"items":events,"count":len(events)})
         if method == "GET" and path == "/v1/billing/catalog":
             items = public_catalog()
             return self._json(200, {"items": items, "count": len(items)})

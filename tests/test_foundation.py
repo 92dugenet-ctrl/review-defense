@@ -169,15 +169,13 @@ def test_full_legacy_data_model_is_restored():
         "privacy_consents",
         "billing_transactions",
     }
-    sql = "
-".join(path.read_text(encoding="utf-8") for path in files)
+    sql = "\n".join(path.read_text(encoding="utf-8") for path in files)
     for table in required_tables:
         assert f"CREATE TABLE IF NOT EXISTS {table}" in sql
 
 
 def test_data_model_security_contract():
-    sql = "
-".join(path.read_text(encoding="utf-8") for path in MIGRATIONS.glob("*.sql"))
+    sql = "\n".join(path.read_text(encoding="utf-8") for path in MIGRATIONS.glob("*.sql"))
     assert "ENABLE ROW LEVEL SECURITY" in sql
     assert "FORCE ROW LEVEL SECURITY" in sql
     assert "current_setting('app.organization_id'" in sql
