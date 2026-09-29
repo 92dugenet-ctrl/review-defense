@@ -1,0 +1,100 @@
+name: Review Defense — real preproduction
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: review-defense-preproduction
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy and smoke-test preproduction
+    runs-on: ubuntu-latest
+    environment: preproduction
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate deployment inputs
+        env:
+          PREPROD_HOST: ${{ secrets.PREPROD_HOST }}
+          PREPROD_USER: ${{ secrets.PREPROD_USER }}
+          PREPROD_SSH_KEY: ${{ secrets.PREPROD_SSH_KEY }}
+          PREPROD_PATH: ${{ secrets.PREPROD_PATH }}
+          PREPROD_URL: ${{ secrets.PREPROD_URL }}
+          PREPROD_DOMAIN: ${{ secrets.PREPROD_DOMAIN }}
+          PREPROD_EMAIL: ${{ secrets.PREPROD_EMAIL }}
+          PREPROD_POSTGRES_PASSWORD: ${{ secrets.PREPROD_POSTGRES_PASSWORD }}
+          PREPROD_MFA_KEY: ${{ secrets.PREPROD_MFA_KEY }}
+        run: |
+          set -eu
+          for name in PREPROD_HOST PREPROD_USER PREPROD_SSH_KEY PREPROD_PATH PREPROD_URL PREPROD_DOMAIN PREPROD_EMAIL PREPROD_POSTGRES_PASSWORD PREPROD_MFA_KEY; do
+            eval "value=\${$name:-}"
+            test -n "$value" || { echo "Missing required preproduction secret: $name"; exit 1; }
+          done
+
+      - name: Configure SSH
+        env:
+          SSH_KEY: ${{ secrets.PREPROD_SSH_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.PREPROD_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy immutable commit
+        env:
+          HOST: ${{ secrets.PREPROD_HOST }}
+          USER: ${{ secrets.PREPROD_USER }}
+          PATH_REMOTE: ${{ secrets.PREPROD_PATH }}
+          DOMAIN: ${{ secrets.PREPROD_DOMAIN }}
+          EMAIL: ${{ secrets.PREPROD_EMAIL }}
+          URL: ${{ secrets.PREPROD_URL }}
+          PG_PASSWORD: ${{ secrets.PREPROD_POSTGRES_PASSWORD }}
+          MFA_KEY: ${{ secrets.PREPROD_MFA_KEY }}
+        run: |
+          set -eu
+          ssh "$USER@$HOST" "mkdir -p '$PATH_REMOTE' && git -C '$PATH_REMOTE' fetch origin main && git -C '$PATH_REMOTE' checkout --force '$GITHUB_SHA'"
+          printf '%s\n' "POSTGRES_PASSWORD=$PG_PASSWORD" "REVIEW_DEFENSE_PUBLIC_BASE_URL=$URL" "REVIEW_DEFENSE_DOMAIN=$DOMAIN" "TLS_ADMIN_EMAIL=$EMAIL" "REVIEW_DEFENSE_MFA_ENCRYPTION_KEY=$MFA_KEY" > preprod.env
+          scp preprod.env "$USER@$HOST:$PATH_REMOTE/.env"
+          rm -f preprod.env
+          ssh "$USER@$HOST" "cd '$PATH_REMOTE' && docker compose --env-file .env -f docker-compose.staging.yml up -d --build --remove-orphans"
+
+      - name: Wait for HTTPS
+        env:
+          URL: ${{ secrets.PREPROD_URL }}
+        run: |
+          set -eu
+          for i in $(seq 1 30); do
+            code=$(curl -k -L -s -o /tmp/preprod.html -w '%{http_code}' "$URL/health" || true)
+            [ "$code" = "200" ] && exit 0
+            sleep 5
+          done
+          echo "Preproduction health endpoint did not become ready"
+          exit 1
+
+      - name: Smoke-test public endpoints
+        env:
+          URL: ${{ secrets.PREPROD_URL }}
+        run: |
+          set -eu
+          curl --fail --silent --show-error -k "$URL/health" | grep -q '"status":"ok"'
+          curl --fail --silent --show-error -k "$URL/api/v1/health" | grep -q '"status":"ok"'
+          curl --fail --silent --show-error -k "$URL/api/v1/metadata" | grep -q '"api_version":"v1"'
+          curl --fail --silent --show-error -k "$URL/app" | grep -q 'id="root"'
+          curl --fail --silent --show-error -k -D /tmp/headers "$URL/health" -o /dev/null
+          grep -qi '^strict-transport-security:' /tmp/headers
+          grep -qi '^content-security-policy:' /tmp/headers
+          grep -qi '^x-frame-options: DENY' /tmp/headers
+
+      - name: Report deployed commit
+        env:
+          HOST: ${{ secrets.PREPROD_HOST }}
+          USER: ${{ secrets.PREPROD_USER }}
+          PATH_REMOTE: ${{ secrets.PREPROD_PATH }}
+        run: ssh "$USER@$HOST" "git -C '$PATH_REMOTE' rev-parse HEAD"
