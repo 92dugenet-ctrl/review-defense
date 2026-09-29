@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from decimal import Decimal
 
 PAYPAL_SUBSCRIPTION_CLIENT_ID = "BAADwFz5aRpmMnNRVADMoONwkWyHzC3Y-l75vTda13-4tfwv2gSa4TdAq_jguOBTz2kBqsU1ARHCQ7nz6k"
-PAYPAL_HOSTED_CLIENT_ID = "BAAftx79q4rSHY7vc2aYy_hgx3KB6GB15k__TBghUQyd1_ixXSqv71UHw1RXZvkR4cli25WsSirUKWt7zs"
 
 @dataclass(frozen=True)
 class Offer:
