@@ -115,3 +115,16 @@ def test_api_limits_chunked_body_without_content_length():
     )
     assert status == "413 Payload Too Large"
     assert body["error"]["code"] == "PAYLOAD_TOO_LARGE"
+
+
+def test_production_security_headers_contract():
+    from src.deployment import security_headers
+
+    headers = security_headers(production=True)
+    assert headers["Content-Security-Policy"].startswith("default-src 'self'")
+    assert headers["Strict-Transport-Security"] == "max-age=31536000; includeSubDomains"
+    assert headers["X-Frame-Options"] == "DENY"
+    assert headers["X-Content-Type-Options"] == "nosniff"
+    assert "geolocation=()" in headers["Permissions-Policy"]
+    assert headers["Cross-Origin-Opener-Policy"] == "same-origin"
+    assert headers["Cross-Origin-Resource-Policy"] == "same-origin"
