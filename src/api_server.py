@@ -342,18 +342,25 @@ class ReviewDefenseAPI:
 
     def _body(self, environ) -> dict[str, Any]:
         try:
-            length = int(environ.get("CONTENT_LENGTH") or 0)
-            limit = 35_000_000 if environ.get("PATH_INFO", "").startswith("/v1/evidence") else 1_000_000
-            if length > limit:
+            path = environ.get("PATH_INFO", "")
+            limit = self.config.evidence_max_request_bytes if path.startswith("/v1/evidence") else self.config.max_request_bytes
+            length_raw = environ.get("CONTENT_LENGTH")
+            length = int(length_raw) if length_raw else 0
+            if length < 0 or length > limit:
                 raise APIError(413, "PAYLOAD_TOO_LARGE", "request body too large")
-            raw = environ["wsgi.input"].read(length) if length else b"{}"
+            if environ.get("wsgi.input_terminated"):
+                raw = environ["wsgi.input"].read(limit + 1)
+                if len(raw) > limit:
+                    raise APIError(413, "PAYLOAD_TOO_LARGE", "request body too large")
+            else:
+                raw = environ["wsgi.input"].read(length) if length else b"{}"
             obj = json.loads(raw.decode("utf-8"))
             if not isinstance(obj, dict):
                 raise ValueError
             return obj
         except APIError:
             raise
-        except Exception as exc:
+        except (ValueError, UnicodeDecodeError, json.JSONDecodeError) as exc:
             raise APIError(400, "INVALID_JSON", "request body must be a JSON object") from exc
 
     def _idem(self, user: User, environ, body: Mapping[str, Any], producer: Callable[[], Any]):
