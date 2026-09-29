@@ -16,14 +16,6 @@ import { PrivacyPage } from "@/pages/PrivacyPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { AdminPage } from "@/pages/AdminPage";
 
-const Placeholder = ({ title }: { title: string }) => (
-  <section className="page-placeholder">
-    <span className="eyebrow">REVIEW DEFENSE · SOCLE</span>
-    <h1>{title}</h1>
-    <p>Cette surface est réservée au prochain chantier fonctionnel.</p>
-  </section>
-);
-
 export const router = createBrowserRouter([
   { path: "/", element: <HomePage /> },
   { path: "/login", element: <LoginPage /> },
