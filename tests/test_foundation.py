@@ -103,6 +103,20 @@ def test_frontend_build_contract():
     assert (FRONTEND / "src/pages/RegisterPage.tsx").is_file()
 
 
+def test_frontend_layout_contract():
+    shell = (FRONTEND / "src/components/layout/AppShell.tsx").read_text(encoding="utf-8")
+    css = (FRONTEND / "src/styles/global.css").read_text(encoding="utf-8")
+    assert "NavLink" in shell
+    assert "Outlet" in shell
+    assert "mobileOpen" in shell
+    assert "aria-label="Navigation principale"" in shell
+    assert "role === "admin"" in shell
+    assert ".sidebar.mobile-open" in css
+    assert ".sidebar-backdrop" in css
+    assert ".topbar" in css
+    assert "@media (max-width: 900px)" in css
+
+
 def test_frontend_shell_serves_built_react_app():
     status, headers, body = request("/")
     assert status == "200 OK"
@@ -158,13 +172,15 @@ def test_full_legacy_data_model_is_restored():
         "contradiction_findings", "case_escalations", "notification_outbox",
         "privacy_requests", "privacy_consents", "billing_transactions",
     }
-    sql = "\n".join(path.read_text(encoding="utf-8") for path in files)
+    sql = "
+".join(path.read_text(encoding="utf-8") for path in files)
     for table in required_tables:
         assert f"CREATE TABLE IF NOT EXISTS {table}" in sql
 
 
 def test_data_model_security_contract():
-    sql = "\n".join(path.read_text(encoding="utf-8") for path in MIGRATIONS.glob("*.sql"))
+    sql = "
+".join(path.read_text(encoding="utf-8") for path in MIGRATIONS.glob("*.sql"))
     assert "ENABLE ROW LEVEL SECURITY" in sql
     assert "FORCE ROW LEVEL SECURITY" in sql
     assert "current_setting('app.organization_id'" in sql
