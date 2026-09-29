@@ -1,191 +1,83 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const pillars = [
-  { n: "01", title: "Analyse", text: "Transformez un avis isolé en éléments lisibles : faits, signaux, contradictions et points à vérifier." },
-  { n: "02", title: "Preuves", text: "Reliez captures, documents, sources et échanges au bon endroit dans le dossier." },
-  { n: "03", title: "Décision", text: "Votre équipe garde la main. Le logiciel prépare et documente ; la décision reste humaine." },
+const heroVideo = "https://www.ariaditerra.com/wp-content/uploads/2023/02/coverr-chef-preparing-a-dish-at-a-restaurant-6248-1080p.mp4";
+const heroPoster = "https://www.ariaditerra.com/wp-content/uploads/2023/02/coverr-chef-preparing-a-dish-at-a-restaurant-6248-1080p.jpg";
+
+const professions = [
+  ["Restaurants", "https://images.pexels.com/photos/16712155/pexels-photo-16712155.jpeg?auto=compress&cs=tinysrgb&w=1200"],
+  ["Artisans", "https://images.pexels.com/photos/27928762/pexels-photo-27928762.jpeg?auto=compress&cs=tinysrgb&w=1200"],
+  ["Commerces", "https://images.pexels.com/photos/36729517/pexels-photo-36729517.jpeg?auto=compress&cs=tinysrgb&w=1200"],
+  ["Hôtels", "https://images.pexels.com/photos/36684286/pexels-photo-36684286.jpeg?auto=compress&cs=tinysrgb&w=1200"],
+  ["Salons", "https://www.rivasciudad.es/wp-content/uploads/2025/07/peluqueria.jpg"],
 ];
 
-const workflow = [
-  ["01", "Avis", "Le signal entre dans votre espace."],
-  ["02", "Analyse", "Les éléments à examiner sont structurés."],
-  ["03", "Preuves", "Les pièces utiles sont reliées au contexte."],
-  ["04", "Dossier", "La situation devient lisible et traçable."],
-  ["05", "Validation", "Une personne habilitée décide de la suite."],
+const items = [
+  ["Une interface pensée comme une conversation", "Retrouvez vos avis, vos dossiers et vos éléments de preuve dans un espace lisible. Le contexte reste au même endroit."],
+  ["Une analyse qui prépare le travail", "Les informations disponibles sont structurées et les points qui méritent une vérification sont mis en évidence."],
+  ["Des preuves reliées au bon dossier", "Captures, documents, sources et échanges peuvent être associés à une chronologie claire et exploitable."],
+  ["Une validation humaine sur les étapes sensibles", "Le logiciel prépare et propose. Une personne habilitée garde la main avant toute action sensible."],
 ];
 
-function ProductWindow() {
-  return (
-    <div className="rd-commercial-stage">
-      <div className="rd-stage-orb rd-stage-orb-a" />
-      <div className="rd-stage-orb rd-stage-orb-b" />
-      <div className="rd-product-browser">
-        <div className="rd-browser-top">
-          <div className="rd-browser-dots"><i /><i /><i /></div>
-          <strong>Review Defense</strong>
-          <span>Workspace · Organisation</span>
-          <b>•••</b>
-        </div>
-        <div className="rd-product-layout">
-          <aside className="rd-product-rail">
-            <div className="rd-product-logo">RD</div>
-            <span className="active">⌂ <em>Tableau</em></span>
-            <span>◌ <em>Mes avis</em></span>
-            <span>⌕ <em>Analyse</em></span>
-            <span>□ <em>Dossiers</em></span>
-            <span>◇ <em>Preuves</em></span>
-            <span>✓ <em>Suivi</em></span>
-            <div className="rail-spacer" />
-            <span>⚙ <em>Paramètres</em></span>
-          </aside>
-          <div className="rd-product-main">
-            <div className="rd-product-heading">
-              <div><small>ANALYSE · REV-88421</small><h3>Avis à vérifier</h3></div>
-              <span>À VÉRIFIER</span>
-            </div>
-            <div className="rd-review-card">
-              <div className="rd-review-rating">★☆☆☆☆</div>
-              <strong>« Service déplorable, une arnaque totale. »</strong>
-              <small>Source disponible · contexte à examiner</small>
-            </div>
-            <div className="rd-product-metrics">
-              <div><small>SIGNAUX</small><b>03</b><span>à examiner</span></div>
-              <div><small>PREUVES</small><b>07</b><span>associées</span></div>
-              <div><small>STATUT</small><b>Gel</b><span>validation requise</span></div>
-            </div>
-            <div className="rd-product-flow">
-              <span className="done">Analyse</span><i>→</i><span className="done">Décision</span><i>→</i><span className="current">Validation</span><i>→</i><span>Préparation</span>
-            </div>
-            <div className="rd-product-bottom">
-              <div className="rd-bars"><small>ÉLÉMENTS À VÉRIFIER</small><div><i/><i/><i/><i/><i/></div></div>
-              <div className="rd-human-gate"><small>HUMAN APPROVAL</small><strong>Validation requise</strong><span>Avant toute étape contrôlée</span></div>
-            </div>
-          </div>
-        </div>
+function Preview() {
+  return <div className="rd-preview">
+    <div className="rd-browser">
+      <div className="rd-browser-top"><span>● ● ●</span><b>Review Defense</b><small>Espace entreprise</small></div>
+      <div className="rd-browser-body">
+        <aside><strong>RD</strong><span className="active">Tableau</span><span>Avis</span><span>Dossiers</span><span>Preuves</span><span>Suivi</span><i /></aside>
+        <main>
+          <header><div><small>AVIS À VÉRIFIER</small><h3>Service déplorable</h3></div><b>À VÉRIFIER</b></header>
+          <div className="rd-review"><em>★☆☆☆☆</em><strong>« Service déplorable, une arnaque totale. »</strong><small>Source disponible · contexte à examiner</small></div>
+          <div className="rd-metrics"><div><small>SIGNAUX</small><b>03</b><span>à examiner</span></div><div><small>PREUVES</small><b>07</b><span>associées</span></div><div><small>STATUT</small><b>Gel</b><span>validation requise</span></div></div>
+          <div className="rd-flow"><span>Analyse</span><i>→</i><span>Preuves</span><i>→</i><strong>Validation</strong></div>
+          <div className="rd-proof"><div><small>HISTORIQUE</small><p>Capture ajoutée</p><p>Document associé</p><p>Validation demandée</p></div><div><small>CONTRÔLE HUMAIN</small><strong>Validation requise</strong><p>Aucune action sensible sans validation.</p></div></div>
+        </main>
       </div>
-      <div className="rd-floating-card rd-float-a"><small>IA ASSISTÉE</small><strong>7 éléments rapprochés</strong><span>Suggestions à vérifier</span></div>
-      <div className="rd-floating-card rd-float-b"><small>TRAÇABILITÉ</small><strong>Décision verrouillée</strong><span>Historique conservé</span></div>
     </div>
-  );
+    <div className="rd-float a"><small>TRACE</small><b>Dossier REV-88421</b><span>7 éléments associés</span></div>
+    <div className="rd-float b"><small>IA ASSISTÉE</small><b>3 points à vérifier</b><span>Suggestions, pas décisions</span></div>
+  </div>;
 }
 
 export function HomePage() {
-  return (
-    <div className="rd-commercial">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
-        .rd-commercial{--blue:#2166f3;--blue2:#1748c7;--ink:#111827;--muted:#667085;--line:#e6e9ef;--soft:#f5f8fc;background:#fff;color:var(--ink);font-family:"DM Sans",Inter,system-ui,sans-serif;overflow:hidden}
-        .rd-commercial *{box-sizing:border-box}.rd-commercial a{text-decoration:none;color:inherit}
-        .rd-nav{position:sticky;top:0;z-index:50;height:76px;display:flex;align-items:center;justify-content:space-between;gap:28px;padding:0 clamp(20px,4vw,64px);border-bottom:1px solid rgb(230 233 239 / 75%);background:rgb(255 255 255 / 90%);backdrop-filter:blur(18px)}
-        .rd-brand{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;letter-spacing:-.04em;white-space:nowrap}.rd-brand-mark{display:grid;place-items:center;width:31px;height:31px;border-radius:9px;background:var(--ink);color:#fff;font-size:10px;font-weight:800}
-        .rd-nav-links{display:flex;align-items:center;gap:30px;color:#475467;font-size:12px;font-weight:600}.rd-nav-links a{transition:color .18s}.rd-nav-links a:hover{color:var(--blue)}
-        .rd-nav-actions{display:flex;align-items:center;gap:16px;font-size:12px;font-weight:650}.rd-login:hover{color:var(--blue)}
-        .rd-nav-cta,.rd-primary{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;background:var(--blue);color:#fff;border-radius:999px;min-height:42px;padding:0 19px;font:inherit;font-weight:700;box-shadow:0 8px 24px rgb(33 102 243 / 16%);transition:transform .18s,background .18s,box-shadow .18s}
-        .rd-nav-cta:hover,.rd-primary:hover{background:var(--blue2);transform:translateY(-1px);box-shadow:0 12px 28px rgb(33 102 243 / 22%)}
-        .rd-hero{position:relative;min-height:calc(100vh - 76px);display:grid;grid-template-columns:minmax(0,.88fr) minmax(500px,1.12fr);align-items:center;gap:30px;padding:72px clamp(20px,5vw,80px) 80px;background:linear-gradient(180deg,#fff 0%,#fbfcff 70%,#fff 100%)}
-        .rd-hero:before{content:"";position:absolute;width:700px;height:700px;right:-250px;top:-250px;border-radius:50%;background:radial-gradient(circle,rgb(57 116 255 / 13%),transparent 66%);pointer-events:none}
-        .rd-hero-copy{position:relative;z-index:2;max-width:650px}.rd-eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:22px;color:#315fd1;font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}.rd-eyebrow:before{content:"";width:7px;height:7px;border-radius:50%;background:#5f8eff;box-shadow:0 0 0 4px #edf3ff}
-        .rd-hero h1{margin:0;max-width:720px;font-size:clamp(54px,6.4vw,94px);line-height:.93;letter-spacing:-.065em;font-weight:650}.rd-hero h1 em,.rd-section-title em{font-family:"Instrument Serif",Georgia,serif;font-weight:400;color:var(--blue)}
-        .rd-hero-lead{max-width:570px;margin:28px 0 30px;color:#5d6878;font-size:16px;line-height:1.7}
-        .rd-actions{display:flex;align-items:center;gap:22px;flex-wrap:wrap}.rd-secondary{font-size:12px;font-weight:700;color:#344054}.rd-secondary span{display:inline-grid;place-items:center;width:30px;height:30px;margin-right:7px;border:1px solid #dfe5ef;border-radius:50%}
-        .rd-trust{display:flex;gap:22px;flex-wrap:wrap;margin-top:28px;color:#667085;font-size:10px;font-weight:600}.rd-trust span:before{content:"✓";margin-right:6px;color:#2c9b6c}
-        .rd-commercial-stage{position:relative;min-height:610px;display:grid;place-items:center}.rd-stage-orb{position:absolute;border:1px solid rgb(33 102 243 / 13%);border-radius:50%}.rd-stage-orb-a{width:580px;height:580px}.rd-stage-orb-b{width:760px;height:760px}
-        .rd-product-browser{position:relative;z-index:2;width:min(100%,700px);border:1px solid #dfe5ef;border-radius:18px;background:#fff;box-shadow:0 28px 80px rgb(16 24 40 / 13%),0 4px 14px rgb(16 24 40 / 5%);overflow:hidden;transform:perspective(1200px) rotateY(-3deg) rotateX(1deg)}
-        .rd-browser-top{height:48px;display:flex;align-items:center;gap:12px;padding:0 15px;border-bottom:1px solid #edf0f5;background:#fbfcfe;color:#344054;font-size:10px}.rd-browser-top b{margin-left:auto;color:#98a2b3}.rd-browser-top span{color:#98a2b3}.rd-browser-dots{display:flex;gap:5px}.rd-browser-dots i{width:7px;height:7px;border-radius:50%;background:#d0d5dd}
-        .rd-product-layout{display:grid;grid-template-columns:118px 1fr;min-height:455px}.rd-product-rail{display:flex;flex-direction:column;gap:5px;padding:15px 9px;border-right:1px solid #edf0f5;background:#fbfcfe;color:#98a2b3;font-size:9px}.rd-product-logo{display:grid;place-items:center;width:30px;height:30px;margin:0 0 13px;border-radius:9px;background:#101828;color:#fff;font-size:9px;font-weight:800}.rd-product-rail span{display:flex;align-items:center;gap:7px;padding:8px 7px;border-radius:7px}.rd-product-rail span.active{background:#eef4ff;color:#245ed6}.rd-product-rail em{font-style:normal}.rail-spacer{flex:1}
-        .rd-product-main{padding:25px}.rd-product-heading{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.rd-product-heading small,.rd-review-card small,.rd-product-metrics small,.rd-human-gate small,.rd-bars small,.rd-floating-card small{display:block;color:#98a2b3;font-size:7px;font-weight:800;letter-spacing:.1em}.rd-product-heading h3{margin:5px 0 0;font-size:17px;letter-spacing:-.035em}.rd-product-heading>span{padding:6px 8px;border-radius:999px;background:#fff8e8;color:#b54708;font-size:7px;font-weight:800}
-        .rd-review-card{display:grid;gap:7px;margin-top:20px;padding:17px;border:1px solid #e6e9ef;border-radius:12px;background:#fff}.rd-review-rating{color:#f59e0b;font-size:11px;letter-spacing:1px}.rd-review-card strong{font-size:12px;line-height:1.5}
-        .rd-product-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.rd-product-metrics div{display:grid;gap:4px;padding:12px;background:#f7f9fc;border-radius:10px}.rd-product-metrics b{font-size:20px;letter-spacing:-.04em}.rd-product-metrics span{color:#98a2b3;font-size:8px}
-        .rd-product-flow{display:flex;align-items:center;gap:8px;margin:18px 0;color:#98a2b3;font-size:8px;font-weight:700}.rd-product-flow i{font-style:normal;color:#d0d5dd}.rd-product-flow span{padding:6px 8px;border-radius:7px;background:#f5f6f8}.rd-product-flow .done{background:#edf8f2;color:#157347}.rd-product-flow .current{background:#edf3ff;color:#245ed6}
-        .rd-product-bottom{display:grid;grid-template-columns:1.2fr .8fr;gap:9px}.rd-bars,.rd-human-gate{padding:13px;border-radius:10px;background:#f8fafc}.rd-bars>div{display:flex;align-items:end;gap:7px;height:55px;margin-top:9px}.rd-bars i{display:block;flex:1;border-radius:4px 4px 1px 1px;background:#d8e5ff}.rd-bars i:nth-child(2){height:70%}.rd-bars i:nth-child(3){height:95%}.rd-bars i:nth-child(4){height:55%}.rd-bars i:nth-child(5){height:82%}.rd-human-gate{background:#eef4ff}.rd-human-gate strong{display:block;margin:8px 0 4px;color:#1748c7;font-size:11px}.rd-human-gate span{color:#667085;font-size:8px;line-height:1.4}
-        .rd-floating-card{position:absolute;z-index:3;display:grid;gap:5px;padding:14px 16px;border:1px solid #e2e7ef;border-radius:12px;background:#fff;box-shadow:0 14px 35px rgb(16 24 40 / 10%)}.rd-floating-card strong{font-size:11px}.rd-floating-card span{color:#98a2b3;font-size:8px}.rd-float-a{left:-8px;bottom:84px}.rd-float-a small{color:#245ed6}.rd-float-b{right:-4px;top:94px}.rd-float-b small{color:#157347}
-        .rd-strip{display:grid;grid-template-columns:1.2fr repeat(4,1fr);gap:0;padding:0 clamp(20px,5vw,80px);border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#fff}.rd-strip>*{padding:24px 20px;border-right:1px solid var(--line);font-size:10px}.rd-strip>*:last-child{border-right:0}.rd-strip-label{color:#98a2b3;font-weight:800;letter-spacing:.08em}.rd-strip b{font-size:12px}
-        .rd-section{padding:125px clamp(20px,5vw,80px)}.rd-section-inner{max-width:1180px;margin:auto}.rd-section-kicker{display:block;margin-bottom:17px;color:#315fd1;font-size:10px;font-weight:800;letter-spacing:.13em}.rd-section-title{margin:0;max-width:800px;font-size:clamp(42px,5vw,70px);line-height:.98;letter-spacing:-.06em;font-weight:650}.rd-section-copy{max-width:560px;margin:22px 0 0;color:#667085;font-size:15px;line-height:1.7}
-        .rd-story{background:#f7f9fc}.rd-pillars{display:grid;grid-template-columns:repeat(3,1fr);margin-top:70px;border-top:1px solid #dfe5ed}.rd-pillar{position:relative;padding:34px 28px 30px 0;border-right:1px solid #dfe5ed}.rd-pillar:not(:first-child){padding-left:28px}.rd-pillar:last-child{border-right:0}.rd-pillar small{color:#98a2b3;font-size:9px;font-weight:800}.rd-pillar h3{margin:40px 0 10px;font-size:24px;letter-spacing:-.04em}.rd-pillar p{margin:0;color:#667085;font-size:12px;line-height:1.65}.rd-pillar b{position:absolute;right:24px;top:34px;color:#245ed6;font-size:12px}
-        .rd-dark{background:#101828;color:#fff;position:relative}.rd-dark:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 75% 25%,rgb(53 109 255 / 22%),transparent 33%);pointer-events:none}.rd-dark-inner{position:relative;z-index:1;max-width:1180px;margin:auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:end}.rd-dark .rd-section-kicker{color:#9dbbff}.rd-dark .rd-section-copy{color:#b5bfce}
-        .rd-human-card{margin-top:55px;display:grid;grid-template-columns:repeat(5,1fr);border:1px solid #344054;border-radius:16px;overflow:hidden}.rd-human-card div{padding:24px 18px;border-right:1px solid #344054}.rd-human-card div:last-child{border:0}.rd-human-card small{color:#98a2b3;font-size:8px}.rd-human-card strong{display:block;margin-top:10px;font-size:13px}.rd-human-card span{display:block;margin-top:5px;color:#98a2b3;font-size:9px;line-height:1.4}
-        .rd-proof{background:#fff}.rd-proof-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:90px;align-items:center;margin-top:65px}.rd-proof-card{padding:26px;border:1px solid #e2e7ef;border-radius:18px;box-shadow:0 18px 45px rgb(16 24 40 / 7%)}.rd-proof-card header{display:flex;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid #edf0f5}.rd-proof-card header strong{font-size:12px}.rd-proof-card header span{color:#157347;font-size:8px;font-weight:800}.rd-proof-row{display:flex;justify-content:space-between;gap:15px;padding:16px 0;border-bottom:1px solid #edf0f5;font-size:10px}.rd-proof-row span{color:#667085}.rd-proof-row b{color:#344054}.rd-proof-foot{display:flex;gap:10px;align-items:center;margin-top:18px;padding:12px;border-radius:10px;background:#f2f8f5;color:#157347}.rd-proof-foot i{font-style:normal;font-weight:900}.rd-proof-foot span{font-size:9px}.rd-proof-points{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px}.rd-proof-points span{color:#475467;font-size:11px}
-        .rd-cta{padding:120px 20px;text-align:center;background:#f5f8ff}.rd-cta .rd-section-title{margin:0 auto}.rd-cta p{max-width:500px;margin:20px auto 30px;color:#667085;font-size:14px;line-height:1.6}
-        .rd-footer{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:28px clamp(20px,5vw,80px);border-top:1px solid var(--line);color:#98a2b3;font-size:10px}.rd-footer a{color:#475467;font-weight:700}.rd-footer-brand{display:flex;align-items:center;gap:9px;color:#344054;font-weight:700}
-        @media(max-width:1050px){.rd-hero{grid-template-columns:1fr;padding-top:55px}.rd-hero-copy{max-width:800px}.rd-commercial-stage{min-height:560px}.rd-nav-links{display:none}.rd-dark-inner,.rd-proof-grid{grid-template-columns:1fr;gap:45px}.rd-human-card{grid-template-columns:repeat(3,1fr)}.rd-human-card div:nth-child(3){border-right:0}.rd-human-card div:nth-child(n+4){border-top:1px solid #344054}}
-        @media(max-width:700px){.rd-nav{height:66px}.rd-nav-actions .rd-login{display:none}.rd-nav-cta{min-height:38px;padding:0 15px;font-size:11px}.rd-hero{padding:52px 18px 50px;min-height:auto}.rd-hero h1{font-size:54px}.rd-hero-lead{font-size:14px}.rd-commercial-stage{min-height:440px;margin-top:15px}.rd-product-browser{transform:none;width:100%}.rd-product-layout{grid-template-columns:1fr}.rd-product-rail{display:none}.rd-product-main{padding:16px}.rd-floating-card{display:none}.rd-stage-orb-a{width:360px;height:360px}.rd-stage-orb-b{width:460px;height:460px}.rd-strip{grid-template-columns:1fr 1fr;padding:0 18px}.rd-strip>*{padding:16px 10px}.rd-strip>*:first-child{grid-column:1/-1;border-right:0}.rd-section{padding:82px 18px}.rd-pillars{grid-template-columns:1fr;margin-top:45px}.rd-pillar,.rd-pillar:not(:first-child){padding:25px 0;border-right:0;border-bottom:1px solid #dfe5ed}.rd-pillar:last-child{border-bottom:0}.rd-pillar h3{margin-top:26px}.rd-dark-inner{gap:35px}.rd-human-card{grid-template-columns:1fr 1fr}.rd-human-card div:nth-child(3){border-right:1px solid #344054}.rd-human-card div:nth-child(odd){border-right:0}.rd-proof-grid{gap:35px}.rd-proof-points{grid-template-columns:1fr}.rd-footer{align-items:flex-start;flex-direction:column}}
-      `}</style>
+  const [menu, setMenu] = useState(false);
+  const [open, setOpen] = useState(0);
+  return <div className="rd-home">
+    <style>{'@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap");
+      .rd-home{--cream:#f7f6f1;--paper:#fffefa;--ink:#172026;--muted:#68727a;--line:#dedfda;background:var(--cream);color:var(--ink);font-family:"DM Sans",Inter,system-ui,sans-serif;min-height:100vh;overflow:hidden}.rd-home *{box-sizing:border-box}.rd-home a{text-decoration:none;color:inherit}.rd-home button{font:inherit}
+      .rd-head{position:absolute;z-index:5;top:0;left:0;right:0;height:78px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,56px);color:#fff}.rd-head-left{display:flex;align-items:center;gap:18px}.rd-menu{width:38px;height:38px;border:0;background:none;color:#fff;display:grid;place-items:center;cursor:pointer}.rd-menu span,.rd-menu:before,.rd-menu:after{content:"";display:block;width:22px;height:2px;background:currentColor;position:absolute}.rd-menu:before{transform:translateY(-7px)}.rd-menu:after{transform:translateY(7px)}.rd-brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px;letter-spacing:-.04em}.rd-mark{display:grid;place-items:center;width:29px;height:29px;border-radius:8px;background:#fff;color:#162027;font-size:9px}.rd-nav{display:flex;gap:24px;font-size:11px;font-weight:600}.rd-actions{display:flex;align-items:center;gap:16px;font-size:11px;font-weight:600}.rd-head-cta{background:#fff;color:#182126;padding:12px 17px;border-radius:999px}.rd-panel{position:absolute;top:65px;left:20px;width:300px;padding:17px 20px;border-radius:16px;background:rgb(20 28 31 / 92%);backdrop-filter:blur(16px);box-shadow:0 20px 50px #0003}.rd-panel a{display:flex;justify-content:space-between;padding:13px 0;color:#fff;border-bottom:1px solid #ffffff26;font-size:13px}.rd-panel a:last-child{border:0}
+      .rd-hero{position:relative;min-height:100vh;display:grid;place-items:center;background:#bdc9c4;overflow:hidden;isolation:isolate}.rd-hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(1.1) saturate(.8);z-index:-3}.rd-hero:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#ffffff12 0%,#ffffff00 48%,#17202220 100%);z-index:-2}.rd-hero:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at center,#fff0 20%,#fff3 100%);z-index:-1}.rd-hero-content{width:min(950px,calc(100% - 36px));padding-top:65px;text-align:center;color:#fff;text-shadow:0 2px 20px #0003}.rd-kicker{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;margin-bottom:24px}.rd-kicker:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#fff;margin-right:9px;box-shadow:0 0 0 5px #ffffff35}.rd-hero h1{margin:0;font-size:clamp(52px,7.2vw,104px);line-height:.94;letter-spacing:-.065em;font-weight:600}.rd-hero h1 em{font-style:normal;font-weight:400}.rd-hero p{max-width:560px;margin:26px auto 27px;font-size:15px;line-height:1.65;font-weight:500}.rd-hero-buttons{display:flex;justify-content:center;gap:11px;flex-wrap:wrap}.rd-primary,.rd-secondary{display:inline-flex;align-items:center;justify-content:center;min-height:45px;padding:0 20px;border-radius:999px;font-size:11px;font-weight:700}.rd-primary{background:#fff;color:#172026;text-shadow:none}.rd-secondary{border:1px solid #fff8;color:#fff;background:#ffffff12;backdrop-filter:blur(6px)}.rd-scroll{position:absolute;bottom:23px;left:50%;transform:translateX(-50%);display:grid;gap:8px;justify-items:center;color:#fff;font-size:8px;letter-spacing:.14em;text-transform:uppercase}.rd-scroll i{width:1px;height:27px;background:#fff9}
+      .rd-section{background:var(--paper);padding:105px clamp(20px,5vw,68px)}.rd-inner{max-width:1220px;margin:auto}.rd-section-head{display:flex;justify-content:space-between;align-items:end;gap:50px;border-bottom:1px solid var(--line);padding-bottom:33px}.rd-section-head h2{max-width:790px;margin:0;font-size:clamp(40px,5.1vw,70px);line-height:.98;letter-spacing:-.06em;font-weight:600}.rd-section-head h2 em{font-style:normal;color:#707a80}.rd-section-head p{max-width:390px;margin:0;color:var(--muted);font-size:13px;line-height:1.75}
+      .rd-content{display:grid;grid-template-columns:1fr .92fr;gap:70px;padding-top:18px}.rd-accordion{border-top:0}.rd-item{border-bottom:1px solid var(--line)}.rd-item button{width:100%;display:grid;grid-template-columns:1fr 25px;gap:20px;padding:29px 0;border:0;background:none;text-align:left;cursor:pointer;color:var(--ink)}.rd-item h3{margin:0;font-size:clamp(20px,2.3vw,30px);line-height:1.15;letter-spacing:-.04em;font-weight:500}.rd-plus{position:relative;width:22px;height:22px;align-self:center}.rd-plus:before,.rd-plus:after{content:"";position:absolute;top:10px;left:1px;width:18px;height:1.5px;background:#263138}.rd-plus:after{transform:rotate(90deg);transition:transform .2s}.rd-item.open .rd-plus:after{transform:none}.rd-answer{max-height:0;overflow:hidden;transition:max-height .3s ease}.rd-item.open .rd-answer{max-height:180px}.rd-answer p{max-width:650px;margin:0 0 27px;color:var(--muted);font-size:13px;line-height:1.75}
+      .rd-preview{position:sticky;top:30px;min-height:535px;border-radius:22px;background:#eef0ec;display:grid;place-items:center}.rd-browser{width:calc(100% - 42px);border:1px solid #d7dad5;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 25px 60px #1b252b18}.rd-browser-top{height:41px;display:flex;align-items:center;gap:10px;padding:0 12px;border-bottom:1px solid #e9ebe7;color:#8b9390;font-size:7px}.rd-browser-top b{color:#4b565b}.rd-browser-top small{margin-left:auto}.rd-browser-body{display:grid;grid-template-columns:94px 1fr;min-height:420px}.rd-browser aside{display:flex;flex-direction:column;gap:4px;padding:13px 7px;border-right:1px solid #e9ebe7;background:#fafbf8;color:#98a09c;font-size:7px}.rd-browser aside strong{display:grid;place-items:center;width:26px;height:26px;margin-bottom:9px;border-radius:7px;background:#1b252b;color:#fff}.rd-browser aside span{padding:7px 6px;border-radius:5px}.rd-browser aside .active{background:#edf2ee;color:#304039}.rd-browser aside i{flex:1}.rd-browser main{padding:19px}.rd-browser header{display:flex;justify-content:space-between;align-items:start}.rd-browser header small,.rd-review small,.rd-metrics small,.rd-proof small,.rd-float small{font-size:6px;color:#a0a7a3;font-weight:800;letter-spacing:.1em}.rd-browser header h3{margin:4px 0 0;font-size:14px}.rd-browser header b{font-size:6px;color:#a75d09;background:#fff2da;padding:6px;border-radius:999px}.rd-review{display:grid;gap:6px;margin-top:15px;padding:13px;border:1px solid #e0e4df;border-radius:9px}.rd-review em{font-style:normal;color:#d89c09;font-size:9px}.rd-review strong{font-size:9px}.rd-review small{letter-spacing:0;font-weight:400}.rd-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:7px}.rd-metrics div{display:grid;gap:3px;padding:9px;background:#f6f7f4;border-radius:7px}.rd-metrics b{font-size:16px}.rd-metrics span{font-size:6px;color:#87908c}.rd-flow{display:flex;align-items:center;gap:5px;margin:12px 0;color:#89918d;font-size:6px}.rd-flow span,.rd-flow strong{padding:5px 6px;background:#f2f3f0;border-radius:5px;font-weight:600}.rd-flow strong{background:#edf3ff;color:#2b62c7}.rd-flow i{font-style:normal}.rd-proof{display:grid;grid-template-columns:1fr .9fr;gap:5px}.rd-proof>div{padding:9px;background:#fafbf9;border-radius:7px}.rd-proof p{margin:6px 0 0;font-size:6px;color:#6f7874}.rd-proof strong{display:block;margin-top:8px;font-size:8px;color:#21613b}.rd-float{position:absolute;display:grid;gap:4px;padding:11px 13px;border:1px solid #dfe3de;border-radius:10px;background:#fff;box-shadow:0 13px 30px #1720261c}.rd-float b{font-size:8px}.rd-float span{font-size:6px;color:#7e8883}.rd-float.a{left:4px;bottom:47px}.rd-float.a small{color:#2368df}.rd-float.b{right:4px;top:48px}.rd-float.b small{color:#287247}
+      .rd-professions{padding:0 clamp(20px,5vw,68px) 105px;background:var(--paper)}.rd-profession-title{max-width:1220px;margin:0 auto 20px;color:#808883;font-size:9px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}.rd-prof-grid{max-width:1220px;margin:auto;display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.rd-prof{position:relative;height:255px;border-radius:13px;overflow:hidden;background:#d5d9d5}.rd-prof img{width:100%;height:100%;object-fit:cover;filter:saturate(.78)}.rd-prof:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 35%,#10191c99)}.rd-prof span{position:absolute;z-index:1;left:15px;bottom:14px;color:#fff;font-size:11px;font-weight:600}
+      .rd-flow-section{padding:115px clamp(20px,5vw,68px);background:var(--cream)}.rd-flow-grid{max-width:1220px;margin:auto;display:grid;grid-template-columns:.8fr 1.2fr;gap:80px}.rd-flow-grid h2{margin:0;font-size:clamp(42px,5.3vw,76px);line-height:.95;letter-spacing:-.065em}.rd-flow-grid h2 em{font-style:normal;color:#707a80}.rd-flow-grid p{max-width:430px;margin:22px 0 0;color:var(--muted);font-size:13px;line-height:1.75}.rd-steps{border-top:1px solid #d9dbd6}.rd-step{display:grid;grid-template-columns:42px 1fr auto;gap:18px;align-items:center;padding:22px 0;border-bottom:1px solid #d9dbd6}.rd-step small{font-size:8px;color:#8c9590}.rd-step strong{font-size:18px;font-weight:500;letter-spacing:-.03em}.rd-step span{font-size:10px;color:#7a847f}.rd-step b{font-size:17px;font-weight:400;color:#68726d}
+      .rd-cta{padding:120px 20px;background:var(--paper);border-top:1px solid var(--line);text-align:center}.rd-cta h2{max-width:900px;margin:0 auto;font-size:clamp(45px,6.1vw,88px);line-height:.94;letter-spacing:-.065em}.rd-cta h2 em{font-style:normal;color:#707a80}.rd-cta p{max-width:500px;margin:22px auto 28px;color:var(--muted);font-size:13px;line-height:1.7}.rd-cta a{display:inline-flex;align-items:center;min-height:45px;padding:0 21px;border-radius:999px;background:#1a2429;color:#fff;font-size:11px;font-weight:700}.rd-footer{display:flex;justify-content:space-between;gap:20px;padding:25px clamp(20px,5vw,68px);background:var(--paper);border-top:1px solid var(--line);color:#7f8884;font-size:9px}.rd-footer strong{color:#303a3f}
+      @media(max-width:1000px){.rd-nav{display:none}.rd-actions .rd-login{display:none}.rd-content,.rd-flow-grid{grid-template-columns:1fr}.rd-preview{position:relative;top:auto}.rd-section-head{display:block}.rd-section-head p{margin-top:20px}.rd-prof-grid{grid-template-columns:repeat(3,1fr)}.rd-prof{height:220px}}
+      @media(max-width:650px){.rd-head{height:66px;padding:0 14px}.rd-nav{display:none}.rd-brand{font-size:14px}.rd-head-cta{padding:10px 13px}.rd-hero-content{padding-top:35px}.rd-hero h1{font-size:51px}.rd-hero p{font-size:13px}.rd-secondary{display:none}.rd-section,.rd-flow-section{padding-top:75px;padding-bottom:75px}.rd-content{gap:35px}.rd-preview{min-height:400px;border-radius:17px}.rd-browser{width:calc(100% - 20px)}.rd-browser-body{grid-template-columns:1fr}.rd-browser aside{display:none}.rd-browser main{padding:12px}.rd-float{display:none}.rd-professions{padding-bottom:75px}.rd-prof-grid{grid-template-columns:1fr 1fr}.rd-prof{height:190px}.rd-prof:nth-child(3){grid-column:1/-1}.rd-flow-grid{gap:40px}.rd-step{grid-template-columns:30px 1fr 18px}.rd-step span{display:none}.rd-footer{flex-direction:column;align-items:flex-start}}
+    '}</style>
 
-      <header className="rd-nav">
-        <Link to="/" className="rd-brand"><span className="rd-brand-mark">RD</span><span>Review Defense</span></Link>
-        <nav className="rd-nav-links">
-          <a href="#produit">Produit</a><a href="#methode">Méthode</a><a href="#securite">Sécurité</a><a href="#tarifs">Tarifs</a>
-        </nav>
-        <div className="rd-nav-actions"><Link className="rd-login" to="/login">Connexion</Link><Link className="rd-nav-cta" to="/register">Commencer <span>→</span></Link></div>
+    <section className="rd-hero">
+      <video autoPlay muted loop playsInline preload="metadata" poster={heroPoster} aria-hidden="true"><source src={heroVideo} type="video/mp4" /></video>
+      <header className="rd-head">
+        <div className="rd-head-left"><button className="rd-menu" aria-label="Menu" aria-expanded={menu} onClick={() => setMenu(!menu)}><span /></button><Link className="rd-brand" to="/"><span className="rd-mark">RD</span>Review Defense</Link></div>
+        <nav className="rd-nav"><a href="#produit">Produit</a><a href="#fonctionnement">Fonctionnement</a><a href="#securite">Sécurité</a><a href="#metiers">Métiers</a></nav>
+        <div className="rd-actions"><Link className="rd-login" to="/login">Connexion</Link><Link className="rd-head-cta" to="/register">Commencer →</Link></div>
+        {menu && <div className="rd-panel"><a href="#produit" onClick={() => setMenu(false)}>Produit <span>→</span></a><a href="#fonctionnement" onClick={() => setMenu(false)}>Fonctionnement <span>→</span></a><a href="#securite" onClick={() => setMenu(false)}>Sécurité <span>→</span></a><a href="#metiers" onClick={() => setMenu(false)}>Métiers <span>→</span></a><Link to="/login" onClick={() => setMenu(false)}>Connexion <span>→</span></Link></div>}
       </header>
+      <div className="rd-hero-content"><div className="rd-kicker">REPUTATION INTELLIGENCE</div><h1>Votre réputation mérite <em>mieux.</em></h1><p>Analysez les avis sensibles, rassemblez les éléments utiles et gardez la maîtrise de chaque décision.</p><div className="rd-hero-buttons"><Link className="rd-primary" to="/register">Découvrir Review Defense →</Link><a className="rd-secondary" href="#produit">Voir comment ça fonctionne ↓</a></div></div>
+      <div className="rd-scroll">Découvrir<i /></div>
+    </section>
 
-      <main>
-        <section className="rd-hero">
-          <div className="rd-hero-copy">
-            <span className="rd-eyebrow">REPUTATION INTELLIGENCE · POUR LES ENTREPRISES</span>
-            <h1>Reprenez le contrôle de <em>vos avis.</em></h1>
-            <p className="rd-hero-lead">Review Defense transforme les avis sensibles en dossiers lisibles, documentés et traçables. Analysez, structurez les preuves et préparez la suite — avec une validation humaine à chaque étape sensible.</p>
-            <div className="rd-actions"><Link className="rd-primary" to="/register">Découvrir la plateforme <span>→</span></Link><a className="rd-secondary" href="#produit"><span>↓</span> Voir le produit</a></div>
-            <div className="rd-trust"><span>Analyse structurée</span><span>Preuves documentées</span><span>Décisions humaines</span></div>
-          </div>
-          <ProductWindow />
-        </section>
+    <section id="produit" className="rd-section"><div className="rd-inner"><div className="rd-section-head"><h2>Conçu pour donner du contexte à chaque <em>avis.</em></h2><p>Une expérience claire, sobre et opérationnelle. Comme un véritable outil de travail pour les équipes qui vivent avec leur réputation chaque jour.</p></div><div className="rd-content"><div className="rd-accordion">{items.map(([title,text],i) => { const active=open===i; return <div className={"rd-item" + (active ? " open" : "")} key={title}><button onClick={() => setOpen(active ? -1 : i)} aria-expanded={active}><h3>{title}</h3><span className="rd-plus" /></button><div className="rd-answer"><p>{text}</p></div></div>; })}</div><Preview /></div></div></section>
 
-        <div className="rd-strip"><span className="rd-strip-label">UNE SEULE PLATEFORME</span><b>Analyse</b><b>Qualification</b><b>Preuves</b><b>Traçabilité</b></div>
+    <section id="metiers" className="rd-professions"><div className="rd-profession-title">Pour les équipes qui vivent avec leur réputation chaque jour</div><div className="rd-prof-grid">{professions.map(([title,img]) => <div className="rd-prof" key={title}><img src={img} alt="" loading="lazy" /><span>{title}</span></div>)}</div></section>
 
-        <section id="produit" className="rd-section rd-story">
-          <div className="rd-section-inner">
-            <span className="rd-section-kicker">LE PRODUIT</span>
-            <h2 className="rd-section-title">Du signal au dossier,<br/><em>sans perdre le fil.</em></h2>
-            <p className="rd-section-copy">Une expérience pensée comme un véritable outil de travail : moins de dispersion, plus de contexte, et une vue claire sur ce qui doit être vérifié.</p>
-            <div className="rd-pillars">{pillars.map((p)=><article className="rd-pillar" key={p.n}><small>{p.n}</small><b>↗</b><h3>{p.title}</h3><p>{p.text}</p></article>)}</div>
-          </div>
-        </section>
+    <section id="fonctionnement" className="rd-flow-section"><div className="rd-flow-grid"><div><h2>Un parcours simple.<br /><em>Une trace claire.</em></h2><p>Chaque étape est visible : ce qui a été reçu, ce qui a été analysé, les éléments associés et la validation attendue.</p></div><div className="rd-steps">{[["01","Recevoir","Le signal entre dans votre espace."],["02","Analyser","Les informations sont structurées."],["03","Documenter","Les preuves sont rattachées au dossier."],["04","Valider","Une personne habilitée décide de la suite."]].map(([n,t,d]) => <div className="rd-step" key={n}><small>{n}</small><strong>{t}</strong><span>{d}</span><b>+</b></div>)}</div></div></section>
 
-        <section id="methode" className="rd-section rd-dark">
-          <div className="rd-dark-inner">
-            <div><span className="rd-section-kicker">LA MÉTHODE</span><h2 className="rd-section-title">Une IA qui prépare.<br/><em>Un humain qui décide.</em></h2></div>
-            <p className="rd-section-copy">L’IA peut aider à comparer, rapprocher, synthétiser et structurer. Elle ne remplace pas la décision de votre équipe. Les étapes sensibles restent derrière un point de validation explicite.</p>
-          </div>
-          <div className="rd-section-inner">
-            <div className="rd-human-card">{workflow.map(([n,t,d])=><div key={n}><small>{n}</small><strong>{t}</strong><span>{d}</span></div>)}</div>
-          </div>
-        </section>
+    <section id="securite" className="rd-section"><div className="rd-inner"><div className="rd-section-head"><h2>La technologie aide.<br /><em>Le contrôle reste humain.</em></h2><p>Les étapes sensibles restent soumises à une validation explicite. Les dossiers conservent un historique lisible pour savoir ce qui s'est passé et pourquoi.</p></div><div className="rd-steps" style={{ marginTop: 18 }}><div className="rd-step"><small>01</small><strong>Validation humaine</strong><span>Avant une action sensible</span><b>+</b></div><div className="rd-step"><small>02</small><strong>Traçabilité</strong><span>Chronologie et historique</span><b>+</b></div><div className="rd-step"><small>03</small><strong>Preuves contextualisées</strong><span>Pièces reliées au dossier</span><b>+</b></div></div></div></section>
 
-        <section id="securite" className="rd-section rd-proof">
-          <div className="rd-section-inner">
-            <span className="rd-section-kicker">PREUVES & CONTRÔLE</span>
-            <div className="rd-proof-grid">
-              <div>
-                <h2 className="rd-section-title">Construire un dossier que <em>l’on peut relire.</em></h2>
-                <p className="rd-section-copy">Les pièces ne restent pas isolées. Elles sont reliées au contexte, aux décisions et à la chronologie pour garder une trace exploitable.</p>
-                <div className="rd-proof-points"><span>✓ Captures et documents</span><span>✓ Sources et échanges</span><span>✓ Historique des décisions</span><span>✓ Journal d’audit</span></div>
-              </div>
-              <div className="rd-proof-card">
-                <header><strong>DOSSIER · REV-88421</strong><span>TRAÇABILITÉ ACTIVE</span></header>
-                <div className="rd-proof-row"><span>Capture datée · 24/09</span><b>Vérifiée</b></div>
-                <div className="rd-proof-row"><span>Échange client · PDF</span><b>Vérifiée</b></div>
-                <div className="rd-proof-row"><span>Source publique</span><b>À vérifier</b></div>
-                <div className="rd-proof-row"><span>Chronologie</span><b>Complète</b></div>
-                <div className="rd-proof-foot"><i>✓</i><span>Chaque pièce peut être associée à un dossier et à une décision.</span></div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="tarifs" className="rd-cta">
-          <span className="rd-section-kicker">DÉCOUVRIR REVIEW DEFENSE</span>
-          <h2 className="rd-section-title">Commencez avec un seul avis.<br/><em>Voyez tout le parcours.</em></h2>
-          <p>Créez votre espace et découvrez l’interface qui centralise analyse, preuves, dossiers et validations.</p>
-          <Link className="rd-primary" to="/register">Créer mon espace <span>→</span></Link>
-        </section>
-      </main>
-
-      <footer className="rd-footer">
-        <span className="rd-footer-brand"><span className="rd-brand-mark">RD</span> Review Defense</span>
-        <span>Analyse · Qualification · Preuves · Dossiers</span>
-        <Link to="/login">Accéder au logiciel →</Link>
-      </footer>
-    </div>
-  );
+    <section className="rd-cta"><h2>Commencez avec un avis.<br /><em>Voyez tout le parcours.</em></h2><p>Créez votre espace Review Defense et découvrez une façon plus claire de gérer les avis qui demandent votre attention.</p><Link to="/register">Créer mon espace →</Link></section>
+    <footer className="rd-footer"><strong>Review Defense</strong><span>Analyse · Preuves · Dossiers · Validation</span><Link to="/login">Accéder au logiciel →</Link></footer>
+  </div>;
 }
