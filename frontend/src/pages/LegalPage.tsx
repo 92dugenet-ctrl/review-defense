@@ -54,7 +54,7 @@ const pages:Record<LegalKey,{title:string;intro:string;sections:{title:string;bo
 };
 
 export function LegalPage(){
- const key=useLocation().pathname.replace(/^\\//,"") as LegalKey;
+ const key=useLocation().pathname.replace(/^\//,"") as LegalKey;
  const page=pages[key]??pages["mentions-legales"];
  return <main className="rd-legal">
   <style>{`.rd-legal{min-height:100vh;background:#fff;color:#172026;font-family:Inter,system-ui,sans-serif}.rd-legal-nav{height:78px;border-bottom:1px solid #e3e6e8;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,5vw,68px);font-size:11px}.rd-legal-nav strong{font-size:15px}.rd-legal-nav a{color:#172026;text-decoration:none}.rd-legal-wrap{max-width:920px;margin:auto;padding:90px 20px 110px}.rd-legal-eyebrow{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#1264d6}.rd-legal h1{font-size:clamp(48px,7vw,82px);line-height:.95;letter-spacing:-.06em;margin:18px 0 24px}.rd-legal-intro{max-width:720px;color:#68727a;font-size:15px;line-height:1.75;margin-bottom:65px}.rd-legal-section{padding:28px 0;border-top:1px solid #e3e6e8}.rd-legal-section h2{font-size:21px;margin:0 0 13px;letter-spacing:-.03em}.rd-legal-section p{max-width:760px;color:#566168;font-size:13px;line-height:1.8;margin:0}.rd-legal-note{margin-top:45px;padding:18px;border:1px solid #e3e6e8;background:#f7f8f9;color:#68727a;font-size:11px;line-height:1.7}.rd-legal-back{display:inline-flex;margin-top:45px;padding:11px 16px;border-radius:999px;background:#172026;color:#fff!important}@media(max-width:650px){.rd-legal-wrap{padding-top:55px}.rd-legal h1{font-size:48px}.rd-legal-intro{margin-bottom:35px}}`}</style>
