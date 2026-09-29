@@ -251,3 +251,20 @@ def test_admin_frontend_contract():
     assert '"/v1/organization/members/"' in page
     assert 'user?.role === "ADMIN"' in shell
     assert 'user?.role === "OWNER"' in shell
+
+def test_frontend_ux_contract():
+    css = (FRONTEND / "src/styles/global.css").read_text(encoding="utf-8")
+    button = (FRONTEND / "src/components/ui/Button.tsx").read_text(encoding="utf-8")
+    assert ".button-primary" in css
+    assert ".button-secondary" in css
+    assert ".button-ghost" in css
+    assert ":focus-visible" in css
+    assert "prefers-reduced-motion" in css
+    assert "@media(max-width:640px)" in css
+    assert "disabled" in button
+    assert "variant" in button
+
+def test_frontend_all_core_routes_are_declared():
+    router = (FRONTEND / "src/app/router.tsx").read_text(encoding="utf-8")
+    for route in ("dashboard", "reviews", "cases", "analysis", "notifications", "billing", "settings", "admin"):
+        assert 'path: "' + route + '"' in router

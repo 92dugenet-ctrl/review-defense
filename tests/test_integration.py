@@ -153,3 +153,81 @@ def test_end_to_end_persistent_client_analysis_result_history_and_permissions():
     assert status == "404 Not Found"
     assert missing_case["error"]["code"] == "NOT_FOUND"
 
+
+def test_admin_workspace_permissions_and_session_revocation():
+    dsn = os.environ["DATABASE_URL"]
+    app = make_app(dsn)
+    password = "StrongPassword123!"
+    owner_email = f"admin-owner-{uuid.uuid4().hex[:10]}@example.test"
+
+    status, _, owner = request(
+        app, "/v1/auth/register", "POST",
+        {"email": owner_email, "organization_name": "Admin Integration Tenant", "password": password},
+    )
+    assert status == "201 Created", owner
+    owner_token = owner["access_token"]
+    organization_id = owner["organization_id"]
+
+    repo = PostgresAPIRepository(dsn)
+    from src.security_hardening import hash_password
+    admin_email = f"admin-{uuid.uuid4().hex[:10]}@example.test"
+    admin_id, _, _, _ = repo.create_user(
+        organization_id, admin_email, hash_password(password), "ADMIN"
+    )
+
+    status, _, admin_login = request(
+        app, "/v1/auth/login", "POST",
+        {"email": admin_email, "organization_id": organization_id, "password": password},
+    )
+    assert status == "200 OK", admin_login
+    admin_token = admin_login["access_token"]
+
+    status, _, members = request(app, "/v1/organization/members", token=admin_token)
+    assert status == "200 OK"
+    assert any(m["user_id"] == str(admin_id) and m["role"] == "ADMIN" for m in members["items"])
+
+    invite_email = f"invite-{uuid.uuid4().hex[:10]}@example.test"
+    status, _, invitation = request(
+        app, "/v1/organization/invitations", "POST",
+        {"email": invite_email, "role": "CLIENT"}, admin_token,
+    )
+    assert status == "201 Created", invitation
+    assert invitation["email"] == invite_email
+    assert invitation["role"] == "CLIENT"
+    assert invitation["invitation_token"]
+
+    status, _, changed = request(
+        app, f"/v1/organization/members/{admin_id}/role", "POST",
+        {"role": "ANALYST"}, owner_token,
+    )
+    assert status == "200 OK"
+    assert changed["role"] == "ANALYST"
+
+    # The persistent membership role is refreshed on authenticated requests.
+    status, _, refreshed = request(app, "/v1/me", token=admin_token)
+    assert status == "200 OK"
+    assert refreshed["role"] == "ANALYST"
+
+    status, _, forbidden = request(
+        app, f"/v1/organization/members/{owner['user_id']}/role", "POST",
+        {"role": "ADMIN"}, admin_token,
+    )
+    assert status == "403 Forbidden"
+    assert forbidden["error"]["code"] == "FORBIDDEN"
+
+    status, _, forbidden_owner = request(
+        app, "/v1/organization/invitations", "POST",
+        {"email": f"owner-invite-{uuid.uuid4().hex[:8]}@example.test", "role": "OWNER"}, admin_token,
+    )
+    assert status == "403 Forbidden"
+    assert forbidden_owner["error"]["code"] == "FORBIDDEN"
+
+    status, _, revoked = request(
+        app, "/v1/auth/revoke-all", "POST", {"user_id": str(admin_id)}, owner_token,
+    )
+    assert status == "200 OK"
+    assert revoked["status"] == "revoked"
+
+    status, _, invalid = request(app, "/v1/me", token=admin_token)
+    assert status == "401 Unauthorized"
+    assert invalid["error"]["code"] == "AUTH_INVALID"
