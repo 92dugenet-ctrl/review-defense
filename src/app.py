@@ -25,6 +25,8 @@ def application(environ,start_response):
         if not db: return j(start_response,"503 Service Unavailable",{"status":"not_ready","dependencies":{"http":"ok","database":"unavailable"}})
         return j(start_response,"200 OK",{"status":"ready","dependencies":{"http":"ok","database":"ok"}})
     if path.startswith("/api/v1/"):
+        if path=="/api/v1/metadata" and method=="GET": return j(start_response,"200 OK",{"data":{"service":"review-defense","api_version":"v1"}})
+        if path=="/api/v1/metadata": return api_error(start_response,"405 Method Not Allowed","METHOD_NOT_ALLOWED","Method not allowed")
         if path=="/api/v1/health" and method=="GET": return j(start_response,"200 OK",{"data":{"status":"ok"}})
         if path=="/api/v1/health": return api_error(start_response,"405 Method Not Allowed","METHOD_NOT_ALLOWED","Method not allowed")
         return api_error(start_response,"404 Not Found","NOT_FOUND","API route not found")

@@ -8,6 +8,12 @@ def request(path,method="GET"):
     body=b"".join(application(env,start)); return status[0],dict(headers),body
 def test_health():
     status,headers,body=request("/health"); assert status=="200 OK"; assert json.loads(body)["status"]=="ok"; assert headers["X-Content-Type-Options"]=="nosniff"
+def test_api_metadata():
+    status,_,body=request("/api/v1/metadata"); assert status=="200 OK"; assert json.loads(body)["data"]=={"service":"review-defense","api_version":"v1"}
+
+def test_api_metadata_method_not_allowed():
+    status,_,body=request("/api/v1/metadata","POST"); assert status=="405 Method Not Allowed"; assert json.loads(body)["error"]["code"]=="METHOD_NOT_ALLOWED"
+
 def test_api_health():
     status,_,body=request("/api/v1/health"); assert status=="200 OK"; assert json.loads(body)["data"]["status"]=="ok"
 def test_not_found_is_standard_json():
