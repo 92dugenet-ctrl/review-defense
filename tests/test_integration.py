@@ -170,6 +170,9 @@ def test_admin_workspace_permissions_and_session_revocation():
 
     repo = PostgresAPIRepository(dsn)
     from src.security_hardening import hash_password
+    owner_record = repo.get_user_by_email(organization_id, owner_email)
+    assert owner_record is not None
+    owner_id = str(owner_record[0])
     admin_email = f"admin-{uuid.uuid4().hex[:10]}@example.test"
     admin_id, _, _, _ = repo.create_user(
         organization_id, admin_email, hash_password(password), "ADMIN"
@@ -225,7 +228,7 @@ def test_admin_workspace_permissions_and_session_revocation():
     assert refreshed["role"] == "ANALYST"
 
     status, _, forbidden = request(
-        app, f"/v1/organization/members/{owner['user_id']}/role", "POST",
+        app, f"/v1/organization/members/{owner_id}/role", "POST",
         {"role": "ADMIN"}, refreshed_token,
     )
     assert status == "403 Forbidden"
