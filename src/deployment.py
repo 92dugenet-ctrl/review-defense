@@ -35,8 +35,8 @@ class DeploymentConfig:
 CSP = (
     "default-src 'self'; "
     "base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; "
-    "script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; "
-    "img-src 'self' data:; font-src 'self' data:; connect-src 'self'; "
+    "script-src 'self' 'unsafe-inline' https://www.paypal.com https://www.paypalobjects.com; style-src 'self' 'unsafe-inline'; "
+    "img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://www.paypal.com https://api-m.paypal.com; frame-src 'self' https://www.paypal.com https://www.sandbox.paypal.com; "
     "media-src 'none'; worker-src 'none'; manifest-src 'self'"
 )
 

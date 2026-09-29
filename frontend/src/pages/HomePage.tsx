@@ -1,68 +1,15 @@
 import { Link } from "react-router-dom";
-
-export function HomePage() {
-  return (
-    <main className="marketing-page">
-      <header className="marketing-header">
-        <div className="brand">
-          <span className="brand-mark">RD</span>
-          <span><strong>Review Defense</strong><small>Plateforme de travail</small></span>
-        </div>
-        <nav aria-label="Navigation publique">
-          <a href="#platform">Plateforme</a>
-          <a href="#principles">Principes</a>
-          <Link to="/login">Connexion</Link>
-        </nav>
-      </header>
-
-      <section className="hero">
-        <div className="hero-copy">
-          <span className="eyebrow">REVIEW DEFENSE · PLATFORM</span>
-          <h1>Comprendre. Documenter. Préparer.</h1>
-          <p>
-            Une base SaaS structurée pour analyser les avis, organiser les dossiers,
-            relier les preuves et garder les décisions sous contrôle humain.
-          </p>
-          <div className="hero-actions">
-            <Link className="button button-primary" to="/app">Ouvrir le workspace</Link>
-            <a className="button button-secondary" href="#platform">Découvrir la plateforme</a>
-          </div>
-        </div>
-
-        <div className="hero-card" aria-label="Aperçu du workspace">
-          <div className="hero-card-header">
-            <span className="signal">●</span>
-            <span>Workspace</span>
-            <span className="muted">Review Defense</span>
-          </div>
-          <div className="hero-card-grid">
-            <div><small>AVIS</small><strong>124</strong><span>à analyser</span></div>
-            <div><small>DOSSIERS</small><strong>18</strong><span>ouverts</span></div>
-            <div><small>PREUVES</small><strong>73</strong><span>reliées</span></div>
-          </div>
-          <div className="hero-card-line"><span /><span /><span /></div>
-        </div>
-      </section>
-
-      <section id="platform" className="feature-grid">
-        {[
-          ["01", "Une architecture claire", "Les surfaces métier sont séparées des services, hooks, types et composants UI."],
-          ["02", "Des contrats explicites", "Le frontend consommera directement les routes et réponses du backend existant."],
-          ["03", "Une expérience cohérente", "Tokens, composants et états communs évitent les interfaces isolées et incohérentes."]
-        ].map(([number, title, body]) => (
-          <article className="feature-card" key={number}>
-            <span>{number}</span>
-            <h2>{title}</h2>
-            <p>{body}</p>
-          </article>
-        ))}
-      </section>
-
-      <section id="principles" className="principles">
-        <span className="eyebrow">FOUNDATION</span>
-        <h2>Le produit sera construit autour du workflow réel.</h2>
-        <p>Pas de faux endpoints, pas de logique métier dupliquée dans l’interface, pas de dépendance à l’ancien frontend.</p>
-      </section>
-    </main>
-  );
-}
+const features=[["01","Détecter","Identifiez les avis qui méritent une analyse humaine avant de perdre du temps."],["02","Documenter","Construisez un dossier clair avec preuves, contradictions et historique."],["03","Décider","Gardez la décision finale. Le logiciel prépare, vous validez."],["04","Suivre","Centralisez les actions, notifications et résultats au même endroit."]];
+export function HomePage(){return <div className="marketing">
+ <nav className="marketing-nav"><Link to="/" className="brand brand-dark"><span className="brand-mark">R</span><span>review defense</span></Link><div className="marketing-links"><a href="#product">Produit</a><a href="#method">Méthode</a><a href="#security">Sécurité</a><a href="#pricing">Tarifs</a></div><div><Link className="text-link" to="/login">Connexion</Link><Link className="button button-dark" to="/register">Commencer</Link></div></nav>
+ <section className="hero">
+  <div className="hero-orbit orbit-one"/><div className="hero-orbit orbit-two"/>
+  <div className="hero-copy"><span className="eyebrow inverse">GESTION DES AVIS · ASSISTÉE</span><h1>Les avis ne sont pas<br/><em>un bruit de fond.</em></h1><p>Review Defense transforme chaque avis sensible en un dossier lisible, traçable et actionnable — sans automatiser la décision à votre place.</p><div className="hero-actions"><Link className="button button-light" to="/register">Créer mon espace <span>→</span></Link><a className="hero-secondary" href="#product">Découvrir le produit ↓</a></div></div>
+  <div className="hero-product"><div className="product-window"><div className="window-bar"><span/><span/><span/><b>Review Defense</b></div><div className="window-grid"><div className="mini-rail"/><div><small>AUJOURD’HUI</small><h3>Votre activité</h3><div className="mini-stats"><div><b>248</b><span>Avis suivis</span></div><div><b>4,7</b><span>Note moyenne</span></div><div><b>12</b><span>Dossiers</span></div></div><div className="mini-card"><span className="signal">PRIORITÉ</span><b>Avis nécessitant une vérification</b><span>3 dossiers à examiner</span></div></div></div></div></div>
+ </section>
+ <section id="product" className="story-section"><div className="section-intro"><span className="eyebrow">UNE SEULE INTERFACE</span><h2>Du signal au dossier,<br/>sans perdre le fil.</h2><p>Une expérience conçue comme un outil de travail, pas comme un tableau de bord saturé.</p></div><div className="feature-list">{features.map(([n,t,d])=><article key={n}><span>{n}</span><h3>{t}</h3><p>{d}</p><b>→</b></article>)}</div></section>
+ <section id="method" className="dark-section"><div><span className="eyebrow inverse">LA MÉTHODE</span><h2>Une IA qui prépare.<br/><em>Un humain qui décide.</em></h2></div><p>Analyse, qualification, preuves et suivi sont réunis dans un même espace. Les actions sensibles restent contrôlées par votre équipe.</p></section>
+ <section id="security" className="security-section"><span className="eyebrow">SÉCURITÉ PAR CONCEPTION</span><div className="security-grid"><h2>Vos données.<br/>Votre contrôle.</h2><div><p>Sessions sécurisées, rôles, isolation organisationnelle, journalisation des actions, protections HTTP et architecture prête pour un déploiement HTTPS.</p><Link to="/register" className="text-link">Voir l’espace sécurisé →</Link></div></div></section>
+ <section id="pricing" className="pricing-section"><span className="eyebrow">SIMPLE À DÉMARRER</span><h2>Commencez quand vous êtes prêt.</h2><p>Créez votre espace, connectez votre activité et choisissez l’offre adaptée depuis votre espace client.</p><Link to="/register" className="button button-dark">Créer mon espace</Link></section>
+ <footer className="marketing-footer"><span>© 2026 Review Defense</span><span>Gestion des avis · Analyse · Dossiers</span><Link to="/login">Accéder au logiciel →</Link></footer>
+ </div>}
