@@ -211,7 +211,7 @@ def test_admin_workspace_permissions_and_session_revocation():
     assert persisted[3] == "ANALYST"
 
     # A role change invalidates the previous elevated session.
-    status, _, stale = request(app, "/v1/me", token=admin_token)
+    status, _, stale = request(app, "/v1/me", token=refreshed_token)
     assert status == "401 Unauthorized"
     assert stale["error"]["code"] == "AUTH_INVALID"
 
@@ -245,7 +245,7 @@ def test_admin_workspace_permissions_and_session_revocation():
         app, "/v1/auth/revoke-all", "POST", {"user_id": str(admin_id)}, owner_token,
     )
     assert status == "200 OK"
-    assert revoked["status"] == "revoked"
+    assert revoked["status"] == "sessions_revoked"
 
     status, _, invalid = request(app, "/v1/me", token=admin_token)
     assert status == "401 Unauthorized"
