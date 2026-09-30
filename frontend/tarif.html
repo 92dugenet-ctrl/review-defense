@@ -66,7 +66,7 @@ button, select, a { font: inherit; }
 .product-card.is-featured:hover{background:#eaf4ff}
 .product-grid.is-carousel{scrollbar-width:none;-ms-overflow-style:none}
 .product-grid.is-carousel::-webkit-scrollbar{display:none}
-.catalogue-section{margin-top:72px}
+.catalogue-section{margin-top:72px}.catalogue-section-title{text-align:center}.catalogue-section-note{text-align:center;max-width:620px;margin:-8px auto 24px;color:#777;font-size:11px;line-height:1.5}
 .catalogue-section:first-of-type{margin-top:0}
 .catalogue-section-title{font-size:clamp(30px,3vw,42px);letter-spacing:-.05em}
 .catalogue{padding-top:72px}
@@ -180,7 +180,8 @@ button{font:inherit}
 </header>
 <main class="catalogue">
     <section class="catalogue-section">
-      <h2 class="catalogue-section-title">Audits — hors abonnement</h2>
+      <h2 class="catalogue-section-title">Audit</h2>
+      <p class="catalogue-section-note">Analysez votre réputation et identifiez les points à traiter.</p>
       <div class="product-grid is-carousel" aria-label="Audits — hors abonnement">
       <article class="product-card">
         <span class="badge">Audit</span>
@@ -284,7 +285,8 @@ button{font:inherit}
     </section>
 
     <section class="catalogue-section">
-      <h2 class="catalogue-section-title">Défense — un avis</h2>
+      <h2 class="catalogue-section-title">Défense d’un avis</h2>
+      <p class="catalogue-section-note">Choisissez le niveau d’intervention adapté à votre situation.</p>
       <div class="product-grid is-carousel" aria-label="Défense — un avis">
       <article class="product-card">
         <span class="badge">Niveau 1</span>
@@ -346,6 +348,7 @@ button{font:inherit}
 
     <section class="catalogue-section">
       <h2 class="catalogue-section-title">Packs de défense</h2>
+      <p class="catalogue-section-note">Regroupez plusieurs dossiers et choisissez le volume qui vous convient.</p>
       <div class="product-grid is-carousel" aria-label="Packs de défense">
       <article class="product-card">
         <span class="badge">Pack</span>
@@ -405,7 +408,8 @@ button{font:inherit}
     </section>
 
     <section class="catalogue-section">
-      <h2 class="catalogue-section-title">Abonnements</h2>
+      <h2 class="catalogue-section-title">Abonnement</h2>
+      <p class="catalogue-section-note">Une protection continue pour suivre votre réputation au quotidien.</p>
       <div class="product-grid" aria-label="Abonnements">
       <article class="product-card is-featured">
         <span class="badge">Essentiel</span>
