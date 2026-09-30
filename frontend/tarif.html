@@ -6,114 +6,95 @@
 <meta name="description" content="Tarifs Review Defense — surveillance, défense, packs et audits.">
 <title>Tarifs — Review Defense</title>
 <style>
-:root{
-  --bg:#fff;
-  --ink:#111;
-  --muted:#777;
-  --soft:#f4f4f6;
-  --line:#e9e9ec;
-  --max:1440px;
-}
+:root{--page:#fff;--text:#111;--muted:#777;--soft:#f4f5f8;--line:#e7e7e7;--max:1180px;--gap:24px;--radius:16px}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--page);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-button{font:inherit}
-.page{width:min(var(--max),100%);margin:0 auto;padding:0 34px}
+button,select{font:inherit}
+.page{width:min(100% - 48px,var(--max));margin:auto}
 .topbar{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0f0f2}
-.brand{font-size:15px;font-weight:700;letter-spacing:-.02em}
-.nav{display:flex;gap:30px;align-items:center;font-size:12px;color:#666}
+.brand{font-size:15px;font-weight:700;letter-spacing:-.025em}
+.nav{display:flex;gap:28px;align-items:center;font-size:11px;color:#666}
 .nav a:hover,.nav a.active{color:#111}
-.top-action{display:inline-flex;align-items:center;border:1px solid #dedee2;border-radius:999px;padding:10px 16px;font-size:12px;font-weight:700;background:#fff}
+.top-action{display:inline-flex;align-items:center;justify-content:center;border:1px solid #dedee2;border-radius:999px;padding:10px 16px;font-size:11px;font-weight:650;background:#fff;transition:.18s}
+.top-action:hover{background:#f5f5f7}
 .intro{padding:72px 0 42px;display:flex;justify-content:space-between;gap:50px;align-items:flex-end}
-.kicker{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:#999;margin:0 0 18px}
-h1{font-size:clamp(52px,7vw,104px);line-height:.9;letter-spacing:-.075em;margin:0;font-weight:700}
-.intro-copy{max-width:430px;color:#777;font-size:14px;line-height:1.55;margin:0 0 3px}
-.controls{height:52px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}
-.filters{display:flex;align-items:center;gap:10px}
-.filter{border:0;background:transparent;color:#777;font-size:11px;padding:7px 10px;border-radius:999px;cursor:pointer}
+.kicker{font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:#999;margin:0 0 17px}
+h1{font-size:clamp(54px,8vw,104px);line-height:.88;letter-spacing:-.075em;margin:0;font-weight:700}
+.intro-copy{max-width:400px;color:#777;font-size:12px;line-height:1.6;margin:0 0 2px}
+.controls{min-height:52px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.filters{display:flex;align-items:center;gap:4px}
+.filter{border:0;background:transparent;color:#777;font-size:10px;padding:7px 10px;border-radius:999px}
 .filter.selected{background:#f0f0f3;color:#111}
-.sort{font-size:11px;color:#777}
-.catalog{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.product{min-width:0;min-height:430px;background:#fff;position:relative;padding:26px 24px 24px;display:flex;flex-direction:column;justify-content:space-between;border-radius:13px;transition:background .25s,transform .25s}
+.sort{font-size:10px;color:#999}
+.catalog{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--gap)}
+.product{min-width:0;min-height:410px;position:relative;padding:14px 18px 20px;border-radius:var(--radius);display:flex;flex-direction:column;justify-content:space-between;background:#fff}
+.product.featured{background:var(--soft)}
 .product:hover{background:#f7f7f9}
-.product.featured{background:#f1f1f4}
 .product-top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
-.tag{font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.1em}
-.product-number{font-size:10px;color:#aaa}
-.product-main{display:flex;flex-direction:column;align-items:center;text-align:center;padding:15px 0 5px}
-.product-symbol{width:180px;height:150px;border-radius:40%;display:flex;align-items:center;justify-content:center;font-size:70px;font-weight:700;letter-spacing:-.08em;color:#181818;margin-bottom:10px}
-.product:nth-child(2) .product-symbol{font-size:62px}
-.product:nth-child(3) .product-symbol{font-size:58px}
-.product h2{font-size:15px;font-weight:500;margin:0 0 7px;letter-spacing:-.025em}
-.sub{font-size:10px;color:#999;margin:0;min-height:24px}
-.price{font-size:13px;font-weight:700;margin:13px 0 4px}
+.tag{font-size:8px;color:#888;text-transform:uppercase;letter-spacing:.1em}
+.product-number{font-size:9px;color:#aaa}
+.product-main{display:flex;flex-direction:column;align-items:center;text-align:center;padding:4px 0}
+.product-symbol{height:130px;display:grid;place-items:center;font-size:72px;font-weight:700;letter-spacing:-.08em}
+.product:nth-child(3) .product-symbol{font-size:62px}
+.product h2{font-size:14px;font-weight:600;margin:0 0 5px;letter-spacing:-.025em}
+.sub{font-size:9px;color:#999;margin:0;min-height:22px}
+.price{font-size:13px;font-weight:700;margin:12px 0 2px}
 .price span{font-weight:400;color:#999}
-.try{display:inline-flex;align-items:center;justify-content:center;border:1px solid #dddde1;background:#fff;border-radius:999px;padding:8px 16px;font-size:10px;color:#555;margin-top:8px}
-.product.featured .try{background:#fff}
-.section{padding:86px 0 0}
-.section-head{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:25px}
+.try{display:inline-flex;align-items:center;justify-content:center;border:1px solid #d9d9de;background:#fff;border-radius:999px;padding:8px 16px;font-size:9px;color:#555;margin-top:8px}
+.product-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.section{padding:78px 0 0}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:23px}
 .section-title{font-size:38px;line-height:1;letter-spacing:-.055em;margin:0}
-.section-copy{max-width:460px;color:#888;font-size:12px;line-height:1.55;margin:0}
+.section-copy{max-width:440px;color:#888;font-size:11px;line-height:1.6;margin:0}
 .rows{border-top:1px solid var(--line)}
-.row{display:grid;grid-template-columns:1.2fr .8fr .8fr .8fr .8fr;align-items:center;min-height:74px;border-bottom:1px solid var(--line);font-size:12px}
-.row strong{font-size:13px}
+.row{display:grid;grid-template-columns:1.4fr 1fr .7fr .7fr .8fr;align-items:center;min-height:66px;border-bottom:1px solid var(--line);font-size:10px}
+.row strong{font-size:11px}
 .row .muted{color:#999}
-.defense{margin-top:12px;background:#111;border-radius:16px;color:#fff;padding:34px}
+.defense{margin-top:10px;background:#111;border-radius:var(--radius);color:#fff;padding:32px}
 .defense-head{display:flex;justify-content:space-between;gap:30px;align-items:end}
-.defense h2{font-size:clamp(38px,5vw,68px);line-height:.9;letter-spacing:-.07em;margin:0;max-width:720px}
-.defense p{color:#aaa;font-size:12px;line-height:1.55;max-width:420px;margin:0}
-.defense-price{margin-top:55px;display:flex;align-items:baseline;gap:10px}
-.defense-price strong{font-size:55px;letter-spacing:-.07em}
-.defense-price span{font-size:11px;color:#999}
-.escalation{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:25px}
-.escalation div{border:1px solid #303030;border-radius:10px;padding:17px}
-.escalation b{display:block;font-size:11px;margin-bottom:7px}.escalation span{font-size:10px;color:#999;line-height:1.45}
-.pack-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.pack{background:#f4f4f6;border-radius:13px;min-height:220px;padding:22px;display:flex;flex-direction:column;justify-content:space-between}
+.defense h2{font-size:clamp(38px,5vw,68px);line-height:.88;letter-spacing:-.07em;margin:0;max-width:650px}
+.defense p{color:#aaa;font-size:11px;line-height:1.6;max-width:400px;margin:0}
+.defense-price{margin-top:48px;display:flex;align-items:baseline;gap:10px}
+.defense-price strong{font-size:52px;letter-spacing:-.07em}
+.defense-price span{font-size:9px;color:#999}
+.escalation{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:24px}
+.escalation div{border:1px solid #303030;border-radius:10px;padding:15px}
+.escalation b{display:block;font-size:10px;margin-bottom:6px}.escalation span{font-size:9px;color:#999;line-height:1.45}
+.pack-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.pack{background:#f4f4f6;border-radius:13px;min-height:205px;padding:20px;display:flex;flex-direction:column;justify-content:space-between}
 .pack:nth-child(even){background:#f8f8fa}
-.pack-top{display:flex;justify-content:space-between;font-size:9px;color:#999;text-transform:uppercase;letter-spacing:.08em}
-.pack h3{font-size:20px;font-weight:500;letter-spacing:-.04em;margin:0}
-.pack .volume{font-size:10px;color:#888;margin-top:6px}
-.pack .pack-price{font-size:22px;font-weight:700;letter-spacing:-.04em;margin-top:20px}
-.pack .unit{font-size:10px;color:#999;margin-top:3px}
-.audit-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
-.audit{min-height:170px;border:1px solid var(--line);border-radius:13px;padding:20px;display:flex;flex-direction:column;justify-content:space-between}
+.pack-top{display:flex;justify-content:space-between;font-size:8px;color:#999;text-transform:uppercase;letter-spacing:.08em}
+.pack h3{font-size:19px;font-weight:500;letter-spacing:-.04em;margin:0}
+.pack .volume{font-size:9px;color:#888;margin-top:5px}
+.pack .pack-price{font-size:21px;font-weight:700;letter-spacing:-.04em;margin-top:18px}
+.pack .unit{font-size:9px;color:#999;margin-top:2px}
+.quote{margin-top:10px;background:#f1f1f4;border-radius:13px;padding:22px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.quote strong{font-size:13px;font-weight:500}.quote span{font-size:10px;color:#888}
+.audit-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.audit{min-height:155px;border:1px solid var(--line);border-radius:13px;padding:18px;display:flex;flex-direction:column;justify-content:space-between}
 .audit:hover{background:#f7f7f9}
-.audit .volume{font-size:10px;color:#888}
-.audit .audit-price{font-size:23px;font-weight:700;letter-spacing:-.05em}
-.audit small{font-size:9px;color:#aaa}
-.quote{margin-top:12px;background:#f1f1f4;border-radius:13px;padding:25px;display:flex;justify-content:space-between;align-items:center;gap:20px}
-.quote strong{font-size:15px;font-weight:500}.quote span{font-size:11px;color:#888}
-.bottom{padding:100px 0 55px}
-.bottom-box{border-top:1px solid var(--line);padding-top:30px;display:flex;justify-content:space-between;gap:30px}
-.bottom h2{font-size:45px;letter-spacing:-.06em;line-height:.95;margin:0}
-.bottom p{max-width:390px;color:#888;font-size:12px;line-height:1.55}
-footer{border-top:1px solid var(--line);padding:24px 0 40px;color:#aaa;font-size:10px;display:flex;justify-content:space-between}
-footer a{color:#888;margin-left:18px}
-@media(max-width:1000px){
-  .catalog{grid-template-columns:1fr 1fr}.pack-grid{grid-template-columns:1fr 1fr}.audit-grid{grid-template-columns:repeat(3,1fr)}
-  .row{grid-template-columns:1.4fr repeat(4,1fr)}
-}
-@media(max-width:720px){
-  .page{padding:0 18px}.nav{display:none}.intro{padding-top:48px;display:block}.intro-copy{margin-top:25px}
-  .catalog,.pack-grid{grid-template-columns:1fr}.audit-grid{grid-template-columns:1fr 1fr}
-  .product{min-height:390px}.controls{overflow:auto}.filters{min-width:max-content}.sort{display:none}
-  .section{padding-top:65px}.section-head,.defense-head,.bottom-box{display:block}
-  .section-copy{margin-top:15px}.defense p{margin-top:20px}.escalation{grid-template-columns:1fr 1fr}
-  .row{grid-template-columns:1.3fr repeat(4,.7fr);font-size:10px}
-}
-@media(max-width:480px){
-  h1{font-size:56px}.audit-grid{grid-template-columns:1fr}.escalation{grid-template-columns:1fr}
-  .row{grid-template-columns:1.3fr repeat(4,.65fr);min-height:64px}.row strong{font-size:11px}
-}
+.audit .volume{font-size:9px;color:#888}
+.audit .audit-price{font-size:21px;font-weight:700;letter-spacing:-.05em}
+.audit small{font-size:8px;color:#aaa}
+.bottom{padding:90px 0 50px}
+.bottom-box{border-top:1px solid var(--line);padding-top:28px;display:flex;justify-content:space-between;gap:30px}
+.bottom h2{font-size:43px;letter-spacing:-.06em;line-height:.94;margin:0}
+.bottom p{max-width:390px;color:#888;font-size:11px;line-height:1.6}
+.bottom .top-action{margin-top:8px}
+footer{border-top:1px solid var(--line);padding:23px 0 38px;color:#aaa;font-size:9px;display:flex;justify-content:space-between}
+footer a{color:#888;margin-left:17px}
+@media(max-width:900px){.catalog{grid-template-columns:1fr 1fr}.pack-grid{grid-template-columns:1fr 1fr}.audit-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:720px){.page{width:min(100% - 32px,520px)}.nav{display:none}.topbar{height:68px}.intro{padding-top:48px;display:block}.intro-copy{margin-top:22px}.catalog,.pack-grid{grid-template-columns:1fr}.audit-grid{grid-template-columns:1fr 1fr}.controls{overflow:auto}.filters{min-width:max-content}.sort{display:none}.section{padding-top:62px}.section-head,.defense-head,.bottom-box{display:block}.section-copy{margin-top:13px}.defense p{margin-top:18px}.escalation{grid-template-columns:1fr 1fr}}
+@media(max-width:450px){h1{font-size:55px}.audit-grid{grid-template-columns:1fr}.escalation{grid-template-columns:1fr}.row{grid-template-columns:1.3fr .9fr .7fr .7fr .7fr;font-size:9px}.row strong{font-size:10px}.product{min-height:385px}}
 </style>
 </head>
 <body>
 <div class="page">
 <header class="topbar">
   <a class="brand" href="/">Review Defense</a>
-  <nav class="nav">
+  <nav class="nav" aria-label="Navigation principale">
     <a href="/services">Services</a>
     <a href="/fonctionnement">Fonctionnement</a>
     <a href="/resources">Resources</a>
@@ -129,7 +110,7 @@ footer a{color:#888;margin-left:18px}
     <p class="kicker">Review Defense · Pricing</p>
     <h1>Les tarifs.<br>Sans détour.</h1>
   </div>
-  <p class="intro-copy">Une présentation simple, visuelle et lisible : surveillance dans le temps, défense à l'unité, packs de défense et audits par volume.</p>
+  <p class="intro-copy">Une présentation simple et lisible : surveillance dans le temps, défense à l'unité, packs de défense et audits par volume.</p>
 </section>
 
 <div class="controls">
@@ -154,11 +135,11 @@ footer a{color:#888;margin-left:18px}
         <div class="price">49 € <span>/ mois</span></div>
         <a class="try" href="/analyse-avis-google/">Essayer</a>
       </div>
-      <div class="tag">Plancher fidélité · 37 €/mois</div>
+      <div class="product-bottom"><span class="tag">Plancher fidélité</span><span class="tag">37 €/mois</span></div>
     </article>
 
     <article class="product featured">
-      <div class="product-top"><span class="tag">Surveillance</span><span class="product-number">02</span></div>
+      <div class="product-top"><span class="tag">Surveillance · populaire</span><span class="product-number">02</span></div>
       <div class="product-main">
         <div class="product-symbol">89</div>
         <h2>Professional</h2>
@@ -166,7 +147,7 @@ footer a{color:#888;margin-left:18px}
         <div class="price">89 € <span>/ mois</span></div>
         <a class="try" href="/analyse-avis-google/">Essayer</a>
       </div>
-      <div class="tag">Plancher fidélité · 69 €/mois</div>
+      <div class="product-bottom"><span class="tag">Plancher fidélité</span><span class="tag">69 €/mois</span></div>
     </article>
 
     <article class="product">
@@ -178,7 +159,7 @@ footer a{color:#888;margin-left:18px}
         <div class="price">159 € <span>/ mois</span></div>
         <a class="try" href="/analyse-avis-google/">Essayer</a>
       </div>
-      <div class="tag">Plancher fidélité · 119 €/mois</div>
+      <div class="product-bottom"><span class="tag">Plancher fidélité</span><span class="tag">119 €/mois</span></div>
     </article>
   </div>
 
@@ -206,7 +187,7 @@ footer a{color:#888;margin-left:18px}
   <div class="defense">
     <div class="defense-head">
       <h2>Un dossier.<br>Un traitement adapté.</h2>
-      <p>La tarification suit le niveau de traitement nécessaire. Il ne s'agit pas de niveaux de dépenses : l'escalade intervient uniquement quand elle est nécessaire au dossier.</p>
+      <p>La tarification suit le niveau de traitement nécessaire. L'escalade intervient uniquement quand elle est nécessaire au dossier.</p>
     </div>
     <div class="defense-price"><strong>59 → 275 €</strong><span>paiement ponctuel · plafond annoncé</span></div>
     <div class="escalation">
