@@ -32,6 +32,8 @@ jobs:
           test -f frontend/index.html
           test -f frontend/styles.css
           test -f frontend/script.js
+          test ! -e frontend/package.json
+          test ! -d frontend/src
           ! grep -RniE "Review Defense|review-defense" frontend
       - run: python -m pip install -r requirements.txt
       - name: Build deployable production image
@@ -39,6 +41,7 @@ jobs:
           docker build --pull -t review-defense:$GITHUB_SHA .
           docker run --rm --entrypoint sh review-defense:$GITHUB_SHA -c '
             test -f /app/wsgi.py
+            test -f /app/frontend/index.html
             python -m compileall -q /app/src /app/scripts /app/wsgi.py
           '
       - run: python -m compileall -q src scripts wsgi.py main.py start.py
@@ -64,7 +67,7 @@ jobs:
           REVIEW_DEFENSE_PUBLIC_BASE_URL: https://example.test
           TRUST_PROXY: "true"
           DATABASE_URL: postgresql://review_defense_app:review_defense_app@localhost:5432/review_defense
-          REVIEW_DEFENSE_MFA_ENCRYPTION_KEY: "01234567890123456789012345678901"
+          REVIEW_DEFENSE_MFA_ENCRYPTION_KEY: "0123456789ABCDEF0123456789ABCDEF"
         run: python scripts/production_check.py
       - name: Full integration and production operations
         env:

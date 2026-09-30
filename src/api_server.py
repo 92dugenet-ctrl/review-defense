@@ -1965,7 +1965,7 @@ class ReviewDefenseAPI:
         if path == "/index.html" or path == "/landing.html" or path.startswith("/assets/"):
             from pathlib import Path
             import mimetypes
-            root = Path(__file__).resolve().parents[1] / "frontend" / "dist"
+            root = Path(__file__).resolve().parents[1] / "frontend"
             rel = path.lstrip("/")
             target = (root / rel).resolve()
             try:

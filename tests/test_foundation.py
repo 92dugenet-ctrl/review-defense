@@ -1,47 +1,135 @@
-import io,json,pathlib
-from src.app import application
-ROOT=pathlib.Path(__file__).resolve().parents[1]; MIGRATIONS=ROOT/"migrations"; FRONTEND=ROOT/"frontend"
-def request(path,method="GET",headers=None):
- status=[];rh=[]
- def start(s,h,exc_info=None):status.append(s);rh.extend(h)
- env={"REQUEST_METHOD":method,"PATH_INFO":path,"QUERY_STRING":"","wsgi.input":io.BytesIO(),"SERVER_NAME":"localhost","SERVER_PORT":"8080","wsgi.url_scheme":"http"}
- for k,v in (headers or {}).items():env["HTTP_"+k.upper().replace("-","_")]=v
- body=b"".join(application(env,start));return status[0],dict(rh),body
+import io
+import json
+import pathlib
+
+from wsgi import app
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+MIGRATIONS = ROOT / "migrations"
+FRONTEND = ROOT / "frontend"
+
+
+def request(path, method="GET", headers=None):
+    status = []
+    response_headers = []
+
+    def start(response_status, header_list, exc_info=None):
+        status.append(response_status)
+        response_headers.extend(header_list)
+
+    env = {
+        "REQUEST_METHOD": method,
+        "PATH_INFO": path,
+        "QUERY_STRING": "",
+        "wsgi.input": io.BytesIO(),
+        "SERVER_NAME": "localhost",
+        "SERVER_PORT": "8080",
+        "wsgi.url_scheme": "http",
+    }
+    for key, value in (headers or {}).items():
+        env[f"HTTP_{key.upper().replace('-', '_')}"] = value
+    body = b"".join(app(env, start))
+    return status[0], dict(response_headers), body
+
+
 def test_health():
- s,h,b=request("/health");assert s=="200 OK";assert json.loads(b)["status"]=="ok";assert h["X-Content-Type-Options"]=="nosniff";assert h["X-Request-ID"]
-def test_api_metadata():
- s,_,b=request("/api/v1/metadata");assert s=="200 OK";d=json.loads(b)["data"];assert d["service"]=="review-defense";assert d["api_version"]=="v1"
-def test_api_health():
- s,_,b=request("/api/v1/health");assert s=="200 OK";assert json.loads(b)["data"]["status"]=="ok"
-def test_api_not_found():
- s,_,b=request("/api/v1/unknown");assert s=="404 Not Found";assert json.loads(b)["error"]["code"]=="NOT_FOUND"
+    status, headers, body = request("/health")
+    assert status == "200 OK"
+    assert json.loads(body)["status"] == "ok"
+    assert headers["X-Content-Type-Options"] == "nosniff"
+    assert headers["X-Request-ID"]
+
+
+def test_readiness():
+    status, _, body = request("/ready")
+    assert status in {"200 OK", "503 Service Unavailable"}
+    assert json.loads(body)["dependencies"]["http"] == "ok"
+
+
+def test_api_not_found_requires_authentication():
+    status, _, body = request("/v1/unknown")
+    assert status == "401 Unauthorized"
+    assert json.loads(body)["error"]["code"] in {"AUTH_REQUIRED", "AUTH_INVALID"}
+
+
+def test_legacy_api_prefix_is_not_exposed():
+    status, _, body = request("/api/v1/health")
+    assert status == "404 Not Found"
+    assert json.loads(body)["error"]["code"] == "NOT_FOUND"
+
+
 def test_frontend_contract():
- p=json.loads((FRONTEND/"package.json").read_text());assert p["scripts"]["build"]=="tsc -b && vite build"
- for path in ["src/main.tsx","src/app/router.tsx","src/components/layout/AppShell.tsx","src/pages/HomePage.tsx","src/pages/DashboardPage.tsx","src/pages/AdminPage.tsx","src/styles/global.css"]:assert (FRONTEND/path).is_file()
-def test_marketing_contract():
- page=(FRONTEND/"src/pages/HomePage.tsx").read_text()
- router=(FRONTEND/"src/app/router.tsx").read_text()
- assert "story-section" in page and "security-section" in page and "pricing" in page and "Créer mon espace" in page
- assert 'path:"/tarifs"' in router and (FRONTEND/"src/pages/PricingPage.tsx").is_file()
- assert 'path:"/solutions"' in router and 'path:"/ressources"' in router
- assert not (FRONTEND/"src/pages/SolutionsPage.tsx").exists() and not (FRONTEND/"src/pages/ResourcesPage.tsx").exists()
- assert 'import{PricingPage}from"@/pages/PricingPage"' in router
-def test_client_routes_contract():
- router=(FRONTEND/"src/app/router.tsx").read_text()
- for route in ["dashboard","reviews","cases","analysis","notifications","billing","settings","privacy"]:assert 'path:"'+route+'"' in router
-def test_admin_contract():
- p=(FRONTEND/"src/pages/AdminPage.tsx").read_text();assert '"/v1/organization/members"' in p and '"/v1/organization/invitations"' in p and '"/v1/auth/revoke-all"' in p
-def test_billing_paypal_contract():
- p=(FRONTEND/"src/pages/BillingPage.tsx").read_text();assert "paypal.com/sdk/js" in p and "/v1/paypal/subscription/confirm" in p and "createSubscription" in p
-def test_settings_privacy_split():
- r=(FRONTEND/"src/app/router.tsx").read_text();assert 'path:"settings"' in r and 'path:"privacy"' in r
-def test_frontend_shell_serves_built_app():
- s,h,b=request("/");assert s=="200 OK";assert h["Content-Type"].startswith("text/html");assert b'<div id="root"></div>' in b
+    assert (FRONTEND / "index.html").is_file()
+    assert (FRONTEND / "styles.css").is_file()
+    assert (FRONTEND / "script.js").is_file()
+    assert not (FRONTEND / "package.json").exists()
+    assert not (FRONTEND / "src").exists()
+
+
+def test_frontend_shell_serves_static_app():
+    status, headers, body = request("/")
+    assert status == "200 OK"
+    assert headers["Content-Type"].startswith("text/html")
+    html = body.decode()
+    assert '<link rel="stylesheet" href="styles.css">' in html
+    assert '<script src="script.js"></script>' in html
+
+
+def test_frontend_assets_are_served():
+    status, headers, body = request("/styles.css")
+    assert status == "200 OK"
+    assert headers["Content-Type"].startswith("text/css")
+    assert b"--ink:" in body
+
+    status, headers, body = request("/script.js")
+    assert status == "200 OK"
+    assert headers["Content-Type"] in {"text/javascript; charset=utf-8", "application/javascript; charset=utf-8"}
+    assert b"setMenu" in body
+
+
+def test_app_alias_serves_same_frontend():
+    root_status, _, root_body = request("/")
+    app_status, _, app_body = request("/app")
+    assert root_status == app_status == "200 OK"
+    assert root_body == app_body
+
+
 def test_missing_asset_is_not_spa():
- s,_,b=request("/assets/does-not-exist.js");assert s=="404 Not Found";assert json.loads(b)["error"]["code"]=="NOT_FOUND"
+    status, _, body = request("/assets/does-not-exist.js")
+    assert status == "404 Not Found"
+    assert json.loads(body)["error"]["code"] == "NOT_FOUND"
+
+
+def test_unknown_public_route_is_not_spa():
+    status, _, body = request("/this-route-does-not-exist")
+    assert status == "404 Not Found"
+    assert json.loads(body)["error"]["code"] == "NOT_FOUND"
+
+
 def test_migrations_contract():
- files=sorted(MIGRATIONS.glob("*.sql"));assert len(files)==30;assert files[0].name=="001_initial.sql";assert files[-1].name=="030_v644_billing_account_state.sql"
- sql="\n".join(x.read_text() for x in files)
- for table in ["organizations","users","memberships","cases","case_events","google_reviews","api_sessions","api_reviews","api_cases","api_evidence","privacy_requests","billing_transactions"]:assert f"CREATE TABLE IF NOT EXISTS {table}" in sql
+    files = sorted(MIGRATIONS.glob("*.sql"))
+    assert len(files) == 30
+    assert files[0].name == "001_initial.sql"
+    assert files[-1].name == "030_v644_billing_account_state.sql"
+    sql = "\n".join(x.read_text() for x in files)
+    for table in [
+        "organizations",
+        "users",
+        "memberships",
+        "cases",
+        "case_events",
+        "google_reviews",
+        "api_sessions",
+        "api_reviews",
+        "api_cases",
+        "api_evidence",
+        "privacy_requests",
+        "billing_transactions",
+    ]:
+        assert f"CREATE TABLE IF NOT EXISTS {table}" in sql
+
+
 def test_migration_runner_contract():
- t=(ROOT/"scripts/migrate.py").read_text();assert "schema_migrations" in t and "pg_advisory_xact_lock" in t
+    text = (ROOT / "scripts/migrate.py").read_text()
+    assert "schema_migrations" in text
+    assert "pg_advisory_xact_lock" in text
