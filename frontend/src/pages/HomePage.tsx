@@ -46,7 +46,7 @@ function Preview() {
 
 function Header() {
   const [open,setOpen]=useState(false);
-  return <header className="rd-header"><div className="rd-head-left"><button type="button" className="rd-menu" aria-label="Ouvrir le menu principal" aria-expanded={open} onClick={()=>setOpen(!open)}><span /></button><Link className="rd-brand" to="/"><span className="rd-mark">RD</span><span>Review Defense</span></Link></div><div className="rd-actions"><Link className="rd-head-cta" to="/register">Commencer →</Link></div>{open&&<div className="rd-panel"><Link to="/#solutions" onClick={()=>setOpen(false)}>Solutions <span>→</span></Link><Link to="/#ressources" onClick={()=>setOpen(false)}>Ressources <span>→</span></Link><Link to="/tarifs" onClick={()=>setOpen(false)}>Tarifs <span>→</span></Link><Link to="/login" onClick={()=>setOpen(false)}>Connexion <span>→</span></Link></div>}</header>;
+  return <header className="rd-header"><div className="rd-head-left"><button type="button" className="rd-menu" aria-label="Ouvrir le menu principal" aria-expanded={open} onClick={()=>setOpen(!open)}><span /></button><Link className="rd-brand" to="/"><span className="rd-mark">RD</span><span>Review Defense</span></Link></div><div className="rd-actions"><Link className="rd-head-cta" to="/register">Commencer →</Link></div>{open&&<div className="rd-panel"><Link to="/solutions" onClick={()=>setOpen(false)}>Solutions <span>→</span></Link><Link to="/ressources" onClick={()=>setOpen(false)}>Ressources <span>→</span></Link><Link to="/tarifs" onClick={()=>setOpen(false)}>Tarifs <span>→</span></Link><Link to="/login" onClick={()=>setOpen(false)}>Connexion <span>→</span></Link></div>}</header>;
 }
 function Footer() {
   return <footer className="rd-footer">
