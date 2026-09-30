@@ -1,5 +1,21 @@
 <!doctype html>
 <html lang="fr">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tarif</title></head>
-<body></body>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tarif</title><style>
+.rd-top{height:62px;display:flex;align-items:center;gap:34px;padding:0 3.1vw;border-bottom:1px solid #eee;background:rgba(255,255,255,.96);position:sticky;top:0;z-index:30;backdrop-filter:blur(14px)}
+.rd-brand{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;white-space:nowrap}.rd-mark{color:#0869ff;font-size:22px;line-height:1}
+.rd-nav{display:flex;align-items:center;gap:31px;flex:1;font-size:13px}.rd-nav a{transition:color .2s}.rd-nav a:hover{color:#0869ff}
+.rd-actions{display:flex;align-items:center;gap:14px}.rd-search{font-size:22px}.rd-btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:11px 20px;font-size:12px;font-weight:700}.rd-btn-blue{background:#0869ff;color:#fff}.rd-menu{display:none;border:0;background:none;font-size:23px}
+@media(max-width:900px){.rd-nav,.rd-actions{display:none}.rd-menu{display:block;margin-left:auto}.rd-top{gap:14px}}
+@media(max-width:580px){.rd-top{height:58px;padding:0 20px}}
+</style>
+</head>
+<body>
+<header class="rd-top">
+  <a class="rd-brand" href="/"><span class="rd-mark">◆</span> Review Defense</a>
+  <nav class="rd-nav" aria-label="Navigation principale">
+    <a href="/services">Services</a><a href="/fonctionnement">Fonctionnement</a><a href="/resources">Resources</a><a href="/about">About</a><a href="/tarif" aria-current="page">Tarif</a>
+  </nav>
+  <div class="rd-actions"><a class="rd-search" href="/resources">⌕</a><a class="rd-btn rd-btn-blue" href="/analyse-avis-google/">Analyser un avis</a></div>
+  <button class="rd-menu" aria-label="Menu">☰</button>
+</header></body>
 </html>

@@ -102,14 +102,24 @@ img{max-width:100%;height:auto}
  .topbar{height:64px;padding:0 20px}.container{width:calc(100% - 40px)}
  .footer-grid{grid-template-columns:1fr}.footer-brand{grid-column:auto}
 }
-</style></head>
+</style><style>
+.rd-top{height:62px;display:flex;align-items:center;gap:34px;padding:0 3.1vw;border-bottom:1px solid #eee;background:rgba(255,255,255,.96);position:sticky;top:0;z-index:30;backdrop-filter:blur(14px)}
+.rd-brand{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;white-space:nowrap}.rd-mark{color:#0869ff;font-size:22px;line-height:1}
+.rd-nav{display:flex;align-items:center;gap:31px;flex:1;font-size:13px}.rd-nav a{transition:color .2s}.rd-nav a:hover{color:#0869ff}
+.rd-actions{display:flex;align-items:center;gap:14px}.rd-search{font-size:22px}.rd-btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:11px 20px;font-size:12px;font-weight:700}.rd-btn-blue{background:#0869ff;color:#fff}.rd-menu{display:none;border:0;background:none;font-size:23px}
+@media(max-width:900px){.rd-nav,.rd-actions{display:none}.rd-menu{display:block;margin-left:auto}.rd-top{gap:14px}}
+@media(max-width:580px){.rd-top{height:58px;padding:0 20px}}
+</style>
+</head>
 <body>
-<header class="topbar" id="topbar">
-    <button class="icon-button menu-button" aria-label="Open menu" aria-expanded="false">☰</button>
-    <a class="logo" href="#top" aria-label="Accueil"><span class="logo-mark">∞</span><span>Review Defense</span></a>
-    <nav class="desktop-nav" aria-label="Primary"><a href="/services">Services</a><a href="/fonctionnement">Fonctionnement</a><a href="/resources">Resources</a><a href="/about">About</a><a href="/tarif">Tarif</a></nav>
-    <div class="top-actions"><a class="search-link" href="#search">⌕</a><a class="button blue" href="#try">Analyser un avis</a></div>
-  </header><aside class="drawer" aria-hidden="true"><button class="drawer-close" aria-label="Close menu">×</button><div class="drawer-logo"><span class="logo-mark">∞</span>Review Defense</div><a href="/services">Services <span>›</span></a><a href="/fonctionnement">Fonctionnement <span>›</span></a><a href="/resources">Resources <span>›</span></a><a href="/about">About <span>›</span></a><a href="/tarif">Tarif <span>›</span></a><a href="#try">Analyser un avis <span>›</span></a></aside><div class="scrim"></div>
+<header class="rd-top">
+  <a class="rd-brand" href="/"><span class="rd-mark">◆</span> Review Defense</a>
+  <nav class="rd-nav" aria-label="Navigation principale">
+    <a href="/services">Services</a><a href="/fonctionnement">Fonctionnement</a><a href="/resources" aria-current="page">Resources</a><a href="/about">About</a><a href="/tarif">Tarif</a>
+  </nav>
+  <div class="rd-actions"><a class="rd-search" href="/resources">⌕</a><a class="rd-btn rd-btn-blue" href="/analyse-avis-google/">Analyser un avis</a></div>
+  <button class="rd-menu" aria-label="Menu">☰</button>
+</header><aside class="drawer" aria-hidden="true"><button class="drawer-close" aria-label="Close menu">×</button><div class="drawer-logo"><span class="logo-mark">∞</span>Review Defense</div><a href="/services">Services <span>›</span></a><a href="/fonctionnement">Fonctionnement <span>›</span></a><a href="/resources">Resources <span>›</span></a><a href="/about">About <span>›</span></a><a href="/tarif">Tarif <span>›</span></a><a href="#try">Analyser un avis <span>›</span></a></aside><div class="scrim"></div>
 <main>
 <section class="hero" id="resources"><p class="eyebrow">Review Defense</p><h1>Tout ce qu’il faut pour<br/>comprendre et défendre<br/>votre réputation</h1><p class="hero-copy">Découvrez les ressources qui accompagnent Review Defense : analyse des avis, préparation des réponses, dossiers, suivi, sécurité et méthodes pour garder chaque décision sous votre contrôle.</p></section>
 <section class="container resources-grid"><div class="grid">

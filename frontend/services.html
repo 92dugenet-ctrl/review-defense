@@ -108,16 +108,24 @@
     @media(max-width:600px){.services-hero{padding:75px 20px}.services-hero h1{font-size:52px}.services-list{padding:0 20px 70px}.services-intro{padding:60px 0}.service-row{padding:70px 0;gap:42px}.service-copy h2{font-size:43px;margin-bottom:28px}.service-feature-title{font-size:20px;padding:18px 0}.service-feature-detail p{font-size:14px;padding-right:10px}.service-art{padding:18px;min-height:330px}.window-body{grid-template-columns:88px 1fr}.window-side{font-size:8px;padding:15px 8px}.window-main{padding:17px}.window-main h3{font-size:20px}.mini-grid{grid-template-columns:1fr}.services-cta{padding:80px 20px}.services-actions{flex-direction:column;align-items:stretch}.services-actions .button{width:100%}}
   
 </style>
+<style>
+.rd-top{height:62px;display:flex;align-items:center;gap:34px;padding:0 3.1vw;border-bottom:1px solid #eee;background:rgba(255,255,255,.96);position:sticky;top:0;z-index:30;backdrop-filter:blur(14px)}
+.rd-brand{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;white-space:nowrap}.rd-mark{color:#0869ff;font-size:22px;line-height:1}
+.rd-nav{display:flex;align-items:center;gap:31px;flex:1;font-size:13px}.rd-nav a{transition:color .2s}.rd-nav a:hover{color:#0869ff}
+.rd-actions{display:flex;align-items:center;gap:14px}.rd-search{font-size:22px}.rd-btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:11px 20px;font-size:12px;font-weight:700}.rd-btn-blue{background:#0869ff;color:#fff}.rd-menu{display:none;border:0;background:none;font-size:23px}
+@media(max-width:900px){.rd-nav,.rd-actions{display:none}.rd-menu{display:block;margin-left:auto}.rd-top{gap:14px}}
+@media(max-width:580px){.rd-top{height:58px;padding:0 20px}}
+</style>
 </head>
 <body>
 <div class="services-page">
-<header class="topbar">
-  <a class="logo" href="/" aria-label="Accueil"><span class="logo-mark">∞</span><span>Review Defense</span></a>
-  <button class="menu-button icon-button" aria-label="Ouvrir le menu">☰</button>
-  <nav class="desktop-nav" aria-label="Navigation principale">
-    <a href="/services/">Services</a><a href="/fonctionnement">Fonctionnement</a><a href="/resources">Resources</a><a href="/about">About</a><a href="/tarif">Tarif</a>
+<header class="rd-top">
+  <a class="rd-brand" href="/"><span class="rd-mark">◆</span> Review Defense</a>
+  <nav class="rd-nav" aria-label="Navigation principale">
+    <a href="/services" aria-current="page">Services</a><a href="/fonctionnement">Fonctionnement</a><a href="/resources">Resources</a><a href="/about">About</a><a href="/tarif">Tarif</a>
   </nav>
-  <div class="top-actions"><a class="search-link" href="/#search">⌕</a><a class="button blue" href="/analyse-avis-google/">Analyser un avis</a></div>
+  <div class="rd-actions"><a class="rd-search" href="/resources">⌕</a><a class="rd-btn rd-btn-blue" href="/analyse-avis-google/">Analyser un avis</a></div>
+  <button class="rd-menu" aria-label="Menu">☰</button>
 </header>
 <aside class="drawer" aria-hidden="true">
   <button class="drawer-close" aria-label="Fermer">×</button>
