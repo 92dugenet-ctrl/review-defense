@@ -1,5 +1,937 @@
 <!doctype html>
 <html lang="fr">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Resources</title></head>
-<body></body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Guides et ressources pour comprendre, documenter et traiter les problèmes liés aux avis Google.">
+  <title>Ressources — Review Defense</title>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+:root{--ink:#101820;--muted:#667483;--line:#dfe4e8;--blue:#0878ee;--soft:#f5f7f9;--max:1540px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#fff}a{color:inherit;text-decoration:none}button,input{font:inherit}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.site-header{height:74px;padding:0 3.1vw;display:flex;align-items:center;gap:42px;background:rgba(255,255,255,.94);backdrop-filter:blur(16px);position:sticky;top:0;z-index:50;border-bottom:1px solid rgba(0,0,0,.05)}
+.brand{display:flex;align-items:center;gap:8px;font-size:21px;font-weight:700;white-space:nowrap}.brand-mark{color:var(--blue);font-size:28px;font-weight:800}.main-nav{display:flex;gap:34px;align-items:center;font-size:14px;flex:1}.main-nav a{position:relative}.main-nav a:after{content:"";position:absolute;left:0;bottom:-7px;width:100%;height:2px;background:var(--blue);transform:scaleX(0);transform-origin:left;transition:.25s}.main-nav a:hover:after,.main-nav a.active:after{transform:scaleX(1)}.header-actions{display:flex;align-items:center;gap:18px}.search-open{font-size:28px;line-height:1}.pill{display:inline-flex;align-items:center;justify-content:center;gap:18px;border-radius:999px;padding:14px 23px;font-size:14px;font-weight:650;transition:transform .25s,box-shadow .25s}.pill:hover{transform:translateY(-2px)}.pill-blue{background:var(--blue);color:#fff}.pill-dark{background:#101820;color:#fff}.menu-toggle{display:none;border:0;background:none;padding:8px}.menu-toggle span{display:block;width:25px;height:2px;background:#111;margin:5px}
+.hero{min-height:720px;position:relative;overflow:hidden;background:#f3f8ff;display:flex;align-items:center}.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(16,24,32,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(16,24,32,.045) 1px,transparent 1px);background-size:72px 72px;mask-image:linear-gradient(to bottom,#000,transparent 90%)}.hero-inner{position:relative;z-index:2;width:min(1180px,90%);margin:0 auto;padding:100px 0}.eyebrow{font-size:11px;letter-spacing:.13em;font-weight:750;color:var(--blue);margin:0 0 20px}.hero h1{font-size:clamp(62px,8.2vw,124px);line-height:.88;letter-spacing:-.075em;margin:0;max-width:1100px}.hero h1 em{font-style:normal;color:#5c6d7b}.hero-lead{font-size:20px;line-height:1.5;color:#5c6b79;max-width:700px;margin:35px 0}.hero-actions{display:flex;align-items:center;gap:30px}.quiet-link{font-size:14px;font-weight:650}.quiet-link span{margin-left:10px}.hero-orbit{position:absolute;border:1px solid rgba(8,120,238,.2);border-radius:50%;z-index:1}.orbit-one{width:570px;height:570px;right:-130px;top:40px}.orbit-two{width:350px;height:350px;right:60px;top:150px}.section{width:min(var(--max),100%);margin:auto;padding:110px 3.1vw}.intro{display:grid;grid-template-columns:1.15fr .85fr;gap:80px}.intro h2,.results-head h2,.cta-section h2{font-size:clamp(46px,5vw,78px);line-height:.96;letter-spacing:-.06em;margin:0}.intro-side{padding-top:20px}.intro-side>p{font-size:19px;line-height:1.6;color:var(--muted);max-width:650px}.stats{margin-top:60px;border-top:1px solid var(--line);padding-top:18px;display:flex;gap:15px;align-items:baseline}.stats strong{font-size:55px;letter-spacing:-.06em}.stats span{color:var(--muted);font-size:14px}
+.library-toolbar{display:flex;justify-content:space-between;align-items:center;gap:25px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0}.filter-scroll{display:flex;gap:8px;overflow:auto;padding-bottom:2px;scrollbar-width:none}.filter-scroll::-webkit-scrollbar{display:none}.filter-btn{border:0;background:transparent;border-radius:999px;padding:10px 14px;color:var(--muted);white-space:nowrap;cursor:pointer}.filter-btn.active,.filter-btn:hover{background:#101820;color:#fff}.search-box{width:300px;flex:0 0 300px;border-bottom:1px solid #101820;display:flex;gap:10px;padding:8px 0}.search-box span{font-size:22px}.search-box input{border:0;outline:0;width:100%;background:transparent;font-size:14px}
+.featured-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:28px;margin-top:60px}.featured-card{position:relative;overflow:hidden;background:#f4f6f8}.featured-main{min-height:560px}.featured-main>img,.featured-card>img{width:100%;height:100%;object-fit:cover;display:block}.featured-overlay{position:absolute;inset:auto 0 0;padding:45px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.78));min-height:55%}.featured-overlay h2{font-size:clamp(38px,4vw,65px);line-height:.96;letter-spacing:-.055em;margin:0 0 16px;max-width:760px}.featured-overlay p{max-width:650px;line-height:1.5;margin:0;color:rgba(255,255,255,.82)}.white{color:#fff}.round-arrow{position:absolute;right:40px;bottom:40px;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#111;font-size:20px}.featured-card:not(.featured-main){min-height:560px}.featured-card:not(.featured-main)>img{height:52%;}.featured-copy{padding:30px}.featured-copy h3{font-size:36px;line-height:1;letter-spacing:-.045em;margin:0 0 15px}.featured-copy p{color:var(--muted);line-height:1.55}.text-link{display:inline-flex;gap:13px;font-size:14px;font-weight:650;margin-top:20px}.text-link span{transition:transform .2s}.text-link:hover span{transform:translateX(5px)}
+.results-head{display:flex;justify-content:space-between;align-items:end;border-bottom:1px solid var(--line);padding:105px 0 25px}.results-head span{font-size:13px;color:var(--muted)}.resource-grid{display:grid;grid-template-columns:repeat(2,1fr);column-gap:55px;row-gap:75px;padding-top:45px}.resource-card{min-width:0}.resource-image{display:block;position:relative;aspect-ratio:1.72;overflow:hidden;background:#edf1f4}.resource-image img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .65s cubic-bezier(.2,.8,.2,1)}.resource-card:hover .resource-image img{transform:scale(1.045)}.resource-arrow{position:absolute;right:20px;bottom:20px;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#fff;font-size:18px;opacity:0;transform:translateY(8px);transition:.3s}.resource-card:hover .resource-arrow{opacity:1;transform:none}.resource-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:19px;color:var(--blue);font-size:11px;text-transform:uppercase;letter-spacing:.07em;font-weight:700}.resource-meta span+span{color:#7b8791}.resource-card h3{font-size:30px;line-height:1.06;letter-spacing:-.04em;margin:12px 0}.resource-card h3 a:hover{color:var(--blue)}.resource-card p{font-size:16px;line-height:1.55;color:var(--muted);max-width:700px;margin:0}.empty-state{padding:100px 0;text-align:center;color:var(--muted)}
+.cta-section{display:grid;grid-template-columns:1fr .8fr;gap:90px;background:linear-gradient(115deg,#d4edff,#f5fbff 55%,#d9efff);max-width:none;padding-left:calc((100% - var(--max))/2 + 3.1vw);padding-right:calc((100% - var(--max))/2 + 3.1vw)}.cta-section>div:last-child{padding-top:20px}.cta-section>div:last-child p{font-size:18px;line-height:1.6;color:#5e6c78;margin:0 0 28px;max-width:620px}
+.site-footer{background:#f5f7f9;padding:80px 3.1vw 30px}.footer-top{width:min(var(--max),100%);margin:auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:50px}.footer-top>div{display:flex;flex-direction:column;gap:12px;font-size:14px}.footer-top strong{margin-bottom:8px}.footer-top div a{color:var(--muted)}.footer-bottom{width:min(var(--max),100%);margin:70px auto 0;padding-top:20px;border-top:1px solid var(--line);color:#7c8892;font-size:12px;line-height:1.5}
+.search-modal{position:fixed;inset:0;background:rgba(255,255,255,.98);z-index:200;display:flex;align-items:center;justify-content:center;flex-direction:column;opacity:0;pointer-events:none;transition:.3s;padding:30px}.search-modal:target{opacity:1;pointer-events:auto}.search-modal label{width:min(900px,90%)}.search-modal input{width:100%;border:0;border-bottom:2px solid #111;outline:0;background:transparent;font-size:clamp(42px,7vw,90px);letter-spacing:-.06em}.search-modal p:last-child{color:var(--muted)}.modal-close{position:absolute;right:4vw;top:25px;font-size:45px}
+.reveal{opacity:0;transform:translateY(25px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}.reveal.visible{opacity:1;transform:none}
+@media(max-width:900px){.main-nav,.header-actions{display:none}.menu-toggle{display:block;margin-left:auto}.site-header{height:66px}.hero{min-height:650px}.hero h1{font-size:62px}.intro,.featured-grid,.cta-section{grid-template-columns:1fr}.resource-grid{grid-template-columns:1fr}.library-toolbar{align-items:stretch;flex-direction:column}.search-box{width:100%;flex-basis:auto}.featured-main,.featured-card:not(.featured-main){min-height:500px}.cta-section{padding-left:7vw;padding-right:7vw}.footer-top{grid-template-columns:1fr 1fr}.footer-top .brand{grid-column:1/-1}}
+@media(max-width:600px){.site-header{padding:0 20px}.section{padding:75px 20px}.hero-inner{padding:80px 0}.hero h1{font-size:50px}.hero-lead{font-size:17px}.hero-actions{align-items:flex-start;flex-direction:column;gap:18px}.hero-orbit{opacity:.55}.intro h2,.results-head h2,.cta-section h2{font-size:44px}.featured-overlay{padding:28px}.featured-overlay h2{font-size:38px}.round-arrow{right:25px;bottom:25px}.resource-card h3{font-size:26px}.footer-top{grid-template-columns:1fr}.footer-top .brand{grid-column:auto}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}.reveal{opacity:1;transform:none}}
+
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html" aria-label="Review Defense — accueil"><span class="brand-mark">R</span><span>Review Defense</span></a>
+  <nav class="main-nav" aria-label="Navigation principale">
+    <a href="fonctionnement.html">Comment ça marche</a>
+    <a href="services.html">Services</a>
+    <a class="active" href="resources.html">Ressources</a>
+    <a href="tarif.html">Tarifs</a>
+    <a href="about.html">À propos</a>
+  </nav>
+  <div class="header-actions">
+    <a class="search-open" href="#search" aria-label="Rechercher">⌕</a>
+    <a class="pill pill-blue" href="/analyse-avis-google/">Analyser un avis</a>
+  </div>
+  <button class="menu-toggle" type="button" aria-label="Ouvrir le menu"><span></span><span></span></button>
+</header>
+
+<main>
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <p class="eyebrow">RESSOURCES</p>
+    <h1>Comprendre les avis.<br><em>Agir avec méthode.</em></h1>
+    <p class="hero-lead">Guides, procédures et cas concrets pour comprendre un avis Google, réunir les bons éléments, le signaler et suivre les prochaines étapes.</p>
+    <div class="hero-actions">
+      <a class="pill pill-dark" href="#ressources">Explorer les ressources <span>↓</span></a>
+      <a class="quiet-link" href="/analyse-avis-google/">Analyser un avis <span>→</span></a>
+    </div>
+  </div>
+  <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
+</section>
+
+<section class="intro section" id="ressources">
+  <div class="intro-copy">
+    <p class="eyebrow">CENTRE DE RESSOURCES</p>
+    <h2>Une bibliothèque pensée pour les situations réelles.</h2>
+  </div>
+  <div class="intro-side">
+    <p>Chaque ressource répond à une intention précise : comprendre une règle, préparer un signalement, documenter un cas ou savoir quoi faire après une décision de Google.</p>
+    <div class="stats"><strong>57</strong><span>ressources éditoriales</span></div>
+  </div>
+</section>
+
+<section class="resource-library section">
+  <div class="library-toolbar">
+    <div class="filter-scroll">
+      <button type="button" class="filter-btn active" data-filter="all">Tout</button>
+      <button type="button" class="filter-btn" data-filter="cas concrets / longue traîne">Cas concrets / longue traîne</button>
+<button type="button" class="filter-btn" data-filter="faux avis">Faux avis</button>
+<button type="button" class="filter-btn" data-filter="pillar / suppression">Pillar / suppression</button>
+<button type="button" class="filter-btn" data-filter="procédure">Procédure</button>
+<button type="button" class="filter-btn" data-filter="refus / appel">Refus / appel</button>
+<button type="button" class="filter-btn" data-filter="signalement">Signalement</button>
+<button type="button" class="filter-btn" data-filter="éditorial">Éditorial</button>
+    </div>
+    <label class="search-box">
+      <span>⌕</span>
+      <input id="resourceSearch" type="search" placeholder="Rechercher une ressource…" autocomplete="off">
+    </label>
+  </div>
+
+  <div class="featured-grid">
+    <article class="featured-card featured-main reveal">
+      <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+      <div class="featured-overlay">
+        <span class="eyebrow white">GUIDE PILIER</span>
+        <h2>Suppression d'avis Google : guide complet</h2>
+        <p>Vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes.</p>
+        <a class="round-arrow" href="/suppression-avis-google/">↗</a>
+      </div>
+    </article>
+    <article class="featured-card reveal">
+      <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+      <div class="featured-copy">
+        <span class="eyebrow">PROCÉDURE</span>
+        <h3>Comment signaler un avis Google ?</h3>
+        <p>Un parcours clair pour comprendre le signalement et préparer les éléments utiles.</p>
+        <a class="text-link" href="/comment-signaler-un-avis-google-etape-par-etape/">Lire le guide <span>→</span></a>
+      </div>
+    </article>
+  </div>
+
+  <div class="results-head">
+    <h2>Explorer les ressources</h2>
+    <span id="resultCount">57 ressources</span>
+  </div>
+
+  <div class="resource-grid" id="resourceGrid">
+    
+<article class="resource-card reveal" data-title="suppression d&#x27;avis google : guide complet" data-cluster="pillar / suppression" data-intent="informationnelle + commerciale">
+  <a class="resource-image" href="/suppression-avis-google/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Pillar / suppression</span>
+    <span>informationnelle + commerciale</span>
+  </div>
+  <h3><a href="/suppression-avis-google/">Suppression d&#x27;avis Google : guide complet</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/suppression-avis-google/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="peut-on supprimer un avis google ?" data-cluster="pillar / suppression" data-intent="informationnelle">
+  <a class="resource-image" href="/peut-on-supprimer-un-avis-google/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Pillar / suppression</span>
+    <span>informationnelle</span>
+  </div>
+  <h3><a href="/peut-on-supprimer-un-avis-google/">Peut-on supprimer un avis Google ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/peut-on-supprimer-un-avis-google/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="comment supprimer un avis google ?" data-cluster="pillar / suppression" data-intent="tutoriel">
+  <a class="resource-image" href="/comment-supprimer-un-avis-google/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Pillar / suppression</span>
+    <span>tutoriel</span>
+  </div>
+  <h3><a href="/comment-supprimer-un-avis-google/">Comment supprimer un avis Google ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/comment-supprimer-un-avis-google/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="faux avis google : comment les reconnaître et les signaler ?" data-cluster="faux avis" data-intent="informationnelle + commerciale">
+  <a class="resource-image" href="/faux-avis-google/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Faux avis</span>
+    <span>informationnelle + commerciale</span>
+  </div>
+  <h3><a href="/faux-avis-google/">Faux avis Google : comment les reconnaître et les signaler ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/faux-avis-google/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="comment reconnaître un faux avis google ?" data-cluster="faux avis" data-intent="informationnelle">
+  <a class="resource-image" href="/comment-reconnaitre-un-faux-avis-google/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Faux avis</span>
+    <span>informationnelle</span>
+  </div>
+  <h3><a href="/comment-reconnaitre-un-faux-avis-google/">Comment reconnaître un faux avis Google ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/comment-reconnaitre-un-faux-avis-google/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="comment prouver qu’un avis google est faux ?" data-cluster="faux avis" data-intent="informationnelle">
+  <a class="resource-image" href="/comment-prouver-qu-un-avis-google-est-faux/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Faux avis</span>
+    <span>informationnelle</span>
+  </div>
+  <h3><a href="/comment-prouver-qu-un-avis-google-est-faux/">Comment prouver qu’un avis Google est faux ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/comment-prouver-qu-un-avis-google-est-faux/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="comment constituer un dossier contre un faux avis google ?" data-cluster="faux avis" data-intent="informationnelle">
+  <a class="resource-image" href="/comment-constituer-un-dossier-contre-un-faux-avis-google/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Faux avis</span>
+    <span>informationnelle</span>
+  </div>
+  <h3><a href="/comment-constituer-un-dossier-contre-un-faux-avis-google/">Comment constituer un dossier contre un faux avis Google ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/comment-constituer-un-dossier-contre-un-faux-avis-google/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google d’un faux client : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-faux-client/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-faux-client/">Avis Google d’un faux client : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-faux-client/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google d’une personne qui n’a jamais été cliente : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret / conversationnel">
+  <a class="resource-image" href="/avis-google-personne-jamais-cliente/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret / conversationnel</span>
+  </div>
+  <h3><a href="/avis-google-personne-jamais-cliente/">Avis Google d’une personne qui n’a jamais été cliente : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-personne-jamais-cliente/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google publié par un concurrent : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-concurrent/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-concurrent/">Avis Google publié par un concurrent : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-concurrent/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google publié par un ancien salarié : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-ancien-salarie/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-ancien-salarie/">Avis Google publié par un ancien salarié : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-ancien-salarie/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google mensonger : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-mensonger/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-mensonger/">Avis Google mensonger : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-mensonger/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google avec une accusation mensongère : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-accusation-mensongere/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-accusation-mensongere/">Avis Google avec une accusation mensongère : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-accusation-mensongere/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google diffamatoire : que peut-on faire ?" data-cluster="éditorial" data-intent="informationnelle / juridique prudente">
+  <a class="resource-image" href="/avis-google-diffamatoire/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Éditorial</span>
+    <span>informationnelle / juridique prudente</span>
+  </div>
+  <h3><a href="/avis-google-diffamatoire/">Avis Google diffamatoire : que peut-on faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-diffamatoire/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google insultant : comment le signaler ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-insultant/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-insultant/">Avis Google insultant : comment le signaler ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-insultant/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google avec des propos discriminatoires : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-discriminatoire/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-discriminatoire/">Avis Google avec des propos discriminatoires : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-discriminatoire/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google hors sujet : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-hors-sujet/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-hors-sujet/">Avis Google hors sujet : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-hors-sujet/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google contenant des informations personnelles : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-informations-personnelles/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-informations-personnelles/">Avis Google contenant des informations personnelles : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-informations-personnelles/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google publié sur le mauvais établissement : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-mauvais-etablissement/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-mauvais-etablissement/">Avis Google publié sur le mauvais établissement : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-mauvais-etablissement/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google publié sous une fausse identité : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-fausse-identite/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-fausse-identite/">Avis Google publié sous une fausse identité : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-fausse-identite/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="plusieurs faux avis google : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/plusieurs-faux-avis-google/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/plusieurs-faux-avis-google/">Plusieurs faux avis Google : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/plusieurs-faux-avis-google/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="plusieurs comptes google publient des avis similaires : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret / schéma">
+  <a class="resource-image" href="/plusieurs-comptes-google-avis-similaires/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret / schéma</span>
+  </div>
+  <h3><a href="/plusieurs-comptes-google-avis-similaires/">Plusieurs comptes Google publient des avis similaires : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/plusieurs-comptes-google-avis-similaires/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google en échange d’argent ou d’un avantage : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-argent-ou-avantage/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-argent-ou-avantage/">Avis Google en échange d’argent ou d’un avantage : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-argent-ou-avantage/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google avec contenu promotionnel : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-contenu-promotionnel/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-contenu-promotionnel/">Avis Google avec contenu promotionnel : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-contenu-promotionnel/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google qui fait du chantage : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-chantage/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-chantage/">Avis Google qui fait du chantage : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-chantage/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google qui menace une entreprise : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-menace/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-menace/">Avis Google qui menace une entreprise : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-menace/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google après un conflit client : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-conflit-client/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-conflit-client/">Avis Google après un conflit client : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-conflit-client/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google après un litige : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-litige/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-litige/">Avis Google après un litige : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-litige/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google publié par un ancien client : peut-il être supprimé ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-ancien-client/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-ancien-client/">Avis Google publié par un ancien client : peut-il être supprimé ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-ancien-client/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="comment signaler un avis google ? guide complet" data-cluster="signalement" data-intent="procédurale">
+  <a class="resource-image" href="/signaler-un-avis-google/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Signalement</span>
+    <span>procédurale</span>
+  </div>
+  <h3><a href="/signaler-un-avis-google/">Comment signaler un avis Google ? Guide complet</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/signaler-un-avis-google/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="comment signaler un avis google étape par étape ?" data-cluster="signalement" data-intent="procédurale">
+  <a class="resource-image" href="/comment-signaler-un-avis-google-etape-par-etape/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Signalement</span>
+    <span>procédurale</span>
+  </div>
+  <h3><a href="/comment-signaler-un-avis-google-etape-par-etape/">Comment signaler un avis Google étape par étape ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/comment-signaler-un-avis-google-etape-par-etape/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="comment signaler un avis google depuis google maps ?" data-cluster="signalement" data-intent="procédurale">
+  <a class="resource-image" href="/comment-signaler-un-avis-google-google-maps/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Signalement</span>
+    <span>procédurale</span>
+  </div>
+  <h3><a href="/comment-signaler-un-avis-google-google-maps/">Comment signaler un avis Google depuis Google Maps ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/comment-signaler-un-avis-google-google-maps/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="comment signaler un avis google depuis google business profile ?" data-cluster="signalement" data-intent="procédurale">
+  <a class="resource-image" href="/comment-signaler-un-avis-google-business-profile/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Signalement</span>
+    <span>procédurale</span>
+  </div>
+  <h3><a href="/comment-signaler-un-avis-google-business-profile/">Comment signaler un avis Google depuis Google Business Profile ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/comment-signaler-un-avis-google-business-profile/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="comment signaler plusieurs avis google ?" data-cluster="signalement" data-intent="procédurale">
+  <a class="resource-image" href="/comment-signaler-plusieurs-avis-google/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Signalement</span>
+    <span>procédurale</span>
+  </div>
+  <h3><a href="/comment-signaler-plusieurs-avis-google/">Comment signaler plusieurs avis Google ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/comment-signaler-plusieurs-avis-google/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="comment préparer un dossier de signalement d’un avis google ?" data-cluster="signalement" data-intent="procédurale">
+  <a class="resource-image" href="/comment-preparer-un-dossier-de-signalement-d-un-avis-google/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Signalement</span>
+    <span>procédurale</span>
+  </div>
+  <h3><a href="/comment-preparer-un-dossier-de-signalement-d-un-avis-google/">Comment préparer un dossier de signalement d’un avis Google ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/comment-preparer-un-dossier-de-signalement-d-un-avis-google/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="combien de temps faut-il pour supprimer un avis google ?" data-cluster="procédure" data-intent="procédurale">
+  <a class="resource-image" href="/combien-de-temps-suppression-avis-google/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Procédure</span>
+    <span>procédurale</span>
+  </div>
+  <h3><a href="/combien-de-temps-suppression-avis-google/">Combien de temps faut-il pour supprimer un avis Google ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/combien-de-temps-suppression-avis-google/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="comment savoir si google a accepté mon signalement d’avis ?" data-cluster="procédure" data-intent="suivi">
+  <a class="resource-image" href="/comment-savoir-si-google-a-accepte-mon-signalement/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Procédure</span>
+    <span>suivi</span>
+  </div>
+  <h3><a href="/comment-savoir-si-google-a-accepte-mon-signalement/">Comment savoir si Google a accepté mon signalement d’avis ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/comment-savoir-si-google-a-accepte-mon-signalement/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="comment suivre un signalement d’avis google ?" data-cluster="procédure" data-intent="suivi">
+  <a class="resource-image" href="/comment-suivre-un-signalement-avis-google/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Procédure</span>
+    <span>suivi</span>
+  </div>
+  <h3><a href="/comment-suivre-un-signalement-avis-google/">Comment suivre un signalement d’avis Google ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/comment-suivre-un-signalement-avis-google/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="que faire si google ne répond pas à mon signalement d’avis ?" data-cluster="procédure" data-intent="suivi">
+  <a class="resource-image" href="/que-faire-si-google-ne-repond-pas-a-mon-signalement/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Procédure</span>
+    <span>suivi</span>
+  </div>
+  <h3><a href="/que-faire-si-google-ne-repond-pas-a-mon-signalement/">Que faire si Google ne répond pas à mon signalement d’avis ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/que-faire-si-google-ne-repond-pas-a-mon-signalement/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="que faire quand google refuse de supprimer un avis ?" data-cluster="refus / appel" data-intent="refus">
+  <a class="resource-image" href="/que-faire-quand-google-refuse-de-supprimer-un-avis/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Refus / appel</span>
+    <span>refus</span>
+  </div>
+  <h3><a href="/que-faire-quand-google-refuse-de-supprimer-un-avis/">Que faire quand Google refuse de supprimer un avis ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/que-faire-quand-google-refuse-de-supprimer-un-avis/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="pourquoi mon avis google reste en ligne ?" data-cluster="refus / appel" data-intent="refus / compréhension">
+  <a class="resource-image" href="/pourquoi-mon-avis-google-reste-en-ligne/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Refus / appel</span>
+    <span>refus / compréhension</span>
+  </div>
+  <h3><a href="/pourquoi-mon-avis-google-reste-en-ligne/">Pourquoi mon avis Google reste en ligne ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/pourquoi-mon-avis-google-reste-en-ligne/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="google refuse de supprimer mon faux avis : que faire ?" data-cluster="refus / appel" data-intent="refus / cas concret">
+  <a class="resource-image" href="/google-refuse-de-supprimer-mon-faux-avis-que-faire/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Refus / appel</span>
+    <span>refus / cas concret</span>
+  </div>
+  <h3><a href="/google-refuse-de-supprimer-mon-faux-avis-que-faire/">Google refuse de supprimer mon faux avis : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/google-refuse-de-supprimer-mon-faux-avis-que-faire/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="comment faire appel après un refus de suppression d’un avis google ?" data-cluster="refus / appel" data-intent="procédurale">
+  <a class="resource-image" href="/comment-faire-appel-apres-refus-suppression-avis-google/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Refus / appel</span>
+    <span>procédurale</span>
+  </div>
+  <h3><a href="/comment-faire-appel-apres-refus-suppression-avis-google/">Comment faire appel après un refus de suppression d’un avis Google ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/comment-faire-appel-apres-refus-suppression-avis-google/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="comment contester une décision concernant un avis google ?" data-cluster="refus / appel" data-intent="procédurale">
+  <a class="resource-image" href="/comment-contester-une-decision-concernant-un-avis-google/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Refus / appel</span>
+    <span>procédurale</span>
+  </div>
+  <h3><a href="/comment-contester-une-decision-concernant-un-avis-google/">Comment contester une décision concernant un avis Google ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/comment-contester-une-decision-concernant-un-avis-google/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google : signalement ou réponse publique ?" data-cluster="éditorial" data-intent="comparative">
+  <a class="resource-image" href="/avis-google-signalement-ou-reponse-publique/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Éditorial</span>
+    <span>comparative</span>
+  </div>
+  <h3><a href="/avis-google-signalement-ou-reponse-publique/">Avis Google : signalement ou réponse publique ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-signalement-ou-reponse-publique/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="comment faire supprimer un avis google qui me semble faux ?" data-cluster="cas concrets / longue traîne" data-intent="conversationnelle">
+  <a class="resource-image" href="/comment-faire-supprimer-un-avis-google-qui-me-semble-faux/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>conversationnelle</span>
+  </div>
+  <h3><a href="/comment-faire-supprimer-un-avis-google-qui-me-semble-faux/">Comment faire supprimer un avis Google qui me semble faux ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/comment-faire-supprimer-un-avis-google-qui-me-semble-faux/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="que faire si quelqu’un a laissé un avis google sans être client ?" data-cluster="cas concrets / longue traîne" data-intent="conversationnelle">
+  <a class="resource-image" href="/que-faire-si-quelqu-un-a-laisse-un-avis-sans-etre-client/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>conversationnelle</span>
+  </div>
+  <h3><a href="/que-faire-si-quelqu-un-a-laisse-un-avis-sans-etre-client/">Que faire si quelqu’un a laissé un avis Google sans être client ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/que-faire-si-quelqu-un-a-laisse-un-avis-sans-etre-client/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="google refuse de supprimer mon faux avis : que faire ?" data-cluster="refus / appel" data-intent="conversationnelle">
+  <a class="resource-image" href="/google-refuse-de-supprimer-mon-faux-avis/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Refus / appel</span>
+    <span>conversationnelle</span>
+  </div>
+  <h3><a href="/google-refuse-de-supprimer-mon-faux-avis/">Google refuse de supprimer mon faux avis : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/google-refuse-de-supprimer-mon-faux-avis/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="pourquoi mon avis google reste en ligne ?" data-cluster="refus / appel" data-intent="conversationnelle">
+  <a class="resource-image" href="/pourquoi-mon-avis-google-reste-en-ligne-conversationnel/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Refus / appel</span>
+    <span>conversationnelle</span>
+  </div>
+  <h3><a href="/pourquoi-mon-avis-google-reste-en-ligne-conversationnel/">Pourquoi mon avis Google reste en ligne ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/pourquoi-mon-avis-google-reste-en-ligne-conversationnel/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="comment savoir si un avis google peut être supprimé ?" data-cluster="cas concrets / longue traîne" data-intent="conversationnelle">
+  <a class="resource-image" href="/comment-savoir-si-un-avis-google-peut-etre-supprime/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>conversationnelle</span>
+  </div>
+  <h3><a href="/comment-savoir-si-un-avis-google-peut-etre-supprime/">Comment savoir si un avis Google peut être supprimé ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/comment-savoir-si-un-avis-google-peut-etre-supprime/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="que faire si un client me menace avec un avis google ?" data-cluster="cas concrets / longue traîne" data-intent="conversationnelle">
+  <a class="resource-image" href="/que-faire-si-un-client-me-menace-avec-un-avis-google/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>conversationnelle</span>
+  </div>
+  <h3><a href="/que-faire-si-un-client-me-menace-avec-un-avis-google/">Que faire si un client me menace avec un avis Google ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/que-faire-si-un-client-me-menace-avec-un-avis-google/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="peut-on supprimer un avis google diffamatoire ?" data-cluster="cas concrets / longue traîne" data-intent="conversationnelle">
+  <a class="resource-image" href="/peut-on-supprimer-un-avis-google-diffamatoire/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>conversationnelle</span>
+  </div>
+  <h3><a href="/peut-on-supprimer-un-avis-google-diffamatoire/">Peut-on supprimer un avis Google diffamatoire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/peut-on-supprimer-un-avis-google-diffamatoire/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="comment faire supprimer plusieurs faux avis google ?" data-cluster="cas concrets / longue traîne" data-intent="conversationnelle">
+  <a class="resource-image" href="/comment-faire-supprimer-plusieurs-faux-avis-google/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>conversationnelle</span>
+  </div>
+  <h3><a href="/comment-faire-supprimer-plusieurs-faux-avis-google/">Comment faire supprimer plusieurs faux avis Google ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/comment-faire-supprimer-plusieurs-faux-avis-google/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google avec accusation mensongère : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-accusation-mensongere/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-accusation-mensongere/">Avis Google avec accusation mensongère : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-accusation-mensongere/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google qui menace une entreprise : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-menace-entreprise/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-menace-entreprise/">Avis Google qui menace une entreprise : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-menace-entreprise/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google avec propos discriminatoires : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-propos-discriminatoires/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-propos-discriminatoires/">Avis Google avec propos discriminatoires : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-propos-discriminatoires/">Lire la ressource <span>→</span></a>
+</article>
+<article class="resource-card reveal" data-title="avis google en échange d’argent ou d’un avantage : que faire ?" data-cluster="cas concrets / longue traîne" data-intent="cas concret">
+  <a class="resource-image" href="/avis-google-argent-avantage/">
+    <img src="assets/hero_crop.jpg" alt="" loading="lazy">
+    <span class="resource-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="resource-meta">
+    <span>Cas concrets / longue traîne</span>
+    <span>cas concret</span>
+  </div>
+  <h3><a href="/avis-google-argent-avantage/">Avis Google en échange d’argent ou d’un avantage : que faire ?</a></h3>
+  <p>Découvrez comment traiter un problème lié aux avis Google : vérifier la situation, identifier le motif pertinent, signaler l’avis et connaître les prochaines étapes. Analyse possible.</p>
+  <a class="text-link" href="/avis-google-argent-avantage/">Lire la ressource <span>→</span></a>
+</article>
+  </div>
+  <div class="empty-state" id="emptyState" hidden>Aucune ressource ne correspond à votre recherche.</div>
+</section>
+
+<section class="cta-section section">
+  <div>
+    <p class="eyebrow">BESOIN D'UN REGARD SUR UN CAS PRÉCIS ?</p>
+    <h2>Commencez par analyser l'avis.</h2>
+  </div>
+  <div>
+    <p>Une ressource peut aider à comprendre une situation. L’analyse permet ensuite de qualifier les éléments disponibles et de préparer les prochaines étapes.</p>
+    <a class="pill pill-blue" href="/analyse-avis-google/">Analyser un avis <span>→</span></a>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-top">
+    <a class="brand" href="index.html"><span class="brand-mark">R</span><span>Review Defense</span></a>
+    <div><strong>Navigation</strong><a href="fonctionnement.html">Comment ça marche</a><a href="services.html">Services</a><a href="resources.html">Ressources</a></div>
+    <div><strong>Entreprise</strong><a href="about.html">À propos</a><a href="tarif.html">Tarifs</a></div>
+    <div><strong>Analyse</strong><a href="/analyse-avis-google/">Analyser un avis</a></div>
+  </div>
+  <div class="footer-bottom">© 2026 Review Defense · Les ressources sont informatives. Un avis négatif n'est pas automatiquement supprimable et la décision finale appartient à Google.</div>
+</footer>
+
+<div class="search-modal" id="search" aria-hidden="true">
+  <a class="modal-close" href="#" aria-label="Fermer">×</a>
+  <p class="eyebrow">RECHERCHE</p>
+  <label><span class="sr-only">Rechercher</span><input id="globalSearch" type="search" placeholder="Que recherchez-vous ?"></label>
+  <p>Appuyez sur Entrée pour rechercher dans les ressources.</p>
+</div>
+
+<script>
+const grid=document.getElementById("resourceGrid");
+const cards=[...document.querySelectorAll(".resource-card")];
+const buttons=[...document.querySelectorAll(".filter-btn")];
+const search=document.getElementById("resourceSearch");
+const count=document.getElementById("resultCount");
+const empty=document.getElementById("emptyState");
+let activeFilter="all";
+function filterCards(){
+  const q=(search?.value||"").trim().toLowerCase();
+  let visible=0;
+  cards.forEach(card=>{
+    const cluster=card.dataset.cluster||"";
+    const title=card.dataset.title||"";
+    const intent=card.dataset.intent||"";
+    const okFilter=activeFilter==="all"||cluster===activeFilter;
+    const okSearch=!q||title.includes(q)||cluster.includes(q)||intent.includes(q);
+    const show=okFilter&&okSearch;
+    card.hidden=!show;
+    if(show) visible++;
+  });
+  count.textContent=`${visible} ressource${visible>1?"s":""}`;
+  empty.hidden=visible!==0;
+}
+buttons.forEach(btn=>btn.addEventListener("click",()=>{
+  buttons.forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  activeFilter=btn.dataset.filter||"all";
+  filterCards();
+}));
+search?.addEventListener("input",filterCards);
+document.getElementById("globalSearch")?.addEventListener("keydown",e=>{
+  if(e.key==="Enter"){
+    e.preventDefault();
+    const value=e.currentTarget.value.trim();
+    window.location.hash="";
+    if(value){search.value=value;filterCards();document.getElementById("ressources").scrollIntoView({behavior:"smooth"});}
+  }
+});
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add("visible");observer.unobserve(entry.target);}});
+},{threshold:.08});
+document.querySelectorAll(".reveal").forEach(el=>observer.observe(el));
+
+</script>
+</body>
 </html>
