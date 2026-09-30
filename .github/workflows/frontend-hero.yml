@@ -1,0 +1,43 @@
+name: Frontend hero check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  hero-media:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate homepage hero
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          HOME_PAGE="frontend/index.html"
+          FUNCTION_PAGE="frontend/fonctionnement.html"
+          HERO_VIDEO="frontend/assets/hero/review-defense-hero-centered-fixed-1920x1080.mp4"
+
+          test -f "$HOME_PAGE"
+          test -f "$FUNCTION_PAGE"
+          test -f "$HERO_VIDEO"
+
+          grep -q 'class="rd-hero"' "$HOME_PAGE"
+          grep -q 'class="rd-hero-video"' "$HOME_PAGE"
+          grep -q 'review-defense-hero-centered-fixed-1920x1080.mp4' "$HOME_PAGE"
+
+          grep -q 'class="rd-hero"' "$FUNCTION_PAGE"
+          grep -q 'class="rd-hero-video"' "$FUNCTION_PAGE"
+          grep -q '/assets/hero/video_artisans_sans_texte.mp4' "$FUNCTION_PAGE"
+
+          if grep -q 'review-defense-hero-centered-final-1920x1080.mp4' "$HOME_PAGE"; then
+            echo "Obsolete hero video reference found in homepage."
+            exit 1
+          fi
+
+          echo "Homepage and Fonctionnement hero media checks passed."
