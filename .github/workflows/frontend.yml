@@ -14,7 +14,7 @@ on:
       - "!frontend/dist/**"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate:
@@ -32,3 +32,12 @@ jobs:
       - run: npm install
       - run: npm run typecheck
       - run: npm run build
+      - name: Sync production dist
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add frontend/dist
+          if ! git diff --cached --quiet; then
+            git commit -m "build(frontend): sync production dist"
+            git push origin HEAD:main
+          fi
