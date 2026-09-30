@@ -25,7 +25,7 @@ button{font:inherit}
 .rd-btn-dark{background:var(--dark);color:#fff}
 .rd-menu{display:none;border:0;background:none;font-size:23px}
 .rd-hero{margin:0 3.1vw;position:relative;height:min(47vw,620px);min-height:430px;overflow:hidden;border-radius:0 0 17px 17px;background:#0d1116}
-.rd-hero img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
+.rd-hero img,.rd-hero-video{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
 .rd-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.38),rgba(0,0,0,.04) 65%,rgba(0,0,0,.16))}
 .rd-hero-copy{position:absolute;z-index:2;left:6%;bottom:8%;max-width:760px;color:#fff}
 .rd-eyebrow{font-size:11px;letter-spacing:.08em;font-weight:800;color:var(--blue);margin-bottom:17px}
@@ -114,7 +114,7 @@ button{font:inherit}
 
 <main>
   <section class="rd-hero">
-    <img src="/assets/hero_crop.jpg" alt="">
+    <video class="rd-hero-video" autoplay muted loop playsinline preload="metadata" aria-label="Présentation de Review Defense"><source src="/assets/hero/video_artisans_sans_texte.mp4" type="video/mp4"></video>
     <div class="rd-hero-copy">
       <div class="rd-eyebrow">REVIEW DEFENSE · FONCTIONNEMENT</div>
       <h1>Comprendre.<br>Analyser.<br>Décider.</h1>
