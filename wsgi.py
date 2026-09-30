@@ -18,6 +18,23 @@ FRONTEND_ROOT = (ROOT / "frontend").resolve()
 _API_PREFIXES = ("/v1/",)
 _NON_API_PATHS = {"/health", "/healthz", "/metrics", "/ready"}
 _FRONTEND_FILES = {"/index.html", "/styles.css", "/script.js"}
+_ROUTE_PAGES = {
+    "/services": "services.html",
+    "/services/": "services.html",
+    "/services.html": "services.html",
+    "/fonctionnement": "fonctionnement.html",
+    "/fonctionnement/": "fonctionnement.html",
+    "/fonctionnement.html": "fonctionnement.html",
+    "/resources": "resources.html",
+    "/resources/": "resources.html",
+    "/resources.html": "resources.html",
+    "/about": "about.html",
+    "/about/": "about.html",
+    "/about.html": "about.html",
+    "/tarif": "tarif.html",
+    "/tarif/": "tarif.html",
+    "/tarif.html": "tarif.html",
+}
 
 
 def _json_404(start_response):
@@ -39,15 +56,10 @@ def _json_404(start_response):
 def _frontend_response(path, start_response):
     if path in {"/", "/app", "/app/"}:
         relative = "index.html"
+    elif path in _ROUTE_PAGES:
+        relative = _ROUTE_PAGES[path]
     elif path in _FRONTEND_FILES:
-        route_pages = {
-            "/services": "services.html", "/services/": "services.html", "/services.html": "services.html",
-            "/fonctionnement": "fonctionnement.html", "/fonctionnement/": "fonctionnement.html", "/fonctionnement.html": "fonctionnement.html",
-            "/resources": "resources.html", "/resources/": "resources.html", "/resources.html": "resources.html",
-            "/about": "about.html", "/about/": "about.html", "/about.html": "about.html",
-            "/tarif": "tarif.html", "/tarif/": "tarif.html", "/tarif.html": "tarif.html",
-        }
-        relative = route_pages.get(path, path.lstrip("/"))
+        relative = path.lstrip("/")
     elif path.startswith("/assets/"):
         relative = path.lstrip("/")
     else:
