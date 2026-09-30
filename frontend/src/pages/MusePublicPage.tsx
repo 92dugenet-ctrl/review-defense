@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { api } from "@/services/api/client";
 import "@/styles/muse-v3.css";
-import { MuseMotion } from "@/components/public/MuseMotion";
 
 const nav = [
   ["/produit", "Produit"],
