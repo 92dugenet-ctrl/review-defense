@@ -6,6 +6,15 @@ from .seo_content import PAGES
 BASE_URL = os.environ.get("REVIEW_DEFENSE_PUBLIC_URL", "https://review-defense.com").rstrip("/")
 SERVICE_SLUGS = {"analyse-avis-google","service-suppression-avis-google","agence-suppression-avis-google","expert-suppression-avis-google","faire-supprimer-avis-google","prix-suppression-avis-google"}
 
+_RD_HEADER_CSS = """
+.rd-top{height:62px;display:flex;align-items:center;gap:34px;padding:0 3.1vw;border-bottom:1px solid #eee;background:rgba(255,255,255,.96);position:sticky;top:0;z-index:30;backdrop-filter:blur(14px)}
+.rd-brand{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;white-space:nowrap}.rd-mark{color:#0869ff;font-size:22px;line-height:1}
+.rd-nav{display:flex;align-items:center;gap:31px;flex:1;font-size:13px}.rd-nav a{transition:color .2s}.rd-nav a:hover{color:#0869ff}
+.rd-actions{display:flex;align-items:center;gap:14px}.rd-search{font-size:22px}.rd-btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:11px 20px;font-size:12px;font-weight:700}.rd-btn-blue{background:#0869ff;color:#fff}.rd-menu{display:none;border:0;background:none;font-size:23px}
+@media(max-width:900px){.rd-nav,.rd-actions{display:none}.rd-menu{display:block;margin-left:auto}.rd-top{gap:14px}}
+@media(max-width:580px){.rd-top{height:58px;padding:0 20px}}
+</style>"""
+
 def _page_map():
     return {"/" + slug + "/": (slug, title, keyword) for slug, title, keyword in PAGES}
 
@@ -163,14 +172,7 @@ def render_page(path: str) -> bytes:
 <title>{html.escape(_title_tag(slug,title))}</title><meta name="description" content="{html.escape(meta)}">
 <link rel="canonical" href="{html.escape(canonical)}"><meta name="robots" content="index,follow,max-image-preview:large">
 <meta property="og:type" content="article"><meta property="og:title" content="{html.escape(_title_tag(slug,title))}"><meta property="og:description" content="{html.escape(meta)}"><meta property="og:url" content="{html.escape(canonical)}">
-<link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css?v=6500"><link rel="stylesheet" href="/assets/seo.css?v=6500"><style>
-.rd-top{height:62px;display:flex;align-items:center;gap:34px;padding:0 3.1vw;border-bottom:1px solid #eee;background:rgba(255,255,255,.96);position:sticky;top:0;z-index:30;backdrop-filter:blur(14px)}
-.rd-brand{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;white-space:nowrap}.rd-mark{color:#0869ff;font-size:22px;line-height:1}
-.rd-nav{display:flex;align-items:center;gap:31px;flex:1;font-size:13px}.rd-nav a{transition:color .2s}.rd-nav a:hover{color:#0869ff}
-.rd-actions{display:flex;align-items:center;gap:14px}.rd-search{font-size:22px}.rd-btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:11px 20px;font-size:12px;font-weight:700}.rd-btn-blue{background:#0869ff;color:#fff}.rd-menu{display:none;border:0;background:none;font-size:23px}
-@media(max-width:900px){.rd-nav,.rd-actions{display:none}.rd-menu{display:block;margin-left:auto}.rd-top{gap:14px}}
-@media(max-width:580px){.rd-top{height:58px;padding:0 20px}}
-</style>
+<link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css?v=6500"><link rel="stylesheet" href="/assets/seo.css?v=6500"><style>{_RD_HEADER_CSS}</style>
 <script type="application/ld+json">{json.dumps(schema,ensure_ascii=False,separators=(",",":"))}</script></head><body>
 <div class="marketing"><header class="rd-top"><a class="rd-brand" href="/"><span class="rd-mark">◆</span> Review Defense</a><nav class="rd-nav" aria-label="Navigation principale"><a href="/services">Services</a><a href="/fonctionnement">Fonctionnement</a><a href="/resources">Resources</a><a href="/about">About</a><a href="/tarif">Tarif</a></nav><div class="rd-actions"><a class="rd-search" href="/resources">⌕</a><a class="rd-btn rd-btn-blue" href="/analyse-avis-google/">Analyser un avis</a></div><button class="rd-menu" aria-label="Menu">☰</button></header>
 <main class="seo-main"><nav class="breadcrumbs"><a href="/">Accueil</a><span>›</span><a href="/{hub_slug}/">{html.escape(hub_title)}</a><span>›</span><span>{html.escape(title)}</span></nav><header class="seo-hero"><div class="seo-hero-copy"><span>{html.escape(_cluster(slug).upper())}</span><h1>{html.escape(title)}</h1><p>{html.escape(meta)}</p><div class="seo-keyword">Sujet : {html.escape(keyword)}</div></div><div class="seo-hero-visual" style="background-image:url('{_article_visual(slug)}')" aria-hidden="true"></div></header>{_body(slug,title,keyword)}<aside class="seo-related"><h2>À lire ensuite</h2><ul>{related_html}</ul></aside></main>
