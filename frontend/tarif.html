@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Catalogue produits — Review Defense</title>
-<style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Review Defense — Nos offres</title>
+  <style>
+
 :root{--page:#fff;--text:#111;--muted:#747474;--soft:#f4f5f8;--line:#e7e7e7;--pill:#f7f7f8;--max-width:1180px;--gap:42px;--radius:16px}
 *{box-sizing:border-box}
 html{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,Helvetica,Arial,sans-serif;color:var(--text);background:var(--page)}
@@ -31,115 +32,132 @@ button,select,a{font:inherit}
 @media(max-width:900px){.catalogue{width:min(100% - 32px,720px)}.product-grid{column-gap:22px;row-gap:30px}.product-visual{height:155px}}
 @media(max-width:620px){.catalogue{width:min(100% - 24px,440px);padding-top:20px}.catalogue-toolbar{margin-bottom:12px}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:14px;row-gap:24px}.product-visual{height:135px}.product-card.is-featured{padding:8px 7px 14px}}
 @media(max-width:390px){.product-grid{grid-template-columns:1fr}.product-visual{height:180px}}
-</style>
+
+  </style>
 </head>
 <body>
-<main class="catalogue">
-  <header class="catalogue-toolbar">
-    <button class="toolbar-link" type="button">Filtrer <span>›</span></button>
-    <label class="sort-control">
-      <span>Trier par :</span>
-      <select>
-        <option>À la une</option>
-        <option>Nouveautés</option>
-      </select>
-    </label>
-  </header>
-  <section class="product-grid" aria-label="Produits">
+  <main class="catalogue">
+
+    <header class="catalogue-toolbar">
+      <button class="toolbar-link" type="button">Filtrer <span>›</span></button>
+
+      <label class="sort-control">
+        <span>Trier par :</span>
+        <select>
+          <option>À la une</option>
+          <option>Nouveautés</option>
+          <option>Prix croissant</option>
+          <option>Prix décroissant</option>
+        </select>
+      </label>
+    </header>
+
+    <section class="product-grid" aria-label="Offres Review Defense">
 
       <article class="product-card is-featured">
-        <span class="badge">Nouveauté</span>
-        <div class="product-visual" aria-hidden="true"></div>
+        <span class="badge">Essentiel</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">◈</span></div>
         <div class="product-info">
-          <p class="brand">Marque</p>
-          <h2>Produit principal</h2>
-          <p class="meta">6 couleurs</p>
-          <a class="product-action" href="#">Essayer</a>
+          <p class="brand">Review Defense</p>
+          <h2>Essential</h2>
+          <p class="meta">Surveillance de votre réputation</p>
+          <p class="price">49 € <span>/ mois</span></p>
+          <a class="product-action" href="/analyse-avis-google/">Essayer</a>
         </div>
       </article>
 
       <article class="product-card">
-        <span class="badge">Nouveauté</span>
-        <div class="product-visual" aria-hidden="true"></div>
+        <span class="badge">Professionnel</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">◇</span></div>
         <div class="product-info">
-          <p class="brand">Marque</p>
-          <h2>Produit 02</h2>
-          <p class="meta">7 couleurs</p>
+          <p class="brand">Review Defense</p>
+          <h2>Professional</h2>
+          <p class="meta">Suivi et traitement renforcé</p>
+          <p class="price">89 € <span>/ mois</span></p>
         </div>
       </article>
 
       <article class="product-card">
-        <span class="badge">Nouveauté</span>
-        <div class="product-visual" aria-hidden="true"></div>
+        <span class="badge">Business</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">◆</span></div>
         <div class="product-info">
-          <p class="brand">Marque</p>
-          <h2>Produit 03</h2>
-          <p class="meta">1 couleur</p>
+          <p class="brand">Review Defense</p>
+          <h2>Business</h2>
+          <p class="meta">Protection avancée pour les équipes</p>
+          <p class="price">159 € <span>/ mois</span></p>
         </div>
       </article>
 
       <article class="product-card">
-        <span class="badge">Nouveauté</span>
-        <div class="product-visual" aria-hidden="true"></div>
+        <span class="badge">À la demande</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">✦</span></div>
         <div class="product-info">
-          <p class="brand">Marque</p>
-          <h2>Produit 04</h2>
-          <p class="meta">6 couleurs</p>
+          <p class="brand">Review Defense</p>
+          <h2>Défense d’un avis</h2>
+          <p class="meta">Intervention ponctuelle avec escalade</p>
+          <p class="price">59 € <span>à partir de</span></p>
         </div>
       </article>
 
       <article class="product-card">
-        <span class="badge">Nouveauté</span>
-        <div class="product-visual" aria-hidden="true"></div>
+        <span class="badge">Pack</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">▦</span></div>
         <div class="product-info">
-          <p class="brand">Marque</p>
-          <h2>Produit 05</h2>
-          <p class="meta">7 couleurs</p>
+          <p class="brand">Review Defense</p>
+          <h2>Starter 5</h2>
+          <p class="meta">5 dossiers de défense</p>
+          <p class="price">490 € <span>/ pack</span></p>
         </div>
       </article>
 
       <article class="product-card is-featured">
-        <span class="badge">Nouveauté</span>
-        <div class="product-visual" aria-hidden="true"></div>
+        <span class="badge">Pack</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">▤</span></div>
         <div class="product-info">
-          <p class="brand">Marque</p>
-          <h2>Produit 06</h2>
-          <p class="meta">1 couleur</p>
-          <a class="product-action" href="#">Essayer</a>
+          <p class="brand">Review Defense</p>
+          <h2>Plus 10</h2>
+          <p class="meta">10 dossiers de défense</p>
+          <p class="price">990 € <span>/ pack</span></p>
+          <a class="product-action" href="/analyse-avis-google/">Essayer</a>
         </div>
       </article>
 
       <article class="product-card">
-        <span class="badge">Nouveauté</span>
-        <div class="product-visual" aria-hidden="true"></div>
+        <span class="badge">Pack</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">▥</span></div>
         <div class="product-info">
-          <p class="brand">Marque</p>
-          <h2>Produit 07</h2>
-          <p class="meta">4 couleurs</p>
+          <p class="brand">Review Defense</p>
+          <h2>Pro 25</h2>
+          <p class="meta">25 dossiers de défense</p>
+          <p class="price">1 990 € <span>/ pack</span></p>
         </div>
       </article>
 
       <article class="product-card">
-        <span class="badge">Nouveauté</span>
-        <div class="product-visual" aria-hidden="true"></div>
+        <span class="badge">Audit</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">⌁</span></div>
         <div class="product-info">
-          <p class="brand">Marque</p>
-          <h2>Produit 08</h2>
-          <p class="meta">6 couleurs</p>
+          <p class="brand">Review Defense</p>
+          <h2>Audit initial</h2>
+          <p class="meta">1 à 9 avis ou dossiers</p>
+          <p class="price">79 € <span>/ audit</span></p>
         </div>
       </article>
 
       <article class="product-card">
-        <span class="badge">Nouveauté</span>
-        <div class="product-visual" aria-hidden="true"></div>
+        <span class="badge">Audit</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">◎</span></div>
         <div class="product-info">
-          <p class="brand">Marque</p>
-          <h2>Produit 09</h2>
-          <p class="meta">3 couleurs</p>
+          <p class="brand">Review Defense</p>
+          <h2>Audit étendu</h2>
+          <p class="meta">10 à 49 avis ou dossiers</p>
+          <p class="price">149 € <span>/ audit</span></p>
         </div>
       </article>
 
-  </section>
-</main>
+    </section>
+
+    <p class="footnote">Les offres et tarifs sont présentés à titre de référence. Les actions importantes restent soumises à votre validation.</p>
+  </main>
 </body>
 </html>
