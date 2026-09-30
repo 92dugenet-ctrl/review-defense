@@ -69,8 +69,8 @@ function Shell({ children }: { children: React.ReactNode }) {
   </div>;
 }
 
-function Scene({children,className=""}:{children:React.ReactNode,className?:string}) {
-  return <section className={"muse-scene "+className}><div className="muse-scene-inner">{children}</div></section>;
+function Scene({children,className="",id}:{children:React.ReactNode,className?:string,id?:string}) {
+  return <section id={id} className={"muse-scene "+className}><div className="muse-scene-inner">{children}</div></section>;
 }
 
 function Reveal({children}:{children:React.ReactNode}) {
