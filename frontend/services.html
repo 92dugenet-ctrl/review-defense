@@ -21,22 +21,55 @@
     .window-dot{width:8px;height:8px;border-radius:50%;background:#d7dee4}.window-title{margin-left:8px;font-weight:700;color:#1c2731}
     .window-body{display:grid;grid-template-columns:130px 1fr;min-height:440px}.window-side{background:#f7f8fa;padding:20px 12px;display:flex;flex-direction:column;gap:9px;font-size:10px;color:#778594}.window-side strong{color:#111820;margin-bottom:14px}.window-side .selected{background:#e7f2ff;color:#0878ee;border-radius:9px;padding:8px}
     .window-main{padding:25px}.window-main small{font-size:9px;letter-spacing:.12em;color:#84919d;font-weight:800}.window-main h3{font-size:27px;letter-spacing:-.04em;margin:8px 0 20px}.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.mini-card{background:#f6f8fa;border-radius:13px;padding:14px}.mini-card b{display:block;font-size:23px}.mini-card span{font-size:9px;color:#788694}.review-card{margin-top:16px;border:1px solid #e1e6ea;border-radius:14px;padding:15px}.review-card p{font-size:12px;line-height:1.5;color:#687887}.badge{display:inline-block;background:#e8f3ff;color:#0878ee;border-radius:999px;padding:5px 8px;font-size:9px;font-weight:800}
-    .services-list{width:min(1540px,100%);margin:auto;padding:30px 3.1vw 100px}.services-intro{max-width:900px;padding:75px 0}.services-intro h2{font-size:clamp(45px,5vw,78px);line-height:.96;letter-spacing:-.06em;margin:18px 0}.services-intro p{font-size:19px;line-height:1.6;color:#627184;max-width:760px}
-    .service-row{display:grid;grid-template-columns:1fr 1fr;gap:8vw;align-items:center;padding:105px 0;border-top:1px solid #dfe3e8}.service-row:last-child{border-bottom:1px solid #dfe3e8}.service-row:nth-child(even) .service-copy{order:2}.service-row:nth-child(even) .service-art{order:1}
-    .service-number{font-size:12px;letter-spacing:.12em;color:#0878ee;font-weight:800}.service-copy h2{font-size:clamp(40px,4.5vw,68px);line-height:.96;letter-spacing:-.055em;margin:17px 0 23px}.service-copy p{font-size:18px;line-height:1.6;color:#627184;max-width:620px}.service-copy .button{margin-top:10px}
-    .service-art{min-height:450px;border-radius:30px;background:#f4f6f8;display:grid;place-items:center;padding:30px;position:relative;overflow:hidden}.service-art:before{content:"";position:absolute;width:260px;height:260px;border-radius:50%;background:#dcecff;right:-100px;top:-90px}
-    .art-card{position:relative;z-index:1;width:min(480px,100%);background:#fff;border:1px solid #e0e6eb;border-radius:22px;padding:24px;box-shadow:0 25px 60px rgba(20,40,60,.12)}.art-card h3{font-size:23px;letter-spacing:-.035em;margin:8px 0 20px}.art-meta{font-size:9px;letter-spacing:.12em;color:#8794a0;font-weight:800}.art-line{display:grid;grid-template-columns:36px 1fr auto;gap:11px;align-items:center;padding:13px 0;border-top:1px solid #edf0f3;font-size:12px}.art-icon{width:34px;height:34px;border-radius:10px;background:#eef5ff;color:#0878ee;display:grid;place-items:center;font-weight:800}.art-status{font-size:8px;background:#eef7f0;color:#38704a;padding:5px 7px;border-radius:999px;font-weight:800}.bubble{max-width:78%;padding:12px 14px;border-radius:16px;background:#f1f4f7;font-size:12px;line-height:1.45;margin:10px 0}.bubble.me{margin-left:auto;background:#e4f1ff}.timeline{padding-left:24px;position:relative}.timeline:before{content:"";position:absolute;left:6px;top:5px;bottom:5px;width:1px;background:#dbe2e8}.timeline div{position:relative;padding:0 0 24px 20px}.timeline div:before{content:"";position:absolute;left:-1px;top:2px;width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid #0878ee}.timeline b{display:block;font-size:13px}.timeline span{display:block;color:#778593;font-size:11px;margin-top:4px;line-height:1.4}.approval{background:#101820;color:#fff;border-radius:20px;padding:25px}.approval h3{font-size:27px;line-height:1.05;margin:28px 0 10px}.approval p{font-size:12px;line-height:1.55;color:#b9c5cf}.approval-actions{display:flex;gap:7px;margin-top:22px}.approval-actions span{border:1px solid #3a4854;border-radius:999px;padding:7px 10px;font-size:9px}.approval-actions .active{background:#fff;color:#111820;border-color:#fff}
+    .services-list{width:min(1540px,100%);margin:auto;padding:30px 3.1vw 120px}
+    .services-intro{max-width:900px;padding:75px 0}
+    .services-intro h2{font-size:clamp(45px,5vw,78px);line-height:.96;letter-spacing:-.06em;margin:18px 0}
+    .services-intro p{font-size:19px;line-height:1.6;color:#627184;max-width:760px}
+    .service-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:7vw;align-items:center;padding:112px 0;border-top:1px solid #dfe3e8}
+    .service-row:last-child{border-bottom:1px solid #dfe3e8}
+    .service-row:nth-of-type(even) .service-copy{order:2}
+    .service-row:nth-of-type(even) .service-art{order:1}
+    .service-row:nth-of-type(odd) .service-copy{order:1}
+    .service-row:nth-of-type(odd) .service-art{order:2}
+    .service-number{font-size:12px;letter-spacing:.13em;color:#0878ee;font-weight:800}
+    .service-copy h2{font-size:clamp(48px,5vw,76px);line-height:.93;letter-spacing:-.06em;margin:17px 0 38px}
+    .service-copy h2 span{color:#6d7b8b}
+    .service-features{border-top:1px solid #dfe3e8;max-width:700px}
+    .service-feature{border-bottom:1px solid #dfe3e8;padding:0;outline:none}
+    .service-feature-title{display:flex;align-items:center;justify-content:space-between;gap:25px;padding:20px 0;font-size:clamp(20px,1.8vw,27px);line-height:1.2;letter-spacing:-.025em;color:#101820;cursor:default}
+    .service-feature-title:after{content:"";width:8px;height:8px;border-top:1.5px solid #101820;border-right:1.5px solid #101820;transform:rotate(45deg);transition:transform .25s ease;flex:0 0 auto}
+    .service-feature-detail{max-height:0;overflow:hidden;opacity:0;transform:translateY(-5px);transition:max-height .35s ease,opacity .25s ease,transform .35s ease}
+    .service-feature-detail p{margin:0;padding:0 42px 20px 0;font-size:15px;line-height:1.65;color:#6a7886;max-width:620px}
+    .service-feature:hover .service-feature-detail,.service-feature:focus-within .service-feature-detail{max-height:150px;opacity:1;transform:translateY(0)}
+    .service-feature:hover .service-feature-title:after,.service-feature:focus-within .service-feature-title:after{transform:rotate(135deg)}
+    .service-feature:focus{outline:none}
+    .service-art{min-height:520px;border-radius:30px;background:#f4f6f8;display:grid;place-items:center;padding:36px;position:relative;overflow:hidden}
+    .service-art:before{content:"";position:absolute;width:320px;height:320px;border-radius:50%;background:#dcecff;right:-120px;top:-110px}
+    .service-art:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;background:#edf4f9;left:-90px;bottom:-90px}
+    .art-card{position:relative;z-index:1;width:min(500px,100%);background:#fff;border:1px solid #e0e6eb;border-radius:22px;padding:26px;box-shadow:0 25px 60px rgba(20,40,60,.12)}
+    .art-card h3{font-size:25px;letter-spacing:-.035em;margin:8px 0 20px}
+    .art-meta{font-size:9px;letter-spacing:.12em;color:#8794a0;font-weight:800}
+    .art-line{display:grid;grid-template-columns:36px 1fr auto;gap:11px;align-items:center;padding:14px 0;border-top:1px solid #edf0f3;font-size:12px}
+    .art-icon{width:34px;height:34px;border-radius:10px;background:#eef5ff;color:#0878ee;display:grid;place-items:center;font-weight:800}
+    .art-status{font-size:8px;background:#eef7f0;color:#38704a;padding:5px 7px;border-radius:999px;font-weight:800}
+    .bubble{max-width:78%;padding:12px 14px;border-radius:16px;background:#f1f4f7;font-size:12px;line-height:1.45;margin:10px 0}
+    .bubble.me{margin-left:auto;background:#e4f1ff}
+    .timeline{padding-left:24px;position:relative}
+    .timeline:before{content:"";position:absolute;left:6px;top:5px;bottom:5px;width:1px;background:#dbe2e8}
+    .timeline div{position:relative;padding:0 0 24px 20px}
+    .timeline div:before{content:"";position:absolute;left:-1px;top:2px;width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid #0878ee}
+    .timeline b{display:block;font-size:13px}
+    .timeline span{display:block;color:#778593;font-size:11px;margin-top:4px;line-height:1.4}
+    .approval{background:#101820;color:#fff;border-radius:20px;padding:28px}
+    .approval h3{font-size:29px;line-height:1.05;margin:28px 0 10px}
+    .approval p{font-size:12px;line-height:1.55;color:#b9c5cf}
+    .approval-actions{display:flex;gap:7px;margin-top:22px}
+    .approval-actions span{border:1px solid #3a4854;border-radius:999px;padding:7px 10px;font-size:9px}
+    .approval-actions .active{background:#fff;color:#111820;border-color:#fff}
     .services-cta{padding:110px 3.1vw;background:#f3f8fc}.services-cta-inner{width:min(1540px,100%);margin:auto;display:grid;grid-template-columns:1fr auto;gap:50px;align-items:center}.services-cta h2{font-size:clamp(45px,6vw,86px);line-height:.93;letter-spacing:-.06em;margin:15px 0}.services-cta p{font-size:18px;color:#627184;line-height:1.55;max-width:720px}
-    @media(max-width:900px){.services-hero-grid,.service-row,.services-cta-inner{grid-template-columns:1fr}.service-row:nth-child(even) .service-copy,.service-row:nth-child(even) .service-art{order:initial}.service-art{min-height:380px}.service-visual{min-height:480px}}
-    @media(max-width:600px){.services-hero{padding:75px 20px}.services-hero h1{font-size:52px}.services-list{padding:0 20px 70px}.services-intro{padding:60px 0}.service-row{padding:70px 0}.service-copy h2{font-size:41px}.service-art{padding:18px;min-height:330px}.window-body{grid-template-columns:88px 1fr}.window-side{font-size:8px;padding:15px 8px}.window-main{padding:17px}.window-main h3{font-size:20px}.mini-grid{grid-template-columns:1fr}.services-cta{padding:80px 20px}.services-actions{flex-direction:column;align-items:stretch}.services-actions .button{width:100%}}
+    @media(max-width:900px){.services-hero-grid,.service-row,.services-cta-inner{grid-template-columns:1fr}.service-row:nth-of-type(even) .service-copy,.service-row:nth-of-type(even) .service-art,.service-row:nth-of-type(odd) .service-copy,.service-row:nth-of-type(odd) .service-art{order:initial}.service-art{min-height:380px}.service-visual{min-height:480px}.service-copy{width:100%}}
+    @media(max-width:600px){.services-hero{padding:75px 20px}.services-hero h1{font-size:52px}.services-list{padding:0 20px 70px}.services-intro{padding:60px 0}.service-row{padding:70px 0;gap:42px}.service-copy h2{font-size:43px;margin-bottom:28px}.service-feature-title{font-size:20px;padding:18px 0}.service-feature-detail p{font-size:14px;padding-right:10px}.service-art{padding:18px;min-height:330px}.window-body{grid-template-columns:88px 1fr}.window-side{font-size:8px;padding:15px 8px}.window-main{padding:17px}.window-main h3{font-size:20px}.mini-grid{grid-template-columns:1fr}.services-cta{padding:80px 20px}.services-actions{flex-direction:column;align-items:stretch}.services-actions .button{width:100%}}
   
-    .service-copy .service-more{display:inline;color:#7a8794}
-    .service-expand{position:relative;display:inline-flex;align-items:center;margin:2px 0 0 7px;vertical-align:middle}
-    .service-expand-trigger{width:24px;height:24px;border:1px solid #d8e0e7;border-radius:50%;background:#fff;color:#0878ee;font-weight:800;font-size:12px;display:grid;place-items:center;cursor:help;box-shadow:0 5px 15px rgba(20,40,60,.08)}
-    .service-tooltip{position:absolute;left:34px;top:-10px;width:min(340px,calc(100vw - 70px));padding:14px 16px;border:1px solid #dfe6ec;border-radius:14px;background:#101820;color:#dce5ec;font-size:12px;line-height:1.55;box-shadow:0 18px 45px rgba(10,25,40,.22);opacity:0;visibility:hidden;transform:translateY(5px);transition:opacity .18s ease,transform .18s ease;z-index:20;pointer-events:none}
-    .service-expand:hover .service-tooltip,.service-expand:focus-within .service-tooltip{opacity:1;visibility:visible;transform:translateY(0)}
-    .service-expand-label{font-size:10px;color:#7c8996;margin-left:7px;white-space:nowrap}
-    @media(max-width:600px){.service-tooltip{left:-8px;top:32px}.service-more{display:none!important}.service-expand-label{display:none}}
 </style>
 </head>
 <body>
@@ -60,11 +93,76 @@
 <div class="service-visual"><div class="service-window"><div class="window-bar"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span><span class="window-title">Review Defense · Control Center</span></div><div class="window-body"><aside class="window-side"><strong>REVIEW DEFENSE</strong><span class="selected">Vue d’ensemble</span><span>Avis</span><span>Dossiers</span><span>Preuves</span><span>Suivi</span></aside><div class="window-main"><small>CONTROL WORKSPACE</small><h3>Votre réputation, en un seul espace.</h3><div class="mini-grid"><div class="mini-card"><b>24</b><span>avis suivis</span></div><div class="mini-card"><b>07</b><span>dossiers actifs</span></div><div class="mini-card"><b>03</b><span>à valider</span></div></div><div class="review-card"><span class="badge">ANALYSE</span><p>Un nouvel avis nécessite une vérification du contexte et des éléments disponibles.</p></div></div></div></div></div>
 </div></section>
 <section class="services-list"><div class="services-intro"><span class="services-eyebrow">LES SERVICES</span><h2>Chaque situation mérite <span>le bon niveau d’attention.</span></h2><p>Chaque service présente une étape précise du parcours, avec les informations utiles et une validation humaine lorsque cela est nécessaire.</p></div>
-<article class="service-row"><div class="service-copy"><span class="service-number">01 · SERVICE</span><h2>Analyse <span>des avis.</span> <span class="service-expand"><button class="service-expand-trigger" type="button" aria-label="Plus d’informations sur l’analyse des avis">i</button><span class="service-expand-label">en savoir plus</span><span class="service-tooltip">Comprendre qui mérite d’être vérifié : examiner le contenu, le contexte, la chronologie et les signaux disponibles. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cette lecture sert à préparer un dossier clair, sans automatiser la décision.</span></span></h2><p>Comprendre ce qui mérite d’être vérifié avant de décider quoi que ce soit. Examinez le contenu, le contexte et les signaux disponibles. <span class="service-more">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Le contexte, la chronologie et les informations visibles permettent de structurer une première lecture sans tirer de conclusion hâtive.</span></p><a class="button blue" href="/analyse-avis-google/">Analyser un avis →</a></div><div class="service-art"><div class="art-card"><span class="art-meta">ANALYSE · AVIS #REV-88421</span><h3>Situation à examiner</h3><span class="badge">À VÉRIFIER</span><div class="review-card"><p>« Expérience très décevante, je n’ai jamais été client de cet établissement… »</p></div><div class="mini-grid"><div class="mini-card"><b>03</b><span>signaux</span></div><div class="mini-card"><b>07</b><span>éléments</span></div><div class="mini-card"><b>01</b><span>dossier</span></div></div></div></div></article>
-<article class="service-row"><div class="service-copy"><span class="service-number">02 · SERVICE</span><h2>Dossier <span>& preuves.</span></h2><p>Centralisez captures, URL, échanges, dates et pièces pertinentes. Chaque élément peut être relié à l’affirmation qu’il permet de vérifier. <span class="service-more">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Chaque pièce peut être conservée avec sa source, sa date et son rôle dans le dossier afin de rendre l’ensemble plus lisible.</span></p><a class="button blue" href="/analyse-avis-google/">Constituer un dossier →</a></div><div class="service-art"><div class="art-card"><span class="art-meta">DOSSIER · PREUVES</span><h3>Éléments associés</h3><div class="art-line"><div class="art-icon">↗</div><div><b>URL de l’avis</b><small> · source publique</small></div><span class="art-status">LIÉE</span></div><div class="art-line"><div class="art-icon">▣</div><div><b>Capture datée</b><small> · preuve</small></div><span class="art-status">VÉRIFIÉE</span></div><div class="art-line"><div class="art-icon">✦</div><div><b>Échange client</b><small> · contexte</small></div><span class="art-status">À LIRE</span></div></div></div></article>
-<article class="service-row"><div class="service-copy"><span class="service-number">03 · SERVICE</span><h2>Préparation <span>des réponses.</span> <span class="service-expand"><button class="service-expand-trigger" type="button" aria-label="Plus d’informations sur la préparation des réponses">i</button><span class="service-expand-label">en savoir plus</span><span class="service-tooltip">Préparer un brouillon factuel et cohérent avec le contexte. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vous pouvez ensuite relire, modifier et valider avant toute publication.</span></span></h2><p>Structurez une réponse factuelle, cohérente avec le contexte et votre ton de communication. Vous gardez la main avant toute publication. <span class="service-more">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Le brouillon peut être enrichi, raccourci ou reformulé avant validation, afin de conserver une communication adaptée à chaque situation.</span></p><a class="button blue" href="/analyse-avis-google/">Préparer une réponse →</a></div><div class="service-art"><div class="art-card"><span class="art-meta">RÉPONSE · BROUILLON</span><h3>Préparation assistée</h3><div class="bubble">Voici les éléments factuels disponibles dans le dossier.</div><div class="bubble me">Prépare une réponse courte, professionnelle et factuelle.</div><div class="bubble">Brouillon prêt. Vérifiez le contenu avant toute publication.</div></div></div></article>
-<article class="service-row"><div class="service-copy"><span class="service-number">04 · SERVICE</span><h2>Suivi <span>des signalements.</span> <span class="service-expand"><button class="service-expand-trigger" type="button" aria-label="Plus d’informations sur le suivi des signalements">i</button><span class="service-expand-label">en savoir plus</span><span class="service-tooltip">Visualiser l’avancement d’un dossier dans une chronologie simple. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Les étapes, décisions et validations restent visibles dans un même espace.</span></span></h2><p>Suivez les étapes, les décisions et les éléments transmis depuis une chronologie unique, avec un historique lisible. <span class="service-more">Lorem ipsum dolor sit amet, consectetur adipiscing elit. La chronologie donne une vision rapide des actions préparées, des éléments ajoutés et des validations encore attendues.</span></p><a class="button blue" href="/analyse-avis-google/">Suivre un dossier →</a></div><div class="service-art"><div class="art-card"><span class="art-meta">SUIVI · CHRONOLOGIE</span><h3>Un dossier, une vue claire</h3><div class="timeline"><div><b>Analyse terminée</b><span>Les éléments disponibles ont été qualifiés.</span></div><div><b>Dossier complété</b><span>Les preuves utiles ont été associées.</span></div><div><b>Signalement préparé</b><span>Le contenu et le motif ont été revus.</span></div><div><b>Validation requise</b><span>Une décision humaine reste nécessaire.</span></div></div></div></div></article>
-<article class="service-row"><div class="service-copy"><span class="service-number">05 · SERVICE</span><h2>Validation <span>humaine.</span> <span class="service-expand"><button class="service-expand-trigger" type="button" aria-label="Plus d’informations sur la validation humaine">i</button><span class="service-expand-label">en savoir plus</span><span class="service-tooltip">L’outil prépare, l’utilisateur décide. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Les actions importantes restent soumises à une validation explicite avant leur exécution.</span></span></h2><p>L’automatisation prépare. Vous décidez. Les actions importantes restent soumises à une validation explicite. <span class="service-more">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cette étape permet de relire le dossier, modifier les propositions et choisir explicitement la suite avant toute action externe.</span></p><a class="button blue" href="/analyse-avis-google/">Commencer →</a></div><div class="service-art"><div class="approval"><span class="badge">APPROBATION</span><h3>Prêt pour votre validation</h3><p>Le dossier est structuré. Aucune action externe n’est exécutée tant que vous n’avez pas validé explicitement la suite.</p><div class="approval-actions"><span class="active">Valider</span><span>Modifier</span><span>Refuser</span></div></div></div></article>
+
+<article class="service-row">
+  <div class="service-copy">
+    <span class="service-number">01 · SERVICE</span>
+    <h2>Analyse <span>des avis.</span></h2>
+    <div class="service-features">
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Contenu de l’avis</div><div class="service-feature-detail"><p>Identifier ce qui est réellement reproché, distinguer les faits des formulations générales et repérer les éléments qui méritent d’être examinés.</p></div></div>
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Contexte & chronologie</div><div class="service-feature-detail"><p>Replacer l’avis dans son contexte : date, relation avec l’établissement, échanges disponibles et événements associés.</p></div></div>
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Signaux disponibles</div><div class="service-feature-detail"><p>Regrouper les informations visibles qui peuvent aider à décider si une vérification complémentaire est pertinente.</p></div></div>
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Niveau d’attention</div><div class="service-feature-detail"><p>Structurer une première lecture simple afin de savoir quelles informations consulter avant de constituer un dossier.</p></div></div>
+    </div>
+  </div>
+  <div class="service-art"><div class="art-card"><span class="art-meta">ANALYSE · AVIS #REV-88421</span><h3>Situation à examiner</h3><span class="badge">À VÉRIFIER</span><div class="review-card"><p>« Expérience très décevante, je n’ai jamais été client de cet établissement… »</p></div><div class="mini-grid"><div class="mini-card"><b>03</b><span>signaux</span></div><div class="mini-card"><b>07</b><span>éléments</span></div><div class="mini-card"><b>01</b><span>dossier</span></div></div></div></div>
+</article>
+
+<article class="service-row">
+  <div class="service-copy">
+    <span class="service-number">02 · SERVICE</span>
+    <h2>Dossier <span>& preuves.</span></h2>
+    <div class="service-features">
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Captures & contenus</div><div class="service-feature-detail"><p>Conserver les éléments visuels utiles avec leur contexte pour retrouver rapidement ce qui a été observé.</p></div></div>
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">URL & sources</div><div class="service-feature-detail"><p>Associer chaque élément à sa source afin de garder un dossier lisible et facilement vérifiable.</p></div></div>
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Dates & chronologie</div><div class="service-feature-detail"><p>Rassembler les dates importantes pour comprendre l’ordre des événements et éviter les informations isolées.</p></div></div>
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Éléments associés</div><div class="service-feature-detail"><p>Relier chaque pièce à l’affirmation ou au point du dossier qu’elle permet d’éclairer.</p></div></div>
+    </div>
+  </div>
+  <div class="service-art"><div class="art-card"><span class="art-meta">DOSSIER · PREUVES</span><h3>Éléments associés</h3><div class="art-line"><div class="art-icon">↗</div><div><b>URL de l’avis</b><small> · source publique</small></div><span class="art-status">LIÉE</span></div><div class="art-line"><div class="art-icon">▣</div><div><b>Capture datée</b><small> · preuve</small></div><span class="art-status">VÉRIFIÉE</span></div><div class="art-line"><div class="art-icon">✦</div><div><b>Échange client</b><small> · contexte</small></div><span class="art-status">À LIRE</span></div></div></div>
+</article>
+
+<article class="service-row">
+  <div class="service-copy">
+    <span class="service-number">03 · SERVICE</span>
+    <h2>Préparation <span>des réponses.</span></h2>
+    <div class="service-features">
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Base factuelle</div><div class="service-feature-detail"><p>Reprendre les informations utiles du dossier pour construire une réponse cohérente avec les éléments disponibles.</p></div></div>
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Ton & formulation</div><div class="service-feature-detail"><p>Adapter la formulation au contexte et au ton de communication choisi, sans perdre en clarté.</p></div></div>
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Réponse structurée</div><div class="service-feature-detail"><p>Organiser le brouillon pour aller à l’essentiel, répondre au sujet et éviter les formulations inutiles.</p></div></div>
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Relecture avant publication</div><div class="service-feature-detail"><p>Le brouillon reste modifiable et soumis à votre validation avant toute publication ou action externe.</p></div></div>
+    </div>
+  </div>
+  <div class="service-art"><div class="art-card"><span class="art-meta">RÉPONSE · BROUILLON</span><h3>Préparation assistée</h3><div class="bubble">Voici les éléments factuels disponibles dans le dossier.</div><div class="bubble me">Prépare une réponse courte, professionnelle et factuelle.</div><div class="bubble">Brouillon prêt. Vérifiez le contenu avant toute publication.</div></div></div>
+</article>
+
+<article class="service-row">
+  <div class="service-copy">
+    <span class="service-number">04 · SERVICE</span>
+    <h2>Suivi <span>des signalements.</span></h2>
+    <div class="service-features">
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Étapes du dossier</div><div class="service-feature-detail"><p>Voir immédiatement où en est le dossier et quelles étapes ont déjà été préparées.</p></div></div>
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Historique</div><div class="service-feature-detail"><p>Conserver une chronologie claire des informations ajoutées, des décisions prises et des validations réalisées.</p></div></div>
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Actions préparées</div><div class="service-feature-detail"><p>Identifier les actions prêtes à être examinées sans les exécuter automatiquement.</p></div></div>
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Validation attendue</div><div class="service-feature-detail"><p>Repérer rapidement les points qui nécessitent encore une décision ou une validation humaine.</p></div></div>
+    </div>
+  </div>
+  <div class="service-art"><div class="art-card"><span class="art-meta">SUIVI · CHRONOLOGIE</span><h3>Un dossier, une vue claire</h3><div class="timeline"><div><b>Analyse terminée</b><span>Les éléments disponibles ont été qualifiés.</span></div><div><b>Dossier complété</b><span>Les preuves utiles ont été associées.</span></div><div><b>Signalement préparé</b><span>Le contenu et le motif ont été revus.</span></div><div><b>Validation requise</b><span>Une décision humaine reste nécessaire.</span></div></div></div></div>
+</article>
+
+<article class="service-row">
+  <div class="service-copy">
+    <span class="service-number">05 · SERVICE</span>
+    <h2>Validation <span>humaine.</span></h2>
+    <div class="service-features">
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Proposition préparée</div><div class="service-feature-detail"><p>Le système prépare les informations et les actions possibles dans un format simple à relire.</p></div></div>
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Modifier</div><div class="service-feature-detail"><p>Vous pouvez ajuster les informations, la formulation ou le contenu avant de poursuivre.</p></div></div>
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Valider</div><div class="service-feature-detail"><p>Une action importante ne part qu’après une validation explicite de votre part.</p></div></div>
+      <div class="service-feature" tabindex="0"><div class="service-feature-title">Garder le contrôle</div><div class="service-feature-detail"><p>Chaque étape reste compréhensible et sous contrôle humain, avec la possibilité de refuser ou de modifier la suite.</p></div></div>
+    </div>
+  </div>
+  <div class="service-art"><div class="approval"><span class="badge">APPROBATION</span><h3>Prêt pour votre validation</h3><p>Le dossier est structuré. Aucune action externe n’est exécutée tant que vous n’avez pas validé explicitement la suite.</p><div class="approval-actions"><span class="active">Valider</span><span>Modifier</span><span>Refuser</span></div></div></div>
+</article>
 </section>
 <section class="services-cta"><div class="services-cta-inner"><div><span class="services-eyebrow">COMMENCER</span><h2>Commencez par un avis.<br><span>Construisez le dossier.</span></h2><p>Review Defense structure l’analyse ; les décisions importantes restent humaines.</p></div><a class="button dark" href="/analyse-avis-google/">Analyser un avis →</a></div></section>
 </main>
