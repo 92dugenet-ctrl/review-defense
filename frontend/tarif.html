@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Catalogue produits — Review Defense</title>
-  <style>:root {
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catalogue produits — Review Defense</title>
+<style>
+:root {
   --page: #ffffff;
   --text: #111111;
   --muted: #747474;
@@ -30,7 +31,17 @@ button, select, a { font: inherit; }
 .toolbar-link span { display: inline-block; margin-left: 4px; font-size: 15px; transform: translateY(1px); }
 .sort-control { display: flex; align-items: center; gap: 4px; color: #555; }
 .sort-control select { appearance: none; border: 0; background: transparent; color: var(--text); padding: 8px 20px 8px 2px; cursor: pointer; outline: none; background-image: linear-gradient(45deg, transparent 50%, #777 50%), linear-gradient(135deg, #777 50%, transparent 50%); background-position: calc(100% - 8px) 50%, calc(100% - 4px) 50%; background-size: 4px 4px, 4px 4px; background-repeat: no-repeat; }
-.product-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--gap); row-gap: 38px; }
+.catalogue-section{margin-top:64px}
+.catalogue-section:first-of-type{margin-top:0}
+.catalogue-section-title{margin:0 0 22px;font-size:22px;line-height:1.1;font-weight:600;letter-spacing:-.035em}
+.product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--gap);row-gap:38px}
+.product-grid.is-carousel{display:flex;overflow-x:auto;overflow-y:hidden;gap:var(--gap);padding:4px 2px 18px;scroll-snap-type:x mandatory;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.product-grid.is-carousel .product-card{flex:0 0 calc((100% - (var(--gap) * 2)) / 3);scroll-snap-align:start}
+.product-grid.is-carousel::-webkit-scrollbar{height:6px}
+.product-grid.is-carousel::-webkit-scrollbar-thumb{background:#d7d7dc;border-radius:999px}
+.catalogue-section-note{margin:-12px 0 20px;color:#888;font-size:9px}
+.price{margin-top:4px;font-size:9px;line-height:1.35;font-weight:500}.price span{color:#444}
+
 .product-card { position: relative; min-width: 0; padding: 0; text-align: center; }
 .product-card.is-featured { padding: 10px 10px 18px; border-radius: var(--radius); background: var(--soft); }
 .badge { position: absolute; z-index: 2; top: 2px; left: 4px; display: inline-flex; align-items: center; min-height: 18px; padding: 2px 7px; border-radius: 999px; background: rgba(255, 255, 255, .9); color: #666; font-size: 8px; line-height: 1; letter-spacing: -.01em; }
@@ -47,23 +58,21 @@ button, select, a { font: inherit; }
 .footnote { margin: 42px 0 0; color: #8b8b8b; font-size: 9px; text-align: center; }
 @media (max-width: 900px) { .catalogue { width: min(100% - 32px, 720px); } .product-grid { column-gap: 22px; row-gap: 30px; } .product-visual { height: 155px; } }
 @media (max-width: 620px) { .catalogue { width: min(100% - 24px, 440px); padding-top: 20px; } .catalogue-toolbar { margin-bottom: 12px; } .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 14px; row-gap: 24px; } .product-visual { height: 135px; } .product-card.is-featured { padding: 8px 7px 14px; } }
-@media (max-width: 390px) { .product-grid { grid-template-columns: 1fr; } .product-visual { height: 180px; } }</style>
+@media (max-width: 390px) { .product-grid { grid-template-columns: 1fr; } .product-visual { height: 180px; } }
+@media(max-width:900px){.product-grid.is-carousel .product-card{flex-basis:calc((100% - var(--gap))/2)}}
+@media(max-width:620px){.catalogue-section{margin-top:52px}.catalogue-section-title{font-size:19px}.product-grid.is-carousel{gap:14px}.product-grid.is-carousel .product-card{flex-basis:78%}}
+</style>
 </head>
 <body>
-  <main class="catalogue">
-    <header class="catalogue-toolbar">
-      <button class="toolbar-link" type="button">Filtrer <span>›</span></button>
-      <label class="sort-control">
-        <span>Trier par :</span>
-        <select>
-          <option>À la une</option>
-          <option>Nouveautés</option>
-          <option>Prix croissant</option>
-          <option>Prix décroissant</option>
-        </select>
-      </label>
-    </header>
-    <section class="product-grid" aria-label="Offres Review Defense">
+<main class="catalogue">
+<header class="catalogue-toolbar">
+<button class="toolbar-link" type="button">Filtrer <span>›</span></button>
+<label class="sort-control"><span>Trier par :</span><select><option>À la une</option><option>Nouveautés</option><option>Prix croissant</option><option>Prix décroissant</option></select></label>
+</header>
+    <section class="catalogue-section">
+      <h2 class="catalogue-section-title">Abonnements</h2>
+      <p class="catalogue-section-note">Les offres récurrentes de Review Defense.</p>
+      <div class="product-grid" aria-label="Abonnements">
       <article class="product-card is-featured">
         <span class="badge">Essentiel</span>
         <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">◈</span></div>
@@ -97,18 +106,73 @@ button, select, a { font: inherit; }
           <p class="price">159 € <span>/ mois</span></p>
         </div>
       </article>
-
+      </div>
+    </section>
+    <section class="catalogue-section">
+      <h2 class="catalogue-section-title">Défense — un avis</h2>
+      <p class="catalogue-section-note">Une intervention à la demande, avec plusieurs niveaux de traitement.</p>
+      <div class="product-grid is-carousel" aria-label="Défense — un avis">
       <article class="product-card">
-        <span class="badge">À la demande</span>
+        <span class="badge">Niveau 1</span>
         <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">✦</span></div>
         <div class="product-info">
           <p class="brand">Review Defense</p>
-          <h2>Défense d’un avis</h2>
-          <p class="meta">Intervention ponctuelle avec escalade</p>
-          <p class="price">59 € <span>à partir de</span></p>
+          <h2>Défense — Analyse</h2>
+          <p class="meta">Analyse et préparation du dossier</p>
+          <p class="price">49 € <span>à partir de</span></p>
         </div>
       </article>
 
+      <article class="product-card">
+        <span class="badge">Niveau 2</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">✧</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Défense — Réponse</h2>
+          <p class="meta">Préparation renforcée et réponse</p>
+          <p class="price">99 € <span>à partir de</span></p>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <span class="badge">Niveau 3</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">✦</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Défense — Escalade</h2>
+          <p class="meta">Traitement approfondi du dossier</p>
+          <p class="price">159 € <span>à partir de</span></p>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <span class="badge">Niveau 4</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">✧</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Défense — Avancée</h2>
+          <p class="meta">Escalade et suivi renforcé</p>
+          <p class="price">219 € <span>à partir de</span></p>
+        </div>
+      </article>
+
+      <article class="product-card is-featured">
+        <span class="badge">Niveau 5</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">◆</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Défense — Maximale</h2>
+          <p class="meta">Dossier complet avec traitement maximal</p>
+          <p class="price">275 € <span>maximum</span></p>
+          <a class="product-action" href="/analyse-avis-google/">Essayer</a>
+        </div>
+      </article>
+      </div>
+    </section>
+    <section class="catalogue-section">
+      <h2 class="catalogue-section-title">Packs de défense</h2>
+      <p class="catalogue-section-note">Des volumes de dossiers à utiliser hors abonnement.</p>
+      <div class="product-grid is-carousel" aria-label="Packs de défense">
       <article class="product-card">
         <span class="badge">Pack</span>
         <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">▦</span></div>
@@ -128,7 +192,6 @@ button, select, a { font: inherit; }
           <h2>Plus 10</h2>
           <p class="meta">10 dossiers de défense</p>
           <p class="price">990 € <span>/ pack</span></p>
-          <a class="product-action" href="/analyse-avis-google/">Essayer</a>
         </div>
       </article>
 
@@ -143,6 +206,33 @@ button, select, a { font: inherit; }
         </div>
       </article>
 
+      <article class="product-card">
+        <span class="badge">Pack</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">▧</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Business 50</h2>
+          <p class="meta">50 dossiers de défense</p>
+          <p class="price">3 490 € <span>/ pack</span></p>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <span class="badge">Pack</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">▨</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Enterprise 100</h2>
+          <p class="meta">100 dossiers de défense</p>
+          <p class="price">5 900 € <span>/ pack</span></p>
+        </div>
+      </article>
+      </div>
+    </section>
+    <section class="catalogue-section">
+      <h2 class="catalogue-section-title">Audits — hors abonnement</h2>
+      <p class="catalogue-section-note">Audits ponctuels selon le volume d’avis ou de dossiers.</p>
+      <div class="product-grid is-carousel" aria-label="Audits — hors abonnement">
       <article class="product-card">
         <span class="badge">Audit</span>
         <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">⌁</span></div>
@@ -164,8 +254,86 @@ button, select, a { font: inherit; }
           <p class="price">149 € <span>/ audit</span></p>
         </div>
       </article>
+
+      <article class="product-card">
+        <span class="badge">Audit</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">◌</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Audit avancé</h2>
+          <p class="meta">50 à 99 avis ou dossiers</p>
+          <p class="price">249 € <span>/ audit</span></p>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <span class="badge">Audit</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">◍</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Audit entreprise</h2>
+          <p class="meta">100 à 249 avis ou dossiers</p>
+          <p class="price">399 € <span>/ audit</span></p>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <span class="badge">Audit</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">◉</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Audit volume</h2>
+          <p class="meta">250 à 499 avis ou dossiers</p>
+          <p class="price">599 € <span>/ audit</span></p>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <span class="badge">Audit</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">◎</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Audit 500+</h2>
+          <p class="meta">500 à 999 avis ou dossiers</p>
+          <p class="price">899 € <span>/ audit</span></p>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <span class="badge">Audit</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">◈</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Audit 1 000+</h2>
+          <p class="meta">1 000 à 2 499 avis ou dossiers</p>
+          <p class="price">1 290 € <span>/ audit</span></p>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <span class="badge">Audit</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">◇</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Audit 2 500+</h2>
+          <p class="meta">2 500 à 4 999 avis ou dossiers</p>
+          <p class="price">1 790 € <span>/ audit</span></p>
+        </div>
+      </article>
+
+      <article class="product-card is-featured">
+        <span class="badge">Audit</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">◆</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Audit 5 000+</h2>
+          <p class="meta">5 000 à 9 999 avis ou dossiers</p>
+          <p class="price">2 490 € <span>/ audit</span></p>
+        </div>
+      </article>
+      </div>
     </section>
-    <p class="footnote">Les actions importantes restent soumises à votre validation.</p>
-  </main>
+<p class="footnote">Les actions importantes restent soumises à votre validation.</p>
+</main>
 </body>
 </html>
