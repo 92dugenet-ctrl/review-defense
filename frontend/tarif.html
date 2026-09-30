@@ -3,235 +3,270 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Les tarifs Review Defense : surveillance de réputation, défense d'avis, packs et audits.">
+<meta name="description" content="Tarifs Review Defense — surveillance, défense, packs et audits.">
 <title>Tarifs — Review Defense</title>
 <style>
 :root{
-  --ink:#0b1117;--muted:#65727f;--line:#dfe5ea;--soft:#f5f7f9;
-  --blue:#0878ee;--blue-dark:#055ec0;--max:1380px;--green:#dff7ea;
+  --bg:#fff;
+  --ink:#111;
+  --muted:#777;
+  --soft:#f4f4f6;
+  --line:#e9e9ec;
+  --max:1440px;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#fff}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 button{font:inherit}
-.rd-top{height:70px;display:flex;align-items:center;gap:36px;padding:0 3.1vw;border-bottom:1px solid rgba(15,25,35,.08);background:rgba(255,255,255,.92);position:sticky;top:0;z-index:50;backdrop-filter:blur(18px)}
-.rd-brand{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:750;white-space:nowrap}
-.rd-mark{color:var(--blue);font-size:20px;line-height:1}
-.rd-nav{display:flex;align-items:center;gap:30px;flex:1;font-size:14px}
-.rd-nav a{color:#43515d;transition:.2s}.rd-nav a:hover,.rd-nav a[aria-current="page"]{color:var(--blue)}
-.rd-actions{display:flex;align-items:center;gap:14px}.rd-search{font-size:24px}
-.rd-btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:11px 19px;font-size:13px;font-weight:750}
-.rd-btn-blue{background:var(--blue);color:#fff}.rd-btn-blue:hover{background:var(--blue-dark)}
-.rd-menu{display:none;border:0;background:none;font-size:23px;margin-left:auto}
-.wrap{width:min(var(--max),100%);margin:auto;padding:0 30px}
-.hero{padding:100px 0 85px;border-bottom:1px solid var(--line);overflow:hidden}
-.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:80px;align-items:end}
-.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--blue);margin:0 0 20px}
-h1{font-size:clamp(54px,7.4vw,112px);line-height:.88;letter-spacing:-.07em;margin:0;max-width:950px}
-.hero-copy p{font-size:20px;line-height:1.55;color:var(--muted);max-width:650px;margin:32px 0 0}
-.hero-note{align-self:end;border-left:3px solid var(--blue);padding:8px 0 8px 24px;color:#46535e;font-size:16px;line-height:1.55}
-.section{padding:100px 0}.section.alt{background:var(--soft)}
-.section-head{display:flex;justify-content:space-between;align-items:end;gap:40px;margin-bottom:48px}
-.section-head h2{font-size:clamp(38px,5vw,72px);line-height:.95;letter-spacing:-.06em;margin:0}
-.section-head p{max-width:520px;color:var(--muted);line-height:1.55;margin:0;font-size:16px}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.card{border:1px solid var(--line);border-radius:26px;padding:32px;background:#fff;position:relative;overflow:hidden}
-.card.featured{border-color:#a9d1ff;box-shadow:0 18px 55px rgba(8,120,238,.10)}
-.badge{display:inline-flex;padding:7px 10px;border-radius:999px;background:#e8f3ff;color:#0768d6;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;margin-bottom:22px}
-.card h3{font-size:25px;letter-spacing:-.035em;margin:0 0 8px}.card .desc{color:var(--muted);font-size:14px;line-height:1.5;min-height:43px}
-.price{font-size:48px;letter-spacing:-.06em;font-weight:800;margin:25px 0 4px}.price small{font-size:15px;letter-spacing:0;color:var(--muted);font-weight:600}
-.sub-note{font-size:12px;color:#71808c;margin-bottom:22px}
-.cta{display:flex;justify-content:center;align-items:center;width:100%;border-radius:999px;padding:13px 18px;background:#111820;color:#fff;font-size:13px;font-weight:750}.cta.blue{background:var(--blue)}
-.loyalty{margin-top:25px;border-top:1px solid var(--line)}
-.loyalty-row{display:flex;justify-content:space-between;gap:15px;padding:11px 0;border-bottom:1px solid #edf0f2;font-size:13px}
-.loyalty-row span:first-child{color:var(--muted)}.loyalty-row strong{font-weight:800}
-.floor{margin-top:16px;padding:12px 14px;border-radius:15px;background:#f2f8ff;color:#145e9f;font-size:12px;font-weight:750}
-.defense-panel{display:grid;grid-template-columns:.9fr 1.1fr;gap:20px}
-.defense-main{background:#101820;color:#fff;border-radius:30px;padding:48px;min-height:430px;display:flex;flex-direction:column;justify-content:space-between}
-.defense-main h3{font-size:clamp(40px,5vw,72px);line-height:.92;letter-spacing:-.06em;margin:0;max-width:650px}
-.defense-main p{color:#b9c5ce;line-height:1.55;max-width:580px}
-.range{display:flex;align-items:end;gap:15px;margin-top:25px}.range strong{font-size:64px;letter-spacing:-.07em}.range span{color:#aebbc5;font-size:13px;padding-bottom:12px}
-.steps{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.step{border:1px solid var(--line);border-radius:24px;padding:28px;background:#fff}.step .num{font-size:12px;color:var(--blue);font-weight:850}.step h4{font-size:19px;margin:25px 0 7px}.step p{color:var(--muted);font-size:13px;line-height:1.5;margin:0}
-.pack-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
-.pack{border:1px solid var(--line);border-radius:22px;padding:26px;background:#fff}
-.pack h3{margin:0;font-size:20px}.pack .cases{font-size:12px;color:var(--muted);margin-top:5px}.pack .pack-price{font-size:36px;font-weight:800;letter-spacing:-.055em;margin:22px 0 5px}.pack .unit{font-size:12px;color:var(--muted)}
-.audit-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
-.audit{border-top:2px solid #111820;padding:20px 4px}.audit .volume{font-size:13px;font-weight:800}.audit .audit-price{font-size:29px;font-weight:800;letter-spacing:-.05em;margin-top:18px}.audit small{color:var(--muted);font-size:11px}
-.custom{margin-top:18px;border:1px dashed #aeb9c2;border-radius:22px;padding:25px 28px;display:flex;justify-content:space-between;gap:25px;align-items:center;background:#fff}.custom strong{font-size:18px}.custom span{color:var(--muted);font-size:13px}
-.footer-cta{padding:100px 0;background:#dff0ff}.footer-cta-inner{display:flex;justify-content:space-between;align-items:end;gap:50px}.footer-cta h2{font-size:clamp(42px,6vw,84px);line-height:.92;letter-spacing:-.065em;margin:0;max-width:800px}.footer-cta p{color:#5d6c79;line-height:1.5;max-width:440px}
-footer{padding:55px 0;background:#f5f7f9;color:#687681;font-size:12px}
-.footer-row{display:flex;justify-content:space-between;gap:25px}.footer-links{display:flex;gap:22px}
-@media(max-width:1050px){.hero-grid,.defense-panel{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.pack-grid{grid-template-columns:repeat(2,1fr)}.audit-grid{grid-template-columns:repeat(3,1fr)}.section-head{align-items:start;flex-direction:column}.hero{padding-top:75px}}
-@media(max-width:760px){.rd-nav,.rd-actions{display:none}.rd-menu{display:block}.rd-top{height:62px}.wrap{padding:0 20px}.section{padding:72px 0}.hero{padding:65px 0}.hero-grid{gap:40px}.defense-main{padding:34px;min-height:360px}.steps{grid-template-columns:1fr}.pack-grid{grid-template-columns:1fr 1fr}.audit-grid{grid-template-columns:1fr 1fr}.footer-cta-inner,.footer-row{flex-direction:column;align-items:flex-start}}
-@media(max-width:480px){h1{font-size:56px}.pack-grid,.audit-grid{grid-template-columns:1fr}.range strong{font-size:52px}.footer-links{flex-wrap:wrap}}
+.page{width:min(var(--max),100%);margin:0 auto;padding:0 34px}
+.topbar{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0f0f2}
+.brand{font-size:15px;font-weight:700;letter-spacing:-.02em}
+.nav{display:flex;gap:30px;align-items:center;font-size:12px;color:#666}
+.nav a:hover,.nav a.active{color:#111}
+.top-action{display:inline-flex;align-items:center;border:1px solid #dedee2;border-radius:999px;padding:10px 16px;font-size:12px;font-weight:700;background:#fff}
+.intro{padding:72px 0 42px;display:flex;justify-content:space-between;gap:50px;align-items:flex-end}
+.kicker{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:#999;margin:0 0 18px}
+h1{font-size:clamp(52px,7vw,104px);line-height:.9;letter-spacing:-.075em;margin:0;font-weight:700}
+.intro-copy{max-width:430px;color:#777;font-size:14px;line-height:1.55;margin:0 0 3px}
+.controls{height:52px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}
+.filters{display:flex;align-items:center;gap:10px}
+.filter{border:0;background:transparent;color:#777;font-size:11px;padding:7px 10px;border-radius:999px;cursor:pointer}
+.filter.selected{background:#f0f0f3;color:#111}
+.sort{font-size:11px;color:#777}
+.catalog{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.product{min-width:0;min-height:430px;background:#fff;position:relative;padding:26px 24px 24px;display:flex;flex-direction:column;justify-content:space-between;border-radius:13px;transition:background .25s,transform .25s}
+.product:hover{background:#f7f7f9}
+.product.featured{background:#f1f1f4}
+.product-top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+.tag{font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.1em}
+.product-number{font-size:10px;color:#aaa}
+.product-main{display:flex;flex-direction:column;align-items:center;text-align:center;padding:15px 0 5px}
+.product-symbol{width:180px;height:150px;border-radius:40%;display:flex;align-items:center;justify-content:center;font-size:70px;font-weight:700;letter-spacing:-.08em;color:#181818;margin-bottom:10px}
+.product:nth-child(2) .product-symbol{font-size:62px}
+.product:nth-child(3) .product-symbol{font-size:58px}
+.product h2{font-size:15px;font-weight:500;margin:0 0 7px;letter-spacing:-.025em}
+.sub{font-size:10px;color:#999;margin:0;min-height:24px}
+.price{font-size:13px;font-weight:700;margin:13px 0 4px}
+.price span{font-weight:400;color:#999}
+.try{display:inline-flex;align-items:center;justify-content:center;border:1px solid #dddde1;background:#fff;border-radius:999px;padding:8px 16px;font-size:10px;color:#555;margin-top:8px}
+.product.featured .try{background:#fff}
+.section{padding:86px 0 0}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:25px}
+.section-title{font-size:38px;line-height:1;letter-spacing:-.055em;margin:0}
+.section-copy{max-width:460px;color:#888;font-size:12px;line-height:1.55;margin:0}
+.rows{border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:1.2fr .8fr .8fr .8fr .8fr;align-items:center;min-height:74px;border-bottom:1px solid var(--line);font-size:12px}
+.row strong{font-size:13px}
+.row .muted{color:#999}
+.defense{margin-top:12px;background:#111;border-radius:16px;color:#fff;padding:34px}
+.defense-head{display:flex;justify-content:space-between;gap:30px;align-items:end}
+.defense h2{font-size:clamp(38px,5vw,68px);line-height:.9;letter-spacing:-.07em;margin:0;max-width:720px}
+.defense p{color:#aaa;font-size:12px;line-height:1.55;max-width:420px;margin:0}
+.defense-price{margin-top:55px;display:flex;align-items:baseline;gap:10px}
+.defense-price strong{font-size:55px;letter-spacing:-.07em}
+.defense-price span{font-size:11px;color:#999}
+.escalation{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:25px}
+.escalation div{border:1px solid #303030;border-radius:10px;padding:17px}
+.escalation b{display:block;font-size:11px;margin-bottom:7px}.escalation span{font-size:10px;color:#999;line-height:1.45}
+.pack-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.pack{background:#f4f4f6;border-radius:13px;min-height:220px;padding:22px;display:flex;flex-direction:column;justify-content:space-between}
+.pack:nth-child(even){background:#f8f8fa}
+.pack-top{display:flex;justify-content:space-between;font-size:9px;color:#999;text-transform:uppercase;letter-spacing:.08em}
+.pack h3{font-size:20px;font-weight:500;letter-spacing:-.04em;margin:0}
+.pack .volume{font-size:10px;color:#888;margin-top:6px}
+.pack .pack-price{font-size:22px;font-weight:700;letter-spacing:-.04em;margin-top:20px}
+.pack .unit{font-size:10px;color:#999;margin-top:3px}
+.audit-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.audit{min-height:170px;border:1px solid var(--line);border-radius:13px;padding:20px;display:flex;flex-direction:column;justify-content:space-between}
+.audit:hover{background:#f7f7f9}
+.audit .volume{font-size:10px;color:#888}
+.audit .audit-price{font-size:23px;font-weight:700;letter-spacing:-.05em}
+.audit small{font-size:9px;color:#aaa}
+.quote{margin-top:12px;background:#f1f1f4;border-radius:13px;padding:25px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.quote strong{font-size:15px;font-weight:500}.quote span{font-size:11px;color:#888}
+.bottom{padding:100px 0 55px}
+.bottom-box{border-top:1px solid var(--line);padding-top:30px;display:flex;justify-content:space-between;gap:30px}
+.bottom h2{font-size:45px;letter-spacing:-.06em;line-height:.95;margin:0}
+.bottom p{max-width:390px;color:#888;font-size:12px;line-height:1.55}
+footer{border-top:1px solid var(--line);padding:24px 0 40px;color:#aaa;font-size:10px;display:flex;justify-content:space-between}
+footer a{color:#888;margin-left:18px}
+@media(max-width:1000px){
+  .catalog{grid-template-columns:1fr 1fr}.pack-grid{grid-template-columns:1fr 1fr}.audit-grid{grid-template-columns:repeat(3,1fr)}
+  .row{grid-template-columns:1.4fr repeat(4,1fr)}
+}
+@media(max-width:720px){
+  .page{padding:0 18px}.nav{display:none}.intro{padding-top:48px;display:block}.intro-copy{margin-top:25px}
+  .catalog,.pack-grid{grid-template-columns:1fr}.audit-grid{grid-template-columns:1fr 1fr}
+  .product{min-height:390px}.controls{overflow:auto}.filters{min-width:max-content}.sort{display:none}
+  .section{padding-top:65px}.section-head,.defense-head,.bottom-box{display:block}
+  .section-copy{margin-top:15px}.defense p{margin-top:20px}.escalation{grid-template-columns:1fr 1fr}
+  .row{grid-template-columns:1.3fr repeat(4,.7fr);font-size:10px}
+}
+@media(max-width:480px){
+  h1{font-size:56px}.audit-grid{grid-template-columns:1fr}.escalation{grid-template-columns:1fr}
+  .row{grid-template-columns:1.3fr repeat(4,.65fr);min-height:64px}.row strong{font-size:11px}
+}
 </style>
 </head>
 <body>
-<header class="rd-top">
-  <a class="rd-brand" href="/"><span class="rd-mark">◆</span> Review Defense</a>
-  <nav class="rd-nav" aria-label="Navigation principale">
+<div class="page">
+<header class="topbar">
+  <a class="brand" href="/">Review Defense</a>
+  <nav class="nav">
     <a href="/services">Services</a>
     <a href="/fonctionnement">Fonctionnement</a>
     <a href="/resources">Resources</a>
     <a href="/about">About</a>
-    <a href="/tarif" aria-current="page">Tarifs</a>
+    <a class="active" href="/tarif">Tarifs</a>
   </nav>
-  <div class="rd-actions">
-    <a class="rd-search" href="/resources" aria-label="Rechercher">⌕</a>
-    <a class="rd-btn rd-btn-blue" href="/analyse-avis-google/">Analyser un avis</a>
-  </div>
-  <button class="rd-menu" aria-label="Menu">☰</button>
+  <a class="top-action" href="/analyse-avis-google/">Analyser un avis</a>
 </header>
 
 <main>
-<section class="hero">
-  <div class="wrap hero-grid">
-    <div class="hero-copy">
-      <p class="eyebrow">Tarification Review Defense</p>
-      <h1>Une protection qui s’adapte à votre besoin.</h1>
-      <p>Quatre façons d’utiliser Review Defense : surveiller votre réputation dans le temps, défendre un avis, acheter des packs de défense ou réaliser un audit complet.</p>
-    </div>
-    <div class="hero-note">
-      <strong>Pas de grille artificielle.</strong><br>
-      La surveillance récompense la fidélité. La défense évolue uniquement avec le niveau de traitement nécessaire.
-    </div>
+<section class="intro">
+  <div>
+    <p class="kicker">Review Defense · Pricing</p>
+    <h1>Les tarifs.<br>Sans détour.</h1>
   </div>
+  <p class="intro-copy">Une présentation simple, visuelle et lisible : surveillance dans le temps, défense à l'unité, packs de défense et audits par volume.</p>
 </section>
 
-<section class="section" id="surveillance">
-  <div class="wrap">
-    <div class="section-head">
-      <div><p class="eyebrow">01 · Surveillance</p><h2>Le prix descend avec le temps.</h2></div>
-      <p>Les abonnements démarrent à leur tarif d’entrée puis bénéficient automatiquement d’un tarif fidélité dégressif, jusqu’au plancher de leur formule.</p>
-    </div>
-    <div class="cards">
-      <article class="card">
-        <span class="badge">Essentiel</span><h3>Surveillance Essential</h3>
-        <p class="desc">Pour suivre l’évolution de votre réputation au quotidien.</p>
-        <div class="price">49 € <small>/ mois</small></div>
-        <div class="sub-note">Tarif de départ</div>
-        <a class="cta" href="/analyse-avis-google/">Choisir Essential</a>
-        <div class="loyalty">
-          <div class="loyalty-row"><span>0–3 mois</span><strong>49 €</strong></div>
-          <div class="loyalty-row"><span>4–6 mois</span><strong>46 €</strong></div>
-          <div class="loyalty-row"><span>7–12 mois</span><strong>43 €</strong></div>
-          <div class="loyalty-row"><span>Année 2</span><strong>40 €</strong></div>
-        </div>
-        <div class="floor">Plancher fidélité · 37 €/mois dès la 3e année</div>
-      </article>
-      <article class="card featured">
-        <span class="badge">Le plus complet</span><h3>Surveillance Professional</h3>
-        <p class="desc">Une surveillance renforcée pour les activités plus exposées.</p>
-        <div class="price">89 € <small>/ mois</small></div>
-        <div class="sub-note">Tarif de départ</div>
-        <a class="cta blue" href="/analyse-avis-google/">Choisir Professional</a>
-        <div class="loyalty">
-          <div class="loyalty-row"><span>0–3 mois</span><strong>89 €</strong></div>
-          <div class="loyalty-row"><span>4–6 mois</span><strong>84 €</strong></div>
-          <div class="loyalty-row"><span>7–12 mois</span><strong>79 €</strong></div>
-          <div class="loyalty-row"><span>Année 2</span><strong>74 €</strong></div>
-        </div>
-        <div class="floor">Plancher fidélité · 69 €/mois dès la 3e année</div>
-      </article>
-      <article class="card">
-        <span class="badge">Entreprise</span><h3>Surveillance Business</h3>
-        <p class="desc">Pour les organisations qui veulent une protection suivie à grande échelle.</p>
-        <div class="price">159 € <small>/ mois</small></div>
-        <div class="sub-note">Tarif de départ</div>
-        <a class="cta" href="/analyse-avis-google/">Choisir Business</a>
-        <div class="loyalty">
-          <div class="loyalty-row"><span>0–3 mois</span><strong>159 €</strong></div>
-          <div class="loyalty-row"><span>4–6 mois</span><strong>149 €</strong></div>
-          <div class="loyalty-row"><span>7–12 mois</span><strong>139 €</strong></div>
-          <div class="loyalty-row"><span>Année 2</span><strong>129 €</strong></div>
-        </div>
-        <div class="floor">Plancher fidélité · 119 €/mois dès la 3e année</div>
-      </article>
-    </div>
+<div class="controls">
+  <div class="filters">
+    <a class="filter selected" href="#surveillance">Tous</a>
+    <a class="filter" href="#surveillance">Surveillance</a>
+    <a class="filter" href="#defense">Défense</a>
+    <a class="filter" href="#packs">Packs</a>
+    <a class="filter" href="#audit">Audit</a>
   </div>
-</section>
+  <div class="sort">Tarifs · 2026</div>
+</div>
 
-<section class="section alt" id="defense">
-  <div class="wrap">
-    <div class="section-head">
-      <div><p class="eyebrow">02 · Défense</p><h2>Un traitement qui peut monter en escalade.</h2></div>
-      <p>La défense d’un avis n’est pas un abonnement. Le tarif dépend du niveau de traitement nécessaire, avec une progression de 59 € jusqu’à 275 €.</p>
-    </div>
-    <div class="defense-panel">
-      <article class="defense-main">
-        <div>
-          <span class="badge">Paiement ponctuel</span>
-          <h3>Défendre un avis, du traitement initial à l’escalade.</h3>
-          <p>Le dossier commence à 59 €. Si le traitement doit être approfondi ou escaladé, le niveau de prise en charge peut évoluer jusqu’à 275 €.</p>
-        </div>
-        <div class="range"><strong>59 → 275 €</strong><span>selon le traitement nécessaire</span></div>
-      </article>
-      <div class="steps">
-        <article class="step"><span class="num">NIVEAU 01</span><h4>Analyse & qualification</h4><p>Évaluation du cas et détermination du traitement adapté.</p></article>
-        <article class="step"><span class="num">NIVEAU 02</span><h4>Traitement renforcé</h4><p>Prise en charge plus poussée lorsque le dossier le nécessite.</p></article>
-        <article class="step"><span class="num">NIVEAU 03</span><h4>Escalade</h4><p>Le traitement peut être escaladé lorsque les étapes précédentes ne suffisent pas.</p></article>
-        <article class="step"><span class="num">PLAFOND</span><h4>275 € maximum</h4><p>Le tarif de défense reste borné par le plafond annoncé, sans créer de faux paliers de dépense.</p></article>
+<section id="surveillance">
+  <div class="catalog">
+    <article class="product">
+      <div class="product-top"><span class="tag">Surveillance</span><span class="product-number">01</span></div>
+      <div class="product-main">
+        <div class="product-symbol">49</div>
+        <h2>Essential</h2>
+        <p class="sub">Protection suivie · tarif de départ</p>
+        <div class="price">49 € <span>/ mois</span></div>
+        <a class="try" href="/analyse-avis-google/">Essayer</a>
       </div>
+      <div class="tag">Plancher fidélité · 37 €/mois</div>
+    </article>
+
+    <article class="product featured">
+      <div class="product-top"><span class="tag">Surveillance</span><span class="product-number">02</span></div>
+      <div class="product-main">
+        <div class="product-symbol">89</div>
+        <h2>Professional</h2>
+        <p class="sub">Protection renforcée · tarif de départ</p>
+        <div class="price">89 € <span>/ mois</span></div>
+        <a class="try" href="/analyse-avis-google/">Essayer</a>
+      </div>
+      <div class="tag">Plancher fidélité · 69 €/mois</div>
+    </article>
+
+    <article class="product">
+      <div class="product-top"><span class="tag">Surveillance</span><span class="product-number">03</span></div>
+      <div class="product-main">
+        <div class="product-symbol">159</div>
+        <h2>Business</h2>
+        <p class="sub">Grande échelle · tarif de départ</p>
+        <div class="price">159 € <span>/ mois</span></div>
+        <a class="try" href="/analyse-avis-google/">Essayer</a>
+      </div>
+      <div class="tag">Plancher fidélité · 119 €/mois</div>
+    </article>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title">Le tarif descend.</h2>
+      <p class="section-copy">La fidélité fait automatiquement baisser le prix. Aucun changement de formule nécessaire.</p>
+    </div>
+    <div class="rows">
+      <div class="row"><strong>Essential</strong><span class="muted">0–3 mois</span><strong>49 €</strong><strong>46 €</strong><strong>43 €</strong></div>
+      <div class="row"><strong>Essential</strong><span class="muted">Année 2 → 3+</span><strong>40 €</strong><strong>37 €</strong><span class="muted">plancher</span></div>
+      <div class="row"><strong>Professional</strong><span class="muted">0–3 mois</span><strong>89 €</strong><strong>84 €</strong><strong>79 €</strong></div>
+      <div class="row"><strong>Professional</strong><span class="muted">Année 2 → 3+</span><strong>74 €</strong><strong>69 €</strong><span class="muted">plancher</span></div>
+      <div class="row"><strong>Business</strong><span class="muted">0–3 mois</span><strong>159 €</strong><strong>149 €</strong><strong>139 €</strong></div>
+      <div class="row"><strong>Business</strong><span class="muted">Année 2 → 3+</span><strong>129 €</strong><strong>119 €</strong><span class="muted">plancher</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="defense">
+  <div class="section-head">
+    <h2 class="section-title">Défense.</h2>
+    <p class="section-copy">Pas d'abonnement. Le traitement commence à 59 € et peut monter jusqu'à 275 € lorsque le dossier nécessite une escalade.</p>
+  </div>
+  <div class="defense">
+    <div class="defense-head">
+      <h2>Un dossier.<br>Un traitement adapté.</h2>
+      <p>La tarification suit le niveau de traitement nécessaire. Il ne s'agit pas de niveaux de dépenses : l'escalade intervient uniquement quand elle est nécessaire au dossier.</p>
+    </div>
+    <div class="defense-price"><strong>59 → 275 €</strong><span>paiement ponctuel · plafond annoncé</span></div>
+    <div class="escalation">
+      <div><b>01 · Analyse</b><span>Qualification du dossier et traitement initial.</span></div>
+      <div><b>02 · Renforcement</b><span>Traitement approfondi si le cas le demande.</span></div>
+      <div><b>03 · Escalade</b><span>Prise en charge escaladée lorsque nécessaire.</span></div>
+      <div><b>04 · Maximum</b><span>Le traitement de défense est plafonné à 275 €.</span></div>
     </div>
   </div>
 </section>
 
 <section class="section" id="packs">
-  <div class="wrap">
-    <div class="section-head">
-      <div><p class="eyebrow">03 · Packs</p><h2>Plusieurs dossiers, un tarif dégressif.</h2></div>
-      <p>Des packs de défense pour les entreprises qui ont plusieurs cas à traiter, avec des volumes allant de 5 à 1 000 dossiers et une formule sur devis au-delà.</p>
-    </div>
-    <div class="pack-grid">
-      <article class="pack"><h3>Starter</h3><div class="cases">5 dossiers</div><div class="pack-price">490 €</div><div class="unit">98 € / dossier</div></article>
-      <article class="pack"><h3>Plus</h3><div class="cases">10 dossiers</div><div class="pack-price">990 €</div><div class="unit">99 € / dossier</div></article>
-      <article class="pack"><h3>Pro</h3><div class="cases">25 dossiers</div><div class="pack-price">1 990 €</div><div class="unit">79,60 € / dossier</div></article>
-      <article class="pack"><h3>Business</h3><div class="cases">50 dossiers</div><div class="pack-price">3 490 €</div><div class="unit">69,80 € / dossier</div></article>
-      <article class="pack"><h3>Enterprise</h3><div class="cases">100 dossiers</div><div class="pack-price">5 900 €</div><div class="unit">59 € / dossier</div></article>
-      <article class="pack"><h3>250</h3><div class="cases">250 dossiers</div><div class="pack-price">12 900 €</div><div class="unit">51,60 € / dossier</div></article>
-      <article class="pack"><h3>500</h3><div class="cases">500 dossiers</div><div class="pack-price">23 900 €</div><div class="unit">47,80 € / dossier</div></article>
-      <article class="pack"><h3>1 000</h3><div class="cases">1 000 dossiers</div><div class="pack-price">44 900 €</div><div class="unit">44,90 € / dossier</div></article>
-    </div>
-    <div class="custom"><div><strong>Au-delà de 1 000 dossiers</strong><br><span>Construisons un volume adapté à votre activité.</span></div><span>Sur devis</span></div>
+  <div class="section-head">
+    <h2 class="section-title">Packs.</h2>
+    <p class="section-copy">Pour plusieurs dossiers, des volumes simples et dégressifs de 5 à 1 000 cas.</p>
+  </div>
+  <div class="pack-grid">
+    <article class="pack"><div class="pack-top"><span>Pack</span><span>01</span></div><div><h3>Starter</h3><div class="volume">5 dossiers</div></div><div><div class="pack-price">490 €</div><div class="unit">98 € / dossier</div></div></article>
+    <article class="pack"><div class="pack-top"><span>Pack</span><span>02</span></div><div><h3>Plus</h3><div class="volume">10 dossiers</div></div><div><div class="pack-price">990 €</div><div class="unit">99 € / dossier</div></div></article>
+    <article class="pack"><div class="pack-top"><span>Pack</span><span>03</span></div><div><h3>Pro</h3><div class="volume">25 dossiers</div></div><div><div class="pack-price">1 990 €</div><div class="unit">79,60 € / dossier</div></div></article>
+    <article class="pack"><div class="pack-top"><span>Pack</span><span>04</span></div><div><h3>Business</h3><div class="volume">50 dossiers</div></div><div><div class="pack-price">3 490 €</div><div class="unit">69,80 € / dossier</div></div></article>
+    <article class="pack"><div class="pack-top"><span>Pack</span><span>05</span></div><div><h3>Enterprise</h3><div class="volume">100 dossiers</div></div><div><div class="pack-price">5 900 €</div><div class="unit">59 € / dossier</div></div></article>
+    <article class="pack"><div class="pack-top"><span>Pack</span><span>06</span></div><div><h3>250</h3><div class="volume">250 dossiers</div></div><div><div class="pack-price">12 900 €</div><div class="unit">51,60 € / dossier</div></div></article>
+    <article class="pack"><div class="pack-top"><span>Pack</span><span>07</span></div><div><h3>500</h3><div class="volume">500 dossiers</div></div><div><div class="pack-price">23 900 €</div><div class="unit">47,80 € / dossier</div></div></article>
+    <article class="pack"><div class="pack-top"><span>Pack</span><span>08</span></div><div><h3>1 000</h3><div class="volume">1 000 dossiers</div></div><div><div class="pack-price">44 900 €</div><div class="unit">44,90 € / dossier</div></div></article>
+  </div>
+  <div class="quote"><strong>Plus de 1 000 dossiers</strong><span>Sur devis · volume personnalisé</span></div>
+</section>
+
+<section class="section" id="audit">
+  <div class="section-head">
+    <h2 class="section-title">Audit.</h2>
+    <p class="section-copy">Un prix qui évolue avec le volume d'avis à analyser.</p>
+  </div>
+  <div class="audit-grid">
+    <article class="audit"><span class="volume">1–9 avis</span><strong class="audit-price">79 €</strong><small>audit</small></article>
+    <article class="audit"><span class="volume">10–49 avis</span><strong class="audit-price">149 €</strong><small>audit</small></article>
+    <article class="audit"><span class="volume">50–99 avis</span><strong class="audit-price">249 €</strong><small>audit</small></article>
+    <article class="audit"><span class="volume">100–249 avis</span><strong class="audit-price">399 €</strong><small>audit</small></article>
+    <article class="audit"><span class="volume">250–499 avis</span><strong class="audit-price">599 €</strong><small>audit</small></article>
+    <article class="audit"><span class="volume">500–999 avis</span><strong class="audit-price">899 €</strong><small>audit</small></article>
+    <article class="audit"><span class="volume">1 000–2 499</span><strong class="audit-price">1 290 €</strong><small>avis</small></article>
+    <article class="audit"><span class="volume">2 500–4 999</span><strong class="audit-price">1 790 €</strong><small>avis</small></article>
+    <article class="audit"><span class="volume">5 000–9 999</span><strong class="audit-price">2 490 €</strong><small>avis</small></article>
+    <article class="audit"><span class="volume">10 000+</span><strong class="audit-price">Sur devis</strong><small>volume personnalisé</small></article>
   </div>
 </section>
 
-<section class="section alt" id="audit">
-  <div class="wrap">
-    <div class="section-head">
-      <div><p class="eyebrow">04 · Audit</p><h2>Comprendre avant d’agir.</h2></div>
-      <p>Un audit de réputation adapté au volume d’avis à analyser, avec un tarif qui évolue par tranche.</p>
-    </div>
-    <div class="audit-grid">
-      <article class="audit"><div class="volume">1–9 avis</div><div class="audit-price">79 €</div><small>audit</small></article>
-      <article class="audit"><div class="volume">10–49 avis</div><div class="audit-price">149 €</div><small>audit</small></article>
-      <article class="audit"><div class="volume">50–99 avis</div><div class="audit-price">249 €</div><small>audit</small></article>
-      <article class="audit"><div class="volume">100–249 avis</div><div class="audit-price">399 €</div><small>audit</small></article>
-      <article class="audit"><div class="volume">250–499 avis</div><div class="audit-price">599 €</div><small>audit</small></article>
-      <article class="audit"><div class="volume">500–999 avis</div><div class="audit-price">899 €</div><small>audit</small></article>
-      <article class="audit"><div class="volume">1 000–2 499</div><div class="audit-price">1 290 €</div><small>avis</small></article>
-      <article class="audit"><div class="volume">2 500–4 999</div><div class="audit-price">1 790 €</div><small>avis</small></article>
-      <article class="audit"><div class="volume">5 000–9 999</div><div class="audit-price">2 490 €</div><small>avis</small></article>
-      <article class="audit"><div class="volume">10 000+</div><div class="audit-price">Sur devis</div><small>volume personnalisé</small></article>
-    </div>
-  </div>
-</section>
-
-<section class="footer-cta">
-  <div class="wrap footer-cta-inner">
-    <div><p class="eyebrow">Votre situation</p><h2>Commencez par le niveau qui correspond à votre besoin.</h2></div>
-    <div><p>Vous pouvez commencer par un audit, défendre un avis ponctuellement, protéger votre réputation dans le temps ou traiter plusieurs dossiers avec un pack.</p><a class="rd-btn rd-btn-blue" href="/analyse-avis-google/">Commencer maintenant</a></div>
+<section class="bottom">
+  <div class="bottom-box">
+    <h2>Simple à comprendre.<br>Simple à choisir.</h2>
+    <div><p>Choisissez une surveillance qui baisse avec le temps, défendez un dossier ponctuellement, utilisez un pack ou commencez par un audit.</p><a class="top-action" href="/analyse-avis-google/">Analyser un avis</a></div>
   </div>
 </section>
 </main>
 
 <footer>
-  <div class="wrap footer-row">
-    <span>© Review Defense</span>
-    <div class="footer-links"><a href="/services">Services</a><a href="/fonctionnement">Fonctionnement</a><a href="/about">About</a></div>
-  </div>
+  <span>© Review Defense</span>
+  <span><a href="/services">Services</a><a href="/fonctionnement">Fonctionnement</a><a href="/about">About</a></span>
 </footer>
+</div>
 </body>
 </html>
