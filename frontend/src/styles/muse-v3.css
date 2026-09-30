@@ -230,3 +230,79 @@ body{color:var(--rd-ink);background:#fff;-webkit-font-smoothing:antialiased;text
  .muse-mobile-menu{top:0;left:0;right:0;bottom:0;border:0;border-radius:0;padding:88px 24px 28px;justify-content:flex-start;background:rgba(30,36,39,.97);color:#fff;transform:translateX(100%);overflow:auto}.muse-mobile-menu.open{transform:none}.muse-mobile-menu a{font-size:30px;padding:18px 0;border-bottom:1px solid #ffffff22}.muse-mobile-menu .muse-pill{margin-top:18px;border:0}
  .muse-scene{padding:76px 20px}.muse-home-hero{padding-top:105px}.muse-home-hero-inner,.muse-two,.muse-chat-reference-grid,.muse-research-reference{grid-template-columns:1fr}.muse-home-hero h1{font-size:54px}.muse-home-hero p{font-size:18px}.muse-hero-video{height:430px;min-height:0}.muse-word-editorial{min-height:220px;font-size:39px}.muse-agent-layout{min-height:0}.muse-orb-stage{height:390px;margin-top:25px}.muse-scene h2{font-size:45px}.muse-faq summary{font-size:28px}.muse-product-grid-reference,.muse-research-cards{grid-template-columns:1fr}.muse-product-grid-reference article{min-height:420px}.muse-research-reference aside{margin-bottom:35px}.muse-detail-image{width:100%;height:420px}.muse-detail-panel{position:relative;left:auto;bottom:auto;width:90%;margin:-80px auto 0;z-index:2}.muse-chat{height:500px}.muse-chat .chat-input{margin-top:110px}.muse-social-head{flex-direction:column;align-items:flex-start;gap:25px}.muse-social-grid{grid-template-columns:1fr 1fr;grid-template-rows:280px 130px 130px}.muse-social-grid .social-main{grid-column:1/3;grid-row:auto}.muse-principles{grid-template-columns:1fr}.muse-responsibility-reference img{margin-top:30px;height:350px}
 }
+/* Final visual calibration against the supplied Muse references. */
+.muse-header{height:72px;padding:0 32px;box-shadow:0 1px 0 rgba(16,24,32,.08);z-index:100}
+.muse-brand{font-size:22px;font-weight:650}
+.muse-header nav{height:100%;gap:42px}
+.muse-header nav a{font-size:15px;height:100%;display:flex;align-items:center}
+.muse-actions{margin-left:auto}
+.muse-search-open{width:42px;height:42px;display:grid;place-items:center;border-left:1px solid #e1e5e8;padding-left:18px}
+.muse-home-hero{padding:82px 32px 88px;background:#fff}
+.muse-home-hero-inner{width:min(1600px,100%);margin:auto;grid-template-columns:minmax(440px,.86fr) minmax(560px,1.14fr);gap:56px}
+.muse-home-hero h1{font-size:clamp(58px,6.15vw,104px);line-height:.9;max-width:760px;margin:14px 0 28px}
+.muse-home-hero p{font-size:20px;max-width:620px;line-height:1.45}
+.muse-hero-video{height:clamp(520px,61vw,760px);min-height:520px}
+.muse-hero-overlay{left:0;right:0;bottom:0;padding:105px 30px 28px;background:linear-gradient(transparent,rgba(0,0,0,.86))}
+.muse-hero-overlay strong{font-size:30px}
+.muse-word-editorial{width:min(1260px,100%);margin-top:70px;min-height:270px;background:#f4f8fb}
+.muse-scene{padding:112px 32px}
+.muse-scene-inner{width:min(1600px,100%)}
+.muse-agent-layout{min-height:690px;align-items:center}
+.muse-agent-layout h2{max-width:760px}
+.muse-orb-stage{height:610px}
+.muse-faq{margin-top:64px}
+.muse-faq summary{display:flex;justify-content:space-between;align-items:center;font-size:clamp(30px,3.2vw,48px)}
+.muse-faq details{padding:31px 0}
+.muse-product-grid-reference{grid-template-columns:1fr 1fr;gap:22px}
+.muse-product-grid-reference article{min-height:640px}
+.muse-research{padding-top:125px;padding-bottom:125px}
+.muse-research-reference{width:min(1600px,100%);margin:auto;grid-template-columns:230px minmax(0,1fr);gap:70px}
+.muse-research-cards{gap:26px}
+.muse-research-cards article{background:#fff;padding-bottom:28px}
+.muse-research-cards article img{aspect-ratio:1.58}
+.muse-research-cards article small,.muse-research-cards article h3,.muse-research-cards article p,.muse-research-cards article a{margin-left:28px;margin-right:28px}
+.muse-detail-reference{min-height:700px}
+.muse-detail-image{width:min(1180px,82%);height:620px}
+.muse-detail-panel{left:8%;bottom:5%;width:min(600px,44%);padding:38px 42px}
+.muse-chat-reference{padding-top:120px;padding-bottom:120px}
+.muse-chat-reference-grid{grid-template-columns:minmax(0,1fr) minmax(420px,.82fr);gap:9vw}
+.muse-chat{height:600px}
+.muse-blue-scene{padding-top:125px;padding-bottom:125px}
+.muse-assistant-reference{min-height:700px;align-items:center}
+.muse-phone{width:320px;height:625px}
+.muse-social-grid{grid-template-columns:2fr 1fr 1fr;grid-template-rows:255px 255px;gap:14px}
+.muse-responsibility{padding-top:120px;padding-bottom:100px}
+.muse-responsibility-reference{min-height:580px}
+.muse-responsibility-reference img{height:580px}
+.muse-footer{padding-left:32px;padding-right:32px}
+@media(max-width:1100px){
+ .muse-home-hero-inner{grid-template-columns:1fr;gap:45px}
+ .muse-hero-video{height:560px}
+ .muse-research-reference{grid-template-columns:190px 1fr;gap:40px}
+}
+@media(max-width:800px){
+ .muse-header{height:68px;padding:0 18px}
+ .muse-home-hero{padding:74px 20px 60px}
+ .muse-home-hero-inner{gap:34px}
+ .muse-home-hero h1{font-size:clamp(49px,13vw,72px)}
+ .muse-home-hero p{font-size:18px}
+ .muse-hero-video{height:430px;min-height:0}
+ .muse-hero-overlay{padding:85px 20px 20px}
+ .muse-word-editorial{margin-top:42px;min-height:210px;font-size:32px}
+ .muse-scene{padding:76px 20px}
+ .muse-agent-layout{min-height:0}
+ .muse-orb-stage{height:390px}
+ .muse-product-grid-reference{grid-template-columns:1fr}
+ .muse-product-grid-reference article{min-height:460px}
+ .muse-research-reference{grid-template-columns:1fr}
+ .muse-research-cards{grid-template-columns:1fr}
+ .muse-detail-image{width:100%;height:430px}
+ .muse-detail-panel{left:4%;width:92%;bottom:0;padding:28px}
+ .muse-chat-reference{padding-top:78px;padding-bottom:78px}
+ .muse-chat-reference-grid{grid-template-columns:1fr}
+ .muse-chat{height:510px}
+ .muse-blue-scene{padding-top:82px;padding-bottom:82px}
+ .muse-social-grid{grid-template-columns:1fr 1fr;grid-template-rows:290px 125px 125px}
+ .muse-responsibility-reference{min-height:0}
+ .muse-responsibility-reference img{height:360px}
+}
