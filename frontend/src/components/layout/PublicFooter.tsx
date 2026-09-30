@@ -3,10 +3,14 @@ import { publicNavigation } from "./PublicHeader";
 
 export function PublicFooter() {
   return <footer className="rd-footer">
-    <div className="rd-footer-brand"><strong>Review Defense</strong><span>Analyse · Preuves · Dossiers · Validation</span><small>Service SaaS destiné à aider les professionnels à analyser, documenter et suivre leurs avis. Les décisions et validations restent sous le contrôle du client.</small></div>
-    <div className="rd-footer-col"><b>Navigation</b>{publicNavigation.map(([path, label]) => <Link key={path} to={path}>{label}</Link>)}<Link to="/login">Connexion</Link></div>
-    <div className="rd-footer-col"><b>Informations légales</b><Link to="/mentions-legales">Mentions légales</Link><Link to="/confidentialite">Politique de confidentialité</Link><Link to="/cookies">Cookies et traceurs</Link><Link to="/cgu">Conditions générales d'utilisation</Link><Link to="/cgv">Conditions générales de vente</Link></div>
-    <div className="rd-footer-col"><b>Conformité</b><Link to="/confidentialite">Protection des données — RGPD</Link><Link to="/cgv#mediation">Réclamations et médiation</Link><Link to="/accessibilite">Accessibilité</Link><Link to="/contact-juridique">Contact juridique</Link></div>
-    <div className="rd-footer-bottom"><span>© 2026 Review Defense. Tous droits réservés.</span><span>Les informations entre crochets dans les pages légales doivent être remplacées par les données exactes de l’éditeur avant publication commerciale.</span></div>
+    <div className="rd-footer-brand">
+      <strong>Review Defense</strong>
+      <span>Analyse · Dossiers · Validation</span>
+      <small>Un espace pour structurer les avis qui demandent du contexte, sans automatiser les décisions sensibles.</small>
+    </div>
+    <div className="rd-footer-col"><b>Produit</b>{publicNavigation.map(([path, label]) => <Link key={path} to={path}>{label}</Link>)}</div>
+    <div className="rd-footer-col"><b>Compte</b><Link to="/login">Connexion</Link><Link to="/register">Créer mon espace</Link><Link to="/contact">Contact</Link></div>
+    <div className="rd-footer-col"><b>Légal</b><Link to="/mentions-legales">Mentions légales</Link><Link to="/confidentialite">Confidentialité</Link><Link to="/cookies">Cookies</Link><Link to="/cgu">CGU</Link><Link to="/cgv">CGV</Link></div>
+    <div className="rd-footer-bottom"><span>© 2026 Review Defense. Tous droits réservés.</span><span>Les informations légales doivent être vérifiées et complétées avant publication commerciale.</span></div>
   </footer>;
 }
