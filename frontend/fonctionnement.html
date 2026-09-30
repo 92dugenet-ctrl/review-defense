@@ -44,12 +44,12 @@ button{font:inherit}
 .rd-card-visual.review:before{content:"★ ★ ★ ★ ★";position:absolute;left:22px;top:25px;color:#ffd25a;font-size:15px;letter-spacing:3px}
 .rd-card-visual.review:after{content:"Avis à analyser\A Très bon accueil mais problème sur ma dernière commande…";white-space:pre;position:absolute;left:22px;right:22px;bottom:25px;background:#fff;border-radius:12px;padding:17px;color:#18212b;font-size:12px;line-height:1.45;box-shadow:0 18px 40px rgba(0,0,0,.2)}
 .rd-card-visual.analysis{background:linear-gradient(135deg,#dcecff,#f8fbff)}
-.rd-card-visual.analysis:before{content:"ANALYSE";position:absolute;left:23px;top:22px;font-size:10px;font-weight:800;color:#3772b8;letter-spacing:.1em}
+.rd-card-visual.analysis:before{content:"Analyse";position:absolute;left:23px;top:22px;font-size:10px;font-weight:800;color:#3772b8;letter-spacing:.1em}
 .rd-card-visual.analysis:after{content:"CONTEXTE\A ✓ Relation client\A ✓ Chronologie\A ✓ Éléments vérifiables";white-space:pre;position:absolute;left:22px;right:22px;top:62px;background:#fff;border-radius:13px;padding:18px;color:#17202a;font-size:12px;line-height:1.7;box-shadow:0 15px 35px rgba(30,80,140,.13)}
 .rd-card-visual.case{background:linear-gradient(135deg,#e8f6ef,#f8fcfa)}
 .rd-card-visual.case:after{content:"DOSSIER  #RD-2408\A\A 07 éléments\A 03 points à vérifier\A Validation requise";white-space:pre;position:absolute;left:20px;right:20px;top:28px;background:#fff;border-radius:13px;padding:19px;color:#19241f;font-size:12px;line-height:1.55;box-shadow:0 15px 35px rgba(35,100,70,.12)}
 .rd-card-visual.control{background:linear-gradient(135deg,#121820,#26313d)}
-.rd-card-visual.control:before{content:"REVIEW DEFENSE";position:absolute;left:22px;top:23px;color:#fff;font-size:11px;font-weight:800}
+.rd-card-visual.control:before{content:"Review Defense";position:absolute;left:22px;top:23px;color:#fff;font-size:11px;font-weight:800}
 .rd-card-visual.control:after{content:"01  Analyse      ✓\A02  Décision      ✓\A03  Validation    •\A04  Suivi";white-space:pre;position:absolute;left:22px;right:22px;top:62px;border:1px solid rgba(255,255,255,.15);border-radius:13px;padding:20px;color:#fff;font-size:12px;line-height:2;background:rgba(255,255,255,.06)}
 .rd-card h3{font-size:17px;margin:15px 0 7px}
 .rd-card p{font-size:12px;line-height:1.5;color:var(--muted);margin:0 0 12px}
@@ -115,6 +115,24 @@ h1,h2,h3,h4,h5,h6{letter-spacing:-.018em!important;line-height:1.08!important}
 .rd-brand,.logo,.brand,.footer-brand,.rd-footer-brand{font-weight:500!important}
 @media(max-width:600px){.rd-hero h1,.hero h1{font-size:42px!important}.rd-intro h2,.rd-responsible h2,.rd-final h2,.rd-section-head h2{font-size:32px!important}}
 </style>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500&display=swap');
+html,body{font-family:'Oswald',Arial,sans-serif!important}
+body,body *{font-family:'Oswald',Arial,sans-serif!important}
+h1,h2,h3,h4,h5,h6,p,a,button,label,small,strong,b,summary,input,textarea,select,span{font-weight:400!important;text-transform:none!important}
+.services-hero h1,.services-intro h2,.service-copy h2,.services-cta h2{font-size:clamp(32px,4vw,52px)!important;line-height:1.08!important;font-weight:400!important;letter-spacing:-.018em!important}
+.services-lead{font-size:18px!important;line-height:1.5!important}
+.services-eyebrow,.service-number,.art-meta,.badge{font-size:12px!important;letter-spacing:.03em!important}
+.resources-grid .card h2,.dataset-list-title,.dataset-page h1,.dataset-card h2,.hero h1{font-weight:400!important;letter-spacing:-.018em!important}
+.resources-grid .card h2,.dataset-card h2{font-size:30px!important}
+.hero h1{font-size:clamp(40px,5vw,60px)!important}
+.hero-copy,.card p,.dataset-hero-copy p,.dataset-card p{font-size:17px!important;line-height:1.55!important}
+.explore,.dataset-card .overview{font-size:14px!important;font-weight:400!important}
+.catalogue-section-title{font-size:clamp(28px,3vw,42px)!important;font-weight:400!important}
+.catalogue-section-note{font-size:14px!important;line-height:1.5!important}
+.product-card h2{font-size:24px!important;font-weight:400!important}
+.brand,.meta,.price,.product-action,.footnote{font-weight:400!important}
+</style>
 </head>
 <body>
 <header class="rd-top">
@@ -130,7 +148,7 @@ h1,h2,h3,h4,h5,h6{letter-spacing:-.018em!important;line-height:1.08!important}
   <section class="rd-hero">
     <video class="rd-hero-video" autoplay muted loop playsinline preload="metadata" aria-label="Présentation de Review Defense"><source src="/assets/hero/video_artisans_sans_texte.mp4" type="video/mp4"></video>
     <div class="rd-hero-copy">
-      <div class="rd-eyebrow">REVIEW DEFENSE · FONCTIONNEMENT</div>
+      <div class="rd-eyebrow">Review Defense · Fonctionnement</div>
       <h1>Comprendre.<br>Analyser.<br>Décider.</h1>
       <p>Une expérience pensée pour transformer une situation liée à un avis en dossier clair, documenté et toujours sous votre contrôle.</p>
     </div>
@@ -138,7 +156,7 @@ h1,h2,h3,h4,h5,h6{letter-spacing:-.018em!important;line-height:1.08!important}
 
   <section class="rd-section rd-reveal">
     <div class="rd-intro">
-      <div><div class="rd-eyebrow">COMMENT ÇA MARCHE</div><h2>Une défense pensée comme un parcours simple.</h2></div>
+      <div><div class="rd-eyebrow">Comment ça marche</div><h2>Une défense pensée comme un parcours simple.</h2></div>
       <p>Review Defense rassemble les informations utiles au même endroit. L’outil aide à analyser le contexte, organiser les éléments disponibles, préparer les prochaines étapes et suivre le dossier. Les actions importantes restent soumises à votre validation.</p>
     </div>
     <div class="rd-cards">
@@ -152,15 +170,15 @@ h1,h2,h3,h4,h5,h6{letter-spacing:-.018em!important;line-height:1.08!important}
   <section class="rd-process">
     <div class="rd-process-inner rd-reveal">
       <div class="rd-section-head">
-        <div><div class="rd-eyebrow">LE WORKFLOW</div><h2>De l’avis au dossier, étape par étape.</h2></div>
+        <div><div class="rd-eyebrow">Le workflow</div><h2>De l’avis au dossier, étape par étape.</h2></div>
         <p>Le parcours sépare l’analyse, la décision et l’action. Cette structure permet de garder un contexte lisible et d’éviter qu’une action importante soit déclenchée sans validation.</p>
       </div>
       <div class="rd-steps">
-        <div class="rd-step"><span class="rd-step-num">01 · ANALYSE</span><h3>Identifier ce qui mérite d’être vérifié</h3><p>Le contenu de l’avis, la relation avec le client, la chronologie et les éléments disponibles sont regroupés dans un même contexte.</p></div>
-        <div class="rd-step"><span class="rd-step-num">02 · QUALIFICATION</span><h3>Structurer les faits et les éléments</h3><p>Les informations utiles sont classées pour faciliter la compréhension du dossier et préparer la suite.</p></div>
-        <div class="rd-step"><span class="rd-step-num">03 · DÉCISION</span><h3>Préparer une action adaptée</h3><p>Review Defense peut proposer une prochaine étape, tandis que la décision importante reste visible et contrôlée.</p></div>
-        <div class="rd-step"><span class="rd-step-num">04 · VALIDATION</span><h3>Vous gardez le dernier mot</h3><p>Aucune étape externe importante ne doit être considérée comme exécutée sans l’autorisation explicite prévue par le parcours.</p></div>
-        <div class="rd-step"><span class="rd-step-num">05 · SUIVI</span><h3>Conserver l’historique</h3><p>Le dossier reste organisé pour permettre de comprendre ce qui a été analysé, décidé et validé.</p></div>
+        <div class="rd-step"><span class="rd-step-num">01 · Analyse</span><h3>Identifier ce qui mérite d’être vérifié</h3><p>Le contenu de l’avis, la relation avec le client, la chronologie et les éléments disponibles sont regroupés dans un même contexte.</p></div>
+        <div class="rd-step"><span class="rd-step-num">02 · Qualification</span><h3>Structurer les faits et les éléments</h3><p>Les informations utiles sont classées pour faciliter la compréhension du dossier et préparer la suite.</p></div>
+        <div class="rd-step"><span class="rd-step-num">03 · Décision</span><h3>Préparer une action adaptée</h3><p>Review Defense peut proposer une prochaine étape, tandis que la décision importante reste visible et contrôlée.</p></div>
+        <div class="rd-step"><span class="rd-step-num">04 · Validation</span><h3>Vous gardez le dernier mot</h3><p>Aucune étape externe importante ne doit être considérée comme exécutée sans l’autorisation explicite prévue par le parcours.</p></div>
+        <div class="rd-step"><span class="rd-step-num">05 · Suivi</span><h3>Conserver l’historique</h3><p>Le dossier reste organisé pour permettre de comprendre ce qui a été analysé, décidé et validé.</p></div>
       </div>
     </div>
   </section>
@@ -168,7 +186,7 @@ h1,h2,h3,h4,h5,h6{letter-spacing:-.018em!important;line-height:1.08!important}
   <section class="rd-section rd-reveal">
     <div class="rd-responsible">
       <div>
-        <div class="rd-eyebrow">CONTRÔLE HUMAIN</div>
+        <div class="rd-eyebrow">Contrôle humain</div>
         <h2>L’automatisation prépare. Vous décidez.</h2>
         <p>Le rôle de Review Defense est de vous faire gagner du temps dans l’analyse et l’organisation. Les décisions sensibles restent sous contrôle humain, avec une présentation claire des éléments qui les justifient.</p>
         <a class="rd-btn rd-btn-dark" href="/services">Découvrir les services</a>
@@ -177,8 +195,8 @@ h1,h2,h3,h4,h5,h6{letter-spacing:-.018em!important;line-height:1.08!important}
         <div class="window">
           <div class="window-top"><i></i><i></i><i></i><span class="window-title">Review Defense · Control Center</span></div>
           <div class="window-grid">
-            <div class="window-side"><b>REVIEW DEFENSE</b><span>Vue d’ensemble</span><span>Avis</span><span>Dossiers</span><span>Preuves</span><span>Suivi</span></div>
-            <div class="window-main"><small>CONTROL WORKSPACE</small><h4>Validation requise</h4><div class="kpis"><div class="kpi"><b>07</b><span>éléments</span></div><div class="kpi"><b>03</b><span>à vérifier</span></div><div class="kpi"><b>01</b><span>action</span></div></div></div>
+            <div class="window-side"><b>Review Defense</b><span>Vue d’ensemble</span><span>Avis</span><span>Dossiers</span><span>Preuves</span><span>Suivi</span></div>
+            <div class="window-main"><small>Control workspace</small><h4>Validation requise</h4><div class="kpis"><div class="kpi"><b>07</b><span>éléments</span></div><div class="kpi"><b>03</b><span>à vérifier</span></div><div class="kpi"><b>01</b><span>action</span></div></div></div>
           </div>
         </div>
       </div>
@@ -187,7 +205,7 @@ h1,h2,h3,h4,h5,h6{letter-spacing:-.018em!important;line-height:1.08!important}
 
   <section class="rd-final rd-reveal">
     <div class="rd-final-inner">
-      <div><div class="rd-eyebrow">REVIEW DEFENSE</div><h2>Commencez par un avis.<br>Construisez le dossier.</h2><p>Décrivez votre situation, analysez les éléments disponibles et préparez la suite depuis un espace unique.</p><a class="rd-btn rd-btn-dark" href="/analyse-avis-google/">Analyser un avis →</a></div>
+      <div><div class="rd-eyebrow">Review Defense</div><h2>Commencez par un avis.<br>Construisez le dossier.</h2><p>Décrivez votre situation, analysez les éléments disponibles et préparez la suite depuis un espace unique.</p><a class="rd-btn rd-btn-dark" href="/analyse-avis-google/">Analyser un avis →</a></div>
       <div class="rd-phone"><div class="rd-phone-head"><span>9:41</span><span>● ● ▪</span></div><div class="rd-phone-title">Review Defense</div><div class="rd-bubble">Votre analyse est prête. 3 éléments nécessitent votre attention.</div><div class="rd-bubble light">Une prochaine étape peut être préparée avant votre validation.</div><div class="rd-input">Décrivez un avis… <b>↑</b></div></div>
     </div>
   </section>
