@@ -180,4 +180,4 @@ select{cursor:pointer}
   .notification-actions{width:100%}
   .notification-actions button{flex:1}
 }
-.success-message{background:#e8f7c8;border:1px solid #cde89a;border-radius:12px;padding:13px;margin:20px 0;font-size:13px}.paypal-slot{margin-top:14px;min-height:45px}.button:disabled{opacity:.5;cursor:wait;transform:none}
+.success-message{background:#e8f7c8;border:1px solid #cde89a;border-radius:12px;padding:13px;margin:20px 0;font-size:13px}.paypal-slot{margin-top:14px;min-height:45px}.button:disabled{opacity:.5;cursor:wait;transform:none}.auth-card .eyebrow{display:block;color:#667085;font-size:10px;font-weight:850;letter-spacing:.14em}.auth-brand{display:flex;align-items:center;gap:10px;width:max-content;margin-bottom:30px;color:var(--rd-ink);font-size:18px;font-weight:850;letter-spacing:-.03em}.auth-brand .brand-mark{width:34px;height:34px;flex:0 0 34px}
