@@ -64,7 +64,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="rd-home-product">
+      <section className="rd-home-product story-section">
         <div className="rd-home-container">
           <div className="rd-section-heading">
             <Reveal><span className="rd-eyebrow">LE PRODUIT</span><h2>Un dossier de référence, pas une boîte à outils de plus.</h2></Reveal>
