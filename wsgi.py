@@ -37,6 +37,19 @@ _ROUTE_PAGES = {
 }
 
 
+def _redirect(location, start_response):
+    body = b""
+    start_response(
+        "301 Moved Permanently",
+        [
+            ("Location", location),
+            ("Content-Length", "0"),
+            ("Cache-Control", "no-store"),
+        ],
+    )
+    return [body]
+
+
 def _json_404(start_response):
     body = b'{"error":{"code":"NOT_FOUND","message":"resource not found"}}'
     start_response(
@@ -102,6 +115,8 @@ def app(environ, start_response):
     method = environ.get("REQUEST_METHOD", "GET").upper()
 
     if method == "GET":
+        if path in {"/resources/", "/resources.html"}:
+            return _redirect("/resources", start_response)
         frontend = _frontend_response(path, start_response)
         if frontend is not None:
             return frontend
