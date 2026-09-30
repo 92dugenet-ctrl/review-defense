@@ -1,1 +1,1 @@
-export { PublicPricingPage as PricingPage } from "./PublicPricingPage";
+export { MusePublicPage as PricingPage } from "./MusePublicPage";
