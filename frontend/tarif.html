@@ -33,6 +33,9 @@ button, select, a { font: inherit; }
 .sort-control { display: flex; align-items: center; gap: 4px; color: #555; }
 .sort-control select { appearance: none; border: 0; background: transparent; color: var(--text); padding: 8px 20px 8px 2px; cursor: pointer; outline: none; background-image: linear-gradient(45deg, transparent 50%, #777 50%), linear-gradient(135deg, #777 50%, transparent 50%); background-position: calc(100% - 8px) 50%, calc(100% - 4px) 50%; background-size: 4px 4px, 4px 4px; background-repeat: no-repeat; }
 .catalogue-section{margin-top:64px}
+.audit-volume-visual{width:100%;margin:0 auto 34px;border:1px solid #edf2f8;border-radius:18px;overflow:hidden;background:#f7faff;box-shadow:0 16px 45px rgba(8,105,255,.06)}
+.audit-volume-visual img{display:block;width:100%;height:auto}
+@media(max-width:620px){.audit-volume-visual{margin-bottom:26px;border-radius:14px}.audit-volume-visual img{width:230%;max-width:none;transform:translateX(-28%)}}
 .catalogue-section:first-of-type{margin-top:0}
 .catalogue-section-title{margin:0 0 22px;font-size:22px;line-height:1.1;font-weight:600;letter-spacing:-.035em}
 .product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--gap);row-gap:38px}
@@ -182,6 +185,9 @@ button{font:inherit}
     <section class="catalogue-section">
       <h2 class="catalogue-section-title">Audit</h2>
       <p class="catalogue-section-note">Analysez votre réputation et identifiez les points à traiter.</p>
+      <div class="audit-volume-visual" aria-hidden="true">
+        <img src="/assets/audit/review-volume.svg" alt="" loading="eager" decoding="async">
+      </div>
       <div class="product-grid is-carousel" aria-label="Audits — hors abonnement">
       <article class="product-card">
         <span class="badge">Audit</span>
