@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { api } from "@/services/api/client";
 import { authToken } from "@/auth/AuthContext";
 import { PublicHeader as Header } from "@/components/layout/PublicHeader";
@@ -9,40 +9,7 @@ const heroVideo = "https://www.ariaditerra.com/wp-content/uploads/2023/02/coverr
 const heroPoster = "https://www.ariaditerra.com/wp-content/uploads/2023/02/coverr-chef-preparing-a-dish-at-a-restaurant-6248-1080p.jpg";
 
 declare global { interface Window { paypal?: { Buttons: (options: any) => { render: (selector: string) => Promise<void> | void } } } }
-const professions = [
-  ["Restaurants", "https://images.pexels.com/photos/16712155/pexels-photo-16712155.jpeg?auto=compress&cs=tinysrgb&w=1200"],
-  ["Artisans", "https://images.pexels.com/photos/27928762/pexels-photo-27928762.jpeg?auto=compress&cs=tinysrgb&w=1200"],
-  ["Commerces", "https://images.pexels.com/photos/36729517/pexels-photo-36729517.jpeg?auto=compress&cs=tinysrgb&w=1200"],
-  ["Hôtels", "https://images.pexels.com/photos/36684286/pexels-photo-36684286.jpeg?auto=compress&cs=tinysrgb&w=1200"],
-  ["Salons", "https://www.rivasciudad.es/wp-content/uploads/2025/07/peluqueria.jpg"],
-];
 
-const items = [
-  ["Un espace pour comprendre avant d’agir", "Retrouvez l’avis, son contexte, les éléments disponibles et l’état du dossier au même endroit. L’objectif : savoir rapidement ce que vous avez, ce qui manque et ce qui mérite d’être vérifié."],
-  ["Une analyse qui structure le travail", "Les informations sont organisées pour faciliter l’examen : contenu de l’avis, signaux à regarder, éléments associés et prochaines étapes à préparer."],
-  ["Des preuves qui restent rattachées au contexte", "Captures, documents, échanges et sources utiles sont associés au dossier concerné afin de conserver une trace compréhensible du traitement."],
-  ["Une validation humaine sur les décisions sensibles", "Review Defense peut structurer une étape et présenter les informations utiles. Pour les actions sensibles, une personne habilitée conserve la décision finale."],
-];
-
-function Preview() {
-  return <div className="rd-preview">
-    <div className="rd-browser">
-      <div className="rd-browser-top"><span>● ● ●</span><b>Review Defense</b><small>Espace entreprise</small></div>
-      <div className="rd-browser-body">
-        <aside><strong>RD</strong><span className="active">Tableau</span><span>Avis</span><span>Dossiers</span><span>Preuves</span><span>Suivi</span><i /></aside>
-        <main>
-          <header><div><small>AVIS À VÉRIFIER</small><h3>Service déplorable</h3></div><b>À VÉRIFIER</b></header>
-          <div className="rd-review"><em>★☆☆☆☆</em><strong>« Service déplorable, une arnaque totale. »</strong><small>Source disponible · contexte à examiner</small></div>
-          <div className="rd-metrics"><div><small>SIGNAUX</small><b>03</b><span>à examiner</span></div><div><small>PREUVES</small><b>07</b><span>associées</span></div><div><small>STATUT</small><b>Gel</b><span>validation requise</span></div></div>
-          <div className="rd-flow"><span>Analyse</span><i>→</i><span>Preuves</span><i>→</i><strong>Validation</strong></div>
-          <div className="rd-proof"><div><small>HISTORIQUE</small><p>Capture ajoutée</p><p>Document associé</p><p>Validation demandée</p></div><div><small>CONTRÔLE HUMAIN</small><strong>Validation requise</strong><p>Aucune action sensible sans validation.</p></div></div>
-        </main>
-      </div>
-    </div>
-    <div className="rd-float a"><small>TRACE</small><b>Dossier REV-88421</b><span>7 éléments associés</span></div>
-    <div className="rd-float b"><small>IA ASSISTÉE</small><b>3 points à vérifier</b><span>Suggestions, pas décisions</span></div>
-  </div>;
-}
 
 
 
