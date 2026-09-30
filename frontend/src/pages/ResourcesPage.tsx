@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { PublicHeader } from "@/components/layout/PublicHeader";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 import "@/styles/public.css";
 
 const resources = [
@@ -10,11 +12,7 @@ const resources = [
 
 export function ResourcesPage() {
   return <div className="rd-public">
-    <header className="rd-public-nav">
-      <Link className="rd-public-brand" to="/"><span>RD</span> Review Defense</Link>
-      <nav aria-label="Navigation principale"><Link to="/produit">Produit</Link><Link to="/fonctionnement">Méthode</Link><Link to="/securite">Sécurité</Link><Link to="/tarifs">Tarifs</Link></nav>
-      <Link className="rd-public-cta" to="/register">Commencer →</Link>
-    </header>
+    <PublicHeader />
     <main>
       <section className="rd-public-hero rd-resources-hero">
         <div><span className="rd-public-eyebrow">RESSOURCES</span><h1>Des réponses avant<br/><em>la décision.</em></h1></div>
@@ -29,6 +27,6 @@ export function ResourcesPage() {
       </section>
       <section className="rd-public-note"><strong>Une question reste sans réponse ?</strong><p>Commencez par le fonctionnement du produit : il présente le parcours, les rôles et le principe de validation.</p><Link to="/fonctionnement">Lire la méthode →</Link></section>
     </main>
-    <footer className="rd-public-footer"><span>© 2026 Review Defense</span><Link to="/mentions-legales">Informations légales</Link><Link to="/confidentialite">Confidentialité</Link></footer>
+    <PublicFooter />
   </div>;
 }

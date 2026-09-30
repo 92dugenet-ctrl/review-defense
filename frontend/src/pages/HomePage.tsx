@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { api } from "@/services/api/client";
 import { authToken } from "@/auth/AuthContext";
+import { PublicHeader as Header } from "@/components/layout/PublicHeader";
+import { PublicFooter as Footer } from "@/components/layout/PublicFooter";
 
 const heroVideo = "https://www.ariaditerra.com/wp-content/uploads/2023/02/coverr-chef-preparing-a-dish-at-a-restaurant-6248-1080p.mp4";
 const heroPoster = "https://www.ariaditerra.com/wp-content/uploads/2023/02/coverr-chef-preparing-a-dish-at-a-restaurant-6248-1080p.jpg";
@@ -44,20 +46,6 @@ function Preview() {
 
 
 
-function Header() {
-  const [open,setOpen]=useState(false);
-  return <header className="rd-header"><div className="rd-head-left"><button type="button" className="rd-menu" aria-label="Ouvrir le menu principal" aria-expanded={open} onClick={()=>setOpen(!open)}><span /></button><Link className="rd-brand" to="/"><span className="rd-mark">RD</span><span>Review Defense</span></Link></div><div className="rd-actions"><Link className="rd-head-cta" to="/register">Commencer →</Link></div>{open&&<div className="rd-panel"><Link to="/solutions" onClick={()=>setOpen(false)}>Solutions <span>→</span></Link><Link to="/ressources" onClick={()=>setOpen(false)}>Ressources <span>→</span></Link><Link to="/tarifs" onClick={()=>setOpen(false)}>Tarifs <span>→</span></Link><Link to="/login" onClick={()=>setOpen(false)}>Connexion <span>→</span></Link></div>}</header>;
-}
-function Footer() {
-  return <footer className="rd-footer">
-    <div className="rd-footer-brand"><strong>Review Defense</strong><span>Analyse · Preuves · Dossiers · Validation</span><small>Service SaaS destiné à aider les professionnels à analyser, documenter et suivre leurs avis. Les décisions et validations restent sous le contrôle du client.</small></div>
-    <div className="rd-footer-col"><b>Produit</b><Link to="/produit">Produit</Link><Link to="/fonctionnement">Fonctionnement</Link><Link to="/securite">Sécurité</Link><Link to="/tarifs">Tarifs</Link><Link to="/login">Connexion</Link></div>
-    <div className="rd-footer-col"><b>Informations légales</b><Link to="/mentions-legales">Mentions légales</Link><Link to="/confidentialite">Politique de confidentialité</Link><Link to="/cookies">Cookies et traceurs</Link><Link to="/cgu">Conditions générales d'utilisation</Link><Link to="/cgv">Conditions générales de vente</Link></div>
-    <div className="rd-footer-col"><b>Conformité</b><Link to="/confidentialite">Protection des données — RGPD</Link><Link to="/cgv#mediation">Réclamations et médiation</Link><Link to="/accessibilite">Accessibilité</Link><Link to="/contact-juridique">Contact juridique</Link></div>
-    <div className="rd-footer-bottom"><span>© 2026 Review Defense. Tous droits réservés.</span><span>Les informations entre crochets dans les pages légales doivent être remplacées par les données exactes de l’éditeur avant publication commerciale.</span></div>
-  </footer>;
-}
-
 function ProductMockup({ mode = "review" }: { mode?: "review" | "evidence" | "cases" | "approval" }) {
   const titles = { review: "Avis à vérifier", evidence: "Éléments du dossier", cases: "Dossiers actifs", approval: "Validation requise" };
   return <div className="rd-product-frame"><div className="rd-window-bar"><span>● ● ●</span><b>Review Defense</b><small>Espace entreprise</small></div><div className="rd-window"><aside className="rd-side"><strong>RD</strong><span className="sel">Tableau</span><span>Avis</span><span>Dossiers</span><span>Preuves</span><span>Suivi</span><i /></aside><main className="rd-ui"><div className="rd-ui-head"><div><small>ESPACE DE TRAVAIL</small><h3>{titles[mode]}</h3></div><span className="rd-ui-open">Ouvrir →</span></div>
@@ -84,7 +72,7 @@ function CTA({ title }: { title:React.ReactNode }) {
   return <section className="rd-cta"><h2>{title}</h2><p>Créez votre espace et commencez par les dossiers qui demandent le plus d’attention. Review Defense vous aide à structurer l’analyse, rassembler les éléments, suivre l’avancement et préparer les validations.</p><Link to="/register">Créer mon espace →</Link></section>;
 }
 
-function ProductPage() {
+export function ProductPage() {
   const [tab,setTab]=useState(0);
   const tabs=[["Analyser","Comprendre ce qui mérite un examen et distinguer les informations disponibles des points encore à vérifier."],["Documenter","Réunir les sources, captures, documents et échanges utiles sans perdre leur lien avec le dossier."],["Suivre","Voir où en est chaque dossier, ce qui a été fait, ce qui manque et ce qui attend une intervention."],["Valider","Présenter une étape préparée et laisser la décision à la personne habilitée avant toute action sensible."]];
   const modes=["review","evidence","cases","approval"] as const;
@@ -94,7 +82,7 @@ function ProductPage() {
     <section className="rd-contrast"><div><span className="rd-eyebrow">LE PRINCIPE</span><h2>Préparer le travail.<br /><em>Décider avec contexte.</em></h2></div><div className="rd-contrast-copy"><p>Review Defense est conçu pour réduire le travail de préparation et rendre le dossier lisible. Il ne remplace pas la décision de l’entreprise : lorsqu’une étape sensible doit être validée, la personne habilitée conserve la main.</p><Link to="/fonctionnement">Découvrir la méthode →</Link></div></section><CTA title={<>Découvrez une méthode plus claire<br /><em>pour vos dossiers sensibles.</em></>} /><Footer /></PageFrame>;
 }
 
-function MethodPage() {
+export function MethodPage() {
   const steps=[["01","Recevoir","Un avis ou un signal entre dans votre espace."],["02","Analyser","Le contenu et son contexte sont structurés pour faciliter l’examen."],["03","Documenter","Les captures, documents et sources utiles rejoignent le dossier."],["04","Préparer","Le logiciel organise les prochaines étapes et les éléments disponibles."],["05","Valider","Une personne habilitée décide de la suite à donner."],["06","Suivre","Le dossier conserve son historique et son état."]];
   return <PageFrame><Header /><section className="rd-page-intro"><div><span className="rd-eyebrow">FONCTIONNEMENT</span><h1>De l’avis au dossier.<br /><em>Chaque étape reste lisible.</em></h1></div><div><p>Le traitement suit un parcours simple : recevoir, examiner, documenter, préparer, valider et suivre. Chaque étape apporte son propre contexte et laisse une trace compréhensible pour la suite du dossier.</p><Link className="rd-blue-button" to="/register">Commencer →</Link></div></section>
     <section className="rd-method"><div className="rd-method-intro"><span className="rd-eyebrow">LE PARCOURS</span><h2>Chaque étape<br />a son <em>contexte.</em></h2></div><div className="rd-timeline">{steps.map(([n,t,d])=><article key={n}><span>{n}</span><div><h3>{t}</h3><p>{d}</p></div><b>+</b></article>)}</div></section>
@@ -102,7 +90,7 @@ function MethodPage() {
     <section className="rd-light-section"><div className="rd-section-head"><h2>Ce que le dossier vous permet de retrouver.</h2><p>Chaque étape doit rester compréhensible : ce qui est entré, ce qui a été ajouté, ce qui a changé et ce qui attend une décision.</p></div><div className="rd-feature-grid"><Feature title="Le signal reçu" text="L’avis, sa source et les informations disponibles au moment de l’examen."/><Feature title="Les éléments réunis" text="Les captures, documents, échanges et notes utiles au traitement."/><Feature title="L’historique du traitement" text="Les étapes réalisées et les validations qui ont marqué le dossier."/><Feature title="La prochaine décision" text="Les étapes qui nécessitent encore l’intervention ou la validation d’une personne habilitée." /></div></section><CTA title={<>Moins de recherche.<br /><em>Plus de contexte.</em></>} /><Footer /></PageFrame>;
 }
 
-function SecurityPage() {
+export function SecurityPage() {
   const [open,setOpen]=useState(0);
   const faqs=[["Review Defense peut-il agir à ma place ?","Non. Le logiciel assiste le traitement ; il ne prend pas les décisions sensibles à votre place. Une personne habilitée conserve la décision."],["Est-ce que Review Defense remplace une équipe juridique ?","Non. Review Defense est un logiciel de gestion, de documentation et de suivi des avis et dossiers. Il ne se substitue pas à un avocat, à un conseil juridique ou à une décision de justice."],["Comment les accès à mes dossiers sont-ils organisés ?","Les accès sont organisés par organisation et par rôle selon les permissions prévues par l’application. Les détails applicables dépendent de la configuration et des documents contractuels en vigueur."],["Puis-je commencer avec quelques dossiers ?","Oui. Vous pouvez commencer par les dossiers qui demandent le plus d’attention et élargir ensuite l’usage à mesure que votre organisation prend en main le processus."]];
   return <PageFrame><Header /><section className="rd-page-intro"><div><span className="rd-eyebrow">SÉCURITÉ ET CONTRÔLE</span><h1>La technologie aide.<br /><em>Vous gardez le contrôle.</em></h1></div><div><p>La sécurité intervient dans la manière dont les accès, les rôles, les dossiers et les validations sont organisés. Cette page décrit les principes de contrôle visibles dans le produit. Elle ne constitue ni une certification de sécurité ni une promesse de conformité à elle seule.</p></div></section>
@@ -111,7 +99,7 @@ function SecurityPage() {
     <section className="rd-faq"><span className="rd-eyebrow">QUESTIONS FRÉQUENTES</span><h2>Ce que vous voulez savoir<br /><em>avant de nous confier vos dossiers.</em></h2><div>{faqs.map(([q,a],i)=>{const active=open===i;return <article className={active?"open":""} key={q}><button type="button" aria-expanded={active} onClick={()=>setOpen(active?-1:i)}><span>{q}</span><b>+</b></button><p>{a}</p></article>})}</div></section><CTA title={<>La confiance commence<br /><em>par la visibilité.</em></>} /><Footer /></PageFrame>;
 }
 
-function PricingPage() {
+export function PricingPage() {
   const [catalog, setCatalog] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
@@ -230,12 +218,5 @@ export function HomePage() {
     <section className="rd-home-roles"><div><span className="rd-eyebrow">POUR QUI</span><h2>Une même base de travail.<br /><em>Des responsabilités différentes.</em></h2></div><div className="rd-role-list"><article><b>Responsable d’activité</b><span>Une vue d’ensemble des dossiers, des priorités et des décisions qui restent à prendre.</span></article><article><b>Équipe opérationnelle</b><span>Collecte, analyse, documentation et suivi au quotidien.</span></article><article><b>Direction</b><span>Une lecture synthétique des dossiers qui demandent une attention particulière et de leur état d’avancement.</span></article><article><b>Référent qualité</b><span>Continuité du traitement, pièces associées et historique disponible pour les dossiers suivis.</span></article></div></section>
 
     <section className="rd-cta pricing"><h2>Commencez par un dossier.<br /><em>Voyez la méthode en action.</em></h2><p>Créez votre espace et commencez par les dossiers qui demandent le plus d’attention. Review Defense vous aide à structurer l’analyse, rassembler les éléments, suivre l’avancement et préparer les validations.</p><Link to="/register">Créer mon espace →</Link></section>
-    <footer className="rd-footer">
-      <div className="rd-footer-brand"><strong>Review Defense</strong><span>Analyse · Preuves · Dossiers · Validation</span><small>Service SaaS destiné à aider les professionnels à analyser, documenter et suivre leurs avis. Les décisions et validations restent sous le contrôle du client.</small></div>
-      <div className="rd-footer-col"><b>Produit</b><Link to="/produit">Produit</Link><Link to="/fonctionnement">Fonctionnement</Link><Link to="/securite">Sécurité</Link><Link to="/tarifs">Tarifs</Link><Link to="/login">Connexion</Link></div>
-      <div className="rd-footer-col"><b>Informations légales</b><Link to="/mentions-legales">Mentions légales</Link><Link to="/confidentialite">Politique de confidentialité</Link><Link to="/cookies">Cookies et traceurs</Link><Link to="/cgu">Conditions générales d'utilisation</Link><Link to="/cgv">Conditions générales de vente</Link></div>
-      <div className="rd-footer-col"><b>Conformité</b><Link to="/confidentialite">Protection des données — RGPD</Link><Link to="/cgv#mediation">Réclamations et médiation</Link><Link to="/accessibilite">Accessibilité</Link><Link to="/contact-juridique">Contact juridique</Link></div>
-      <div className="rd-footer-bottom"><span>© 2026 Review Defense. Tous droits réservés.</span><span>Les informations entre crochets dans les pages légales doivent être remplacées par les données exactes de l'éditeur avant publication commerciale.</span></div>
-    </footer>
-  </div>;
+    <Footer /></div>;
 }

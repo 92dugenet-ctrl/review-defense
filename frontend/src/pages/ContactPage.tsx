@@ -1,13 +1,11 @@
 import { Link } from "react-router-dom";
+import { PublicHeader } from "@/components/layout/PublicHeader";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 import "@/styles/public.css";
 
 export function ContactPage() {
   return <div className="rd-public">
-    <header className="rd-public-nav">
-      <Link className="rd-public-brand" to="/"><span>RD</span> Review Defense</Link>
-      <nav aria-label="Navigation principale"><Link to="/produit">Produit</Link><Link to="/fonctionnement">Méthode</Link><Link to="/securite">Sécurité</Link><Link to="/tarifs">Tarifs</Link></nav>
-      <Link className="rd-public-cta" to="/register">Commencer →</Link>
-    </header>
+    <PublicHeader />
     <main>
       <section className="rd-contact">
         <div><span className="rd-public-eyebrow">CONTACT</span><h1>Parlons d’abord<br/><em>du besoin.</em></h1><p>Si vous évaluez Review Defense, commencez par préciser ce que vous cherchez à organiser : analyse d’avis, documentation, suivi des dossiers ou validation des étapes sensibles.</p></div>
@@ -19,6 +17,6 @@ export function ContactPage() {
       </section>
       <section className="rd-public-faq-strip"><h2>Vous cherchez encore à comprendre le produit ?</h2><div><Link to="/produit">Produit</Link><Link to="/fonctionnement">Fonctionnement</Link><Link to="/securite">Sécurité</Link><Link to="/tarifs">Tarifs</Link></div></section>
     </main>
-    <footer className="rd-public-footer"><span>© 2026 Review Defense</span><Link to="/mentions-legales">Informations légales</Link><Link to="/confidentialite">Confidentialité</Link></footer>
+    <PublicFooter />
   </div>;
 }
