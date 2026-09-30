@@ -1,9 +1,151 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import "@/styles/muse-landing.css";
+import { useEffect, useState, type ReactNode } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { api } from "@/services/api/client";
+import { authToken } from "@/auth/AuthContext";
+import { PublicHeader as Header } from "@/components/layout/PublicHeader";
+import { PublicFooter as Footer } from "@/components/layout/PublicFooter";
 
-const heroVideo="https://www.ariaditerra.com/wp-content/uploads/2023/02/coverr-chef-preparing-a-dish-at-a-restaurant-6248-1080p.mp4";
-const heroPoster="https://www.ariaditerra.com/wp-content/uploads/2023/02/coverr-chef-preparing-a-dish-at-a-restaurant-6248-1080p.jpg";
+const heroVideo = "https://www.ariaditerra.com/wp-content/uploads/2023/02/coverr-chef-preparing-a-dish-at-a-restaurant-6248-1080p.mp4";
+const heroPoster = "https://www.ariaditerra.com/wp-content/uploads/2023/02/coverr-chef-preparing-a-dish-at-a-restaurant-6248-1080p.jpg";
+
+declare global { interface Window { paypal?: { Buttons: (options: any) => { render: (selector: string) => Promise<void> | void } } } }
+const professions = [
+  ["Restaurants", "https://images.pexels.com/photos/16712155/pexels-photo-16712155.jpeg?auto=compress&cs=tinysrgb&w=1200"],
+  ["Artisans", "https://images.pexels.com/photos/27928762/pexels-photo-27928762.jpeg?auto=compress&cs=tinysrgb&w=1200"],
+  ["Commerces", "https://images.pexels.com/photos/36729517/pexels-photo-36729517.jpeg?auto=compress&cs=tinysrgb&w=1200"],
+  ["Hôtels", "https://images.pexels.com/photos/36684286/pexels-photo-36684286.jpeg?auto=compress&cs=tinysrgb&w=1200"],
+  ["Salons", "https://www.rivasciudad.es/wp-content/uploads/2025/07/peluqueria.jpg"],
+];
+
+const items = [
+  ["Un espace pour comprendre avant d’agir", "Retrouvez l’avis, son contexte, les éléments disponibles et l’état du dossier au même endroit. L’objectif : savoir rapidement ce que vous avez, ce qui manque et ce qui mérite d’être vérifié."],
+  ["Une analyse qui structure le travail", "Les informations sont organisées pour faciliter l’examen : contenu de l’avis, signaux à regarder, éléments associés et prochaines étapes à préparer."],
+  ["Des preuves qui restent rattachées au contexte", "Captures, documents, échanges et sources utiles sont associés au dossier concerné afin de conserver une trace compréhensible du traitement."],
+  ["Une validation humaine sur les décisions sensibles", "Review Defense peut structurer une étape et présenter les informations utiles. Pour les actions sensibles, une personne habilitée conserve la décision finale."],
+];
+
+function Preview() {
+  return <div className="rd-preview">
+    <div className="rd-browser">
+      <div className="rd-browser-top"><span>● ● ●</span><b>Review Defense</b><small>Espace entreprise</small></div>
+      <div className="rd-browser-body">
+        <aside><strong>RD</strong><span className="active">Tableau</span><span>Avis</span><span>Dossiers</span><span>Preuves</span><span>Suivi</span><i /></aside>
+        <main>
+          <header><div><small>AVIS À VÉRIFIER</small><h3>Service déplorable</h3></div><b>À VÉRIFIER</b></header>
+          <div className="rd-review"><em>★☆☆☆☆</em><strong>« Service déplorable, une arnaque totale. »</strong><small>Source disponible · contexte à examiner</small></div>
+          <div className="rd-metrics"><div><small>SIGNAUX</small><b>03</b><span>à examiner</span></div><div><small>PREUVES</small><b>07</b><span>associées</span></div><div><small>STATUT</small><b>Gel</b><span>validation requise</span></div></div>
+          <div className="rd-flow"><span>Analyse</span><i>→</i><span>Preuves</span><i>→</i><strong>Validation</strong></div>
+          <div className="rd-proof"><div><small>HISTORIQUE</small><p>Capture ajoutée</p><p>Document associé</p><p>Validation demandée</p></div><div><small>CONTRÔLE HUMAIN</small><strong>Validation requise</strong><p>Aucune action sensible sans validation.</p></div></div>
+        </main>
+      </div>
+    </div>
+    <div className="rd-float a"><small>TRACE</small><b>Dossier REV-88421</b><span>7 éléments associés</span></div>
+    <div className="rd-float b"><small>IA ASSISTÉE</small><b>3 points à vérifier</b><span>Suggestions, pas décisions</span></div>
+  </div>;
+}
+
+
+
+function ProductMockup({ mode = "review" }: { mode?: "review" | "evidence" | "cases" | "approval" }) {
+  const titles = { review: "Avis à vérifier", evidence: "Éléments du dossier", cases: "Dossiers actifs", approval: "Validation requise" };
+  return <div className="rd-product-frame"><div className="rd-window-bar"><span>● ● ●</span><b>Review Defense</b><small>Espace entreprise</small></div><div className="rd-window"><aside className="rd-side"><strong>RD</strong><span className="sel">Tableau</span><span>Avis</span><span>Dossiers</span><span>Preuves</span><span>Suivi</span><i /></aside><main className="rd-ui"><div className="rd-ui-head"><div><small>ESPACE DE TRAVAIL</small><h3>{titles[mode]}</h3></div><span className="rd-ui-open">Ouvrir →</span></div>
+    {mode==="review" && <><div className="rd-ui-card"><div className="rd-stars">★☆☆☆☆</div><b>« Service déplorable, une arnaque totale. »</b><p>Source disponible · contexte à examiner</p></div><div className="rd-ui-grid"><div><small>SIGNAUX</small><b>03</b><span>à examiner</span></div><div><small>PREUVES</small><b>07</b><span>associées</span></div><div><small>STATUT</small><b>Gel</b><span>validation</span></div></div></>}
+    {mode==="evidence" && <div className="rd-list">{["Capture de l’avis · 09:41","Facture client · PDF","Échange email · 14:18","Historique de réponse · 16:03","Note interne · contexte"].map((x,i)=><div key={x}><span className="rd-file-dot">{i+1}</span><div><b>{x}</b><small>Associé au dossier REV-88421</small></div><em>→</em></div>)}</div>}
+    {mode==="cases" && <div className="rd-list">{["REV-88421 · Avis à vérifier","REV-88418 · Documentation","REV-88392 · Validation","REV-88371 · Suivi"].map((x,i)=><div key={x}><span className="rd-file-dot">{i+1}</span><div><b>{x}</b><small>{["03 signaux","07 preuves","Action en attente","Suivi actif"][i]}</small></div><em>{["À vérifier","En cours","Validation","Suivi"][i]}</em></div>)}</div>}
+    {mode==="approval" && <><div className="rd-approval"><div className="rd-check">✓</div><div><small>ACTION PROPOSÉE</small><h4>Préparer une réponse</h4><p>Les éléments du dossier sont réunis. Une validation est requise avant toute action.</p></div></div><div className="rd-approval-actions"><button type="button">Rejeter</button><button type="button" className="dark">Valider l’étape →</button></div></>}
+  </main></div></div>;
+}
+
+function Feature({ title, text }: { title:string; text:string }) {
+  return <article className="rd-feature"><span className="rd-feature-number">+</span><h3>{title}</h3><p>{text}</p></article>;
+}
+
+function SecurityCard({ title, text }: { title:string; text:string }) {
+  return <article className="rd-security-card"><span className="rd-card-icon">✓</span><h3>{title}</h3><p>{text}</p></article>;
+}
+
+function PageFrame({ children }: { children:React.ReactNode }) {
+  return <div className="rd-home rd-page">{children}</div>;
+}
+
+function CTA({ title }: { title:React.ReactNode }) {
+  return <section className="rd-cta"><h2>{title}</h2><p>Créez votre espace et commencez par les dossiers qui demandent le plus d’attention. Review Defense vous aide à structurer l’analyse, rassembler les éléments, suivre l’avancement et préparer les validations.</p><Link to="/register">Créer mon espace →</Link></section>;
+}
+
+export function ProductPage() {
+  const [tab,setTab]=useState(0);
+  const tabs=[["Analyser","Comprendre ce qui mérite un examen et distinguer les informations disponibles des points encore à vérifier."],["Documenter","Réunir les sources, captures, documents et échanges utiles sans perdre leur lien avec le dossier."],["Suivre","Voir où en est chaque dossier, ce qui a été fait, ce qui manque et ce qui attend une intervention."],["Valider","Présenter une étape préparée et laisser la décision à la personne habilitée avant toute action sensible."]];
+  const modes=["review","evidence","cases","approval"] as const;
+  return <PageFrame><Header /><section className="rd-page-intro"><div><span className="rd-eyebrow">LE PRODUIT</span><h1>Un espace de travail pour traiter les avis qui demandent <em>plus que quelques clics.</em></h1></div><div><p>Un avis tient parfois en quelques lignes. Le travail nécessaire pour le comprendre, le documenter et le suivre peut être beaucoup plus long. Review Defense rassemble les éléments utiles dans un même dossier pour éviter de repartir de zéro à chaque étape.</p><Link className="rd-blue-button" to="/register">Commencer →</Link></div></section>
+    <section className="rd-tabs-section"><div className="rd-tabs">{tabs.map(([t],i)=><button type="button" key={t} className={tab===i?"active":""} onClick={()=>setTab(i)}>{t}</button>)}</div><div className="rd-tab-copy"><div><span>0{tab+1}</span><h2>{tabs[tab][0]}</h2><p>{tabs[tab][1]}</p></div><ProductMockup mode={modes[tab]} /></div></section>
+    <section className="rd-light-section"><div className="rd-split-title"><div><span className="rd-eyebrow">UN ESPACE DE TRAVAIL</span><h2>Un seul dossier.<br /><em>Tout ce qu’il faut pour continuer.</em></h2></div><p>Retrouvez le contenu reçu, les éléments associés, les étapes réalisées et les validations dans une même vue. Le dossier sert de point de référence lorsque plusieurs personnes interviennent ou qu’un traitement s’étale dans le temps.</p></div><div className="rd-feature-grid"><Feature title="Lecture structurée" text="Les informations disponibles sont regroupées pour faciliter l’examen et faire ressortir les points qui nécessitent une vérification ou un complément."/><Feature title="Preuves rattachées" text="Les captures, documents, sources et échanges utiles restent rattachés au dossier auquel ils se rapportent."/><Feature title="Historique exploitable" text="Une chronologie permet de comprendre les étapes réalisées, les éléments ajoutés et les validations intervenues."/><Feature title="Décision humaine" text="Les étapes sensibles ne sont pas exécutées automatiquement : une personne habilitée garde la décision." /></div></section>
+    <section className="rd-contrast"><div><span className="rd-eyebrow">LE PRINCIPE</span><h2>Préparer le travail.<br /><em>Décider avec contexte.</em></h2></div><div className="rd-contrast-copy"><p>Review Defense est conçu pour réduire le travail de préparation et rendre le dossier lisible. Il ne remplace pas la décision de l’entreprise : lorsqu’une étape sensible doit être validée, la personne habilitée conserve la main.</p><Link to="/fonctionnement">Découvrir la méthode →</Link></div></section><CTA title={<>Découvrez une méthode plus claire<br /><em>pour vos dossiers sensibles.</em></>} /><Footer /></PageFrame>;
+}
+
+export function MethodPage() {
+  const steps=[["01","Recevoir","Un avis ou un signal entre dans votre espace."],["02","Analyser","Le contenu et son contexte sont structurés pour faciliter l’examen."],["03","Documenter","Les captures, documents et sources utiles rejoignent le dossier."],["04","Préparer","Le logiciel organise les prochaines étapes et les éléments disponibles."],["05","Valider","Une personne habilitée décide de la suite à donner."],["06","Suivre","Le dossier conserve son historique et son état."]];
+  return <PageFrame><Header /><section className="rd-page-intro"><div><span className="rd-eyebrow">FONCTIONNEMENT</span><h1>De l’avis au dossier.<br /><em>Chaque étape reste lisible.</em></h1></div><div><p>Le traitement suit un parcours simple : recevoir, examiner, documenter, préparer, valider et suivre. Chaque étape apporte son propre contexte et laisse une trace compréhensible pour la suite du dossier.</p><Link className="rd-blue-button" to="/register">Commencer →</Link></div></section>
+    <section className="rd-method"><div className="rd-method-intro"><span className="rd-eyebrow">LE PARCOURS</span><h2>Chaque étape<br />a son <em>contexte.</em></h2></div><div className="rd-timeline">{steps.map(([n,t,d])=><article key={n}><span>{n}</span><div><h3>{t}</h3><p>{d}</p></div><b>+</b></article>)}</div></section>
+    <section className="rd-case"><div className="rd-case-copy"><span className="rd-eyebrow">UN CAS CONCRET</span><h2>Un avis arrive.<br /><em>Le contexte se construit autour.</em></h2><p>Le but n’est pas d’ajouter un outil de plus. Il est de disposer d’un point de référence pour retrouver l’avis, les pièces associées, les étapes réalisées et la prochaine décision à prendre.</p></div><ProductMockup mode="review"/></section>
+    <section className="rd-light-section"><div className="rd-section-head"><h2>Ce que le dossier vous permet de retrouver.</h2><p>Chaque étape doit rester compréhensible : ce qui est entré, ce qui a été ajouté, ce qui a changé et ce qui attend une décision.</p></div><div className="rd-feature-grid"><Feature title="Le signal reçu" text="L’avis, sa source et les informations disponibles au moment de l’examen."/><Feature title="Les éléments réunis" text="Les captures, documents, échanges et notes utiles au traitement."/><Feature title="L’historique du traitement" text="Les étapes réalisées et les validations qui ont marqué le dossier."/><Feature title="La prochaine décision" text="Les étapes qui nécessitent encore l’intervention ou la validation d’une personne habilitée." /></div></section><CTA title={<>Moins de recherche.<br /><em>Plus de contexte.</em></>} /><Footer /></PageFrame>;
+}
+
+export function SecurityPage() {
+  const [open,setOpen]=useState(0);
+  const faqs=[["Review Defense peut-il agir à ma place ?","Non. Le logiciel assiste le traitement ; il ne prend pas les décisions sensibles à votre place. Une personne habilitée conserve la décision."],["Est-ce que Review Defense remplace une équipe juridique ?","Non. Review Defense est un logiciel de gestion, de documentation et de suivi des avis et dossiers. Il ne se substitue pas à un avocat, à un conseil juridique ou à une décision de justice."],["Comment les accès à mes dossiers sont-ils organisés ?","Les accès sont organisés par organisation et par rôle selon les permissions prévues par l’application. Les détails applicables dépendent de la configuration et des documents contractuels en vigueur."],["Puis-je commencer avec quelques dossiers ?","Oui. Vous pouvez commencer par les dossiers qui demandent le plus d’attention et élargir ensuite l’usage à mesure que votre organisation prend en main le processus."]];
+  return <PageFrame><Header /><section className="rd-page-intro"><div><span className="rd-eyebrow">SÉCURITÉ ET CONTRÔLE</span><h1>La technologie aide.<br /><em>Vous gardez le contrôle.</em></h1></div><div><p>La sécurité intervient dans la manière dont les accès, les rôles, les dossiers et les validations sont organisés. Cette page décrit les principes de contrôle visibles dans le produit. Elle ne constitue ni une certification de sécurité ni une promesse de conformité à elle seule.</p></div></section>
+    <section className="rd-security-cards"><SecurityCard title="Des accès organisés autour de votre espace" text="Les utilisateurs travaillent dans le cadre de leur organisation et des permissions prévues par l’application. Les droits disponibles dépendent de la configuration de l’espace."/><SecurityCard title="Une validation avant les étapes sensibles" text="Le logiciel peut préparer et présenter une étape. Une personne habilitée conserve la décision avant toute action sensible."/></section>
+    <section className="rd-light-section"><div className="rd-section-head"><h2>Des contrôles visibles dans le travail quotidien.</h2><p>Les contrôles utiles doivent rester compréhensibles : qui peut accéder, ce qui a été fait et quelles étapes nécessitent une validation.</p></div><div className="rd-feature-grid"><Feature title="Permissions" text="Les accès sont liés aux rôles et à l’organisation."/><Feature title="Journalisation" text="Les événements importants peuvent être replacés dans leur chronologie."/><Feature title="Contexte des preuves" text="Les éléments sont rattachés à leur dossier plutôt que laissés isolés."/><Feature title="Contrôle humain" text="Une validation explicite reste requise pour les étapes sensibles." /></div></section>
+    <section className="rd-faq"><span className="rd-eyebrow">QUESTIONS FRÉQUENTES</span><h2>Ce que vous voulez savoir<br /><em>avant de nous confier vos dossiers.</em></h2><div>{faqs.map(([q,a],i)=>{const active=open===i;return <article className={active?"open":""} key={q}><button type="button" aria-expanded={active} onClick={()=>setOpen(active?-1:i)}><span>{q}</span><b>+</b></button><p>{a}</p></article>})}</div></section><CTA title={<>La confiance commence<br /><em>par la visibilité.</em></>} /><Footer /></PageFrame>;
+}
+
+export function PricingPage() {
+  const [catalog, setCatalog] = useState<any[]>([]);
+  const [error, setError] = useState("");
+  const [selected, setSelected] = useState<string | null>(null);
+  const [message, setMessage] = useState("");
+  const groups = [
+    { key:"subscription", eyebrow:"MONITORING", title:"Abonnements", description:"Un abonnement mensuel pour organiser votre activité et suivre vos dossiers dans le temps.", kinds:["subscription"] },
+    { key:"audit", eyebrow:"AUDIT", title:"Audits de réputation", description:"Une prestation ponctuelle pour analyser un volume défini d’avis et disposer d’une base structurée pour votre travail.", kinds:["audit"] },
+    { key:"defense", eyebrow:"DÉFENSE / SUPPRESSION", title:"Défense d’un avis", description:"Un avis précis peut être traité par étapes, de l’analyse initiale aux niveaux de traitement disponibles.", kinds:["defense_step","defense_package"] },
+  ] as const;
+  useEffect(() => { api.get<any>("/v1/billing/catalog").then(d=>setCatalog(d.items??[])).catch(e=>setError(e instanceof Error?e.message:"Le catalogue tarifaire est temporairement indisponible. Réessayez dans quelques instants.")); }, []);
+  const loadPayPal = async (clientId:string, components:string, extra="") => {
+    const old=document.querySelector<HTMLScriptElement>("script[data-rd-paypal]"); if(old) old.remove();
+    await new Promise<void>((resolve,reject)=>{const s=document.createElement("script");s.src="https://www.paypal.com/sdk/js?client-id="+encodeURIComponent(clientId)+"&components="+components+"&currency=EUR&locale=fr_FR"+extra;s.async=true;s.dataset.rdPaypal="1";s.onload=()=>resolve();s.onerror=()=>reject(new Error("Impossible de charger PayPal."));document.head.appendChild(s)});
+    if(!window.paypal) throw new Error("Le service de paiement est momentanément indisponible.");
+  };
+  const payOneTime = async (offer:any) => {
+    setError("");setMessage("");setSelected(offer.offer_id);
+    try {
+      if(!offer.paypal_hosted_button_id) throw new Error("Le paiement en ligne n’est pas disponible pour cette offre pour le moment.");
+      await loadPayPal("BAAftx79q4rSHY7vc2aYy_hgx3KB6GB15k__TBghUQyd1_ixXSqv71UHw1RXZvkR4cli25WsSirUKWt7zs","hosted-buttons");
+      const id="paypal-"+offer.offer_id,node=document.getElementById(id); if(!node) throw new Error("Conteneur PayPal introuvable.");
+      node.innerHTML=""; const pp=window.paypal as any; if(!pp.HostedButtons) throw new Error("Les boutons PayPal hébergés sont indisponibles.");
+      pp.HostedButtons({hostedButtonId:offer.paypal_hosted_button_id}).render("#"+id);
+    } catch(e) { setError(e instanceof Error?e.message:"Le paiement n’a pas pu être préparé. Vérifiez votre connexion puis réessayez.");setSelected(null); }
+  };
+  const subscribe = async (offer:any) => {
+    setError("");setMessage("");setSelected(offer.offer_id);
+    const token=authToken(); if(!token){setSelected(null);window.location.href="/register?next=/tarifs";return;}
+    try {
+      const cfg=await api.get<any>("/v1/paypal/config"); if(!cfg.configured||!cfg.client_id) throw new Error("Le paiement par abonnement n’est pas disponible pour le moment.");
+      const plan=await api.get<any>("/v1/paypal/subscription/config?offer_id="+encodeURIComponent(offer.offer_id));
+      await loadPayPal(cfg.client_id,"buttons","&vault=true&intent=subscription");
+      const id="paypal-"+offer.offer_id,node=document.getElementById(id);if(!node)throw new Error("Conteneur PayPal introuvable.");
+      node.innerHTML="";(window.paypal as any).Buttons({style:{layout:"vertical",label:"subscribe"},createSubscription:(_d:any,a:any)=>a.subscription.create({plan_id:plan.plan_id}),onApprove:async(data:any)=>{await api.post("/v1/paypal/subscription/confirm",{subscription_id:data.subscriptionID,offer_id:offer.offer_id},{headers:{Authorization:"Bearer "+token}});setMessage("Abonnement confirmé. Votre espace sera synchronisé avec PayPal.");setSelected(null)},onCancel:()=>setSelected(null),onError:(e:any)=>setError(e?.message??"Erreur de paiement PayPal.")}).render("#"+id);
+    } catch(e){setError(e instanceof Error?e.message:"PayPal indisponible.");setSelected(null);}
+  };
+  return <PageFrame><Header />
+    <section className="rd-page-intro"><div><span className="rd-eyebrow">TARIFS</span><h1>Votre situation.<br /><em>Un format adapté à votre besoin.</em></h1></div><div><p>Abonnements de suivi, audits de réputation et défense d’un avis : choisissez le format correspondant à votre besoin et à votre volume.</p></div></section>
+    {error&&<div role="alert" style={{maxWidth:1220,margin:"0 auto 18px",padding:"12px 14px",border:"1px solid #e2caca",background:"#fff7f7",color:"#8b3030",fontSize:12}}>{error}</div>}
+    {message&&<div role="status" style={{maxWidth:1220,margin:"0 auto 18px",padding:"12px 14px",border:"1px solid #cfe1d4",background:"#f4faf5",color:"#28623c",fontSize:12}}>{message}</div>}
+    <section className="rd-billing-categories">{groups.map(group=>{const offers=catalog.filter(o=>(group.kinds as readonly string[]).includes(o.kind));return <section className="rd-billing-category" key={group.key}><div className="rd-billing-category-head"><div><span className="rd-eyebrow">{group.eyebrow}</span><h2>{group.title}</h2><p>{group.description}</p></div><span>{offers.length} offres</span></div><div className="rd-billing-grid">{offers.map(offer=>{const active=selected===offer.offer_id,isQuote=offer.amount===null,configured=Boolean(offer.paypal_hosted_button_id||offer.paypal_plan_id),price=isQuote?"Sur devis":Number(offer.amount).toLocaleString("fr-FR",{minimumFractionDigits:0,maximumFractionDigits:2})+" €"+(offer.recurring==="true"?" / mois":"");return <article className={"rd-billing-card"+(offer.offer_id==="monitoring_professional"||offer.offer_id==="defense_plus"?" featured":"")} key={offer.offer_id}><span className="rd-plan-label">{offer.kind==="subscription"?"ABONNEMENT":offer.kind==="audit"?"AUDIT":"DÉFENSE"}</span><h3>{offer.name_fr}</h3><strong>{price}</strong><p>{offer.kind==="audit"?"Prestation ponctuelle d’analyse structurée d’un volume défini d’avis.":offer.kind==="subscription"?"Abonnement mensuel pour organiser le suivi de votre activité.":"Étape ou niveau de traitement disponible pour un avis précis."}</p>{isQuote?<Link to="/register" className="rd-billing-button">Échanger sur mon besoin →</Link>:!configured?<button type="button" className="rd-billing-button disabled" disabled>Paiement en ligne indisponible</button>:active?<div id={"paypal-"+offer.offer_id} className="rd-paypal-hosted"/>:<button type="button" className="rd-billing-button" onClick={()=>offer.kind==="subscription"?void subscribe(offer):void payOneTime(offer)}>{offer.kind==="subscription"?"Souscrire →":"Payer en ligne →"}</button>}</article>})}</div></section>})}</section>
+    <section className="rd-billing-note"><span className="rd-eyebrow">COMMENT CHOISIR</span><h2>Choisissez le bon point de départ.<br /><em>Vous pourrez élargir ensuite.</em></h2><div className="rd-billing-note-grid"><div><strong>Audit</strong><p>Pour obtenir une analyse structurée d’un volume défini d’avis.</p></div><div><strong>Défense</strong><p>Pour traiter un avis précis selon les étapes disponibles.</p></div><div><strong>Abonnement</strong><p>Pour organiser votre activité dans un espace de suivi utilisé au quotidien.</p></div></div></section><Footer /></PageFrame>;
+}
+
+
+import "@/styles/muse-landing.css";
 const images={
   product:"https://images.pexels.com/photos/16712155/pexels-photo-16712155.jpeg?auto=compress&cs=tinysrgb&w=1600",
   research:"https://images.pexels.com/photos/27928762/pexels-photo-27928762.jpeg?auto=compress&cs=tinysrgb&w=1600",
@@ -18,16 +160,16 @@ const faqs=[
  ["Mes dossiers sont-ils accessibles à tous ?","Les accès sont organisés dans le cadre de votre espace et des permissions prévues par l’application."],
  ["Puis-je commencer avec quelques dossiers ?","Oui. Commencez avec les situations qui demandent déjà votre attention puis élargissez progressivement l’usage."],
 ];
-function Header({open,setOpen}:{open:boolean;setOpen:(v:boolean)=>void}){
+function MuseHeader({open,setOpen}:{open:boolean;setOpen:(v:boolean)=>void}){
  return <header className="site-header"><Link className="brand" to="/" onClick={()=>setOpen(false)}><span className="brand-mark">RD</span>Review Defense</Link><nav>{nav.map(([href,label])=><a key={href} href={href} onClick={()=>setOpen(false)}>{label}</a>)}</nav><div className="actions"><button className="search-open" type="button" onClick={()=>window.dispatchEvent(new Event("rd:search-open"))}>⌕</button><Link className="pill blue" to="/login">Connexion →</Link></div><button className="menu-toggle" type="button" aria-label="Menu" onClick={()=>setOpen(!open)}>☰</button>{open&&<div className="mobile-menu">{nav.map(([href,label])=><a key={href} href={href} onClick={()=>setOpen(false)}>{label}</a>)}<Link className="pill blue" to="/login">Connexion →</Link></div>}</header>;
 }
-function Footer(){return <footer id="contact"><div className="footer-top"><Link className="footer-brand" to="/">◉ Review Defense</Link><div><h4>Review Defense</h4><a href="#produit">Produit</a><a href="#fonctionnement">Fonctionnement</a><a href="#securite">Sécurité</a></div><div><h4>Ressources</h4><a href="#ressources">Ressources</a><a href="#faq">FAQ</a><a href="#solutions">Solutions</a></div><div><h4>Compte</h4><Link to="/login">Connexion</Link><Link to="/register">Créer un espace</Link><a href="#contact">Contact</a></div></div><small>© 2026 Review Defense. Analyse · Documentation · Suivi · Validation.</small></footer>}
-function Search({open,close}:{open:boolean;close:()=>void}){const[q,setQ]=useState("");return <div className={"search-panel"+(open?" open":"")}><button className="search-close" onClick={close} type="button">×</button><input value={q} onChange={e=>setQ(e.target.value)} placeholder="Rechercher dans Review Defense…"/><p>{q?"Recherche disponible depuis votre espace.":"Recherchez une fonctionnalité ou une ressource."}</p></div>}
-function R({children}:{children:React.ReactNode}){return <div className="reveal">{children}</div>}
+function MuseFooter(){return <footer id="contact"><div className="footer-top"><Link className="footer-brand" to="/">◉ Review Defense</Link><div><h4>Review Defense</h4><a href="#produit">Produit</a><a href="#fonctionnement">Fonctionnement</a><a href="#securite">Sécurité</a></div><div><h4>Ressources</h4><a href="#ressources">Ressources</a><a href="#faq">FAQ</a><a href="#solutions">Solutions</a></div><div><h4>Compte</h4><Link to="/login">Connexion</Link><Link to="/register">Créer un espace</Link><a href="#contact">Contact</a></div></div><small>© 2026 Review Defense. Analyse · Documentation · Suivi · Validation.</small></footer>}
+function MuseSearch({open,close}:{open:boolean;close:()=>void}){const[q,setQ]=useState("");return <div className={"search-panel"+(open?" open":"")}><button className="search-close" onClick={close} type="button">×</button><input value={q} onChange={e=>setQ(e.target.value)} placeholder="Rechercher dans Review Defense…"/><p>{q?"Recherche disponible depuis votre espace.":"Recherchez une fonctionnalité ou une ressource."}</p></div>}
+function R({children}:{children:ReactNode}){return <div className="reveal">{children}</div>}
 export function HomePage(){
  const[menu,setMenu]=useState(false),[search,setSearch]=useState(false);
  useEffect(()=>{const o=()=>setSearch(true);window.addEventListener("rd:search-open",o);const els=document.querySelectorAll(".reveal"),io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add("is-visible")),{threshold:.12});els.forEach(e=>io.observe(e));const h=document.querySelector(".site-header"),p=document.querySelector(".progress i") as HTMLElement|null,u=()=>{h?.classList.toggle("scrolled",scrollY>30);if(p){const m=document.documentElement.scrollHeight-innerHeight;p.style.width=(m?scrollY/m*100:0)+"%"}};addEventListener("scroll",u,{passive:true});u();return()=>{window.removeEventListener("rd:search-open",o);removeEventListener("scroll",u);io.disconnect()}},[]);
- return <div className="rd-muse-site"><div className="progress"><i/></div><Header open={menu} setOpen={setMenu}/><main>
+ return <div className="rd-muse-site"><div className="progress"><i/></div><MuseHeader open={menu} setOpen={setMenu}/><main>
  <section className="scene hero"><video className="hero-video" autoPlay muted loop playsInline poster={heroPoster}><source src={heroVideo} type="video/mp4"/></video><div className="hero-overlay"/><div className="scene-inner hero-inner"><R><div className="eyebrow">REVIEW DEFENSE · EN ACTION</div><h1>Voyez comment Review Defense<br/>travaille pour vous</h1><p>Analysez les avis qui demandent du contexte, réunissez les éléments utiles et gardez la maîtrise des décisions sensibles.</p><Link className="pill blue" to="/login">Se connecter →</Link></R><R><div className="rd-word"><span>Review</span><b>◌</b><span>Defense</span><em>analyse</em><strong>RD</strong><em>documente</em><em>suivez</em></div></R></div></section>
  <section className="scene light" id="produit"><div className="scene-inner two"><R><div className="eyebrow">ESPACE DE TRAVAIL</div><h2>Prêt à donner plus de contexte à vos avis ?</h2><p>Un même espace pour analyser, documenter, préparer et suivre les dossiers qui demandent plus qu’une réponse rapide.</p><a className="pill blue" href="#faq">Découvrir →</a></R><R><div className="orb-stage"><div className="orb o1">⌁</div><div className="orb o2">✦</div><div className="orb o3">◫</div><div className="orb main-orb">RD</div></div></R></div></section>
  <section className="scene" id="faq"><div className="scene-inner narrow"><R><div className="eyebrow">FAQ</div><h2>Comment fonctionne Review Defense ?</h2></R><div className="faq">{faqs.map(([q,a],i)=><details key={q} open={i===0}><summary>{q}</summary><p>{a}</p></details>)}</div></div></section>
@@ -38,5 +180,5 @@ export function HomePage(){
  <section className="scene blue-scene"><div className="scene-inner two"><R><div><div className="eyebrow">ESPACE REVIEW DEFENSE</div><h2>Un espace de travail<br/>qui garde le contexte</h2><p>Commencez avec les dossiers qui demandent déjà votre attention. Analysez, documentez, préparez et suivez les étapes depuis un même espace.</p><div className="store-buttons"><Link to="/login">Se connecter</Link><Link to="/register">Créer un espace</Link></div></div></R><R><div className="phone-stage"><div className="phone"><div className="phone-head">Review Defense</div><div className="ai-message">Votre dossier est prêt.</div><div className="ai-message soft">3 éléments à vérifier, 2 preuves associées et une validation en attente.</div><div className="phone-input">Ouvrir le dossier…</div></div></div></R></div></section>
  <section className="scene social"><div className="scene-inner"><R><div className="social-head"><div><div className="eyebrow">REVIEW DEFENSE</div><h2>Un même espace pour les personnes qui interviennent sur le dossier.</h2></div><a className="pill blue" href="#contact">En savoir plus</a></div></R><div className="social-grid"><div className="social-main"><img src={images.assistant} alt="Professionnel au travail"/><span>Travaillez avec le même contexte</span><strong>Une base commune pour analyser, documenter et suivre.</strong></div><div className="social-mini">Responsable</div><div className="social-mini">Équipe</div><div className="social-mini">Direction</div><div className="social-mini">Qualité</div></div></div></section>
  <section className="scene responsibility"><div className="scene-inner two"><R><div><div className="eyebrow">CONTRÔLE & RESPONSABILITÉ</div><h2>Structurer le travail<br/>sans retirer<br/>la décision</h2><p>Review Defense aide à rendre les dossiers lisibles, à rassembler les éléments et à préparer les étapes. Les décisions sensibles restent sous le contrôle d’une personne habilitée.</p></div></R><R><img className="responsibility-image" src={images.responsibility} alt="Environnement professionnel"/></R></div><div className="principles"><div><b>Contexte</b><span>Les informations utiles restent rattachées au dossier concerné.</span></div><div><b>Traçabilité</b><span>Les étapes et éléments importants restent accessibles dans l’historique.</span></div><div><b>Validation</b><span>Une personne habilitée conserve la décision avant les actions sensibles.</span></div></div></section>
- </main><Footer/><Search open={search} close={()=>setSearch(false)}/></div>;
+ </main><MuseFooter/><MuseSearch open={search} close={()=>setSearch(false)}/></div>;
 }
