@@ -63,6 +63,8 @@ function Scene({children,className="",id}:{children:React.ReactNode,className?:s
   return <section className={"scene "+className} id={id}><div className="scene-inner">{children}</div></section>;
 }
 
+function Reveal({children}:{children:React.ReactNode}) { return <div className="muse-reveal">{children}</div>; }
+
 function Home() {
  return <Shell><main>
   <section className="scene hero" id="hero">
