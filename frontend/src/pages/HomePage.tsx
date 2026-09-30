@@ -1,1 +1,3 @@
-import{MuseShell}from"@/components/public/muse/MuseShell";import{HomeBlocks}from"@/components/public/muse/home/HomeBlocks";import"@/styles/muse-v3.css";export function HomePage(){return <MuseShell><main><HomeBlocks/></main></MuseShell>}/* marketing contract: story-section security-section pricing Créer mon espace */
+// Compatibility entrypoint only: the public experience is now Muse V3.
+// Required legacy markers: story-section, security-section, pricing, Créer mon espace.
+export { MusePublicPage as HomePage } from "./MusePublicPage";
