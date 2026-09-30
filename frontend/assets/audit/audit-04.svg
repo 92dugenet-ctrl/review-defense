@@ -1,1 +1,63 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420"><defs><filter id="s" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#0869ff" flood-opacity=".12"/></filter></defs><ellipse cx="360" cy="324" rx="126" ry="15" fill="#0869ff" opacity=".055"/><g filter="url(#s)"><g opacity="0.72" transform="translate(172 285) rotate(-5 56 23)"><rect width="112" height="46" rx="10" fill="#fff" stroke="#cfe0f8"/><circle cx="16" cy="16" r="7.5" fill="#0869ff"/><circle cx="16" cy="16" r="2.8" fill="#fff"/><text x="29" y="19" font-family="Arial,sans-serif" font-size="8.5" font-weight="700" fill="#0869ff">★★★★★</text><rect x="29" y="27" width="66" height="4" rx="2" fill="#d9e7fb"/><rect x="29" y="36" width="46" height="3" rx="1.5" fill="#edf3fb"/></g><g opacity="0.72" transform="translate(304 279) rotate(4 56 23)"><rect width="112" height="46" rx="10" fill="#fff" stroke="#cfe0f8"/><circle cx="16" cy="16" r="7.5" fill="#0869ff"/><circle cx="16" cy="16" r="2.8" fill="#fff"/><text x="29" y="19" font-family="Arial,sans-serif" font-size="8.5" font-weight="700" fill="#0869ff">★★★★★</text><rect x="29" y="27" width="66" height="4" rx="2" fill="#d9e7fb"/><rect x="29" y="36" width="46" height="3" rx="1.5" fill="#edf3fb"/></g><g opacity="0.72" transform="translate(436 285) rotate(-3 56 23)"><rect width="112" height="46" rx="10" fill="#fff" stroke="#cfe0f8"/><circle cx="16" cy="16" r="7.5" fill="#0869ff"/><circle cx="16" cy="16" r="2.8" fill="#fff"/><text x="29" y="19" font-family="Arial,sans-serif" font-size="8.5" font-weight="700" fill="#0869ff">★★★★★</text><rect x="29" y="27" width="66" height="4" rx="2" fill="#d9e7fb"/><rect x="29" y="36" width="46" height="3" rx="1.5" fill="#edf3fb"/></g><g opacity="0.77" transform="translate(172 254) rotate(5 56 23)"><rect width="112" height="46" rx="10" fill="#fff" stroke="#cfe0f8"/><circle cx="16" cy="16" r="7.5" fill="#0869ff"/><circle cx="16" cy="16" r="2.8" fill="#fff"/><text x="29" y="19" font-family="Arial,sans-serif" font-size="8.5" font-weight="700" fill="#0869ff">★★★★★</text><rect x="29" y="27" width="66" height="4" rx="2" fill="#d9e7fb"/><rect x="29" y="36" width="46" height="3" rx="1.5" fill="#edf3fb"/></g><g opacity="0.77" transform="translate(304 248) rotate(-4 56 23)"><rect width="112" height="46" rx="10" fill="#fff" stroke="#cfe0f8"/><circle cx="16" cy="16" r="7.5" fill="#0869ff"/><circle cx="16" cy="16" r="2.8" fill="#fff"/><text x="29" y="19" font-family="Arial,sans-serif" font-size="8.5" font-weight="700" fill="#0869ff">★★★★★</text><rect x="29" y="27" width="66" height="4" rx="2" fill="#d9e7fb"/><rect x="29" y="36" width="46" height="3" rx="1.5" fill="#edf3fb"/></g><g opacity="0.77" transform="translate(436 254) rotate(2 56 23)"><rect width="112" height="46" rx="10" fill="#fff" stroke="#cfe0f8"/><circle cx="16" cy="16" r="7.5" fill="#0869ff"/><circle cx="16" cy="16" r="2.8" fill="#fff"/><text x="29" y="19" font-family="Arial,sans-serif" font-size="8.5" font-weight="700" fill="#0869ff">★★★★★</text><rect x="29" y="27" width="66" height="4" rx="2" fill="#d9e7fb"/><rect x="29" y="36" width="46" height="3" rx="1.5" fill="#edf3fb"/></g><g opacity="0.82" transform="translate(172 223) rotate(-5 56 23)"><rect width="112" height="46" rx="10" fill="#fff" stroke="#cfe0f8"/><circle cx="16" cy="16" r="7.5" fill="#0869ff"/><circle cx="16" cy="16" r="2.8" fill="#fff"/><text x="29" y="19" font-family="Arial,sans-serif" font-size="8.5" font-weight="700" fill="#0869ff">★★★★★</text><rect x="29" y="27" width="66" height="4" rx="2" fill="#d9e7fb"/><rect x="29" y="36" width="46" height="3" rx="1.5" fill="#edf3fb"/></g></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420">
+  <defs>
+    <filter id="shadow" x="-40%" y="-40%" width="180%" height="200%">
+      <feDropShadow dx="0" dy="9" stdDeviation="7" flood-color="#0869ff" flood-opacity=".15"/>
+    </filter>
+    <linearGradient id="floor" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#dfeeff" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#bcd8ff" stop-opacity=".65"/>
+      <stop offset="1" stop-color="#dfeeff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="360" cy="350" rx="115" ry="13" fill="url(#floor)" opacity=".75"/>
+  <g filter="url(#shadow)"><g opacity="0.88" transform="translate(251 234) rotate(-8 58 25)">
+      <rect x="0" y="0" width="116" height="50" rx="11" fill="#fff" stroke="#c9dcf7" stroke-width="1.5"/>
+      <circle cx="17" cy="17" r="8" fill="#0869ff"/>
+      <circle cx="17" cy="17" r="3" fill="#fff"/>
+      <text x="31" y="20" font-family="Arial,sans-serif" font-size="8.5" font-weight="700" fill="#0869ff">★★★★★</text>
+      <rect x="31" y="29" width="70" height="4" rx="2" fill="#d6e5fb"/>
+      <rect x="31" y="38" width="48" height="3" rx="1.5" fill="#eaf2fc"/>
+    </g><g opacity="0.88" transform="translate(343 232) rotate(6 58 25)">
+      <rect x="0" y="0" width="116" height="50" rx="11" fill="#fff" stroke="#c9dcf7" stroke-width="1.5"/>
+      <circle cx="17" cy="17" r="8" fill="#0869ff"/>
+      <circle cx="17" cy="17" r="3" fill="#fff"/>
+      <text x="31" y="20" font-family="Arial,sans-serif" font-size="8.5" font-weight="700" fill="#0869ff">★★★★★</text>
+      <rect x="31" y="29" width="70" height="4" rx="2" fill="#d6e5fb"/>
+      <rect x="31" y="38" width="48" height="3" rx="1.5" fill="#eaf2fc"/>
+    </g><g opacity="0.92" transform="translate(264 256) rotate(-4 58 25)">
+      <rect x="0" y="0" width="116" height="50" rx="11" fill="#fff" stroke="#c9dcf7" stroke-width="1.5"/>
+      <circle cx="17" cy="17" r="8" fill="#0869ff"/>
+      <circle cx="17" cy="17" r="3" fill="#fff"/>
+      <text x="31" y="20" font-family="Arial,sans-serif" font-size="8.5" font-weight="700" fill="#0869ff">★★★★★</text>
+      <rect x="31" y="29" width="70" height="4" rx="2" fill="#d6e5fb"/>
+      <rect x="31" y="38" width="48" height="3" rx="1.5" fill="#eaf2fc"/>
+    </g><g opacity="0.92" transform="translate(356 254) rotate(7 58 25)">
+      <rect x="0" y="0" width="116" height="50" rx="11" fill="#fff" stroke="#c9dcf7" stroke-width="1.5"/>
+      <circle cx="17" cy="17" r="8" fill="#0869ff"/>
+      <circle cx="17" cy="17" r="3" fill="#fff"/>
+      <text x="31" y="20" font-family="Arial,sans-serif" font-size="8.5" font-weight="700" fill="#0869ff">★★★★★</text>
+      <rect x="31" y="29" width="70" height="4" rx="2" fill="#d6e5fb"/>
+      <rect x="31" y="38" width="48" height="3" rx="1.5" fill="#eaf2fc"/>
+    </g><g opacity="0.96" transform="translate(251 278) rotate(-6 58 25)">
+      <rect x="0" y="0" width="116" height="50" rx="11" fill="#fff" stroke="#c9dcf7" stroke-width="1.5"/>
+      <circle cx="17" cy="17" r="8" fill="#0869ff"/>
+      <circle cx="17" cy="17" r="3" fill="#fff"/>
+      <text x="31" y="20" font-family="Arial,sans-serif" font-size="8.5" font-weight="700" fill="#0869ff">★★★★★</text>
+      <rect x="31" y="29" width="70" height="4" rx="2" fill="#d6e5fb"/>
+      <rect x="31" y="38" width="48" height="3" rx="1.5" fill="#eaf2fc"/>
+    </g><g opacity="0.96" transform="translate(343 276) rotate(4 58 25)">
+      <rect x="0" y="0" width="116" height="50" rx="11" fill="#fff" stroke="#c9dcf7" stroke-width="1.5"/>
+      <circle cx="17" cy="17" r="8" fill="#0869ff"/>
+      <circle cx="17" cy="17" r="3" fill="#fff"/>
+      <text x="31" y="20" font-family="Arial,sans-serif" font-size="8.5" font-weight="700" fill="#0869ff">★★★★★</text>
+      <rect x="31" y="29" width="70" height="4" rx="2" fill="#d6e5fb"/>
+      <rect x="31" y="38" width="48" height="3" rx="1.5" fill="#eaf2fc"/>
+    </g><g opacity="1.00" transform="translate(264 300) rotate(-8 58 25)">
+      <rect x="0" y="0" width="116" height="50" rx="11" fill="#fff" stroke="#c9dcf7" stroke-width="1.5"/>
+      <circle cx="17" cy="17" r="8" fill="#0869ff"/>
+      <circle cx="17" cy="17" r="3" fill="#fff"/>
+      <text x="31" y="20" font-family="Arial,sans-serif" font-size="8.5" font-weight="700" fill="#0869ff">★★★★★</text>
+      <rect x="31" y="29" width="70" height="4" rx="2" fill="#d6e5fb"/>
+      <rect x="31" y="38" width="48" height="3" rx="1.5" fill="#eaf2fc"/>
+    </g></g>
+  </svg>
