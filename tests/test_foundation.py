@@ -18,16 +18,14 @@ def test_api_not_found():
 def test_frontend_contract():
  p=json.loads((FRONTEND/"package.json").read_text());assert p["scripts"]["build"]=="tsc -b && vite build"
  for path in ["src/main.tsx","src/app/router.tsx","src/components/layout/AppShell.tsx","src/pages/HomePage.tsx","src/pages/DashboardPage.tsx","src/pages/AdminPage.tsx","src/styles/global.css"]:assert (FRONTEND/path).is_file()
-def test_marketing_modular_contract():
+def test_marketing_contract():
+ page=(FRONTEND/"src/pages/HomePage.tsx").read_text()
  router=(FRONTEND/"src/app/router.tsx").read_text()
- assert 'path:"/tarifs"' in router and 'path:"/produit"' in router and 'path:"/fonctionnement"' in router and 'path:"/securite"' in router and 'path:"/contact"' in router
+ assert "story-section" in page and "security-section" in page and "pricing" in page and "Créer mon espace" in page
+ assert 'path:"/tarifs"' in router and (FRONTEND/"src/pages/PricingPage.tsx").is_file()
+ assert 'path:"/solutions"' in router and 'path:"/ressources"' in router
+ assert not (FRONTEND/"src/pages/SolutionsPage.tsx").exists() and not (FRONTEND/"src/pages/ResourcesPage.tsx").exists()
  assert 'import{PricingPage}from"@/pages/PricingPage"' in router
- pages={"HomePage":["HomeBlocks"],"ProductPage":["ProductHero","ProductMoments","ProductWorkspace","ProductNext"],"MethodPage":["MethodHero","MethodSteps","MethodLogic","MethodNext"],"SecurityPage":["SecurityHero","SecurityControls","SecurityResponsibility","SecurityFaq","SecurityNext"],"PricingPage":["PricingHero","PricingCatalog","PricingNext"],"ContactPage":["ContactHero","ContactLinks","ContactNext"]}
- for page,blocks in pages.items():
-  content=(FRONTEND/"src/pages"/f"{page}.tsx").read_text()
-  for block in blocks: assert block in content
- home_blocks=FRONTEND/"src/components/public/muse/home"
- for block in ["HomeHero.tsx","HomeWorkspace.tsx","HomeFaq.tsx","HomeProducts.tsx","HomeResearch.tsx","HomeResearchDetail.tsx","HomeChat.tsx","HomeTry.tsx","HomeSocial.tsx","HomeResponsibility.tsx"]: assert (home_blocks/block).is_file()
 def test_client_routes_contract():
  router=(FRONTEND/"src/app/router.tsx").read_text()
  for route in ["dashboard","reviews","cases","analysis","notifications","billing","settings","privacy"]:assert 'path:"'+route+'"' in router
