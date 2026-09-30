@@ -1,0 +1,1 @@
+import{NextMuseScene}from"../PageBlocks";export function ProductNext(){return <NextMuseScene eyebrow="ÉTAPE SUIVANTE" title="Voyez comment le dossier avance." to="/fonctionnement"/>}

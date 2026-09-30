@@ -1,0 +1,1 @@
+import{MuseScene,Reveal}from"../MuseScene";export function ProductWorkspace(){return <MuseScene><Reveal><div className="muse-two"><div><div className="muse-eyebrow">ESPACE DE TRAVAIL</div><h2>Tout ce qui explique la situation reste au même endroit.</h2></div><img className="muse-wide-image" src="/visual-workspace.svg" alt="Espace de travail"/></div></Reveal></MuseScene>}

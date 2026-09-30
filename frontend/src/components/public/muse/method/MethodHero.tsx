@@ -1,0 +1,1 @@
+import{MuseScene,Reveal}from"../MuseScene";export function MethodHero(){return <MuseScene className="muse-hero"><Reveal><div className="muse-eyebrow">FONCTIONNEMENT</div><h1>Six étapes.<br/><em>Un même fil.</em></h1><p>Chaque étape prépare la suivante, avec une séparation claire entre préparation logicielle et décision humaine.</p></Reveal></MuseScene>}

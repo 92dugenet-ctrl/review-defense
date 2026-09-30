@@ -1,0 +1,1 @@
+import{MuseScene,Reveal}from"../MuseScene";export function PricingHero(){return <MuseScene className="muse-hero"><Reveal><div className="muse-eyebrow">TARIFS</div><h1>Choisissez le format qui correspond <em>à votre besoin.</em></h1><p>Abonnement de suivi, audit ponctuel ou traitement d'un avis précis.</p></Reveal></MuseScene>}
