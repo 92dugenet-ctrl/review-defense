@@ -42,105 +42,43 @@ function Shell({ children }: { children: React.ReactNode }) {
   const [open,setOpen]=useState(false);
   const [search,setSearch]=useState(false);
   const location=useLocation();
-  useEffect(()=>{setOpen(false);setSearch(false);document.body.classList.remove("muse-locked");window.scrollTo({top:0,behavior:"auto"})},[location.pathname]);
-  return <div className="muse-site"><MuseMotion/>
-    <div className="muse-progress"><i/></div>
-    <header className="muse-header">
-      <Link className="muse-brand" to="/">◉ <span>Review Defense</span></Link>
-      <nav>{nav.map(([path,label])=><Link key={path} className={location.pathname===path?"active":""} to={path}>{label}</Link>)}</nav>
-      <div className="muse-actions">
-        <button className="muse-search-open" onClick={()=>{setSearch(true);document.body.classList.add("muse-locked")}} aria-label="Rechercher">⌕</button>
-        <Link className="muse-pill muse-blue" to="/register">Créer mon espace</Link>
-      </div>
-      <button className="muse-menu-toggle" onClick={()=>setOpen(!open)} aria-expanded={open}>☰</button>
+  useEffect(()=>{setOpen(false);setSearch(false);document.body.classList.remove("is-locked")},[location.pathname]);
+  useEffect(()=>{document.body.classList.toggle("is-locked",search||open);return()=>document.body.classList.remove("is-locked")},[search,open]);
+  return <div className="muse-reference-site">
+    <div className="progress"><i/></div>
+    <header className="site-header" id="header">
+      <Link className="brand" to="/">◉ Review Defense</Link>
+      <nav>{nav.map(([path,label])=><Link key={path} to={path}>{label}</Link>)}</nav>
+      <div className="actions"><button className="search-open" aria-label="Rechercher" onClick={()=>setSearch(true)}>⌕</button><Link className="pill blue" to="/register">Créer mon espace</Link></div>
+      <button className="menu-toggle" aria-label="Menu" onClick={()=>setOpen(v=>!v)}>☰</button>
     </header>
-    <div className={"muse-mobile-menu "+(open?"open":"")}>{nav.map(([path,label])=><Link key={path} to={path}>{label}</Link>)}<Link className="muse-pill muse-blue" to="/register">Créer mon espace</Link></div>
+    <div className={"mobile-menu "+(open?"open":"")}>{nav.map(([path,label])=><Link key={path} to={path}>{label}</Link>)}<Link className="pill blue" to="/register">Créer mon espace</Link></div>
     {children}
-    <footer className="muse-footer">
-      <div className="muse-footer-top">
-        <Link className="muse-brand" to="/">◉ <span>Review Defense</span></Link>
-        <div><h4>Produit</h4><Link to="/produit">Produit</Link><Link to="/fonctionnement">Fonctionnement</Link><Link to="/securite">Sécurité</Link></div>
-        <div><h4>Compte</h4><Link to="/login">Connexion</Link><Link to="/register">Créer un espace</Link><Link to="/contact">Contact</Link></div>
-        <div><h4>Légal</h4><Link to="/mentions-legales">Mentions légales</Link><Link to="/confidentialite">Confidentialité</Link><Link to="/cgu">CGU</Link><Link to="/cgv">CGV</Link></div>
-      </div>
-      <small>© 2026 Review Defense — Analyse, dossiers, validation.</small>
-    </footer>
-    {search&&<div className="muse-search-panel"><button onClick={()=>{setSearch(false);document.body.classList.remove("muse-locked")}}>×</button><input autoFocus placeholder="Rechercher Review Defense…"/><p>Recherchez une fonctionnalité ou une information</p></div>}
+    <footer id="developers"><div className="footer-top"><b>◉ Review Defense</b><div><h4>Produit</h4><Link to="/produit">Produit</Link><Link to="/fonctionnement">Fonctionnement</Link><Link to="/securite">Sécurité</Link></div><div><h4>Ressources</h4><Link to="/contact">Contact</Link><Link to="/tarifs">Tarifs</Link><Link to="/fonctionnement">Fonctionnement</Link></div><div><h4>Compte</h4><Link to="/login">Connexion</Link><Link to="/register">Créer un espace</Link><Link to="/contact">Contact</Link></div></div><small>© 2026 Review Defense — Analyse, dossiers, validation.</small></footer>
+    {search&&<div className="search-panel open"><button className="search-close" onClick={()=>setSearch(false)}>×</button><input autoFocus placeholder="Rechercher Review Defense…"/><p>Recherchez une fonctionnalité ou une information</p></div>}
   </div>;
 }
 
 function Scene({children,className="",id}:{children:React.ReactNode,className?:string,id?:string}) {
-  return <section id={id} className={"muse-scene "+className}><div className="muse-scene-inner">{children}</div></section>;
-}
-
-function Reveal({children}:{children:React.ReactNode}) {
-  return <div className="muse-reveal">{children}</div>;
+  return <section className={"scene "+className} id={id}><div className="scene-inner">{children}</div></section>;
 }
 
 function Home() {
  return <Shell><main>
-  <Scene className="muse-hero muse-home-hero">
-    <div className="muse-home-hero-inner">
-      <Reveal><div className="muse-eyebrow">REVIEW DEFENSE · EN ACTION</div><h1>See how Review Defense<br/>works for you</h1><p>De l'avis reçu au dossier documenté, Review Defense vous aide à comprendre, organiser et préparer chaque situation.</p><Link className="muse-pill muse-blue" to="/register">Créer mon espace</Link></Reveal>
-      <Reveal><div className="muse-hero-video"><video autoPlay muted loop playsInline preload="metadata" poster="https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1800&q=85" aria-label="Présentation vidéo Review Defense"><source src="https://www.ariaditerra.com/wp-content/uploads/2023/02/coverr-chef-preparing-a-dish-at-a-restaurant-6248-1080p.mp4" type="video/mp4"/></video><div className="muse-hero-overlay"><span>REVIEW DEFENSE</span><strong>Un dossier. Tout le contexte.</strong><small>Analyse · preuves · validation · suivi</small></div></div></Reveal>
-    </div>
-    <div className="muse-word muse-word-editorial"><span>Review</span><b>◌</b><span>Defense</span><em>est</em><strong>votre</strong><em>poste de travail</em></div>
-  </Scene>
-
-  <Scene className="muse-light" id="muse">
-    <div className="muse-two muse-agent-layout">
-      <Reveal><div className="muse-eyebrow">POSTE DE TRAVAIL</div><h2>Prêt à traiter vos avis avec plus de contexte ?</h2><p>Un espace pour réunir l'avis, les éléments disponibles, les preuves et les prochaines étapes avant d'agir.</p><Link className="muse-pill muse-blue" to="/produit">Découvrir le produit</Link></Reveal>
-      <Reveal><div className="muse-orb-stage"><div className="muse-orb o1">⌁</div><div className="muse-orb o2">✦</div><div className="muse-orb o3">◫</div><div className="muse-orb main">◌</div></div></Reveal>
-    </div>
-  </Scene>
-
-  <Scene id="faq">
-    <Reveal><div className="muse-eyebrow">QUESTIONS FRÉQUENTES</div><h2>Comment Review Defense fonctionne ?</h2><div className="muse-faq">{faqs.map(([q,a])=><details key={q}><summary>{q}</summary><p>{a}</p></details>)}</div></Reveal>
-  </Scene>
-
-  <Scene className="muse-light" id="products">
-    <Reveal><div className="muse-eyebrow">EXPLORER</div><h2>Tout ce qu'il faut pour faire avancer un dossier.</h2><div className="muse-product-grid muse-product-grid-reference">
-      <article><img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1600&q=85" alt="Analyse Review Defense"/><div><small>ANALYSE</small><h3>Comprendre ce qui mérite d'être examiné.</h3><p>Lecture, qualification et contexte réunis au même endroit.</p></div></article>
-      <article><img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1600&q=85" alt="Dossier Review Defense"/><div><small>DOSSIERS</small><h3>Documenter ce qui compte vraiment.</h3><p>Sources, pièces et historique restent liés à la situation.</p></div></article>
-    </div></Reveal>
-  </Scene>
-
-  <Scene className="muse-research" id="research">
-    <div className="muse-research-reference">
-      <aside><div className="muse-eyebrow">FILTRER PAR</div><button>Dossiers <b>+</b></button><button>Preuves <b>+</b></button><button>Étapes <b>+</b></button><button>Historique <b>+</b></button><Link to="/produit">Tout afficher</Link></aside>
-      <Reveal><div className="muse-eyebrow">DOSSIERS</div><h2>Les informations utiles, dans le bon ordre.</h2><div className="muse-research-cards">
-        <article><img src="https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&w=1400&q=85" alt="Dossier équipe"/><small>ANALYSE · DOSSIER 01</small><h3>Réunir le contexte avant toute action.</h3><p>Les éléments importants sont présentés avec leur état et leur origine.</p><Link to="/fonctionnement">Voir le fonctionnement →</Link></article>
-        <article><img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1400&q=85" alt="Preuves et documentation"/><small>PREUVES · DOSSIER 02</small><h3>Conserver les pièces qui expliquent la situation.</h3><p>Chaque élément reste rattaché au dossier auquel il appartient.</p><Link to="/fonctionnement">Voir le fonctionnement →</Link></article>
-      </div></Reveal>
-    </div>
-  </Scene>
-
-  <Scene className="muse-overlay"><div className="muse-detail-reference"><div className="muse-detail-image"><img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1800&q=85" alt="Préparation d'un dossier"/><div className="muse-loader"/></div><div className="muse-detail-panel"><div className="muse-eyebrow">REVIEW DEFENSE</div><h2>Préparer une situation complexe sans perdre le fil.</h2><p>Le dossier conserve le contexte, les preuves et les étapes de validation au même endroit.</p></div></div></Scene>
-
-  <Scene className="muse-chat-reference" id="resources">
-    <div className="muse-chat-reference-grid">
-      <Reveal><div className="muse-chat-copy"><div className="muse-eyebrow">L'EXPÉRIENCE REVIEW DEFENSE</div><h2>Une interface qui suit votre façon de traiter un dossier.</h2><p>Comme dans une conversation, vous pouvez partir d'une question, ajouter du contexte et demander au logiciel de préparer la suite.</p><div className="muse-chips">{["Réponses structurées","Analyse du dossier","Preuves et documents","Suivi","Validation"].map((x,i)=><button key={x} className={i===0?"active":""}>{x}</button>)}</div></div></Reveal>
-      <Reveal><div className="muse-chat"><header>Review Defense <span>●</span></header><div className="bubble">J'ai réuni les éléments disponibles dans ce dossier.</div><div className="bubble right">Qu'est-ce qui manque encore ?</div><div className="bubble">Deux pièces sont encore à vérifier avant validation.</div><div className="chat-input">Ajouter une instruction… <b>↑</b></div></div></Reveal>
-    </div>
-  </Scene>
-
-  <Scene className="muse-blue-scene" id="try">
-    <div className="muse-two muse-assistant-reference">
-      <Reveal><div><div className="muse-eyebrow">REVIEW DEFENSE</div><h2>Votre espace de travail qui reste sous votre contrôle</h2><p>Préparez l'analyse, organisez les preuves, suivez les dossiers et validez les actions sensibles.</p><div className="muse-store-buttons"><Link to="/register">Créer mon espace</Link><Link to="/login">Se connecter</Link></div></div></Reveal>
-      <Reveal><div className="muse-phone-stage"><div className="muse-phone"><strong>Review Defense</strong><div className="phone-message">Votre point de suivi est prêt.</div><div className="phone-message soft">3 dossiers à vérifier et 2 validations en attente.</div><div className="phone-input">Ouvrir le dossier…</div></div></div></Reveal>
-    </div>
-  </Scene>
-
-  <Scene className="muse-social" id="about">
-    <Reveal><div className="muse-social-head"><div><div className="muse-eyebrow">AUTOUR DU DOSSIER</div><h2>Un même contexte pour chaque personne qui intervient.</h2></div><Link className="muse-pill muse-blue" to="/securite">Voir les contrôles</Link></div>
-      <div className="muse-social-grid"><div className="social-main"><img src="https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&w=1600&q=85" alt="Équipe Review Defense"/><span>TRAVAIL COLLECTIF</span><strong>Analyse, preuves, validation et suivi au même endroit.</strong></div><div>Analyse</div><div>Preuves</div><div>Validation</div><div>Suivi</div></div>
-    </Reveal>
-  </Scene>
-
-  <Scene className="muse-responsibility">
-    <div className="muse-two muse-responsibility-reference"><Reveal><div><div className="muse-eyebrow">TRAVAIL RESPONSABLE</div><h2>Préparer avec l'IA.<br/>Décider avec l'humain.</h2><p>Review Defense organise les informations et prépare les étapes. Les décisions sensibles restent sous le contrôle d'une personne habilitée.</p></div></Reveal><Reveal><img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1600&q=85" alt="Équipe en réunion"/></Reveal></div>
-    <div className="muse-principles"><div><b>Contexte</b><span>Les informations restent rattachées au dossier.</span></div><div><b>Traçabilité</b><span>Les étapes importantes restent lisibles.</span></div><div><b>Validation</b><span>Une personne habilitée garde la décision.</span></div></div>
-  </Scene>
+  <section className="scene hero" id="hero">
+    <div className="hero-video-bg"><video autoPlay muted loop playsInline preload="auto" poster="/hero.jpg" aria-label="Présentation vidéo Review Defense"><source src="https://www.ariaditerra.com/wp-content/uploads/2023/02/coverr-chef-preparing-a-dish-at-a-restaurant-6248-1080p.mp4" type="video/mp4"/></video></div>
+    <div className="hero-scrim"/>
+    <div className="scene-inner hero-inner"><div className="eyebrow">REVIEW DEFENSE · EN ACTION</div><h1>See how Review Defense<br/>works for you</h1><p>De l'avis reçu au dossier documenté, Review Defense vous aide à comprendre, organiser et préparer chaque situation.</p><Link className="pill blue" to="/register">Créer mon espace</Link><div className="muse-word"><span>Review</span><b>◌</b><span>Defense</span><em>est</em><strong>votre</strong><em>poste de travail</em></div></div>
+  </section>
+  <Scene className="light" id="muse"><div className="two"><div><div className="eyebrow">POSTE DE TRAVAIL</div><h2>Prêt à traiter vos avis avec plus de contexte ?</h2><p>Un endroit pour rechercher, organiser et préparer les informations utiles avant d'agir.</p><Link className="pill blue" to="/produit">Découvrir le produit</Link></div><div className="orb-stage"><div className="orb o1">⌁</div><div className="orb o2">✦</div><div className="orb o3">◫</div><div className="orb main-orb">◌</div></div></div></Scene>
+  <Scene id="faq"><div className="narrow"><div className="eyebrow">FAQ</div><h2>Comment Review Defense fonctionne ?</h2><div className="faq">{faqs.map(([q,a],i)=><details key={q} open={i===0}><summary>{q}</summary><p>{a}</p></details>)}</div></div></Scene>
+  <Scene className="light" id="products"><div className="eyebrow">EXPLORER</div><h2>Tout ce qu'il faut pour faire avancer un dossier.</h2><div className="product-grid"><article className="product-card"><img src="/muse-card.jpg" alt="Espace de travail Review Defense"/><div><small>ESPACE DE TRAVAIL</small><h3>Comprendre rapidement ce qui mérite un examen.</h3></div></article><article className="product-card"><img src="/research.jpg" alt="Recherche et preuves Review Defense"/><div><small>PREUVES ET CONTEXTE</small><h3>Réunir les éléments utiles sans perdre le fil.</h3></div></article></div></Scene>
+  <Scene className="publications" id="research"><div className="research-layout"><aside><div className="eyebrow">FILTRER PAR</div><button>Dossiers <b>+</b></button><button>Preuves <b>+</b></button><button>Étapes <b>−</b></button><button>Historique <b>−</b></button><Link to="/produit">Tout afficher</Link></aside><div><div className="eyebrow">DOSSIERS</div><h2>Le contexte, dans le bon ordre.</h2><div className="papers">{process.slice(0,3).map(([n,t,d,l])=><article key={n}><small>{l.toUpperCase()} · {n}</small><h3>{t}</h3><p>{d}</p><Link to="/fonctionnement">Voir l'étape →</Link></article>)}</div></div></div></Scene>
+  <Scene className="overlay-scene" id="research-detail"><div className="research-detail"><div className="dim-card"><img src="/research-detail.jpg" alt="Dossier Review Defense"/><div className="loader"/></div><div className="research-panel"><div className="eyebrow">REVIEW DEFENSE</div><h2>Préparer une situation complexe sans perdre le fil.</h2><p>Les informations utiles restent liées au dossier.</p></div></div></Scene>
+  <Scene className="chat-scene" id="resources"><div className="two"><div className="chat-copy"><div className="eyebrow">L'EXPÉRIENCE REVIEW DEFENSE</div><h2>Une interface qui suit votre façon de traiter un dossier.</h2><div className="chips">{["Analyse","Preuves","Validation","Suivi","Historique"].map((x,i)=><button key={x} className={i===0?"active":""}>{x}</button>)}</div></div><div className="chat-window"><div className="chat-head">Review Defense <span>●</span></div><div className="chat-bubble">J'ai réuni les éléments disponibles dans ce dossier.</div><div className="chat-bubble right">Qu'est-ce qui manque encore ?</div><div className="chat-bubble">Deux pièces sont encore à vérifier avant validation.</div><div className="chat-input">Ajouter une instruction… <b>↑</b></div></div></div></Scene>
+  <Scene className="blue-scene" id="try"><div className="two"><div><div className="eyebrow">REVIEW DEFENSE</div><h2>Votre espace de travail qui reste sous votre contrôle</h2><p>Préparez l'analyse, organisez les preuves, suivez les dossiers et validez les actions sensibles.</p><div className="store-buttons"><Link to="/register">Créer mon espace</Link><Link to="/login">Se connecter</Link></div></div><div className="phone-stage"><div className="phone"><div className="phone-head">Review Defense</div><div className="ai-message">Votre point de suivi est prêt.</div><div className="ai-message soft">3 dossiers à vérifier et 2 validations en attente.</div><div className="phone-input">Ouvrir le dossier…</div></div></div></div></Scene>
+  <Scene className="social" id="about"><div className="social-head"><div><div className="eyebrow">REVIEW DEFENSE</div><h2>Autour du dossier, tout reste lisible.</h2></div><Link className="pill blue" to="/securite">Voir les contrôles</Link></div><div className="social-grid"><div className="social-main"><img src="/assistant.jpg" alt="Équipe Review Defense"/><span>TRAVAIL COLLECTIF</span><strong>Un même contexte pour les personnes qui interviennent.</strong></div><div className="social-mini">Analyse</div><div className="social-mini">Preuves</div><div className="social-mini">Validation</div><div className="social-mini">Suivi</div></div></Scene>
+  <Scene className="responsibility"><div className="two"><div><div className="eyebrow">TRAVAIL RESPONSABLE</div><h2>Préparer avec l'IA.<br/>Décider avec l'humain.</h2><p>Le logiciel organise l'information et prépare les étapes. Les décisions sensibles restent sous le contrôle d'une personne habilitée.</p></div><img className="responsibility-image" src="/responsible-ai.jpg" alt="Équipe en réunion"/></div><div className="principles"><div><b>Contexte</b><span>Les informations restent rattachées au dossier.</span></div><div><b>Traçabilité</b><span>Les étapes importantes restent lisibles.</span></div><div><b>Validation</b><span>Une personne habilitée garde la décision.</span></div></div></Scene>
  </main></Shell>;
 }
 function Product(){return <Shell><main><Scene className="muse-hero muse-product-page"><Reveal><div className="muse-eyebrow">LE PRODUIT</div><h1>Un poste de travail pour les avis qui demandent <em>du contexte.</em></h1><p>Analysez, documentez, suivez et validez dans une expérience pensée comme une suite de scènes de travail.</p><Link className="muse-pill muse-blue" to="/register">Créer mon espace</Link></Reveal></Scene><Scene className="muse-light"><Reveal><div className="muse-eyebrow">LES MOMENTS DE TRAVAIL</div><h2>Voir le dossier sous plusieurs angles.</h2><div className="muse-product-grid four">{[["01","Analyser","Comprendre le contenu reçu et les points à vérifier."],["02","Documenter","Rattacher les preuves et les sources."],["03","Suivre","Conserver l'état et la prochaine étape."],["04","Valider","Garder la décision entre des mains habilitées."]].map(x=><article className="muse-simple-card" key={x[0]}><b>{x[0]}</b><h3>{x[1]}</h3><p>{x[2]}</p></article>)}</div></Reveal></Scene><Scene><Reveal><div className="muse-two"><div><div className="muse-eyebrow">ESPACE DE TRAVAIL</div><h2>Tout ce qui explique la situation reste au même endroit.</h2></div><img className="muse-wide-image" src="https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1400&q=85" alt="Espace de travail"/></div></Reveal></Scene><Scene className="muse-blue-scene"><Reveal><div className="muse-eyebrow">ÉTAPE SUIVANTE</div><h2>Voyez comment le dossier avance.</h2><Link className="muse-pill" to="/fonctionnement">Voir le fonctionnement →</Link></Reveal></Scene></main></Shell>}
