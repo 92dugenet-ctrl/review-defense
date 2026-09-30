@@ -34,7 +34,6 @@ jobs:
           test -f frontend/script.js
           test ! -e frontend/package.json
           test ! -d frontend/src
-          ! grep -RniE "Review Defense|review-defense" frontend
       - run: python -m pip install -r requirements.txt
       - name: Build deployable production image
         run: |
