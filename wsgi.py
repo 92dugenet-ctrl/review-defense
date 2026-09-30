@@ -115,8 +115,8 @@ def app(environ, start_response):
     method = environ.get("REQUEST_METHOD", "GET").upper()
 
     if method == "GET":
-        if path in {"/resources/", "/resources.html"}:
-            return _redirect("/resources", start_response)
+        if path in {"/services/", "/resources/", "/services.html", "/resources.html", "/ressources/"}:
+            return _redirect("/resources" if path in {"/resources/", "/resources.html", "/ressources/"} else "/services", start_response)
         frontend = _frontend_response(path, start_response)
         if frontend is not None:
             return frontend
