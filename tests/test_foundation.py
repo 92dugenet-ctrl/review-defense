@@ -94,6 +94,26 @@ def test_app_alias_serves_same_frontend():
     assert root_body == app_body
 
 
+def test_client_and_admin_routes_serve_workspace_assets():
+    for path in ("/client", "/client/", "/admin", "/admin/"):
+        status, headers, body = request(path)
+        assert status == "200 OK"
+        assert headers["Content-Type"].startswith("text/html")
+        html = body.decode()
+        assert '/workspace.css' in html
+        assert '/workspace.js' in html
+
+    status, headers, body = request("/workspace.js")
+    assert status == "200 OK"
+    assert headers["Content-Type"] in {"text/javascript; charset=utf-8", "application/javascript; charset=utf-8"}
+    assert b"async function start()" in body
+
+    status, headers, body = request("/workspace.css")
+    assert status == "200 OK"
+    assert headers["Content-Type"].startswith("text/css")
+    assert b".shell" in body
+
+
 def test_missing_asset_is_not_spa():
     status, _, body = request("/assets/does-not-exist.js")
     assert status == "404 Not Found"
