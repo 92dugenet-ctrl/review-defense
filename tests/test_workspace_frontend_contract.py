@@ -51,3 +51,19 @@ def test_workspace_javascript_parses_when_node_is_available():
         pytest.skip("Node.js is not installed in this test environment")
     subprocess.run([node, "--check", str(ROOT / "frontend" / "workspace.js")],
                    check=True, capture_output=True, text=True)
+
+def test_public_auth_entry_supports_login_and_registration():
+    assert 'mode=params.get("auth")==="register"||location.pathname==="/inscription"?"register":"login"' in FRONTEND
+    assert 'post("/v1/auth/register",payload)' in FRONTEND
+    assert 'post("/v1/auth/login",payload)' in FRONTEND
+    assert 'localStorage.setItem("rd_org_id",d.organization_id)' in FRONTEND
+    assert 'path == "/v1/auth/register"' in API
+
+
+def test_public_action_ctas_point_to_auth_entry():
+    public_pages = ["index.html", "services.html", "fonctionnement.html", "about.html", "tarif.html", "resources.html"]
+    for name in public_pages:
+        page = (ROOT / "frontend" / name).read_text(encoding="utf-8")
+        assert 'href="/analyse-avis-google/"' not in page
+        assert 'href="#try"' not in page
+    assert 'href="/inscription"' in (ROOT / "frontend" / "index.html").read_text(encoding="utf-8")
