@@ -1952,6 +1952,8 @@ class ReviewDefenseAPI:
             path = "/index.html"
         elif path == "/app" or path == "/app/":
             path = "/index.html"
+        elif path in {"/client", "/client/", "/admin", "/admin/", "/connexion", "/inscription"}:
+            path = "/workspace.html"
         elif path in {
             "/conformite/","/produit/","/comment-ca-marche/","/services/","/tarifs/","/ressources/",
             "/contact/","/mentions-legales/","/confidentialite/","/cgv/","/cgu/","/cookies/",
@@ -1962,7 +1964,7 @@ class ReviewDefenseAPI:
             # Public marketing and authentication deep links use the same stable frontend shell.
             # Serving index.html here keeps direct navigation and refreshes working.
             path = "/index.html"
-        if path == "/index.html" or path == "/landing.html" or path.startswith("/assets/"):
+        if path in {"/index.html", "/landing.html", "/workspace.html", "/workspace.js", "/workspace.css", "/styles.css", "/script.js"} or path.startswith("/assets/"):
             from pathlib import Path
             import mimetypes
             root = Path(__file__).resolve().parents[1] / "frontend"
