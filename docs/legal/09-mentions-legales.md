@@ -50,3 +50,13 @@ Les liens vers des sites tiers sont fournis à titre informatif. [Décrire la po
 ## Droit applicable
 
 [France — à confirmer] sous réserve des règles impératives applicables.
+
+---
+
+## Mise à jour — statut du projet au 1er octobre 2026
+
+La création de l'entreprise individuelle est encore un projet et les formalités d'immatriculation ne sont pas effectuées. Ne pas présenter Gabriel Dugenet comme entrepreneur individuel déjà immatriculé et ne renseigner aucune date d'immatriculation, aucun SIREN ou SIRET avant attribution officielle. Ce modèle n'est pas publiable en l'état.
+
+L'hébergeur est désigné par le porteur comme **eCloudService**. Sa raison sociale, son adresse, son téléphone, son URL de contact et les lieux d'hébergement/sauvegarde restent à vérifier sur facture ou contrat. Ne pas mentionner Trustera Intelligence comme hébergeur.
+
+Contact projet : `contact.reviewdefense@gmail.com`. Aucun numéro de téléphone public n'est prévu. L'adresse personnelle de domiciliation est volontairement omise du dépôt GitHub public ; elle sera insérée dans les mentions définitives après création et vérification des règles de publication.
