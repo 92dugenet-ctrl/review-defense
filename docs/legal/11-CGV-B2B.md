@@ -6,7 +6,7 @@
 
 ## 1. Vendeur
 
-[RAISON SOCIALE], [FORME], [CAPITAL], [SIREN], [RCS/RNE], siège [ADRESSE], TVA [NUMÉRO], e-mail [CONTACT].
+Gabriel Dugenet, entrepreneur individuel (EI), établi en France, exerçant sous le nom Review Défense [nom commercial à confirmer], adresse professionnelle [À RENSEIGNER], SIREN [À RENSEIGNER], SIRET [À RENSEIGNER], immatriculation RNE et RCS le cas échéant [À CONFIRMER], TVA [À RENSEIGNER / NON APPLICABLE APRÈS VÉRIFICATION], e-mail [CONTACT], téléphone [À RENSEIGNER]. Aucun capital social n'est applicable à l'entreprise individuelle.
 
 ## 2. Objet et périmètre
 
