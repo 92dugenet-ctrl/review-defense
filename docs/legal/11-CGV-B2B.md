@@ -63,3 +63,15 @@ Contact réclamation : [EMAIL / ADRESSE]. Droit applicable : [À VALIDER]. Jurid
 ## 15. Documents contractuels et ordre de priorité
 
 Ordre de priorité : [BON DE COMMANDE / CGV / CGU / DPA / SLA]. Toute dérogation doit être écrite et signée.
+
+---
+
+## Addendum — décisions commerciales au 1er octobre 2026
+
+L'entreprise individuelle est encore un projet de création. Ne pas présenter le vendeur comme immatriculé avant attribution officielle du SIREN/SIRET et obtention des justificatifs.
+
+Décisions à intégrer et à vérifier avec la page Tarifs et le parcours de paiement : clientèle exclusivement professionnelle ; abonnements sans engagement ; formule mixte (abonnement et prestations complémentaires) ; paiements par PayPal et carte bancaire ; prix affichés en euros comme prix finaux TTC ; facture PDF automatique après chaque paiement avec numérotation unique et chronologique ; résiliation par e-mail à `contact.reviewdefense@gmail.com`.
+
+En cas de résiliation volontaire, pas de remboursement au prorata de la période déjà payée ; l'accès reste disponible jusqu'à la fin de la période payée, sous réserve des droits impératifs et des recours en cas de défaillance ou d'erreur de facturation. Après 3 jours sans régularisation d'un paiement échoué, l'accès est suspendu ; la suspension ne vaut pas résiliation automatique.
+
+Le porteur souhaite bénéficier de la franchise en base de TVA au démarrage, sous réserve d'éligibilité et de confirmation après immatriculation. La formulation fiscale et les ventes B2B transfrontalières UE doivent être validées par un professionnel fiscal. Ne pas figer les montants dans les CGV avant rapprochement avec la page Tarifs et les montants réellement configurés dans PayPal et le prestataire carte.
