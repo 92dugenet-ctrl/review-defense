@@ -22,7 +22,7 @@ document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{S.view=b.data
 document.getElementById("logout").onclick=async()=>{try{await post("/v1/logout")}catch{}localStorage.removeItem("rd_token");localStorage.removeItem("rd_role");S.token=null;login()};
 document.getElementById("refresh").onclick=()=>load(S.view);
 document.getElementById("menu").onclick=()=>document.querySelector(".side").classList.toggle("open");
-document.getElementById("modal-root").addEventListener("click",onAction);app.addEventListener("click",onAction);
+app.addEventListener("click",onAction);
 show()}
 function show(){document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));document.getElementById("view-"+S.view)?.classList.add("active");document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x.dataset.view===S.view));document.getElementById("page-title").textContent=allLabels[S.view]||"Espace";load(S.view)}
 function table(items,cols,kind){const rows=items.map(x=>'<tr class="row-click" data-open="'+kind+'" data-id="'+esc(x.review_id||(x.case_id?(x.case_id+(x.level?"::"+x.level:"")):null)||x.evidence_id||x.notification_id||x.approval_id||x.member_id||x.id||"")+'">'+cols.map(c=>'<td>'+ (c.render?c.render(x):esc(x[c.key]))+'</td>').join("")+'</tr>').join("");return '<div class="table"><table><thead><tr>'+cols.map(c=>'<th>'+c.label+'</th>').join("")+'</tr></thead><tbody>'+(rows||'<tr><td colspan="'+cols.length+'" class="empty">Aucune donnée à afficher.</td></tr>')+'</tbody></table></div>'}
