@@ -91,3 +91,13 @@ Signatures : [CLIENT] / [PRESTATAIRE] — Date : [DATE].
 | Google | [API concernée] | [ ] | [ ] | [ ] | [ ] | [ ] |
 | PayPal | Paiement | [ ] | [ ] | [ ] | [ ] | [ ] |
 | [IA SI UTILISÉE] | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] |
+
+---
+
+## Addendum — décisions du porteur au 1er octobre 2026
+
+La création de l'EI est encore un projet ; l'identité et les identifiants officiels du prestataire seront complétés après immatriculation.
+
+Exigences prévues : stockage principal et sauvegardes dans l'UE ; traitements hors UE uniquement avec mécanisme de transfert et garanties appropriés ; masquage/pseudonymisation des identifiants non nécessaires avant envoi à un fournisseur d'IA ; interdiction contractuelle et paramétrage vérifiable de l'entraînement des modèles sur les données client ; inventaire des sous-traitants ultérieurs et de leurs lieux de traitement ; validation du client avant toute action externe ; export ZIP pendant 30 jours après résiliation, sauf demande expresse d'effacement immédiat ; suppression selon un calendrier documenté et sous réserve des obligations légales.
+
+Le rôle de sous-traitant ne doit pas être présumé pour tous les traitements. Distinguer les opérations effectuées sur instruction du client de celles dont l'exploitant détermine les finalités propres.
