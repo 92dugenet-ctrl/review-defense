@@ -6,6 +6,7 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 FRONTEND = (ROOT / "frontend" / "workspace.js").read_text(encoding="utf-8")
 API = (ROOT / "src" / "api_server.py").read_text(encoding="utf-8")
+SEO_RENDERER = (ROOT / "src" / "seo_renderer.py").read_text(encoding="utf-8")
 
 
 def test_workspace_actions_are_delegated_once_from_app_root():
@@ -67,3 +68,10 @@ def test_public_action_ctas_point_to_auth_entry():
         assert 'href="/analyse-avis-google/"' not in page
         assert 'href="#try"' not in page
     assert 'href="/inscription"' in (ROOT / "frontend" / "index.html").read_text(encoding="utf-8")
+
+def test_email_verification_link_uses_workspace_auth_screen():
+    assert 'location.pathname==="/verify-email"' in FRONTEND
+    assert 'post("/v1/auth/email-verification/verify"' in FRONTEND
+    assert '"/verify-email"}' in API
+    assert 'href="/inscription">Analyser un avis</a>' in SEO_RENDERER
+    assert 'href="/inscription">Analyser mon avis →</a>' in SEO_RENDERER
