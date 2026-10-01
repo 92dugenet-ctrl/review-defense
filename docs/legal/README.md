@@ -96,3 +96,12 @@ La qualification juridique dépend des faits et non du seul intitulé du contrat
 ## 7. Règle de mise à jour
 
 Chaque changement de finalité, donnée collectée, fonctionnalité, prestataire, région d'hébergement, durée, destinataire ou technologie doit déclencher une revue du registre, de la politique de confidentialité, du DPA et, le cas échéant, de l'AIPD. Conserver un historique des versions et la date d'entrée en vigueur.
+
+
+## 9. Addendum relatif au statut EI
+
+- `16-identite-juridique-EI.md` — fiche d'identité de l'exploitant et informations restant à vérifier.
+- `17-audit-statut-EI.md` — conséquences du statut EI sur les contrats et mentions.
+- `15-audit-technique.md` — addendum d'identité de l'exploitant intégré à l'audit technique.
+
+Les informations d'identification ont été communiquées par l'exploitant et restent à rapprocher d'un justificatif RNE. Les modèles ne sont pas publiables tant que les champs manquants ne sont pas complétés.
