@@ -1317,13 +1317,36 @@ class ReviewDefenseAPI:
         if method == "GET" and path == "/v1/evidence":
             rows = [dict(e, status=("VERIFIED" if e.get("verified") else "PENDING")) for (org, _), e in self.store.evidence.items() if org == user.organization_id]
             return self._json(200, {"items": rows, "count": len(rows)})
+        if method == "GET" and path.startswith("/v1/evidence/") and path.endswith("/content") and len(path.split("/")) == 5:
+            eid = path.split("/")[3]
+            row = self.store.evidence.get((user.organization_id, eid))
+            if row is None and self.repository is not None and hasattr(self.repository, "get_evidence"):
+                dbrow = self.repository.get_evidence(user.organization_id, eid)
+                if dbrow:
+                    row = dict(zip(("evidence_id","organization_id","case_id","filename","content_type","size_bytes","sha256","object_key","verified","created_by","verified_by","verified_at"), dbrow))
+                    self.store.evidence[(user.organization_id, eid)] = row
+            if not row: raise APIError(404, "NOT_FOUND", "evidence not found")
+            content = self.store.vault.get(organization_id=user.organization_id, object_key=row["object_key"])
+            if not verify_integrity(content, row["sha256"]):
+                raise APIError(409, "INTEGRITY_FAILURE", "stored evidence integrity check failed")
+            return self._json(200, {
+                "filename": row["filename"],
+                "content_type": row["content_type"],
+                "content_base64": base64.b64encode(content).decode("ascii"),
+                "sha256": row["sha256"],
+            })
         if method == "GET" and path.startswith("/v1/evidence/"):
             eid = path.rsplit("/", 1)[-1]
             row = self.store.evidence.get((user.organization_id, eid))
+            if row is None and self.repository is not None and hasattr(self.repository, "get_evidence"):
+                dbrow = self.repository.get_evidence(user.organization_id, eid)
+                if dbrow:
+                    row = dict(zip(("evidence_id","organization_id","case_id","filename","content_type","size_bytes","sha256","object_key","verified","created_by","verified_by","verified_at"), dbrow))
+                    self.store.evidence[(user.organization_id, eid)] = row
             if not row: raise APIError(404, "NOT_FOUND", "evidence not found")
             if not verify_integrity(self.store.vault.get(organization_id=user.organization_id, object_key=row["object_key"]), row["sha256"]):
                 raise APIError(409, "INTEGRITY_FAILURE", "stored evidence integrity check failed")
-            out = dict(row); out["status"] = "VERIFIED" if row.get("verified") else "PENDING"; out["download_url"] = sign_download_url(object_key=row["object_key"], organization_id=user.organization_id, secret=self.store.download_secret)
+            out = dict(row); out["status"] = "VERIFIED" if row.get("verified") else "PENDING"
             return self._json(200, {"evidence": out})
         if method == "POST" and path.startswith("/v1/evidence/") and path.endswith("/verify") and len(path.split("/")) == 5:
             self._require_role(user, "OWNER", "ADMIN", "ANALYST")

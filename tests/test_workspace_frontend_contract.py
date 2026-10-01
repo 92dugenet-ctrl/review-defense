@@ -75,3 +75,10 @@ def test_email_verification_link_uses_workspace_auth_screen():
     assert '"/verify-email"}' in API
     assert 'href="/inscription">Analyser un avis</a>' in SEO_RENDERER
     assert 'href="/inscription">Analyser mon avis →</a>' in SEO_RENDERER
+
+def test_evidence_download_uses_authenticated_tenant_scoped_content_route():
+    assert 'path.endswith("/content")' in API
+    assert 'self.store.vault.get(organization_id=user.organization_id' in API
+    assert 'verify_integrity(content, row["sha256"])' in API
+    assert '"/v1/evidence/"+encodeURIComponent(id)+"/content"' in FRONTEND
+    assert 'download-evidence:' in FRONTEND
