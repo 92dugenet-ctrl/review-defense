@@ -11,8 +11,29 @@ const field=(k,v)=>'<div class="detail-field"><small>'+esc(k)+'</small><div>'+es
 const button=(label,action,cls="btn")=>'<button class="'+cls+'" data-action="'+esc(action)+'">'+esc(label)+'</button>';
 async function api(url,opts={}){const h={"Content-Type":"application/json",...(opts.headers||{})};if(S.token)h.Authorization="Bearer "+S.token;const r=await fetch(url,{...opts,headers:h});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d?.error?.message||d?.error?.code||"Erreur HTTP "+r.status);return d}
 const post=(url,body={})=>api(url,{method:"POST",body:JSON.stringify(body)});
-function login(){app.innerHTML='<main class="login"><section class="loginbox"><div><b style="color:#0878ee">◆</b> Review Defense</div><h1>Votre espace</h1><p>Connectez-vous pour suivre vos avis, dossiers, preuves et actions.</p><form id="login-form"><div class="field"><label>Organisation ID</label><input name="organization_id" required></div><div class="field"><label>Email</label><input name="email" type="email" required></div><div class="field"><label>Mot de passe</label><input name="password" type="password" required></div><div class="field"><label>Code MFA si demandé</label><input name="mfa_code" inputmode="numeric"></div><div class="err" id="login-error"></div><button class="btn primary" style="width:100%;text-align:center" type="submit">Se connecter</button></form></section></main>';
-document.getElementById("login-form").onsubmit=async e=>{e.preventDefault();const err=document.getElementById("login-error");err.textContent="";try{const d=await post("/v1/auth/login",Object.fromEntries(new FormData(e.currentTarget)));S.token=d.access_token;S.role=d.role;localStorage.setItem("rd_token",S.token);localStorage.setItem("rd_role",S.role);start()}catch(x){err.textContent=x.message}}}
+function login(){
+ const params=new URLSearchParams(location.search);
+ let mode=params.get("auth")==="register"||location.pathname==="/inscription"?"register":"login";
+ const render=()=>{
+  const registering=mode==="register";
+  app.innerHTML='<main class="login"><section class="loginbox"><div><b style="color:#0878ee">◆</b> Review Defense</div><h1>'+(registering?'Créer votre espace':'Connexion à votre espace')+'</h1><p>'+(registering?'Créez votre compte pour commencer à analyser et suivre vos avis.':'Connectez-vous pour retrouver vos avis, dossiers, preuves et actions.')+'</p><div class="auth-tabs"><button type="button" class="btn '+(!registering?'primary':'')+'" id="auth-login">Connexion</button><button type="button" class="btn '+(registering?'primary':'')+'" id="auth-register">Créer un compte</button></div><form id="auth-form">'+(registering?'<div class="field"><label>Nom de votre entreprise</label><input name="organization_name" required maxlength="200" autocomplete="organization"></div>':'<div class="field"><label>Identifiant de votre organisation</label><input name="organization_id" required value="'+esc(localStorage.getItem("rd_org_id")||"")+'"></div>')+'<div class="field"><label>Email</label><input name="email" type="email" required autocomplete="email"></div><div class="field"><label>Mot de passe</label><input name="password" type="password" required autocomplete="'+(registering?'new-password':'current-password')+'"></div>'+(registering?'':'<div class="field"><label>Code MFA si demandé</label><input name="mfa_code" inputmode="numeric"></div>')+'<div class="err" id="auth-error" role="alert"></div><button class="btn primary" style="width:100%;text-align:center" type="submit">'+(registering?'Créer mon compte':'Se connecter')+'</button></form></section></main>';
+  document.getElementById("auth-login").onclick=()=>{mode="login";render()};
+  document.getElementById("auth-register").onclick=()=>{mode="register";render()};
+  document.getElementById("auth-form").onsubmit=async e=>{
+   e.preventDefault();const form=e.currentTarget,err=document.getElementById("auth-error"),submit=form.querySelector('button[type="submit"]');err.textContent="";submit.disabled=true;
+   try{
+    const payload=Object.fromEntries(new FormData(form));
+    const d=registering?await post("/v1/auth/register",payload):await post("/v1/auth/login",payload);
+    if(d.status==="verification_required"){localStorage.setItem("rd_org_id",d.organization_id);mode="login";render();document.getElementById("auth-error").textContent="Un email de vérification a été demandé. Vérifiez votre boîte de réception avant de vous connecter.";return}
+    if(d.organization_id)localStorage.setItem("rd_org_id",d.organization_id);
+    if(!d.access_token)throw Error("Le compte a été créé, mais aucune session n'a été délivrée. Vérifiez la configuration de validation email.");
+    S.token=d.access_token;S.role=d.role;localStorage.setItem("rd_token",S.token);localStorage.setItem("rd_role",S.role);location.replace(can("manager")?"/admin":"/client");
+   }catch(x){err.textContent=x.message}
+   finally{const button=form.querySelector('button[type="submit"]');if(button)button.disabled=false}
+  };
+ };
+ render();
+}
 const client=[["dashboard","Vue d’ensemble"],["reviews","Avis"],["cases","Dossiers"],["evidence","Preuves"],["billing","Abonnement"]];
 const admin=[["queue","File de traitement"],["escalations","Escalades SLA"],["approvals","Approbations"],["team","Équipe"],["notifications","Notifications"],["submissions","Soumissions"]];
 const allLabels=Object.fromEntries([...client,...admin]);
