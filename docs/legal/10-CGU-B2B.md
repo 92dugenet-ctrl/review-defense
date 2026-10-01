@@ -6,7 +6,7 @@
 
 ## 1. Éditeur et objet
 
-Le service Review Défense est édité par [RAISON SOCIALE, FORME, SIREN, ADRESSE]. Les présentes conditions régissent l'accès au site et à l'espace logiciel. Les conditions commerciales et les niveaux de service sont précisés dans les CGV et le bon de commande.
+Le service Review Défense est exploité par Gabriel Dugenet, entrepreneur individuel (EI), établi en France, [ADRESSE PROFESSIONNELLE], SIREN [À RENSEIGNER], exerçant sous le nom Review Défense [statut de nom commercial à confirmer]. L'entrepreneur individuel est le cocontractant ; Review Défense ne constitue pas une personne morale distincte. Les présentes conditions régissent l'accès au site et à l'espace logiciel. Les conditions commerciales et les niveaux de service sont précisés dans les CGV et le bon de commande.
 
 ## 2. Définitions
 
