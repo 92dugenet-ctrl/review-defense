@@ -6,19 +6,24 @@
 
 ## 1. Qui traite vos données ?
 
-Le service Review Défense est édité par **[RAISON SOCIALE]**, [FORME JURIDIQUE] au capital de [MONTANT] €, immatriculée au RCS/RNE de [VILLE] sous le numéro [SIREN], dont le siège social est situé [ADRESSE], représentée par [NOM / QUALITÉ].
+Review Défense est exploité par **Gabriel Dugenet, entrepreneur individuel (EI), établi en France**, exerçant sous le nom commercial ou la marque **Review Défense** [À CONFIRMER selon l'immatriculation].
 
-Contact : [EMAIL DE CONTACT].  
-Contact relatif aux données personnelles : [EMAIL PRIVACY].  
-Délégué à la protection des données : [NOM ET COORDONNÉES / « aucun DPO désigné à ce jour » uniquement après vérification de l'obligation].
+- Adresse professionnelle : [ADRESSE]
+- SIREN : [SIREN]
+- SIRET : [SIRET]
+- E-mail de contact : [EMAIL]
+- Contact relatif aux données personnelles : [EMAIL PRIVACY]
+- Délégué à la protection des données : [NOM ET COORDONNÉES / « aucun DPO désigné à ce jour » uniquement après vérification de l'obligation].
+
+L'entreprise individuelle n'étant pas une personne morale distincte de l'entrepreneur, les références contractuelles et les informations d'identification doivent désigner Gabriel Dugenet, entrepreneur individuel, et non une société fictive.
 
 ## 2. Champ d'application et rôles
 
 Cette notice concerne les visiteurs du site, les prospects, les clients professionnels, les utilisateurs de leurs espaces et les personnes dont les données figurent dans les avis, dossiers ou pièces transmis au service.
 
-Pour la gestion de son site, de ses comptes, de la facturation, de la sécurité et de sa relation commerciale, [RAISON SOCIALE] agit comme responsable de traitement.
+Pour la gestion du site, des comptes, de la facturation, de la sécurité, du support et de sa relation commerciale, Gabriel Dugenet, entrepreneur individuel, agit comme responsable de traitement.
 
-Lorsque le client dépose des avis, dossiers ou pièces afin que Review Défense les traite uniquement pour son compte et selon ses instructions, le client peut être responsable de traitement et Review Défense sous-traitant. Les rôles sont déterminés selon les finalités et moyens réellement décidés, traitement par traitement. L'accord de sous-traitance applicable est annexé au contrat.
+Lorsque le client dépose des avis, dossiers ou pièces afin que Review Défense les traite uniquement pour son compte et selon ses instructions, le client peut être responsable de traitement et Gabriel Dugenet / Review Défense sous-traitant. Les rôles sont déterminés selon les finalités et moyens réellement décidés, traitement par traitement. L'accord de sous-traitance applicable est annexé au contrat.
 
 ## 3. Données et finalités
 
@@ -85,7 +90,7 @@ Vous pouvez également adresser une réclamation à la CNIL : https://www.cnil.f
 
 ## 9. Sécurité
 
-Nous mettons en œuvre des mesures techniques et organisationnelles adaptées aux risques : [DÉCRIRE UNIQUEMENT LES MESURES VÉRIFIÉES : gestion des habilitations, authentification, chiffrement, sauvegardes, journalisation, cloisonnement, tests, gestion des incidents]. Aucune mesure ne doit être revendiquée sans preuve de sa mise en œuvre.
+Des mesures techniques et organisationnelles adaptées aux risques sont mises en œuvre : [DÉCRIRE UNIQUEMENT LES MESURES VÉRIFIÉES : gestion des habilitations, authentification, chiffrement, sauvegardes, journalisation, cloisonnement, tests, gestion des incidents]. Aucune mesure ne doit être revendiquée sans preuve de sa mise en œuvre.
 
 ## 10. Cookies et traceurs
 
@@ -97,4 +102,4 @@ Cette notice peut évoluer. La version applicable, sa date d'entrée en vigueur 
 
 ## 12. Contact
 
-[RAISON SOCIALE] — [ADRESSE] — [EMAIL PRIVACY].
+Gabriel Dugenet, entrepreneur individuel (EI), exploitant Review Défense — [ADRESSE] — [EMAIL PRIVACY].
