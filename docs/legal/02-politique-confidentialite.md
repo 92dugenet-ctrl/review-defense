@@ -103,3 +103,15 @@ Cette notice peut évoluer. La version applicable, sa date d'entrée en vigueur 
 ## 12. Contact
 
 Gabriel Dugenet, entrepreneur individuel (EI), exploitant Review Défense — [ADRESSE] — [EMAIL PRIVACY].
+
+---
+
+## Addendum — décisions et statut du projet au 1er octobre 2026
+
+La création de l'EI est encore un projet et les formalités ne sont pas effectuées. L'identité du responsable de traitement futur, son adresse et ses identifiants officiels devront être complétés après création. Ce modèle ne doit pas être publié.
+
+Le service vise des clients professionnels uniquement. Les avis et pièces peuvent être ajoutés manuellement ou provenir d'une connexion Google Business Profile autorisée. Les données relatives à l'auteur d'un avis (nom affiché, photo, profil, lien) ne peuvent être conservées que si leur traitement est nécessaire, licite et autorisé par les conditions Google applicables. La volonté de conserver toutes les informations visibles ne dispense pas de la minimisation RGPD.
+
+Durées décidées sous réserve de validation : données opérationnelles pendant l'abonnement ; export ZIP pendant 30 jours après résiliation ; suppression ou anonymisation ensuite, sous réserve des obligations légales et d'une purge des sauvegardes documentée. Une demande expresse d'effacement déclenche la procédure sans attendre 30 jours, sous réserve des données légalement conservables.
+
+Le stockage principal et les sauvegardes sont prévus dans l'UE. Des prestataires peuvent traiter certaines données hors UE si les transferts sont licites, documentés et encadrés. Les fournisseurs d'IA ne doivent pas utiliser les données client pour entraîner leurs modèles. Un masquage automatique avant transmission est prévu ; ne pas le qualifier d'anonymisation si une réidentification reste possible.
