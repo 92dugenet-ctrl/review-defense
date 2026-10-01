@@ -95,16 +95,52 @@
     @media(max-width:420px){.rd-cta{font-size:9px;padding:9px 10px}.stage{height:420px}.mosaic{grid-auto-rows:128px}.mini-card{min-height:260px}.footer-inner{grid-template-columns:1fr}.footer-brand-block{grid-column:auto}}
     @media(hover:none){.tile-copy{transform:none}.tile-copy p{opacity:1;max-height:none;display:block;font-size:10px}.tile:after{opacity:1}}
     @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+  
+/* Shared site chrome: identical to the other public pages */
+.rd-top{height:62px!important;display:flex!important;align-items:center!important;gap:34px!important;padding:0 3.1vw!important;border-bottom:1px solid #eee!important;background:rgba(255,255,255,.96)!important;position:sticky!important;top:0!important;z-index:100!important;backdrop-filter:blur(14px)!important}
+.rd-brand{display:flex!important;align-items:center!important;gap:8px!important;font-size:15px!important;font-weight:500!important;white-space:nowrap!important}
+.rd-mark{color:#0869ff!important;font-size:22px!important;line-height:1!important}
+.rd-nav{display:flex!important;align-items:center!important;gap:31px!important;flex:1!important;font-size:13px!important}
+.rd-nav a:hover{color:#0869ff!important}
+.rd-actions{display:flex!important;align-items:center!important;gap:14px!important}
+.rd-search{font-size:22px!important}
+.rd-btn{display:inline-flex!important;align-items:center!important;justify-content:center!important;border-radius:999px!important;padding:11px 20px!important;font-size:12px!important;font-weight:500!important}
+.rd-btn-blue{background:#0869ff!important;color:#fff!important}
+.rd-menu{display:none!important;border:0!important;background:none!important;font-size:23px!important;cursor:pointer!important}
+.drawer{position:fixed;inset:0 0 0 auto;width:min(620px,100%);background:#101517;color:#fff;z-index:110;transform:translateX(100%);transition:transform .45s cubic-bezier(.2,.8,.2,1);padding:30px 32px}
+.drawer.open{transform:none}
+.drawer-close{position:absolute;right:28px;top:20px;color:#fff;font-size:42px;border:0;background:none;cursor:pointer}
+.drawer-logo{display:flex;justify-content:center;font-size:22px;font-weight:500;margin-bottom:60px}
+.drawer>a{display:flex;justify-content:space-between;padding:23px 0;border-top:1px solid rgba(255,255,255,.13);font-size:25px;color:#fff}
+.drawer>a span{font-size:40px;font-weight:300}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:105;opacity:0;pointer-events:none;transition:.35s}
+.scrim.open{opacity:1;pointer-events:auto}
+footer{background:#f5f7f9!important;padding:80px 3.1vw 35px!important;border:0!important;border-top:1px solid #e9edf1!important}
+.footer-grid{display:grid!important;grid-template-columns:2fr repeat(3,1fr)!important;gap:40px!important;max-width:1540px!important;margin:auto!important}
+.footer-brand{font-size:23px!important;font-weight:500!important;display:block!important;grid-column:auto!important}
+.footer-grid>div{display:flex!important;flex-direction:column!important;gap:12px!important}
+.footer-grid h4{margin:0 0 10px!important}
+.footer-grid a{font-size:14px!important;color:#627184!important}
+footer small{display:block!important;max-width:1540px!important;margin:70px auto 0!important;color:#82909c!important}
+@media(max-width:900px){.rd-top{gap:14px!important}.rd-nav,.rd-actions{display:none!important}.rd-menu{display:block!important;margin-left:auto!important}.footer-grid{grid-template-columns:1fr 1fr!important}.footer-brand{grid-column:1/-1!important}}
+@media(max-width:580px){.rd-top{height:58px!important;padding:0 20px!important}.footer-grid{grid-template-columns:1fr!important}.footer-brand{grid-column:auto!important}footer{padding:45px 22px 22px!important}footer small{margin-top:35px!important}}
+
   </style>
 </head>
 <body>
   <header class="rd-top">
-    <a class="rd-brand" href="/" aria-label="Review Défense, accueil"><span class="rd-mark" aria-hidden="true">◈</span>REVIEW DÉFENSE</a>
-    <nav class="rd-nav" aria-label="Navigation principale">
-      <a href="/services">Services</a><a href="/fonctionnement">Fonctionnement</a><a href="/resources">Ressources</a><a href="/about" aria-current="page">Notre univers</a><a href="/tarif">Tarifs</a>
-    </nav>
-    <a class="rd-cta" href="/analyse-avis-google/">Accéder à la plateforme <span aria-hidden="true">↗</span></a>
-  </header>
+  <a class="rd-brand" href="/"><span class="rd-mark">◆</span> Review Defense</a>
+  <nav class="rd-nav" aria-label="Navigation principale">
+    <a href="/services" aria-current="page">Services</a><a href="/fonctionnement">Fonctionnement</a><a href="/resources">Resources</a><a href="/about" aria-current="page">About</a><a href="/tarif">Tarif</a>
+  </nav>
+  <div class="rd-actions"><a class="rd-search" href="/resources">⌕</a><a class="rd-btn rd-btn-blue" href="/analyse-avis-google/">Analyser un avis</a></div>
+  <button class="rd-menu" aria-label="Menu">☰</button>
+</header>
+<aside class="drawer" aria-hidden="true">
+  <button class="drawer-close" aria-label="Fermer">×</button>
+  <div class="drawer-logo"><span class="logo-mark">◆</span>Review Defense</div>
+  <a href="/services">Services <span>›</span></a><a href="/fonctionnement">Fonctionnement <span>›</span></a><a href="/resources">Resources <span>›</span></a><a href="/about">About <span>›</span></a><a href="/tarif">Tarif <span>›</span></a><a href="/analyse-avis-google/">Analyser un avis <span>›</span></a>
+</aside><div class="scrim"></div>
 
   <main>
     <section class="intro" aria-labelledby="about-title">
@@ -200,14 +236,14 @@
     </section>
   </main>
 
-  <footer>
-    <div class="footer-inner">
-      <div class="footer-brand-block"><a class="footer-brand" href="/"><span class="footer-mark" aria-hidden="true">◈</span>REVIEW DÉFENSE</a><p class="footer-note">Une approche humaine, claire et responsable de la réputation en ligne.</p></div>
-      <div class="footer-col"><strong>Plateforme</strong><a href="/services">Services</a><a href="/fonctionnement">Fonctionnement</a><a href="/tarif">Tarifs</a></div>
-      <div class="footer-col"><strong>Ressources</strong><a href="/resources">Centre de ressources</a><a href="/blog">Blog</a><a href="/faq">FAQ</a></div>
-      <div class="footer-col"><strong>Informations</strong><a href="/mentions-legales">Mentions légales</a><a href="/confidentialite">Confidentialité</a><a href="/cookies">Cookies</a><a href="/cgu">CGU</a></div>
-    </div>
-    <div class="footer-bottom"><span>© 2026 Review Défense. Tous droits réservés.</span><span>La décision finale vous appartient.</span></div>
-  </footer>
+  <footer><div class="footer-grid"><div class="footer-brand"><span class="logo-mark">∞</span> Review Defense</div><div><h4>Services</h4><a href="/services/">Analyse des avis</a><a href="/services/">Dossiers & preuves</a><a href="/services/">Suivi</a></div><div><h4>Fonctionnement</h4><a href="/fonctionnement">Comment ça fonctionne</a><a href="/analyse-avis-google/">Analyser un avis</a></div><div><h4>À propos</h4><a href="/about">Sécurité</a><a href="/about">Confidentialité</a></div></div><small>© 2026 Review Defense</small></footer>
+<script>
+(function(){
+ const menu=document.querySelector('.rd-menu'),drawer=document.querySelector('.drawer'),scrim=document.querySelector('.scrim'),close=drawer&&drawer.querySelector('.drawer-close');
+ if(!menu||!drawer||!scrim||!close)return;
+ function toggle(open){drawer.classList.toggle('open',open);scrim.classList.toggle('open',open);drawer.setAttribute('aria-hidden',String(!open));menu.setAttribute('aria-expanded',String(open));document.body.style.overflow=open?'hidden':''}
+ menu.addEventListener('click',()=>toggle(true));close.addEventListener('click',()=>toggle(false));scrim.addEventListener('click',()=>toggle(false));drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toggle(false)));
+})();
+</script>
 </body>
 </html>
