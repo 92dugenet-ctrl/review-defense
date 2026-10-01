@@ -95,7 +95,7 @@ def test_app_alias_serves_same_frontend():
 
 
 def test_client_and_admin_routes_serve_workspace_assets():
-    for path in ("/client", "/client/", "/admin", "/admin/"):
+    for path in ("/client", "/client/", "/admin", "/admin/", "/connexion", "/inscription"):
         status, headers, body = request(path)
         assert status == "200 OK"
         assert headers["Content-Type"].startswith("text/html")
