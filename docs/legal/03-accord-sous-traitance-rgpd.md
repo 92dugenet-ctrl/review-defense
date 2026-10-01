@@ -4,7 +4,7 @@
 
 Entre :
 - **Le Client**, [RAISON SOCIALE, ADRESSE, SIREN], responsable de traitement ;
-- **Le Prestataire**, [RAISON SOCIALE REVIEW DÉFENSE, ADRESSE, SIREN], sous-traitant.
+- **Le Prestataire**, Gabriel Dugenet, entrepreneur individuel (EI), exerçant sous le nom Review Défense [nom commercial à confirmer], [ADRESSE PROFESSIONNELLE], SIREN [À RENSEIGNER], sous-traitant lorsque les critères factuels de l'article 28 RGPD sont réunis.
 
 ## 1. Objet, durée et description du traitement
 
