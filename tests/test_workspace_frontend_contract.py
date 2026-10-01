@@ -8,9 +8,9 @@ FRONTEND = (ROOT / "frontend" / "workspace.js").read_text(encoding="utf-8")
 API = (ROOT / "src" / "api_server.py").read_text(encoding="utf-8")
 
 
-def test_workspace_actions_are_delegated_from_both_surfaces():
+def test_workspace_actions_are_delegated_once_from_app_root():
     assert 'app.addEventListener("click",onAction)' in FRONTEND
-    assert 'document.getElementById("modal-root").addEventListener("click",onAction)' in FRONTEND
+    assert 'document.getElementById("modal-root").addEventListener("click",onAction)' not in FRONTEND
 
 
 def test_invitation_and_role_controls_use_existing_api_routes():
