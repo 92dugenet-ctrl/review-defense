@@ -52,3 +52,11 @@ Les rôles RGPD sont à déterminer traitement par traitement. L'EI peut être r
 - Service Public Entreprendre — mentions obligatoires sur le site d'un entrepreneur individuel : https://entreprendre.service-public.gouv.fr/vosdroits/F31228
 - Service Public Entreprendre — séparation des patrimoines de l'entrepreneur individuel : https://entreprendre.service-public.gouv.fr/vosdroits/F36354
 - CNIL — identifier son rôle de responsable ou sous-traitant : https://www.cnil.fr/fr/rgpd-comment-bien-identifier-son-role
+
+---
+
+## Mise à jour déterminante — 1er octobre 2026
+
+Gabriel Dugenet a précisé que la création de l'EI est encore un projet et que les formalités ne sont pas effectuées. La forme EI est donc envisagée, mais aucune immatriculation actuelle n'est vérifiée. Date d'immatriculation, SIREN, SIRET et justificatifs RNE : à compléter après formalités et attribution officielle.
+
+L'adresse personnelle communiquée pour la domiciliation envisagée est volontairement omise de ce dépôt GitHub public. Elle sera insérée dans les documents définitifs seulement après création et vérification des règles de publication. Contact projet : `contact.reviewdefense@gmail.com`. Aucun numéro de téléphone public n'est prévu.
