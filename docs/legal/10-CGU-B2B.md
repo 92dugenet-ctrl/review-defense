@@ -67,3 +67,15 @@ Les modalités de modification, notification et date d'entrée en vigueur sont [
 ## 14. Droit applicable et litiges
 
 Droit applicable : [À VALIDER]. Tribunal compétent : [À VALIDER SELON RÈGLES IMPÉRATIVES ET QUALITÉ DES PARTIES].
+
+---
+
+## Addendum — décisions du porteur au 1er octobre 2026
+
+Le service est destiné exclusivement aux professionnels (B2B), avec un compte utilisateur par entreprise et une authentification à deux facteurs obligatoire. L'entreprise individuelle est encore un projet de création : l'identité du cocontractant futur et ses identifiants officiels ne peuvent pas être présentés comme déjà immatriculés.
+
+Review Défense est un outil SaaS d'analyse, de classement, de préparation et de suivi de dossiers d'avis. Il ne fournit pas de consultation juridique personnalisée, ne représente pas le client et n'agit pas comme société de recouvrement. Les sorties de l'IA sont des signaux ou suggestions, jamais une qualification juridique définitive. Cette limite doit correspondre aux fonctions et au marketing réels et être validée par un avocat.
+
+Toute action extérieure (réponse publiée, signalement Google, demande de suppression, transmission à un tiers) exige une validation expresse du client. L'envoi direct à Google n'est proposé que si les API, autorisations et conditions de Google le permettent ; sinon, le service fournit un dossier à transmettre par le client. Aucun résultat de suppression n'est garanti ; Google reste décisionnaire. Les signalements faux, abusifs ou motivés uniquement par le caractère négatif d'un avis sont interdits.
+
+La résiliation est demandée par e-mail à `contact.reviewdefense@gmail.com`. L'abonnement est sans engagement et l'accès se poursuit jusqu'à la fin de la période payée. Après résiliation, un export ZIP est prévu pendant 30 jours, sauf demande expresse d'effacement immédiat. Les modalités doivent distinguer résiliation, suspension, désactivation et effacement.
