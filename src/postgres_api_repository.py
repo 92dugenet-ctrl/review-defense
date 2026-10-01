@@ -132,12 +132,12 @@ class PostgresAPIRepository(PostgresRepository):
     def get_review(self, organization_id: str, review_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT review_id,organization_id,location_id,author_display_name,rating,review_text,published_at,updated_at,language,source,review_url FROM api_reviews WHERE review_id=%s", (review_id,)); return cur.fetchone()
+                cur.execute("SELECT review_id,organization_id,location_id,author_display_name,rating,review_text,published_at,updated_at,language,source,review_url FROM api_reviews WHERE organization_id=%s AND review_id=%s", (organization_id,review_id),); return cur.fetchone()
 
     def list_reviews(self, organization_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT review_id,organization_id,location_id,author_display_name,rating,review_text,published_at,updated_at,language,source,review_url FROM api_reviews ORDER BY published_at DESC NULLS LAST"); return cur.fetchall()
+                cur.execute("SELECT review_id,organization_id,location_id,author_display_name,rating,review_text,published_at,updated_at,language,source,review_url FROM api_reviews WHERE organization_id=%s ORDER BY published_at DESC NULLS LAST", (organization_id,)); return cur.fetchall()
 
     def create_case_persistent(self, organization_id: str, case_id: str, review_id: str, status: str, actor_user_id: str|None=None):
         with self.transaction(organization_id) as conn:
@@ -191,7 +191,7 @@ class PostgresAPIRepository(PostgresRepository):
     def get_case_persistent(self, organization_id: str, case_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT case_id,organization_id,review_id,status,decision_id,snapshot_sha256,created_at,updated_at FROM api_cases WHERE case_id=%s", (case_id,)); return cur.fetchone()
+                cur.execute("SELECT case_id,organization_id,review_id,status,decision_id,snapshot_sha256,created_at,updated_at FROM api_cases WHERE organization_id=%s AND case_id=%s", (organization_id,case_id)); return cur.fetchone()
 
     def update_case(self, organization_id: str, case_id: str, *, status=None, decision_id=None, snapshot_sha256=None):
         fields=[]; vals=[]
@@ -282,19 +282,19 @@ class PostgresAPIRepository(PostgresRepository):
     def list_evidence(self, organization_id: str, case_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT evidence_id,organization_id,case_id,filename,content_type,size_bytes,sha256,object_key,verified,created_by,verified_by,verified_at FROM api_evidence WHERE case_id=%s ORDER BY created_at", (case_id,))
+                cur.execute("SELECT evidence_id,organization_id,case_id,filename,content_type,size_bytes,sha256,object_key,verified,created_by,verified_by,verified_at FROM api_evidence WHERE organization_id=%s AND case_id=%s ORDER BY created_at", (organization_id,case_id))
                 return cur.fetchall()
 
     def get_evidence(self, organization_id: str, evidence_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT evidence_id,organization_id,case_id,filename,content_type,size_bytes,sha256,object_key,verified,created_by,verified_by,verified_at FROM api_evidence WHERE evidence_id=%s", (evidence_id,))
+                cur.execute("SELECT evidence_id,organization_id,case_id,filename,content_type,size_bytes,sha256,object_key,verified,created_by,verified_by,verified_at FROM api_evidence WHERE organization_id=%s AND evidence_id=%s", (organization_id,evidence_id))
                 return cur.fetchone()
 
     def update_evidence_verification(self, organization_id: str, evidence_id: str, verified_by: str, verified_at: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("UPDATE api_evidence SET verified=true, verified_by=%s, verified_at=%s WHERE evidence_id=%s", (verified_by,verified_at,evidence_id))
+                cur.execute("UPDATE api_evidence SET verified=true, verified_by=%s, verified_at=%s WHERE organization_id=%s AND evidence_id=%s", (verified_by,verified_at,organization_id,evidence_id))
 
     def put_evidence_fact(self, organization_id: str, fact: Mapping[str,Any]):
         with self.transaction(organization_id) as conn:

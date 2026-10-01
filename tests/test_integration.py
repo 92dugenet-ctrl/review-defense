@@ -146,6 +146,9 @@ def test_end_to_end_persistent_client_analysis_result_history_and_permissions():
         {"email": f"other-{uuid.uuid4().hex[:10]}@example.test", "organization_name": "Other Tenant", "password": password},
     )[2]
     other_token = other["access_token"]
+    status, _, other_reviews = request(app, "/v1/reviews", token=other_token)
+    assert status == "200 OK"
+    assert all(item["review_id"] != review_id for item in other_reviews["items"])
     status, _, missing_review = request(app, f"/v1/reviews/{review_id}", token=other_token)
     assert status == "404 Not Found"
     assert missing_review["error"]["code"] == "NOT_FOUND"
