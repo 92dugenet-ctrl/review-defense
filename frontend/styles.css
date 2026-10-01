@@ -11,3 +11,97 @@
 @keyframes rd-partners-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(max-width:700px){.rd-partners{width:calc(100% - 40px);margin:34px auto 48px;padding:8px 0}.rd-partner-set{gap:24px;padding-right:24px}.rd-partner-logo{width:108px;height:75px}}
 @media(prefers-reduced-motion:reduce){.rd-partners-viewport{overflow-x:auto;mask-image:none}.rd-partners-track{animation:none}.rd-partner-set[aria-hidden=true]{display:none}}
+
+
+/* Compact horizontal partner marquee with subtle grey starfield */
+.rd-partners{
+  width:100%;
+  height:104px;
+  margin:22px 0 54px;
+  padding:0;
+  display:flex;
+  align-items:center;
+  overflow:hidden;
+  position:relative;
+  isolation:isolate;
+  background:linear-gradient(105deg,#f0f1f2 0%,#f7f7f7 48%,#eceeef 100%);
+  border-top:1px solid rgba(70,76,84,.08);
+  border-bottom:1px solid rgba(70,76,84,.08);
+}
+.rd-partners::before,
+.rd-partners::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+.rd-partners::before{
+  opacity:.62;
+  background-image:
+    radial-gradient(circle at 4% 28%,rgba(104,110,118,.55) 0 1px,transparent 1.8px),
+    radial-gradient(circle at 11% 72%,rgba(104,110,118,.42) 0 1.2px,transparent 2px),
+    radial-gradient(circle at 19% 38%,rgba(104,110,118,.48) 0 1px,transparent 1.8px),
+    radial-gradient(circle at 27% 80%,rgba(104,110,118,.38) 0 1px,transparent 1.8px),
+    radial-gradient(circle at 36% 20%,rgba(104,110,118,.48) 0 1.1px,transparent 2px),
+    radial-gradient(circle at 46% 68%,rgba(104,110,118,.42) 0 1px,transparent 1.8px),
+    radial-gradient(circle at 57% 32%,rgba(104,110,118,.48) 0 1px,transparent 1.8px),
+    radial-gradient(circle at 67% 78%,rgba(104,110,118,.42) 0 1.1px,transparent 2px),
+    radial-gradient(circle at 77% 24%,rgba(104,110,118,.5) 0 1px,transparent 1.8px),
+    radial-gradient(circle at 87% 65%,rgba(104,110,118,.42) 0 1px,transparent 1.8px),
+    radial-gradient(circle at 96% 35%,rgba(104,110,118,.48) 0 1px,transparent 1.8px);
+  animation:rd-star-twinkle 4.8s ease-in-out infinite alternate;
+}
+.rd-partners::after{
+  opacity:.4;
+  background-image:
+    radial-gradient(circle at 8% 52%,#8b9097 0 1px,transparent 2px),
+    radial-gradient(circle at 23% 16%,#8b9097 0 1px,transparent 2px),
+    radial-gradient(circle at 32% 56%,#8b9097 0 1.2px,transparent 2.2px),
+    radial-gradient(circle at 51% 16%,#8b9097 0 1px,transparent 2px),
+    radial-gradient(circle at 72% 48%,#8b9097 0 1px,transparent 2px),
+    radial-gradient(circle at 91% 18%,#8b9097 0 1.2px,transparent 2.2px);
+  animation:rd-star-twinkle 3.6s ease-in-out infinite alternate-reverse;
+}
+.rd-partners-viewport{
+  width:100%;
+  overflow:hidden;
+  position:relative;
+  z-index:1;
+  mask-image:linear-gradient(90deg,transparent 0,#000 4%,#000 96%,transparent 100%);
+}
+.rd-partners-track{
+  display:flex;
+  width:max-content;
+  align-items:center;
+  animation:rd-partners-scroll 58s linear infinite;
+  will-change:transform;
+}
+.rd-partner-set{
+  display:flex;
+  align-items:center;
+  gap:30px;
+  padding-right:30px;
+  flex:none;
+}
+.rd-partner-logo{
+  display:block;
+  flex:0 0 auto;
+  width:104px;
+  height:66px;
+  object-fit:contain;
+  mix-blend-mode:normal;
+}
+.rd-partners:hover .rd-partners-track{animation-play-state:paused}
+@keyframes rd-star-twinkle{0%{opacity:.22}45%{opacity:.7}100%{opacity:.34}}
+@media(max-width:700px){
+  .rd-partners{height:88px;margin:18px 0 42px}
+  .rd-partner-set{gap:20px;padding-right:20px}
+  .rd-partner-logo{width:88px;height:56px}
+}
+@media(prefers-reduced-motion:reduce){
+  .rd-partners::before,.rd-partners::after{animation:none;opacity:.42}
+  .rd-partners-viewport{overflow-x:auto;mask-image:none}
+  .rd-partners-track{animation:none}
+  .rd-partner-set[aria-hidden=true]{display:none}
+}
