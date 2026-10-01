@@ -35,3 +35,11 @@ Le statut EI prévoit une séparation de principe entre patrimoine professionnel
 - https://entreprendre.service-public.gouv.fr/vosdroits/F31228
 - https://entreprendre.service-public.gouv.fr/vosdroits/F36354
 - https://www.cnil.fr/fr/rgpd-comment-bien-identifier-son-role
+
+---
+
+## Mise à jour — 1er octobre 2026
+
+Le porteur a confirmé que l'EI est encore un projet de création et que les démarches d'immatriculation ne sont pas réalisées. Les mentions « entrepreneur individuel établi » ou toute présentation comme activité déjà immatriculée ne peuvent donc pas être utilisées à ce stade. Date d'immatriculation, SIREN et SIRET : à compléter après formalités et attribution officielle.
+
+Le porteur accepte que son adresse personnelle apparaisse dans les mentions légales finales, après immatriculation. Elle n'est pas reproduite dans ce dépôt GitHub public. L'hébergeur est désigné comme eCloudService ; sa raison sociale et ses coordonnées juridiques restent à vérifier sur facture ou contrat.
