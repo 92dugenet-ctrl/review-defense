@@ -11,6 +11,16 @@ const field=(k,v)=>'<div class="detail-field"><small>'+esc(k)+'</small><div>'+es
 const button=(label,action,cls="btn")=>'<button class="'+cls+'" data-action="'+esc(action)+'">'+esc(label)+'</button>';
 async function api(url,opts={}){const h={"Content-Type":"application/json",...(opts.headers||{})};if(S.token)h.Authorization="Bearer "+S.token;const r=await fetch(url,{...opts,headers:h});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d?.error?.message||d?.error?.code||"Erreur HTTP "+r.status);return d}
 const post=(url,body={})=>api(url,{method:"POST",body:JSON.stringify(body)});
+function verifyEmail(){
+ const params=new URLSearchParams(location.search);
+ const organizationId=params.get("organization_id")||localStorage.getItem("rd_org_id")||"";
+ const token=params.get("token")||"";
+ app.innerHTML='<main class="login"><section class="loginbox"><div><b style="color:#0878ee">◆</b> Review Defense</div><h1>Vérifier votre adresse email</h1><p>Confirmez votre adresse pour activer votre espace Review Defense.</p><div class="err" id="verify-error" role="alert"></div><button class="btn primary" id="verify-submit" style="width:100%">Vérifier mon adresse</button><p><a href="/connexion">Retour à la connexion</a></p></section></main>';
+ const submit=document.getElementById("verify-submit");
+ submit.disabled=!organizationId||!token;
+ if(!organizationId||!token){document.getElementById("verify-error").textContent="Lien incomplet. Ouvrez le lien de vérification reçu par email.";return}
+ submit.onclick=async()=>{submit.disabled=true;const err=document.getElementById("verify-error");err.textContent="";try{await post("/v1/auth/email-verification/verify",{organization_id:organizationId,verification_token:token});localStorage.setItem("rd_org_id",organizationId);app.querySelector(".loginbox").innerHTML='<div><b style="color:#0878ee">◆</b> Review Defense</div><h1>Adresse vérifiée</h1><p>Votre adresse email est confirmée. Vous pouvez maintenant vous connecter.</p><a class="btn primary" style="display:block;text-align:center" href="/connexion">Continuer vers la connexion</a>'}catch(e){err.textContent=e.message;submit.disabled=false}};
+}
 function login(){
  const params=new URLSearchParams(location.search);
  let mode=params.get("auth")==="register"||location.pathname==="/inscription"?"register":"login";
@@ -127,6 +137,6 @@ if(op==="submit"){if(!confirm("Préparer la soumission ? Cette action sera enreg
 if(op==="pause-sla"||op==="resume-sla"){if(op==="pause-sla"){modal("Mettre en pause le SLA",'<form id="sla-form"><div class="field"><label>Motif obligatoire</label><textarea name="reason" required maxlength="500" rows="4"></textarea></div><button class="btn primary">Confirmer la pause</button></form>');document.getElementById("sla-form").onsubmit=async ev=>{ev.preventDefault();await post("/v1/cases/"+id+"/pause-sla",Object.fromEntries(new FormData(ev.currentTarget)));await openDetail("cases",id)}}else{if(!confirm("Reprendre le SLA ?"))return;await post("/v1/cases/"+id+"/resume-sla");await openDetail("cases",id)}return}
 if(op==="checklist"){const d=await api("/v1/cases/"+id+"/review-checklist");const rows=arr(d).length?arr(d):d.items||[];modal("Checklist du dossier",'<form id="checklist-form">'+rows.map(x=>'<label style="display:block;padding:10px;border-bottom:1px solid #eee"><input type="checkbox" data-code="'+esc(x.code)+'" '+(x.completed?"checked":"")+'> '+esc(x.label||x.code)+'</label>').join("")+'<button class="btn primary">Enregistrer les éléments cochés</button></form>');document.getElementById("checklist-form").onsubmit=async ev=>{ev.preventDefault();for(const input of ev.currentTarget.querySelectorAll("[data-code]"))await post("/v1/cases/"+id+"/review-checklist",{code:input.dataset.code,completed:input.checked});await openDetail("cases",id)};return}
 }catch(err){modal("Action non effectuée",'<div class="notice">'+esc(err.message)+'</div>')}}
-async function start(){if(!S.token)return login();try{const me=await api("/v1/me");S.userId=me.user_id||null;S.userEmail=me.email||null;S.role=me.role||S.role;localStorage.setItem("rd_role",S.role);if(adminPath()&&!can("manager")){location.replace("/client");return}if(!adminPath()&&can("manager")){location.replace("/admin");return}shell()}catch(e){localStorage.removeItem("rd_token");localStorage.removeItem("rd_role");S.token=null;login()}}
+async function start(){if(location.pathname==="/verify-email")return verifyEmail();if(!S.token)return login();try{const me=await api("/v1/me");S.userId=me.user_id||null;S.userEmail=me.email||null;S.role=me.role||S.role;localStorage.setItem("rd_role",S.role);if(adminPath()&&!can("manager")){location.replace("/client");return}if(!adminPath()&&can("manager")){location.replace("/admin");return}shell()}catch(e){localStorage.removeItem("rd_token");localStorage.removeItem("rd_role");S.token=null;login()}}
 start();
 })();
