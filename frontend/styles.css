@@ -38,3 +38,131 @@ linear-gradient(115deg,#210b14 0%,#32101d 48%,#1d0912 100%)}
 @keyframes rd-logo-twinkle{0%,100%{opacity:.16;transform:scale(.8)}45%{opacity:.8;transform:scale(1.7)}60%{opacity:.28;transform:scale(1)}}
 @media(max-width:600px){.rd-logo-band-inner{padding:58px 0 62px}.rd-logo-band-label{margin-bottom:28px}.rd-logo-card{width:190px;height:100px;padding:16px}.rd-logo-name{font-size:14px}.rd-logo-symbol{width:38px;height:38px}.rd-logo-track{gap:14px}}
 @media(prefers-reduced-motion:reduce){.rd-logo-track,.rd-logo-spark{animation:none}}
+
+
+/* Minimal monochrome identity marquee */
+.rd-logo-band{
+  width:100%;
+  max-width:none!important;
+  padding:0!important;
+  overflow:hidden;
+  color:#303943;
+  background:#fff;
+  position:relative;
+  border-block:1px solid rgba(35,48,62,.045);
+}
+.rd-logo-band-inner{
+  position:relative;
+  overflow:hidden;
+  padding:48px 0 52px;
+  background:
+    radial-gradient(ellipse at 50% 50%,rgba(232,236,240,.26),transparent 68%),
+    #fff;
+  isolation:isolate;
+}
+.rd-logo-band-inner:before{
+  content:"";
+  position:absolute;
+  z-index:0;
+  inset:0;
+  pointer-events:none;
+  opacity:.58;
+  background-image:
+    radial-gradient(circle,rgba(116,127,139,.42) .65px,transparent .95px),
+    radial-gradient(circle,rgba(150,159,169,.25) .55px,transparent .9px);
+  background-size:31px 31px,47px 47px;
+  background-position:0 0,13px 17px;
+  mask-image:linear-gradient(90deg,transparent 0%,#000 12%,#000 88%,transparent 100%);
+}
+.rd-logo-band-label{
+  position:relative;
+  z-index:2;
+  text-align:center;
+  color:#929ba5;
+  font-size:9px;
+  letter-spacing:.19em;
+  text-transform:uppercase;
+  margin:0 0 25px;
+  font-weight:500;
+}
+.rd-logo-marquee{
+  position:relative;
+  z-index:2;
+  width:100%;
+  overflow:hidden;
+  mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);
+}
+.rd-logo-track{
+  display:flex;
+  align-items:center;
+  width:max-content;
+  gap:66px;
+  animation:rd-logo-scroll 54s linear infinite;
+  will-change:transform;
+}
+.rd-logo-card{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+  width:auto;
+  height:auto;
+  min-height:32px;
+  padding:5px 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  backdrop-filter:none;
+  flex:none;
+  opacity:.78;
+  transition:opacity .35s ease;
+}
+.rd-logo-card:hover{
+  opacity:1;
+  transform:none;
+  border-color:transparent;
+}
+.rd-logo-symbol,.rd-logo-type{display:none!important}
+.rd-logo-name{
+  align-self:center;
+  color:#59636e;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:14px;
+  line-height:1;
+  font-weight:500;
+  letter-spacing:.015em;
+  white-space:nowrap;
+}
+.rd-logo-glow{display:none}
+.rd-logo-spark{
+  position:absolute;
+  z-index:1;
+  width:1.5px;
+  height:1.5px;
+  border-radius:50%;
+  background:#aeb6bf;
+  box-shadow:0 0 3px 1px rgba(150,160,170,.18);
+  opacity:.35;
+  animation:rd-logo-twinkle 8s ease-in-out infinite;
+  pointer-events:none;
+}
+.rd-spark-1{left:16%;top:27%;animation-delay:-1.2s}
+.rd-spark-2{left:39%;top:70%;animation-delay:-3.1s}
+.rd-spark-3{left:63%;top:23%;animation-delay:-.7s}
+.rd-spark-4{left:82%;top:64%;animation-delay:-2.3s}
+.rd-spark-5{left:91%;top:31%;animation-delay:-4s}
+@keyframes rd-logo-twinkle{
+  0%,100%{opacity:.16;transform:scale(.8)}
+  45%{opacity:.48;transform:scale(1.45)}
+  60%{opacity:.22;transform:scale(1)}
+}
+@media(max-width:600px){
+  .rd-logo-band-inner{padding:38px 0 42px}
+  .rd-logo-band-label{margin-bottom:20px}
+  .rd-logo-track{gap:42px}
+  .rd-logo-name{font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){
+  .rd-logo-track,.rd-logo-spark{animation:none!important}
+}
