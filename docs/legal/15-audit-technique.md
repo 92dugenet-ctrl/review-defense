@@ -2,6 +2,12 @@
 
 > État du dépôt : branche main consultée le 1er octobre 2026. Audit statique du code source uniquement. Aucun accès à la production, aux consoles fournisseurs, aux bases de données réelles, aux journaux d'exploitation, aux sauvegardes ni aux comptes clients.
 
+## 1. Identité juridique de l'exploitant
+
+L'exploitant a communiqué exercer en France sous la forme d'une entreprise individuelle (EI), sous le nom Gabriel Dugenet / « Dugenet Gabriel ». Review Défense est le nom du service ; son statut de nom commercial ou de marque reste à confirmer sur justificatif. L'identité n'a pas été vérifiée auprès du RNE.
+
+Conséquences : les contrats doivent identifier Gabriel Dugenet, entrepreneur individuel (EI), et non une société distincte. Aucun capital social ne doit être mentionné. L'adresse, le SIREN, le SIRET, l'immatriculation applicable, la TVA, les coordonnées professionnelles et l'hébergeur restent à compléter. Voir `16-identite-juridique-EI.md` et `17-audit-statut-EI.md`.
+
 ## 1. Périmètre examiné
 
 - `src/api_server.py`
