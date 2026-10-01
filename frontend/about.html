@@ -1,42 +1,76 @@
 <!doctype html>
-<html lang="fr">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>About</title><style>
-.rd-top{height:62px;display:flex;align-items:center;gap:34px;padding:0 3.1vw;border-bottom:1px solid #eee;background:rgba(255,255,255,.96);position:sticky;top:0;z-index:30;backdrop-filter:blur(14px)}
-.rd-brand{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:500;white-space:nowrap}.rd-mark{color:#0869ff;font-size:22px;line-height:1}
-.rd-nav{display:flex;align-items:center;gap:31px;flex:1;font-size:13px}.rd-nav a{transition:color .2s}.rd-nav a:hover{color:#0869ff}
-.rd-actions{display:flex;align-items:center;gap:14px}.rd-search{font-size:22px}.rd-btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:11px 20px;font-size:12px;font-weight:500}.rd-btn-blue{background:#0869ff;color:#fff}.rd-menu{display:none;border:0;background:none;font-size:23px}
-@media(max-width:900px){.rd-nav,.rd-actions{display:none}.rd-menu{display:block;margin-left:auto}.rd-top{gap:14px}}
-@media(max-width:580px){.rd-top{height:58px;padding:0 20px}}
-body,button,input,textarea,select{font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}\n</style>
-<style>
-
-body,button,input,textarea,select{font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
-h1,h2,h3,h4,h5,h6,p,a,button,label,small,strong,b,summary,input,textarea,select{font-weight:400!important;text-transform:none!important}
-@media(max-width:600px){}
-</style>
-<style>
-
-.services-hero h1,.services-intro h2,.service-copy h2,.services-cta h2{font-size:clamp(32px,4vw,52px)!important;line-height:1.08!important;font-weight:400!important;letter-spacing:-.018em!important}
-.services-lead{font-size:18px!important;line-height:1.5!important}
-.services-eyebrow,.service-number,.art-meta,.badge{font-size:12px!important;letter-spacing:.03em!important}
-.resources-grid .card h2,.dataset-list-title,.dataset-page h1,.dataset-card h2,.hero h1{font-weight:400!important;letter-spacing:-.018em!important}
-.resources-grid .card h2,.dataset-card h2{font-size:30px!important}
-.hero h1{font-size:clamp(40px,5vw,60px)!important}
-.hero-copy,.card p,.dataset-hero-copy p,.dataset-card p{font-size:17px!important;line-height:1.55!important}
-.explore,.dataset-card .overview{font-size:14px!important;font-weight:400!important}
-.catalogue-section-title{font-size:clamp(28px,3vw,42px)!important;font-weight:400!important}
-.catalogue-section-note{font-size:14px!important;line-height:1.5!important}
-.product-card h2{font-size:24px!important;font-weight:400!important}
-.brand,.meta,.price,.product-action,.footnote{font-weight:400!important}
-</style>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Creative — Recreated Layout</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<header class="rd-top">
-  <a class="rd-brand" href="/"><span class="rd-mark">◆</span> Review Defense</a>
-  <nav class="rd-nav" aria-label="Navigation principale">
-    <a href="/services">Services</a><a href="/fonctionnement">Fonctionnement</a><a href="/resources">Resources</a><a href="/about" aria-current="page">About</a><a href="/tarif">Tarif</a>
-  </nav>
-  <div class="rd-actions"><a class="rd-search" href="/resources">⌕</a><a class="rd-btn rd-btn-blue" href="/analyse-avis-google/">Analyser un avis</a></div>
-  <button class="rd-menu" aria-label="Menu">☰</button>
-</header></body>
+  <main class="page">
+    <header class="site-header">
+      <button class="menu" aria-label="Open menu"><span></span><span></span><span></span></button>
+      <div class="brand"><span class="meta-mark">∞</span><span>Meta</span></div>
+    </header>
+
+    <section class="hero">
+      <h1 class="sr-only">AI creative tools</h1>
+      <nav class="tabs" aria-label="Creative features">
+        <a class="tab active" href="#imagine"><span>IMAGINE ANYTHING</span></a>
+        <a class="tab" href="#friends"><span>ADD YOURSELF &amp; FRIENDS</span></a>
+        <a class="tab" href="#life"><span>BRING IT TO LIFE</span></a>
+        <a class="tab" href="#edit"><span>EDIT AND RESTYLE</span></a>
+      </nav>
+
+      <p class="intro" id="tab-copy">Just describe what you want to create in a few words, or animate your own images.</p>
+
+      <div class="feature-stage" id="imagine">
+        <div class="stage-blur left"></div>
+        <div class="phone-placeholder">
+          <div class="phone-screen">
+            <div class="noise"></div>
+            <div class="phone-dots">•••</div>
+          </div>
+        </div>
+        <div class="stage-blur right"></div>
+      </div>
+
+      <div class="masonry" id="friends">
+        <article class="tile tile-large"><div class="fake-video purple"></div><div class="tile-copy"><h2>Discover and remix vibes from creators</h2><p>Get inspired and remix your favorite vibes to try new ideas or put your own twist on them.</p><a href="#">Explore vibes</a></div></article>
+        <article class="tile"><div class="fake-video pink"></div><div class="tile-label">astra_jumins_weaver</div></article>
+        <article class="tile"><div class="fake-video blue"></div><div class="tile-label">Create new worlds</div></article>
+        <article class="tile"><div class="fake-video green"></div><div class="tile-label">obsidian_gaze</div></article>
+        <article class="tile"><div class="fake-video warm"></div><div class="tile-label">cute worlds</div></article>
+        <article class="tile"><div class="fake-video illustrated"></div><div class="tile-label">Create and remix</div></article>
+      </div>
+
+      <section class="cards" id="life">
+        <article class="small-card"><div class="card-art art-1"></div><div class="small-card-text">Experiment and play</div></article>
+        <article class="small-card"><div class="card-art art-2"></div><div class="small-card-text">Share with friends</div></article>
+        <article class="small-card"><div class="card-art art-3"></div><div class="small-card-text">Expand your imagination</div></article>
+      </section>
+
+      <section class="products" id="edit">
+        <h2>Explore Meta AI products</h2>
+        <article class="product-banner">
+          <div class="product-bg"></div>
+          <div class="product-overlay">
+            <div class="eyebrow">META AI ASSISTANT</div>
+            <h3>The upgraded Meta AI assistant,<br/>built for your everyday life.</h3>
+            <a class="cta" href="#">Learn more</a>
+          </div>
+        </article>
+      </section>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-brand"><span class="meta-mark">∞</span><span>Meta</span></div>
+      <div class="footer-cols">
+        <div><strong>Meta AI</strong><a>Assistant</a><a>Media Generation</a><a>Vibes</a></div>
+        <div><strong>Muse</strong><a>Agent</a><a>AI agents explained</a><a>What is agentic AI</a><a>Agentic AI examples</a></div>
+        <div><strong>AI Research</strong><a>Overview</a><a>Projects</a><a>Resources &amp; tools</a><a>Publications</a></div>
+      </div>
+    </footer>
+  </main>
+</body>
 </html>
