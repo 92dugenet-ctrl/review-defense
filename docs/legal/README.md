@@ -1,7 +1,7 @@
 # Dossier juridique & RGPD — Review Défense
 
 > **Statut : modèle de travail — NON VALIDÉ — NE PAS PUBLIER TEL QUEL.**  
-> Version de travail : 0.1 — 1er octobre 2026. Périmètre : activité SaaS B2B exploitée depuis la France, hypothèse à confirmer.
+> Version de travail : 0.1 — 1er octobre 2026. Périmètre : projet de SaaS B2B dont la création d'une EI en France est envisagée ; formalités non effectuées au 1er octobre 2026.
 
 ## 1. Objet et limites
 
@@ -83,6 +83,7 @@ La qualification juridique dépend des faits et non du seul intitulé du contrat
 - `12-screening-AIPD.md` — pré-évaluation de la nécessité d'une AIPD.
 - `13-IA-et-transparence.md` — inventaire IA et obligations de transparence.
 - `14-prospection-commerciale.md` — règles de prospection et opposition.
+- `18-cahier-des-decisions-juridiques.md` — décisions du porteur, limites de service et liste de contrôle à transmettre à l'avocat.
 
 ## 6. Références principales
 
@@ -105,3 +106,12 @@ Chaque changement de finalité, donnée collectée, fonctionnalité, prestataire
 - `15-audit-technique.md` — addendum d'identité de l'exploitant intégré à l'audit technique.
 
 Les informations d'identification ont été communiquées par l'exploitant et restent à rapprocher d'un justificatif RNE. Les modèles ne sont pas publiables tant que les champs manquants ne sont pas complétés.
+
+
+## 8. Statut de création et sécurité du dépôt
+
+Au 1er octobre 2026, le porteur a confirmé que l'entreprise individuelle est encore un projet de création et que les formalités d'immatriculation n'ont pas été effectuées. La date d'immatriculation, le SIREN et le SIRET restent à compléter après attribution officielle. Les modèles ne doivent pas présenter l'activité comme déjà immatriculée.
+
+Le dépôt GitHub est public. Ne pas y ajouter d'adresse personnelle, pièce d'identité, facture, contrat confidentiel, donnée client, secret ou clé API. L'adresse de domiciliation communiquée séparément est volontairement omise de ce dépôt. Elle sera renseignée dans les documents définitifs après création et vérification des règles de publication.
+
+Le cahier de décisions (document 18) rassemble les arbitrages exprimés par le porteur. Il ne constitue pas une validation juridique. Les documents doivent être vérifiés par un avocat avant publication ou commercialisation.
