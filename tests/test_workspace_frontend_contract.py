@@ -33,6 +33,11 @@ def test_notification_actions_match_existing_api_routes():
     assert 'path.endswith("/deliver")' in API
     assert 'path.endswith("/cancel")' in API
 
+def test_notification_target_guidance_matches_channel():
+    assert 'channel==="EMAIL"' in FRONTEND
+    assert 'channel==="WEBHOOK"' in FRONTEND
+    assert 'S.userEmail=me.email||null' in FRONTEND
+
 
 def test_assignment_controls_respect_the_current_assignee():
     assert 'assignedTo!==S.userId&&!can("manager")' in FRONTEND
