@@ -40,3 +40,13 @@ Pour chaque système, qualifier si Review Défense est fournisseur, déployeur o
 ## 5. Preuves à conserver
 
 Inventaire de modèles, versions, fournisseurs, régions, DPA, prompts types, tests de biais/erreurs pertinents, notices utilisateurs, captures des interfaces, procédures de validation, journal des actions et revues périodiques.
+
+---
+
+## Addendum — décisions du porteur au 1er octobre 2026
+
+Des fournisseurs d'IA externes peuvent être utilisés pour l'analyse, la détection de signaux, le classement, l'extraction, la préparation de dossiers et les propositions de réponse. Avant transmission, masquer automatiquement les données personnelles non nécessaires. Il s'agit de pseudonymisation si une réidentification reste possible.
+
+Les fournisseurs ne doivent pas utiliser les données des clients pour entraîner ou améliorer leurs modèles. Cette exigence doit être vérifiée dans les paramètres du compte, l'offre souscrite et le contrat/DPA. Documenter la durée de rétention, la région, les sous-traitants ultérieurs, les transferts et les accès support.
+
+Toute action extérieure exige une validation explicite du client. L'IA peut présenter des indices et catégories de risque, mais pas une qualification juridique définitive. Le service ne doit pas être présenté comme un cabinet juridique, un service de représentation ou une société de recouvrement. La qualification réelle doit être vérifiée par un avocat.
