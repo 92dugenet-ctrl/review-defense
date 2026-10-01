@@ -1977,6 +1977,8 @@ class ReviewDefenseAPI:
             if target and target.is_file():
                 body = target.read_bytes()
                 ctype = mimetypes.guess_type(str(target))[0] or "application/octet-stream"
+                if target.suffix.lower() in {".js", ".css", ".html"}:
+                    ctype = ctype + "; charset=utf-8"
                 elapsed = (_time.perf_counter() - started) * 1000
                 self.telemetry.increment("http_requests_total", labels={"method": environ.get("REQUEST_METHOD", "GET"), "path": path, "status": "200"})
                 self.telemetry.observe_ms("http_request_duration_ms", elapsed, labels={"method": environ.get("REQUEST_METHOD", "GET"), "path": path})
