@@ -1952,14 +1952,14 @@ class ReviewDefenseAPI:
             path = "/index.html"
         elif path == "/app" or path == "/app/":
             path = "/index.html"
-        elif path in {"/client", "/client/", "/admin", "/admin/", "/connexion", "/inscription"}:
+        elif path in {"/client", "/client/", "/admin", "/admin/", "/connexion", "/inscription", "/verify-email"}:
             path = "/workspace.html"
         elif path in {
             "/conformite/","/produit/","/comment-ca-marche/","/services/","/tarifs/","/ressources/",
             "/contact/","/mentions-legales/","/confidentialite/","/cgv/","/cgu/","/cookies/",
             "/securite/","/conservation-donnees/","/droits-rgpd/","/violation-donnees/",
             "/sous-traitants/","/ia-et-controle-humain/",
-            "/accept-invitation","/reset-password","/verify-email",
+            "/accept-invitation","/reset-password",
         }:
             # Public marketing and authentication deep links use the same stable frontend shell.
             # Serving index.html here keeps direct navigation and refreshes working.
