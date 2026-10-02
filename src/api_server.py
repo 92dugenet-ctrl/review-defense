@@ -1172,7 +1172,7 @@ class ReviewDefenseAPI:
             content_type = str(body.get("content_type", "")).strip().lower()
             encoded = str(body.get("content_base64", "")).strip()
             category = str(body.get("category", "GENERAL")).strip().upper()
-            if not filename or len(filename) > 255 or filename != os.path.basename(filename) or "/" in filename or "\\" in filename:
+            if not filename or len(filename) > 255 or filename != os.path.basename(filename) or "/" in filename or "\\" in filename or any(ord(ch) < 32 or ord(ch) == 127 for ch in filename):
                 raise APIError(422, "VALIDATION_ERROR", "filename is invalid")
             if not encoded or len(encoded) > ((MAX_UPLOAD_BYTES + 2) // 3) * 4 + 8:
                 raise APIError(413, "PAYLOAD_TOO_LARGE", "document exceeds the upload limit")
@@ -1212,7 +1212,7 @@ class ReviewDefenseAPI:
                 content = self.store.vault.get(organization_id=user.organization_id, object_key=str(document["object_key"]))
             except (KeyError, PermissionError, OSError) as exc:
                 raise APIError(404, "DOCUMENT_UNAVAILABLE", "document content is unavailable") from exc
-            safe_name = str(document["filename"]).replace('"', "")
+            safe_name = "".join(ch if 32 <= ord(ch) < 127 else "_" for ch in str(document["filename"])).replace('"', "")
             return 200, {"Content-Type": str(document["content_type"]), "Content-Length": str(len(content)),
                          "Content-Disposition": 'attachment; filename="' + safe_name + '"', "X-Content-Type-Options": "nosniff"}, content
 
