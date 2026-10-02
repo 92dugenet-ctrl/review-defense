@@ -78,3 +78,17 @@ Les branches archive/*, baseline/*, freeze/*, restore/*, ux/*, feat/v6-40-*, tmp
 ## État de validation
 
 Aucun test automatisé, typecheck, build, test navigateur, test de connexion serveur ou déploiement n'a été lancé. Cette branche représente une consolidation de sources et une analyse statique de cohérence, pas une certification de fonctionnement.
+
+
+## Inventaire des branches examinées
+
+Les 29 références visibles ont été comparées à develop. develop est la base de cette consolidation ; main est en retard de 18 commits et n'a pas été utilisé comme base.
+
+- Déjà intégrées ou identiques pour les fichiers concernés : audit/muse-modular-20260930, feat/about-editorial-muse-layout, content/front-copy-2026-09-30, frontend/client-admin-workspace, processing-architecture-staging.
+- Sources plus anciennes ou remplacées par les fichiers actuels de develop : archive/pre-core-reset-2026-09-28, audit/public-routes-cleanup, automation/revue-defense-006, chore/public-site-coherent-audit, content/front-copy-hourly-2026-10-01, feat/frontend-consistent-layout, feat/frontend-short-home, feat/v6-40-white-blue-premium, fix/v6-40-e2e-dashboard-assertion, tmp-commercial-rebuild, ui/v6-40-premium-console, ux/v640-premium-landing.
+- Fonctionnalités isolées car incomplètes ou conflictuelles : feature/client-monitoring-hub, feature/paypal-billing-v1.
+- Références historiques sans apport à recopier dans cette phase : audit/phase-zero-2026-10-02, baseline/v6.40-core, certify-business-chain-run, freeze/infrastructure-v6.40, frontend-cycle-4, restore/services-before-production-refactor, restore/services-last-known-good.
+- Branche de travail créée lors d'une étape précédente et volontairement non retenue : work/lot-a-foundation-20261002.
+- Références de base : develop et main.
+
+Les fichiers uniques d'une branche ancienne n'ont pas été importés uniquement parce qu'ils existaient : leur version, leur usage dans l'architecture actuelle et les dépendances associées ont été examinés avant décision.
