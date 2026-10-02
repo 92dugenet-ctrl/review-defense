@@ -2,13 +2,15 @@ import base64
 import io
 import json
 import os
+import stat
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
 import pytest
 from cryptography.fernet import Fernet
 
-from src.api_server import APIError, ReviewDefenseAPI, User
+from src.api_server import APIError, MemoryStore, ReviewDefenseAPI, User
+from src.evidence_vault import FilesystemObjectStore
 from src.google_business_profile import GoogleAccount, GoogleLocation, OAuthTokenSet, ReviewSyncResult
 from src.review_workspace import ReviewContext
 
@@ -254,3 +256,24 @@ def test_postgres_oauth_state_rls_is_forced_and_consumed_atomically():
     finally:
         conn.rollback()
         conn.close()
+
+def test_production_evidence_store_uses_private_persistent_volume(tmp_path, monkeypatch):
+    root = tmp_path / "private-evidence"
+    monkeypatch.setenv("REVIEW_DEFENSE_ENV", "production")
+    monkeypatch.setenv("REVIEW_DEFENSE_EVIDENCE_ROOT", str(root))
+    store = MemoryStore()
+    assert isinstance(store.vault, FilesystemObjectStore)
+    content = b"%PDF-1.4\\nprivate client document\\n"
+    obj = store.vault.put(
+        organization_id="org-private",
+        evidence_id="document-private",
+        content=content,
+        content_type="application/pdf",
+        filename="private.pdf",
+    )
+    object_path = root / obj.object_key
+    assert store.vault.get(organization_id="org-private", object_key=obj.object_key) == content
+    assert stat.S_IMODE(root.stat().st_mode) == 0o700
+    assert stat.S_IMODE(object_path.parent.stat().st_mode) == 0o700
+    assert stat.S_IMODE(object_path.stat().st_mode) == 0o600
+
