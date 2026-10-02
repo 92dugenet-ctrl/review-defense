@@ -8,7 +8,7 @@ from urllib.parse import parse_qs, urlsplit
 import pytest
 from cryptography.fernet import Fernet
 
-from src.api_server import ReviewDefenseAPI, User
+from src.api_server import APIError, ReviewDefenseAPI, User
 from src.google_business_profile import GoogleAccount, GoogleLocation, OAuthTokenSet, ReviewSyncResult
 from src.review_workspace import ReviewContext
 
@@ -22,14 +22,16 @@ def call(app, method, path, body=None, token=None, query=""):
     }
     if token:
         env["HTTP_AUTHORIZATION"] = "Bearer " + token
-    response = {}
-    def start_response(status, headers):
-        response["status"] = int(status.split()[0])
-        response["headers"] = dict(headers)
-    payload = b"".join(app(env, start_response))
-    if response["headers"].get("Content-Type", "").startswith("application/json"):
+    try:
+        status, headers, payload = app.handle(env)
+    except APIError as exc:
+        status, headers, payload = app._json(
+            exc.status,
+            {"error": {"code": exc.code, "message": exc.message, "details": exc.details}},
+        )
+    if headers.get("Content-Type", "").startswith("application/json"):
         payload = json.loads(payload or b"{}")
-    return response["status"], response["headers"], payload
+    return status, headers, payload
 
 
 class FakeOAuthClient:
