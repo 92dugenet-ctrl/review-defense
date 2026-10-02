@@ -102,7 +102,8 @@ class MemoryStore:
         if evidence_root:
             self.vault = FilesystemObjectStore(evidence_root)
         elif os.environ.get("REVIEW_DEFENSE_ENV", "").strip().lower() in {"production", "prod"}:
-            self.vault = FilesystemObjectStore("/tmp/review-defense-evidence")
+            # Production uploads must live on a mounted persistent volume, not /tmp.
+            self.vault = FilesystemObjectStore("/var/lib/review-defense/evidence")
         else:
             self.vault = InMemoryObjectStore()
         self.evidence: dict[tuple[str, str], dict[str, Any]] = {}
