@@ -19,7 +19,7 @@ from typing import Any, Callable, Mapping
 from urllib.parse import parse_qs, urlsplit
 
 from .evidence_vault import FilesystemObjectStore, InMemoryObjectStore, sign_download_url, verify_integrity
-from .security_hardening import RateLimiter, Session, generate_session_token, hash_password, verify_password, utc_now, hash_token
+from .security_hardening import RateLimiter, Session, generate_session_token, hash_password, verify_password, utc_now, hash_token, validate_upload, MAX_UPLOAD_BYTES
 from .app_shell import SessionContext, can_access
 from .case_service import Case, CaseService
 from .case_lifecycle_service import CaseLifecycleService
@@ -60,6 +60,7 @@ from .deployment import DeploymentConfig, security_headers
 from .observability import InMemoryTelemetry, TraceContext, health_check
 from .seo_renderer import is_seo_path, render_page, sitemap, robots
 from .billing_catalog import PAYPAL_SUBSCRIPTION_CLIENT_ID, get_offer, paypal_plan_id, public_catalog
+from .google_business_profile import OAuthStateManager, GoogleOAuthClient, GoogleBusinessProfileClient, GoogleAPIError, GoogleIntegrationError
 from .billing_service import account_status, plan_for_offer, public_plans
 from .paypal_client import configured as paypal_configured, configuration_status as paypal_configuration_status, verify_webhook as paypal_verify_webhook, request_json as paypal_request_json, access_token as paypal_access_token, PayPalError
 
@@ -126,6 +127,10 @@ class MemoryStore:
         self.billing: dict[str, dict[str, Any]] = {}
         self.billing_accounts: dict[str, dict[str, Any]] = {}
         self.billing_events: list[dict[str, Any]] = []
+        self.organization_profiles: dict[str, dict[str, Any]] = {}
+        self.client_documents: dict[tuple[str, str], dict[str, Any]] = {}
+        self.google_oauth_states: dict[str, dict[str, Any]] = {}
+        self.google_connections: dict[tuple[str, str], dict[str, Any]] = {}
 
     def audit_event(self, org: str, actor: str | None, action: str, resource: str, **meta: Any) -> None:
         self.audit.append({
@@ -348,7 +353,7 @@ class ReviewDefenseAPI:
     def _body(self, environ) -> dict[str, Any]:
         try:
             path = environ.get("PATH_INFO", "")
-            limit = self.config.evidence_max_request_bytes if path.startswith("/v1/evidence") else self.config.max_request_bytes
+            limit = self.config.evidence_max_request_bytes if path.startswith(("/v1/evidence", "/v1/client/documents")) else self.config.max_request_bytes
             length_raw = environ.get("CONTENT_LENGTH")
             length = int(length_raw) if length_raw else 0
             if length < 0 or length > limit:
@@ -483,6 +488,164 @@ class ReviewDefenseAPI:
             lines.append(f"http_request_duration_ms{{{label_text},quantile=\"max\"}} {max(values):.3f}")
         body = ("\\n".join(lines) + "\\n").encode()
         return 200, {"Content-Type": "text/plain; version=0.0.4; charset=utf-8"}, body
+
+    def _google_secret(self) -> bytes:
+        raw = os.getenv("REVIEW_DEFENSE_GOOGLE_TOKEN_KEY", "").strip()
+        if raw:
+            from cryptography.fernet import Fernet
+            try:
+                Fernet(raw.encode("ascii"))
+                return raw.encode("ascii")
+            except Exception as exc:
+                raise APIError(503, "GOOGLE_TOKEN_KEY_INVALID", "Google token encryption key is invalid") from exc
+        if self.config.production:
+            raise APIError(503, "GOOGLE_INTEGRATION_NOT_CONFIGURED", "Google token encryption is not configured")
+        if not hasattr(self, "_dev_google_key"):
+            from cryptography.fernet import Fernet
+            self._dev_google_key = Fernet.generate_key()
+        return self._dev_google_key
+
+    def _google_oauth(self):
+        client_id = os.getenv("GOOGLE_OAUTH_CLIENT_ID", "").strip()
+        client_secret = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET", "").strip()
+        if not client_id or not client_secret:
+            raise APIError(503, "GOOGLE_INTEGRATION_NOT_CONFIGURED", "Google OAuth is not configured")
+        state_secret = os.getenv("REVIEW_DEFENSE_GOOGLE_STATE_KEY", "").encode("utf-8")
+        if not state_secret:
+            if self.config.production:
+                raise APIError(503, "GOOGLE_INTEGRATION_NOT_CONFIGURED", "Google OAuth state signing key is not configured")
+            if not hasattr(self, "_dev_google_state_key"):
+                self._dev_google_state_key = secrets.token_bytes(32)
+            state_secret = self._dev_google_state_key
+        if len(state_secret) < 32:
+            raise APIError(503, "GOOGLE_STATE_KEY_INVALID", "Google OAuth state signing key must contain at least 32 bytes")
+        return GoogleOAuthClient(client_id=client_id, client_secret=client_secret), OAuthStateManager(state_secret)
+
+    def _google_connection(self, organization_id: str, connection_id: str) -> dict[str, Any] | None:
+        if self.repository is not None and hasattr(self.repository, "get_google_connection"):
+            row = self.repository.get_google_connection(organization_id, connection_id)
+            if row:
+                return {"connection_id": str(row[0]), "google_account_id": row[1], "google_location_id": row[2],
+                        "location_title": row[3], "encrypted_access_token": row[4], "encrypted_refresh_token": row[5],
+                        "expires_at": row[6], "status": row[7], "created_by": str(row[8]) if row[8] else None,
+                        "updated_at": row[9]}
+            return None
+        return self.store.google_connections.get((organization_id, connection_id))
+
+    def _google_connections(self, organization_id: str) -> list[dict[str, Any]]:
+        if self.repository is not None and hasattr(self.repository, "list_google_connections"):
+            rows = self.repository.list_google_connections(organization_id) or []
+            return [{"connection_id": str(r[0]), "google_account_id": r[1], "google_location_id": r[2],
+                     "location_title": r[3], "expires_at": _iso_value(r[4]), "status": r[5],
+                     "created_by": str(r[6]) if r[6] else None, "updated_at": _iso_value(r[7])} for r in rows]
+        return [dict(value) for (org, _), value in self.store.google_connections.items() if org == organization_id]
+
+    def _google_access_token(self, organization_id: str, connection_id: str) -> tuple[str, dict[str, Any]]:
+        from datetime import datetime, timedelta, timezone
+        from cryptography.fernet import Fernet, InvalidToken
+        connection = self._google_connection(organization_id, connection_id)
+        if not connection or connection.get("status") != "CONNECTED":
+            raise APIError(404, "GOOGLE_CONNECTION_NOT_FOUND", "Google connection not found")
+        try:
+            cipher = Fernet(self._google_secret())
+            access_token = cipher.decrypt(str(connection["encrypted_access_token"]).encode()).decode()
+            refresh_token = cipher.decrypt(str(connection["encrypted_refresh_token"]).encode()).decode() if connection.get("encrypted_refresh_token") else None
+        except (InvalidToken, KeyError, ValueError) as exc:
+            raise APIError(503, "GOOGLE_TOKEN_UNAVAILABLE", "Google connection token cannot be decrypted") from exc
+        expires_raw = connection.get("expires_at")
+        expires_at = expires_raw if isinstance(expires_raw, datetime) else datetime.fromisoformat(str(expires_raw).replace("Z", "+00:00"))
+        if expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=timezone.utc)
+        if expires_at <= utc_now() + timedelta(seconds=60):
+            if not refresh_token:
+                raise APIError(401, "GOOGLE_REAUTH_REQUIRED", "Google authorization has expired; reconnect the account")
+            oauth_client, _ = self._google_oauth()
+            try:
+                refreshed = oauth_client.refresh(refresh_token)
+            except (GoogleAPIError, GoogleIntegrationError) as exc:
+                raise APIError(502, "GOOGLE_REFRESH_FAILED", "Google authorization could not be refreshed") from exc
+            access_token = refreshed.access_token
+            refresh_token = refreshed.refresh_token or refresh_token
+            connection["encrypted_access_token"] = cipher.encrypt(access_token.encode()).decode()
+            connection["encrypted_refresh_token"] = cipher.encrypt(refresh_token.encode()).decode() if refresh_token else None
+            connection["expires_at"] = datetime.fromtimestamp(refreshed.expires_at, timezone.utc).isoformat()
+            connection["updated_at"] = utc_now().isoformat()
+            self.store.google_connections[(organization_id, connection_id)] = connection
+            if self.repository is not None and hasattr(self.repository, "save_google_connection"):
+                self.repository.save_google_connection(organization_id, connection)
+        return access_token, connection
+
+    def _client_profile(self, organization_id: str) -> dict[str, Any]:
+        if self.repository is not None and hasattr(self.repository, "get_organization_profile"):
+            row = self.repository.get_organization_profile(organization_id)
+            if row:
+                profile = dict(zip(("legal_name", "website", "phone", "address", "city", "postal_code", "country", "sector", "employee_count", "description", "updated_at"), row))
+                self.store.organization_profiles[organization_id] = profile
+                return profile
+        return self.store.organization_profiles.get(organization_id, {})
+
+    def _client_document_rows(self, organization_id: str) -> list[dict[str, Any]]:
+        keys = ("document_id", "organization_id", "filename", "content_type", "size_bytes", "sha256", "object_key", "category", "created_by", "created_at")
+        if self.repository is not None and hasattr(self.repository, "list_client_documents"):
+            rows = self.repository.list_client_documents(organization_id) or []
+            return [dict(zip(keys, row)) for row in rows]
+        return [dict(value) for (org, _), value in self.store.client_documents.items() if org == organization_id]
+
+    def _google_callback(self, environ):
+        query = parse_qs(environ.get("QUERY_STRING", ""))
+        code = str(query.get("code", [""])[0]).strip()
+        state_value = str(query.get("state", [""])[0]).strip()
+        error_value = str(query.get("error", [""])[0]).strip()
+        if not state_value:
+            raise APIError(400, "GOOGLE_OAUTH_INVALID", "Google OAuth state is missing")
+        _, state_manager = self._google_oauth()
+        try:
+            state_manager.verify(state_value)
+        except Exception as exc:
+            raise APIError(400, "GOOGLE_OAUTH_STATE_INVALID", "Google OAuth state is invalid or expired") from exc
+        state_row = self.store.google_oauth_states.pop(state_value, None)
+        if self.repository is not None and hasattr(self.repository, "consume_google_oauth_state_by_state"):
+            row = self.repository.consume_google_oauth_state_by_state(state_value)
+            if row:
+                state_row = {"state": str(row[0]), "organization_id": str(row[1]), "user_id": str(row[2]),
+                             "code_verifier": str(row[3]), "expires_at": row[4]}
+        if not state_row:
+            raise APIError(400, "GOOGLE_OAUTH_STATE_INVALID", "Google OAuth state is invalid or already used")
+        from datetime import datetime
+        expires = state_row["expires_at"]
+        expires = expires if isinstance(expires, datetime) else datetime.fromisoformat(str(expires).replace("Z", "+00:00"))
+        if expires.tzinfo is None:
+            from datetime import timezone
+            expires = expires.replace(tzinfo=timezone.utc)
+        if expires <= utc_now():
+            raise APIError(400, "GOOGLE_OAUTH_STATE_INVALID", "Google OAuth state has expired")
+        if error_value:
+            return 302, {"Location": "/app?page=client-monitoring&google=denied", "Cache-Control": "no-store"}, b""
+        if not code:
+            raise APIError(400, "GOOGLE_OAUTH_INVALID", "Google OAuth callback is missing the authorization code")
+        org_id = str(state_row["organization_id"])
+        user_id = str(state_row["user_id"])
+        oauth_client, _ = self._google_oauth()
+        try:
+            token = oauth_client.exchange_code(code=code, redirect_uri=self.config.public_base_url.rstrip("/") + "/v1/integrations/google/callback", code_verifier=str(state_row["code_verifier"]))
+        except (GoogleAPIError, GoogleIntegrationError) as exc:
+            raise APIError(502, "GOOGLE_TOKEN_EXCHANGE_FAILED", "Google authorization could not be completed") from exc
+        from datetime import datetime, timezone
+        from cryptography.fernet import Fernet
+        cipher = Fernet(self._google_secret())
+        connection_id = str(uuid.uuid4())
+        connection = {"connection_id": connection_id, "google_account_id": None, "google_location_id": None,
+                      "location_title": None, "encrypted_access_token": cipher.encrypt(token.access_token.encode()).decode(),
+                      "encrypted_refresh_token": cipher.encrypt(token.refresh_token.encode()).decode() if token.refresh_token else None,
+                      "expires_at": datetime.fromtimestamp(token.expires_at, timezone.utc).isoformat(),
+                      "status": "CONNECTED", "created_by": user_id, "updated_at": utc_now().isoformat()}
+        self.store.google_connections[(org_id, connection_id)] = connection
+        if self.repository is not None and hasattr(self.repository, "save_google_connection"):
+            self.repository.save_google_connection(org_id, connection)
+        self.store.audit_event(org_id, user_id, "GOOGLE_CONNECTED", "google_connection:" + connection_id)
+        if self.repository is not None and hasattr(self.repository, "security_event"):
+            self.repository.security_event(org_id, user_id, "GOOGLE_CONNECTED", user_id, {"connection_id": connection_id})
+        return 302, {"Location": "/app?page=client-monitoring&google=connected", "Cache-Control": "no-store", "Pragma": "no-cache"}, b""
 
     def handle(self, environ):
         path = urlsplit(environ.get("PATH_INFO", "/")).path.rstrip("/") or "/"
@@ -865,9 +1028,181 @@ class ReviewDefenseAPI:
                             self.repository.create_billing_event(tx["organization_id"],event_row)
                 self.store.audit_event(tx["organization_id"],None,"PAYPAL_WEBHOOK_PROCESSED",f"billing:{tx['id']}",event_type=event_type,paypal_id=paypal_id)
             return self._json(200,{"status":"accepted"})
+        if method == "GET" and path == "/v1/integrations/google/callback":
+            return self._google_callback(environ)
         user = self._auth(environ)
         # All v1 routes are tenant-bound to the authenticated user. There is no organization_id override.
 
+
+        if method == "GET" and path == "/v1/integrations/google/start":
+            self._require_role(user, "OWNER", "ADMIN", "CLIENT")
+            oauth_client, state_manager = self._google_oauth()
+            authorization = state_manager.create(client_id=oauth_client.client_id, redirect_uri=self.config.public_base_url.rstrip("/") + "/v1/integrations/google/callback")
+            from datetime import timedelta
+            expires_at = (utc_now() + timedelta(seconds=state_manager.ttl_seconds)).isoformat()
+            state_row = {"state": authorization.state, "organization_id": user.organization_id, "user_id": user.user_id,
+                         "code_verifier": authorization.code_verifier, "expires_at": expires_at}
+            self.store.google_oauth_states[authorization.state] = state_row
+            if self.repository is not None and hasattr(self.repository, "save_google_oauth_state"):
+                self.repository.save_google_oauth_state(user.organization_id, authorization.state, user.user_id, authorization.code_verifier, expires_at)
+            self.store.audit_event(user.organization_id, user.user_id, "GOOGLE_OAUTH_STARTED", "google_oauth")
+            return 302, {"Location": authorization.authorization_url, "Cache-Control": "no-store", "Pragma": "no-cache"}, b""
+
+        if method == "GET" and path == "/v1/integrations/google/locations":
+            connections = self._google_connections(user.organization_id)
+            items, errors = [], []
+            for connection in connections:
+                connection_id = str(connection["connection_id"])
+                try:
+                    access_token, current = self._google_access_token(user.organization_id, connection_id)
+                    client = GoogleBusinessProfileClient(organization_id=user.organization_id, access_token=access_token)
+                    accounts, account_page = client.list_accounts()
+                    pages = 0
+                    while account_page and pages < 9:
+                        more, account_page = client.list_accounts(page_token=account_page)
+                        accounts += more
+                        pages += 1
+                    for account in accounts:
+                        locations, location_page = client.list_locations(account.name)
+                        pages = 0
+                        while location_page and pages < 9:
+                            more, location_page = client.list_locations(account.name, page_token=location_page)
+                            locations += more
+                            pages += 1
+                        for location in locations:
+                            items.append({"connection_id": connection_id, "account_id": account.name, "account_name": account.account_name or account.name,
+                                          "location_id": location.name, "location_name": location.location_name or location.name,
+                                          "selected": current.get("google_account_id") == account.name and current.get("google_location_id") == location.name})
+                except APIError as exc:
+                    errors.append({"connection_id": connection_id, "code": exc.code, "message": exc.message})
+                except (GoogleAPIError, GoogleIntegrationError) as exc:
+                    errors.append({"connection_id": connection_id, "code": "GOOGLE_UPSTREAM_ERROR", "message": "Google locations could not be loaded"})
+            return self._json(200, {"items": items, "connections": [{"connection_id": x["connection_id"], "status": x.get("status"), "location_title": x.get("location_title")} for x in connections], "errors": errors})
+
+        if method == "POST" and path == "/v1/integrations/google/select-location":
+            self._require_role(user, "OWNER", "ADMIN", "CLIENT")
+            body = self._body(environ)
+            connection_id = str(body.get("connection_id", "")).strip()
+            account_id = str(body.get("account_id", "")).strip()
+            location_id = str(body.get("location_id", "")).strip()
+            if not connection_id or not account_id or not location_id:
+                raise APIError(422, "VALIDATION_ERROR", "connection_id, account_id and location_id are required")
+            access_token, connection = self._google_access_token(user.organization_id, connection_id)
+            client = GoogleBusinessProfileClient(organization_id=user.organization_id, access_token=access_token)
+            try:
+                accounts, _ = client.list_accounts()
+                account = next((x for x in accounts if x.name == account_id), None)
+                if account is None:
+                    raise APIError(403, "GOOGLE_LOCATION_FORBIDDEN", "Google account does not belong to this connection")
+                locations, _ = client.list_locations(account_id)
+                location = next((x for x in locations if x.name == location_id), None)
+                if location is None:
+                    raise APIError(403, "GOOGLE_LOCATION_FORBIDDEN", "Google location does not belong to this account")
+                sync = client.list_reviews(account_id, location_id, page_size=50, order_by="updateTime desc")
+            except APIError:
+                raise
+            except (GoogleAPIError, GoogleIntegrationError) as exc:
+                raise APIError(502, "GOOGLE_UPSTREAM_ERROR", "Google location could not be selected or synchronized") from exc
+            connection["google_account_id"] = account_id
+            connection["google_location_id"] = location_id
+            connection["location_title"] = location.location_name or location.name
+            connection["updated_at"] = utc_now().isoformat()
+            self.store.google_connections[(user.organization_id, connection_id)] = connection
+            if self.repository is not None and hasattr(self.repository, "save_google_connection"):
+                self.repository.save_google_connection(user.organization_id, connection)
+            for review in sync.items:
+                self.store.reviews[(user.organization_id, review.review_id)] = review
+                if self.repository is not None and hasattr(self.repository, "upsert_review"):
+                    self.repository.upsert_review(user.organization_id, asdict(review))
+            self.store.audit_event(user.organization_id, user.user_id, "GOOGLE_LOCATION_SELECTED", "google_connection:" + connection_id,
+                                   account_id=account_id, location_id=location_id, reviews_synced=len(sync.items))
+            return self._json(200, {"status": "selected", "connection_id": connection_id, "location_id": location_id, "reviews_synced": len(sync.items)})
+
+        if method == "GET" and path == "/v1/client/profile":
+            return self._json(200, {"profile": self._client_profile(user.organization_id)})
+
+        if method == "POST" and path == "/v1/client/profile":
+            self._require_role(user, "OWNER", "ADMIN", "CLIENT")
+            body = self._body(environ)
+            fields = ("legal_name", "website", "phone", "address", "city", "postal_code", "country", "sector", "employee_count", "description")
+            profile = {}
+            limits = {"legal_name": 200, "website": 500, "phone": 60, "address": 300, "city": 120, "postal_code": 30, "country": 100, "sector": 120, "employee_count": 60, "description": 2000}
+            for key in fields:
+                value = str(body.get(key, "")).strip()
+                if len(value) > limits[key]:
+                    raise APIError(422, "VALIDATION_ERROR", key + " is too long")
+                profile[key] = value or None
+            if profile.get("website"):
+                from urllib.parse import urlsplit
+                parsed = urlsplit(profile["website"] if "://" in profile["website"] else "https://" + profile["website"])
+                if parsed.scheme not in {"http", "https"} or not parsed.netloc or "@" in parsed.netloc:
+                    raise APIError(422, "VALIDATION_ERROR", "website must be a valid http(s) URL")
+            self.store.organization_profiles[user.organization_id] = profile
+            if self.repository is not None and hasattr(self.repository, "upsert_organization_profile"):
+                row = self.repository.upsert_organization_profile(user.organization_id, profile)
+                if row:
+                    profile = dict(zip(fields + ("updated_at",), row))
+                    self.store.organization_profiles[user.organization_id] = profile
+            self.store.audit_event(user.organization_id, user.user_id, "CLIENT_PROFILE_UPDATED", "organization:" + user.organization_id)
+            return self._json(200, {"profile": profile})
+
+        if method == "GET" and path == "/v1/client/documents":
+            documents = self._client_document_rows(user.organization_id)
+            safe = [{"document_id": str(d.get("document_id")), "filename": d.get("filename"), "content_type": d.get("content_type"),
+                     "size_bytes": int(d.get("size_bytes") or 0), "sha256": d.get("sha256"), "category": d.get("category"),
+                     "created_at": _iso_value(d.get("created_at"))} for d in documents]
+            return self._json(200, {"items": safe, "count": len(safe)})
+
+        if method == "POST" and path == "/v1/client/documents":
+            self._require_role(user, "OWNER", "ADMIN", "CLIENT")
+            body = self._body(environ)
+            filename = str(body.get("filename", "")).strip()
+            content_type = str(body.get("content_type", "")).strip().lower()
+            encoded = str(body.get("content_base64", "")).strip()
+            category = str(body.get("category", "GENERAL")).strip().upper()
+            if not filename or len(filename) > 255 or filename != os.path.basename(filename) or "/" in filename or "\\\\" in filename:
+                raise APIError(422, "VALIDATION_ERROR", "filename is invalid")
+            if not encoded or len(encoded) > ((MAX_UPLOAD_BYTES + 2) // 3) * 4 + 8:
+                raise APIError(413, "PAYLOAD_TOO_LARGE", "document exceeds the upload limit")
+            if category not in {"GENERAL", "IDENTITY", "COMPANY", "CONTRACT", "INVOICE", "OTHER"}:
+                raise APIError(422, "VALIDATION_ERROR", "document category is invalid")
+            try:
+                content = base64.b64decode(encoded, validate=True)
+                validate_upload(size_bytes=len(content), content_type=content_type, filename=filename)
+            except (ValueError, TypeError) as exc:
+                raise APIError(422, "INVALID_UPLOAD", str(exc)) from exc
+            document_id = str(uuid.uuid4())
+            try:
+                stored = self.store.vault.put(organization_id=user.organization_id, evidence_id=document_id, content=content, content_type=content_type, filename=filename)
+            except (ValueError, PermissionError) as exc:
+                raise APIError(422, "INVALID_UPLOAD", str(exc)) from exc
+            document = {"document_id": document_id, "organization_id": user.organization_id, "filename": filename, "content_type": content_type,
+                        "size_bytes": stored.size_bytes, "sha256": stored.sha256, "object_key": stored.object_key, "category": category,
+                        "created_by": user.user_id, "created_at": stored.created_at.isoformat()}
+            try:
+                if self.repository is not None and hasattr(self.repository, "put_client_document"):
+                    self.repository.put_client_document(user.organization_id, document)
+                self.store.client_documents[(user.organization_id, document_id)] = document
+            except Exception:
+                self.store.vault.delete(organization_id=user.organization_id, object_key=stored.object_key)
+                raise
+            self.store.audit_event(user.organization_id, user.user_id, "CLIENT_DOCUMENT_UPLOADED", "client_document:" + document_id,
+                                   filename=filename, size_bytes=stored.size_bytes, sha256=stored.sha256)
+            return self._json(201, {"document": {"document_id": document_id, "filename": filename, "content_type": content_type,
+                                                   "size_bytes": stored.size_bytes, "sha256": stored.sha256, "category": category}})
+
+        if method == "GET" and path.startswith("/v1/client/documents/") and path.endswith("/download"):
+            document_id = path.split("/")[-2]
+            document = next((d for d in self._client_document_rows(user.organization_id) if str(d.get("document_id")) == document_id), None)
+            if not document:
+                raise APIError(404, "NOT_FOUND", "document not found")
+            try:
+                content = self.store.vault.get(organization_id=user.organization_id, object_key=str(document["object_key"]))
+            except (KeyError, PermissionError, OSError) as exc:
+                raise APIError(404, "DOCUMENT_UNAVAILABLE", "document content is unavailable") from exc
+            safe_name = str(document["filename"]).replace('"', "")
+            return 200, {"Content-Type": str(document["content_type"]), "Content-Length": str(len(content)),
+                         "Content-Disposition": 'attachment; filename="' + safe_name + '"', "X-Content-Type-Options": "nosniff"}, content
 
         if method == "GET" and path == "/v1/billing":
             rows=list(self.store.billing.values())
