@@ -122,3 +122,37 @@ La migration du hub devra être recréée sous un numéro libre déterminé apr�
 - Collision de migration confirmée.
 - Aucune route partielle, migration conflictuelle ou fonctionnalité Google non sécurisée n'a été ajoutée.
 - Aucun test, build, connexion Google réelle, appel externe, déploiement ou merge n'a été effectué.
+
+
+## Rapatriement effectif supplémentaire — 2 octobre 2026
+
+### Modifications copiées sur `develop`
+
+- Depuis `work/lot-a-foundation-20261002` :
+  - `frontend/src/auth/sessionToken.ts` ajouté (blob source `633ae9fd37f82e7cd52e2bb426e3d585acb767bf`).
+  - `frontend/src/services/api/client.ts` remplacé par la version qui ajoute automatiquement le jeton Bearer aux appels `/v1/` lorsqu'aucun en-tête Authorization n'est fourni (blob source `a66579be4d6dfbbc7b305f592a92ebcc1692390a`).
+  - `frontend/src/auth/AuthContext.tsx` adapté pour utiliser l'accesseur partagé du jeton (blob source `748df93f2c8c71f1e38850094e0ccf3dfed5d436`).
+- Depuis `chore/public-site-coherent-audit` : restauration des modules publics absents de la cible, sans les brancher aux routes actives :
+  - `frontend/src/components/layout/PublicHeader.tsx`
+  - `frontend/src/components/layout/PublicFooter.tsx`
+  - `frontend/src/pages/PublicPageExperiences.tsx`
+  - `frontend/src/styles/muse-landing.css`
+  - `frontend/src/styles/public.css`
+  - `frontend/src/styles/public-pages-distinct.css`
+  Les SVG `visual-controls.svg`, `visual-process.svg` et `visual-workspace.svg` étaient déjà identiques dans la cible.
+- Configuration : ajout dans `.env.example` des variables `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `REVIEW_DEFENSE_GOOGLE_STATE_KEY` et `REVIEW_DEFENSE_GOOGLE_TOKEN_KEY`.
+
+### Branches examinées sans remplacement
+
+- `frontend/client-admin-workspace` : `workspace.html`, `workspace.js`, `workspace.css`, `wsgi.py`, `src/api_server.py`, plusieurs tests, le workflow CI et les trois SVG sont déjà identiques à la cible. Les variantes des pages statiques sont plus anciennes et ne remplacent pas les versions actuelles.
+- `audit/muse-modular-20260930` : composants Muse, pages et routeur contrôlés déjà identiques à la cible. Les variantes de workflow de cette branche ne remplacent pas le CI plus récent.
+- `feature/paypal-billing-v1` : son client PayPal, sa migration `023_v70`, ses primitives de facturation et ses paramètres d'environnement sont issus d'une architecture plus ancienne. La cible possède déjà les modules et migrations de facturation plus récents ; aucune régression ni ancienne variable de configuration n'a été recopiée. Le document source PayPal utilise notamment un jeu de variables sandbox différent du provisionnement courant.
+- `content/front-copy-hourly-2026-10-01` et `audit/phase-zero-2026-10-02` : aucun commit unique en avance sur la cible.
+- `content/front-copy-2026-09-30`, `feat/about-editorial-muse-layout`, `feat/frontend-consistent-layout`, `feat/frontend-short-home`, `ui/v6-40-premium-console`, `ux/v640-premium-landing`, `frontend-cycle-4`, `restore/services-before-production-refactor`, `restore/services-last-known-good` et `archive/pre-core-reset-2026-09-28` : écarts examinés ; les versions source sont anciennes ou dépassées par les versions présentes sur `develop`. Les éléments uniques qui restent pertinents seront vérifiés à l'examen final de chaque branche avant suppression.
+
+### Vérifications
+
+- Les dix fichiers écrits dans cette reprise ont été relus sur `develop` et leurs empreintes confirmées.
+- Les trois fichiers de traitement asynchrone précédemment copiés restent présents sur `develop`.
+- Les tests et le build frontend n'ont pas encore été exécutés ; aucune validation verte n'est revendiquée.
+- `main` n'a pas été modifiée. Aucune branche secondaire n'a été supprimée.
