@@ -1,0 +1,13 @@
+control_id,control,required,evidence,status
+C01,Regression suite,yes,,PENDING
+C02,Release contract,yes,,PENDING
+C03,PostgreSQL certification,yes,,PENDING
+C04,Tenant isolation,yes,,PENDING
+C05,Sandbox certification,yes,,PENDING
+C06,47 UAT scenarios,yes,,PENDING
+C07,Defect closure,yes,,PENDING
+C08,Staging health/readiness,yes,,PENDING
+C09,MFA browser flow,yes,,PENDING
+C10,Review to case flow,yes,,PENDING
+C11,Human approval gate,yes,,PENDING
+C12,No external Google action,yes,,PENDING
