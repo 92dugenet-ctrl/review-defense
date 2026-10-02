@@ -672,8 +672,11 @@ class PostgresAPIRepository(PostgresRepository):
                 return cur.fetchone()
 
     def consume_google_oauth_state_by_state(self, state: str):
+        # Restrict this tenantless OAuth callback lookup to the exact opaque, signed state.
+        # The matching RLS policy exposes only the row named by this transaction-local setting.
         with self.transaction_without_tenant() as conn:
             with conn.cursor() as cur:
+                cur.execute("SELECT set_config('app.google_oauth_state', %s, true)", (state,))
                 cur.execute("SELECT state,organization_id,user_id,code_verifier,expires_at FROM google_oauth_states WHERE state=%s FOR UPDATE", (state,))
                 row=cur.fetchone()
                 if row:
