@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parent
 FRONTEND_ROOT = (ROOT / "frontend").resolve()
 _API_PREFIXES = ("/v1/",)
 _NON_API_PATHS = {"/health", "/healthz", "/metrics", "/ready"}
-_FRONTEND_FILES = {"/index.html", "/styles.css", "/script.js"}
+_FRONTEND_FILES = {"/index.html", "/styles.css", "/script.js", "/workspace.css", "/workspace.js", "/workspace.html"}
 _ROUTE_PAGES = {
     "/services": "services.html",
     "/services/": "services.html",
@@ -34,6 +34,10 @@ _ROUTE_PAGES = {
     "/tarif": "tarif.html",
     "/tarif/": "tarif.html",
     "/tarif.html": "tarif.html",
+    "/client": "workspace.html",
+    "/client/": "workspace.html",
+    "/admin": "workspace.html",
+    "/admin/": "workspace.html",
 }
 
 

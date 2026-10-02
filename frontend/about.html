@@ -1,163 +1,42 @@
 <!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Le cadre juridique de Review Défense : RGPD, données personnelles, sécurité, intelligence artificielle, contrats, transparence et limites du service.">
-  <meta name="theme-color" content="#ffffff">
-  <title>Cadre juridique de l’entreprise — Review Défense</title>
-  <style>
-:root{--ink:#171b22;--muted:#68717d;--line:#e8e6e5;--wine:#7c233c;--wine-dark:#58182b;--paper:#fff;--max:1440px}
-*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;background:#fff;color:var(--ink);font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}img{display:block;max-width:100%}main{overflow:hidden}
-.rd-top{height:62px!important;display:flex!important;align-items:center!important;gap:34px!important;padding:0 3.1vw!important;border-bottom:1px solid #eee!important;background:rgba(255,255,255,.96)!important;position:sticky!important;top:0!important;z-index:100!important;backdrop-filter:blur(14px)!important}
-.rd-brand{display:flex!important;align-items:center!important;gap:8px!important;font-size:15px!important;font-weight:500!important;white-space:nowrap!important}.rd-mark{color:#0869ff!important;font-size:22px!important;line-height:1!important}
-.rd-nav{display:flex!important;align-items:center!important;gap:31px!important;flex:1!important;font-size:13px!important}.rd-nav a:hover{color:#0869ff!important}.rd-actions{display:flex!important;align-items:center!important;gap:14px!important}.rd-search{font-size:22px!important}.rd-btn{display:inline-flex!important;align-items:center!important;justify-content:center!important;border-radius:999px!important;padding:11px 20px!important;font-size:12px!important;font-weight:500!important}.rd-btn-blue{background:#0869ff!important;color:#fff!important}.rd-menu{display:none!important;border:0!important;background:none!important;font-size:23px!important;cursor:pointer!important}
-.drawer{position:fixed;inset:0 0 0 auto;width:min(620px,100%);background:#101517;color:#fff;z-index:110;transform:translateX(100%);transition:transform .45s cubic-bezier(.2,.8,.2,1);padding:30px 32px}.drawer.open{transform:none}.drawer-close{position:absolute;right:28px;top:20px;color:#fff;font-size:42px;border:0;background:none;cursor:pointer}.drawer-logo{display:flex;justify-content:center;font-size:22px;font-weight:500;margin-bottom:60px}.drawer>a{display:flex;justify-content:space-between;padding:23px 0;border-top:1px solid rgba(255,255,255,.13);font-size:25px;color:#fff}.drawer>a span{font-size:40px;font-weight:300}.scrim{position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:105;opacity:0;pointer-events:none;transition:.35s}.scrim.open{opacity:1;pointer-events:auto}
-footer{background:#f5f7f9!important;padding:80px 3.1vw 35px!important;border:0!important;border-top:1px solid #e9edf1!important}.footer-grid{display:grid!important;grid-template-columns:2fr repeat(3,1fr)!important;gap:40px!important;max-width:1540px!important;margin:auto!important}.footer-brand{font-size:23px!important;font-weight:500!important;display:block!important;grid-column:auto!important}.footer-grid>div{display:flex!important;flex-direction:column!important;gap:12px!important}.footer-grid h4{margin:0 0 10px!important}.footer-grid a{font-size:14px!important;color:#627184!important}footer small{display:block!important;max-width:1540px!important;margin:70px auto 0!important;color:#82909c!important}
-.legal-page{--page: min(1440px,calc(100% - 9vw));color:#1a1d23}.legal-hero{width:var(--page);margin:auto;padding:76px 0 56px;display:grid;grid-template-columns:1fr .92fr;gap:6vw;align-items:center}.eyebrow{display:flex;align-items:center;gap:10px;color:var(--wine);font-size:10px;font-weight:700;letter-spacing:.17em;text-transform:uppercase}.eyebrow:before{content:"";width:24px;height:1px;background:currentColor}.legal-hero h1{max-width:720px;margin:22px 0 24px;font-size:clamp(48px,6vw,82px);line-height:.96;letter-spacing:-.075em;font-weight:500}.legal-hero h1 em{font-style:normal;color:#9a7a84}.legal-hero-copy>p{max-width:570px;color:#69727c;font-size:16px;line-height:1.7;margin:0}.text-link{display:inline-flex;align-items:center;gap:16px;margin-top:30px;padding-bottom:8px;border-bottom:1px solid #b9a0a7;font-size:12px;font-weight:700;color:var(--wine)}.text-link span{font-size:18px}.legal-hero-art{position:relative}.legal-hero-art img{width:100%;border-radius:25px}.art-caption{position:absolute;right:18px;bottom:17px;color:#7c233c;font-size:9px;letter-spacing:.15em;font-weight:700}.legal-index{width:var(--page);margin:0 auto 76px;display:grid;grid-template-columns:repeat(6,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.legal-index a{min-height:68px;display:flex;align-items:center;gap:9px;padding:0 10px;font-size:11px;color:#5f6871;border-right:1px solid var(--line);transition:color .2s,background .2s}.legal-index a:last-child{border:0}.legal-index a:hover{color:var(--wine);background:#fbf7f8}.legal-index b{font-size:9px;color:#a47c88}.legal-intro{width:var(--page);margin:0 auto 72px;display:grid;grid-template-columns:1fr 1fr;gap:8vw;align-items:start}.legal-intro h2,.legal-sources h2{font-size:clamp(32px,4vw,52px);line-height:1.02;letter-spacing:-.065em;font-weight:500;margin:16px 0 0;max-width:610px}.legal-intro>p,.legal-sources>div:first-child>p{font-size:15px;line-height:1.8;color:#68717b;margin:4px 0 0;max-width:610px}
-.legal-feature{width:var(--page);margin:0 auto;padding:68px 0;display:grid;grid-template-columns:.92fr 1fr;gap:8vw;align-items:center;border-top:1px solid var(--line);scroll-margin-top:90px}.legal-feature.reverse .feature-visual{order:2}.legal-feature.reverse .feature-copy{order:1}.feature-visual{position:relative}.feature-visual img{width:100%;border-radius:22px}.feature-copy{max-width:650px}.number{font-size:10px;font-weight:700;letter-spacing:.15em;color:var(--wine)}.feature-copy h2{font-size:clamp(30px,3.5vw,46px);line-height:1.02;letter-spacing:-.06em;font-weight:500;margin:17px 0 23px}.feature-copy>p{font-size:14px;line-height:1.8;color:#65707a;margin:0 0 15px}.legal-note{display:flex;gap:17px;align-items:flex-start;padding:18px 20px;margin-top:22px;background:#faf5f6;border-left:2px solid var(--wine);border-radius:0 10px 10px 0}.legal-note b{min-width:100px;color:var(--wine);font-size:11px}.legal-note span{font-size:12px;line-height:1.65;color:#5f6871}.definition{padding:16px 0;border-top:1px solid var(--line)}.definition b{font-size:13px;color:var(--wine)}.definition p{font-size:13px;line-height:1.7;color:#65707a;margin:7px 0 0}.source-link{display:inline-flex;gap:12px;align-items:center;margin:10px 18px 0 0;padding-bottom:5px;border-bottom:1px solid #d8c4ca;font-size:11px;color:var(--wine);font-weight:700}.source-link span{font-size:14px}.evidence-list{padding:0 0 0 18px;margin:18px 0;color:#65707a}.evidence-list li{padding:6px 0 6px 5px;font-size:13px;line-height:1.6}.evidence-list li::marker{color:var(--wine)}
-.legal-sources{width:var(--page);margin:35px auto 0;padding:65px 0 55px;border-top:1px solid var(--line);display:grid;grid-template-columns:.8fr 1.2fr;gap:7vw}.legal-sources h2{font-size:clamp(30px,3.5vw,44px)}.legal-sources>div:first-child>p{font-size:13px}.source-list{border-top:1px solid var(--line)}.source-list a{display:grid;grid-template-columns:35px 1fr 20px;gap:5px 12px;align-items:center;padding:17px 0;border-bottom:1px solid var(--line)}.source-list a>span{grid-row:span 2;font-size:10px;color:#a47c88}.source-list b{font-size:13px;font-weight:600}.source-list small{font-size:11px;color:#7a838d}.source-list i{grid-column:3;grid-row:1/3;font-style:normal;color:var(--wine)}.source-list a:hover b{color:var(--wine)}.legal-disclaimer{width:var(--page);margin:0 auto;padding:18px 0 48px;border-top:1px solid var(--line);font-size:10px;line-height:1.7;color:#8a9299}
-@media(max-width:900px){.rd-top{gap:14px!important}.rd-nav,.rd-actions{display:none!important}.rd-menu{display:block!important;margin-left:auto!important}.footer-grid{grid-template-columns:1fr 1fr!important}.footer-brand{grid-column:1/-1!important}.legal-page{--page:calc(100% - 48px)}.legal-hero{grid-template-columns:1fr 1fr;gap:4vw}.legal-index{grid-template-columns:repeat(3,1fr)}.legal-index a:nth-child(3){border-right:0}.legal-index a:nth-child(-n+3){border-bottom:1px solid var(--line)}.legal-feature{gap:5vw}.legal-sources{gap:4vw}}
-@media(max-width:680px){.rd-top{height:58px!important;padding:0 20px!important}.legal-page{--page:calc(100% - 40px)}.legal-hero{grid-template-columns:1fr;padding:48px 0 35px;gap:28px}.legal-hero h1{font-size:clamp(43px,11vw,60px)}.legal-hero-copy>p{font-size:14px}.legal-hero-art img{border-radius:17px}.legal-index{grid-template-columns:repeat(2,1fr);margin-bottom:55px}.legal-index a{min-height:58px;border-bottom:1px solid var(--line)}.legal-index a:nth-child(2n){border-right:0}.legal-index a:nth-child(3){border-right:1px solid var(--line)}.legal-intro{grid-template-columns:1fr;gap:18px;margin-bottom:42px}.legal-feature{grid-template-columns:1fr;gap:24px;padding:43px 0}.legal-feature.reverse .feature-visual,.legal-feature.reverse .feature-copy{order:initial}.feature-copy h2{font-size:35px}.legal-sources{grid-template-columns:1fr;gap:25px;padding-top:45px}.footer-grid{grid-template-columns:1fr!important}.footer-brand{grid-column:auto!important}footer{padding:45px 22px 22px!important}footer small{margin-top:35px!important}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>About</title><style>
+.rd-top{height:62px;display:flex;align-items:center;gap:34px;padding:0 3.1vw;border-bottom:1px solid #eee;background:rgba(255,255,255,.96);position:sticky;top:0;z-index:30;backdrop-filter:blur(14px)}
+.rd-brand{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:500;white-space:nowrap}.rd-mark{color:#0869ff;font-size:22px;line-height:1}
+.rd-nav{display:flex;align-items:center;gap:31px;flex:1;font-size:13px}.rd-nav a{transition:color .2s}.rd-nav a:hover{color:#0869ff}
+.rd-actions{display:flex;align-items:center;gap:14px}.rd-search{font-size:22px}.rd-btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:11px 20px;font-size:12px;font-weight:500}.rd-btn-blue{background:#0869ff;color:#fff}.rd-menu{display:none;border:0;background:none;font-size:23px}
+@media(max-width:900px){.rd-nav,.rd-actions{display:none}.rd-menu{display:block;margin-left:auto}.rd-top{gap:14px}}
+@media(max-width:580px){.rd-top{height:58px;padding:0 20px}}
+body,button,input,textarea,select{font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}\n</style>
+<style>
+
+body,button,input,textarea,select{font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,h5,h6,p,a,button,label,small,strong,b,summary,input,textarea,select{font-weight:400!important;text-transform:none!important}
+@media(max-width:600px){}
+</style>
+<style>
+
+.services-hero h1,.services-intro h2,.service-copy h2,.services-cta h2{font-size:clamp(32px,4vw,52px)!important;line-height:1.08!important;font-weight:400!important;letter-spacing:-.018em!important}
+.services-lead{font-size:18px!important;line-height:1.5!important}
+.services-eyebrow,.service-number,.art-meta,.badge{font-size:12px!important;letter-spacing:.03em!important}
+.resources-grid .card h2,.dataset-list-title,.dataset-page h1,.dataset-card h2,.hero h1{font-weight:400!important;letter-spacing:-.018em!important}
+.resources-grid .card h2,.dataset-card h2{font-size:30px!important}
+.hero h1{font-size:clamp(40px,5vw,60px)!important}
+.hero-copy,.card p,.dataset-hero-copy p,.dataset-card p{font-size:17px!important;line-height:1.55!important}
+.explore,.dataset-card .overview{font-size:14px!important;font-weight:400!important}
+.catalogue-section-title{font-size:clamp(28px,3vw,42px)!important;font-weight:400!important}
+.catalogue-section-note{font-size:14px!important;line-height:1.5!important}
+.product-card h2{font-size:24px!important;font-weight:400!important}
+.brand,.meta,.price,.product-action,.footnote{font-weight:400!important}
 </style>
 </head>
 <body>
-  <header class="rd-top">
+<header class="rd-top">
   <a class="rd-brand" href="/"><span class="rd-mark">◆</span> Review Defense</a>
   <nav class="rd-nav" aria-label="Navigation principale">
     <a href="/services">Services</a><a href="/fonctionnement">Fonctionnement</a><a href="/resources">Resources</a><a href="/about" aria-current="page">About</a><a href="/tarif">Tarif</a>
   </nav>
-  <div class="rd-actions"><a class="rd-search" href="/resources">⌕</a><a class="rd-btn rd-btn-blue" href="/analyse-avis-google/">Analyser un avis</a></div>
+  <div class="rd-actions"><a class="rd-search" href="/resources">⌕</a><a class="rd-btn rd-btn-blue" href="/inscription">Analyser un avis</a></div>
   <button class="rd-menu" aria-label="Menu">☰</button>
-</header>
-<aside class="drawer" aria-hidden="true">
-  <button class="drawer-close" aria-label="Fermer">×</button>
-  <div class="drawer-logo"><span class="logo-mark">◆</span>Review Defense</div>
-  <a href="/services">Services <span>›</span></a><a href="/fonctionnement">Fonctionnement <span>›</span></a><a href="/resources">Resources <span>›</span></a><a href="/about">About <span>›</span></a><a href="/tarif">Tarif <span>›</span></a><a href="/analyse-avis-google/">Analyser un avis <span>›</span></a>
-</aside><div class="scrim"></div>
-
-  <main class="legal-page">
-  <section class="legal-hero">
-    <div class="legal-hero-copy">
-      <span class="eyebrow">ENTREPRISE · DONNÉES · RESPONSABILITÉ</span>
-      <h1>Un service encadré par <em>des règles claires.</em></h1>
-      <p>Review Défense présente ici les principes juridiques qui structurent son activité : protection des données personnelles, sécurité, recours à l’intelligence artificielle, responsabilité contractuelle et transparence envers ses clients.</p>
-      <a class="text-link" href="#cadre">Découvrir notre cadre juridique <span>↓</span></a>
-    </div>
-    <div class="legal-hero-art">
-      <img src="/assets/legal/company/rgpd.svg" alt="Illustration de la protection des données personnelles">
-      <span class="art-caption">DONNÉES · CONFIANCE · RESPONSABILITÉ</span>
-    </div>
-  </section>
-
-  <nav class="legal-index" aria-label="Sommaire du cadre juridique">
-    <a href="#rgpd"><b>01</b> RGPD & données</a>
-    <a href="#securite"><b>02</b> Sécurité</a>
-    <a href="#ia"><b>03</b> Intelligence artificielle</a>
-    <a href="#contrats"><b>04</b> Contrats & responsabilité</a>
-    <a href="#transparence"><b>05</b> Transparence</a>
-    <a href="#limites"><b>06</b> Limites du service</a>
-  </nav>
-
-  <section class="legal-intro" id="cadre">
-    <div><span class="eyebrow">NOTRE PÉRIMÈTRE</span><h2>La conformité se construit dans les usages réels du service.</h2></div>
-    <p>Un service numérique doit pouvoir expliquer quelles données il utilise, pourquoi il les utilise, qui peut y accéder, combien de temps elles sont conservées et quels prestataires interviennent. Les responsabilités varient selon les traitements et les rôles de chaque acteur. Cette page expose le cadre général ; les informations opposables et détaillées doivent figurer dans les documents contractuels et la politique de confidentialité applicables.</p>
-  </section>
-
-  <section class="legal-feature" id="rgpd">
-    <div class="feature-visual"><img src="/assets/legal/company/rgpd.svg" alt="Dossier protégé symbolisant la protection des données"></div>
-    <div class="feature-copy">
-      <span class="number">01 / PROTECTION DES DONNÉES</span><h2>RGPD : maîtriser les données personnelles</h2>
-      <p>Le règlement général sur la protection des données (RGPD) encadre la collecte et l’utilisation des informations se rapportant à une personne identifiable. Pour Review Défense, cela concerne notamment les données de compte et de contact, ainsi que les informations qu’un client peut intégrer à un dossier d’analyse ou de suivi d’un avis.</p>
-      <p>Les traitements doivent être associés à une finalité déterminée et à une base légale, limités aux données nécessaires, assortis de durées de conservation définies et accompagnés d’une information compréhensible. Les personnes disposent, selon les cas, de droits d’accès, de rectification, d’effacement, de limitation, d’opposition et de portabilité.</p>
-      <div class="legal-note"><b>Rôle des acteurs</b><span>Selon le traitement, Review Défense peut agir comme responsable de traitement pour la gestion de son propre service, ou comme sous-traitant lorsqu’il traite des données pour le compte d’un client et sur ses instructions. Cette répartition doit être précisée dans les documents contractuels.</span></div>
-      <a class="source-link" href="https://www.cnil.fr/fr/rgpd-de-quoi-parle-t-on" target="_blank" rel="noopener">Comprendre le RGPD — CNIL <span>↗</span></a>
-      <a class="source-link" href="https://www.cnil.fr/fr/rgpd-comment-bien-identifier-son-role" target="_blank" rel="noopener">Responsable de traitement et sous-traitant — CNIL <span>↗</span></a>
-    </div>
-  </section>
-
-  <section class="legal-feature reverse" id="securite">
-    <div class="feature-visual"><img src="/assets/legal/company/securite.svg" alt="Bouclier représentant la sécurité et la confidentialité"></div>
-    <div class="feature-copy">
-      <span class="number">02 / SÉCURITÉ & CONFIDENTIALITÉ</span><h2>Protéger les informations confiées au service</h2>
-      <p>La sécurité des données est une obligation juridique qui s’apprécie au regard de la nature des informations, des usages, du contexte et des risques. Elle concerne notamment les accès, les environnements techniques, les prestataires, les sauvegardes, la disponibilité du service et la gestion des incidents.</p>
-      <p>Les mesures techniques et organisationnelles réellement déployées doivent être documentées et adaptées au niveau de risque. Aucune formulation générale ne remplace un audit de sécurité, une analyse des accès ou la vérification des pratiques des prestataires.</p>
-      <div class="legal-note"><b>Principe</b><span>La confidentialité ne repose pas sur une simple promesse : elle doit être soutenue par des mesures vérifiables, des responsabilités définies et une procédure de gestion des incidents.</span></div>
-      <a class="source-link" href="https://www.cnil.fr/fr/reglement-europeen-protection-donnees/chapitre4" target="_blank" rel="noopener">Article 32 du RGPD — sécurité du traitement <span>↗</span></a>
-    </div>
-  </section>
-
-  <section class="legal-feature" id="ia">
-    <div class="feature-visual"><img src="/assets/legal/company/ia-humaine.svg" alt="Interface symbolisant une proposition d’intelligence artificielle soumise à validation humaine"></div>
-    <div class="feature-copy">
-      <span class="number">03 / INTELLIGENCE ARTIFICIELLE</span><h2>L’IA assiste. Le client décide.</h2>
-      <p>Les fonctions d’assistance peuvent contribuer à analyser un contenu, organiser les éléments d’un dossier ou préparer une proposition de réponse. Une sortie générée automatiquement peut être incomplète, imprécise ou nécessiter une vérification humaine.</p>
-      <p>Dans le parcours prévu par le service, les propositions destinées à être envoyées ou les actions ayant un effet sur un dossier doivent être soumises à la validation du client. L’outil ne se substitue ni à son jugement, ni à l’examen des faits, ni à l’avis d’un professionnel du droit.</p>
-      <p>Lorsque des données personnelles sont utilisées avec des systèmes d’IA, leur traitement doit également respecter le RGPD : finalité, base légale, minimisation, information, sécurité et encadrement des prestataires. Les conditions exactes dépendent des outils et des flux effectivement utilisés.</p>
-      <div class="legal-note"><b>Pas d’automatisme juridique</b><span>Une suggestion générée par l’IA ne constitue ni une décision de justice, ni une qualification juridique définitive, ni une garantie de retrait d’un avis.</span></div>
-      <a class="source-link" href="https://www.cnil.fr/fr/developpement-des-systemes-dia-les-recommandations-de-la-cnil-pour-respecter-le-rgpd" target="_blank" rel="noopener">IA et protection des données — CNIL <span>↗</span></a>
-    </div>
-  </section>
-
-  <section class="legal-feature reverse" id="contrats">
-    <div class="feature-visual"><img src="/assets/legal/company/contrats.svg" alt="Documents représentant les conditions contractuelles et les engagements"></div>
-    <div class="feature-copy">
-      <span class="number">04 / RELATIONS CONTRACTUELLES</span><h2>Des responsabilités définies entre le service et le client</h2>
-      <p>La relation commerciale doit préciser le périmètre des prestations, les fonctionnalités incluses, les conditions tarifaires, les modalités de paiement, la durée et la fin du contrat, ainsi que les responsabilités de chaque partie.</p>
-      <p>Lorsque des données sont traitées pour le compte d’un client, un encadrement contractuel spécifique est nécessaire : instructions documentées, confidentialité, sécurité, recours à d’autres prestataires, assistance et sort des données à la fin de la prestation.</p>
-      <p>Les droits sur les contenus fournis par le client, les éléments produits dans le cadre du service, les logiciels et les marques doivent également être distingués et encadrés par les conditions applicables.</p>
-      <div class="legal-note"><b>Documents</b><span>Les conditions générales, les éventuelles conditions particulières et l’accord de traitement des données doivent être cohérents avec le fonctionnement réel du service et accessibles avant la souscription.</span></div>
-      <a class="source-link" href="https://www.cnil.fr/fr/rgpd-comment-bien-identifier-son-role" target="_blank" rel="noopener">Encadrer la sous-traitance — CNIL <span>↗</span></a>
-    </div>
-  </section>
-
-  <section class="legal-feature" id="transparence">
-    <div class="feature-visual"><img src="/assets/legal/company/transparence.svg" alt="Historique de dossier illustrant la transparence et la traçabilité"></div>
-    <div class="feature-copy">
-      <span class="number">05 / INFORMATION & TRANSPARENCE</span><h2>Informer clairement, tracer les actions</h2>
-      <p>Un utilisateur doit pouvoir comprendre à qui il s’adresse, ce que comprend le service, quelles sont ses conditions d’utilisation et comment ses données sont traitées. Les informations légales de l’éditeur, les coordonnées de contact et l’identité de l’hébergeur doivent être renseignées dans les mentions légales du site.</p>
-      <p>Les cookies et autres traceurs sont soumis à des règles spécifiques : certains sont strictement nécessaires, tandis que d’autres nécessitent un consentement préalable. La règle applicable dépend des traceurs effectivement déposés et de leur configuration.</p>
-      <p>La traçabilité des demandes, validations et actions réalisées dans un dossier peut également aider à comprendre le déroulement d’une intervention. Les données de journalisation doivent toutefois rester proportionnées et être conservées selon une durée justifiée.</p>
-      <a class="source-link" href="https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000044067469/" target="_blank" rel="noopener">Loi pour la confiance dans l’économie numérique — article 6 <span>↗</span></a>
-      <a class="source-link" href="https://www.cnil.fr/fr/cookies-et-autres-traceurs/que-dit-la-loi" target="_blank" rel="noopener">Cookies et traceurs — CNIL <span>↗</span></a>
-    </div>
-  </section>
-
-  <section class="legal-feature reverse" id="limites">
-    <div class="feature-visual"><img src="/assets/legal/company/contrats.svg" alt="Document représentant le périmètre et les limites du service"></div>
-    <div class="feature-copy">
-      <span class="number">06 / PÉRIMÈTRE & LIMITES</span><h2>Un outil de gestion, pas un cabinet juridique</h2>
-      <p>Review Défense est un service logiciel d’assistance à l’analyse et au suivi des avis en ligne. Il ne se présente pas comme un cabinet d’avocats, un service de représentation en justice ou une autorité habilitée à imposer le retrait d’un contenu.</p>
-      <p>Le service peut aider à structurer un signalement ou à préparer des éléments, mais la plateforme concernée conserve ses propres procédures de modération et sa décision. Le résultat dépend notamment du contenu, des justificatifs, des règles applicables et de l’examen effectué par le destinataire.</p>
-      <p>Un contenu négatif n’est pas nécessairement illicite. Aucune suppression, décision de plateforme ou issue contentieuse ne peut être garantie par avance. En présence d’un enjeu juridique, le client doit pouvoir consulter un professionnel qualifié.</p>
-      <div class="legal-note"><b>Autonomie du client</b><span>Le client conserve la décision de valider ou non les propositions et les actions qui lui sont soumises.</span></div>
-    </div>
-  </section>
-
-  <section class="legal-sources">
-    <div><span class="eyebrow">TEXTES & RÉFÉRENCES</span><h2>Les règles officielles à consulter.</h2><p>Les textes applicables évoluent et leur portée dépend de la situation. Ces ressources publiques permettent de consulter les références utilisées pour présenter ce cadre.</p></div>
-    <div class="source-list">
-      <a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj?locale=fr" target="_blank" rel="noopener"><span>01</span><b>Règlement général sur la protection des données</b><small>Règlement (UE) 2016/679 — EUR-Lex</small><i>↗</i></a>
-      <a href="https://www.cnil.fr/fr/rgpd-de-quoi-parle-t-on" target="_blank" rel="noopener"><span>02</span><b>Comprendre les principes du RGPD</b><small>CNIL — données personnelles et droits</small><i>↗</i></a>
-      <a href="https://www.cnil.fr/fr/reglement-europeen-protection-donnees/chapitre4" target="_blank" rel="noopener"><span>03</span><b>Sécurité et sous-traitance</b><small>CNIL — chapitre IV du RGPD</small><i>↗</i></a>
-      <a href="https://www.cnil.fr/fr/developpement-des-systemes-dia-les-recommandations-de-la-cnil-pour-respecter-le-rgpd" target="_blank" rel="noopener"><span>04</span><b>Intelligence artificielle et RGPD</b><small>CNIL — recommandations aux professionnels</small><i>↗</i></a>
-      <a href="https://www.cnil.fr/fr/cookies-et-autres-traceurs/que-dit-la-loi" target="_blank" rel="noopener"><span>05</span><b>Cookies et autres traceurs</b><small>CNIL — consentement et exceptions</small><i>↗</i></a>
-      <a href="https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000044067469/" target="_blank" rel="noopener"><span>06</span><b>Identification de l’éditeur d’un service en ligne</b><small>Loi n° 2004-575 — article 6</small><i>↗</i></a>
-    </div>
-  </section>
-
-  <p class="legal-disclaimer">Cette page présente des informations générales sur le cadre juridique de l’activité. Elle ne constitue ni une politique de confidentialité, ni des conditions générales, ni un audit de conformité, ni un conseil juridique. Les engagements définitifs doivent être vérifiés au regard de l’identité juridique de l’éditeur, des fonctionnalités effectivement déployées, des prestataires utilisés et des contrats applicables. Dernière révision éditoriale : octobre 2026.</p>
-</main>
-
-  <footer><div class="footer-grid"><div class="footer-brand"><span class="logo-mark">∞</span> Review Defense</div><div><h4>Services</h4><a href="/services/">Analyse des avis</a><a href="/services/">Dossiers & preuves</a><a href="/services/">Suivi</a></div><div><h4>Fonctionnement</h4><a href="/fonctionnement">Comment ça fonctionne</a><a href="/analyse-avis-google/">Analyser un avis</a></div><div><h4>À propos</h4><a href="/about">Sécurité</a><a href="/about">Confidentialité</a></div></div><small>© 2026 Review Defense</small></footer>
-<script>
-(function(){
- const menu=document.querySelector('.rd-menu'),drawer=document.querySelector('.drawer'),scrim=document.querySelector('.scrim'),close=drawer&&drawer.querySelector('.drawer-close');
- if(!menu||!drawer||!scrim||!close)return;
- function toggle(open){drawer.classList.toggle('open',open);scrim.classList.toggle('open',open);drawer.setAttribute('aria-hidden',String(!open));menu.setAttribute('aria-expanded',String(open));document.body.style.overflow=open?'hidden':''}
- menu.addEventListener('click',()=>toggle(true));close.addEventListener('click',()=>toggle(false));scrim.addEventListener('click',()=>toggle(false));drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toggle(false)));
-})();
-</script>
-</body>
+</header></body>
 </html>

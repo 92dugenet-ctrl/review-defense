@@ -1317,13 +1317,36 @@ class ReviewDefenseAPI:
         if method == "GET" and path == "/v1/evidence":
             rows = [dict(e, status=("VERIFIED" if e.get("verified") else "PENDING")) for (org, _), e in self.store.evidence.items() if org == user.organization_id]
             return self._json(200, {"items": rows, "count": len(rows)})
+        if method == "GET" and path.startswith("/v1/evidence/") and path.endswith("/content") and len(path.split("/")) == 5:
+            eid = path.split("/")[3]
+            row = self.store.evidence.get((user.organization_id, eid))
+            if row is None and self.repository is not None and hasattr(self.repository, "get_evidence"):
+                dbrow = self.repository.get_evidence(user.organization_id, eid)
+                if dbrow:
+                    row = dict(zip(("evidence_id","organization_id","case_id","filename","content_type","size_bytes","sha256","object_key","verified","created_by","verified_by","verified_at"), dbrow))
+                    self.store.evidence[(user.organization_id, eid)] = row
+            if not row: raise APIError(404, "NOT_FOUND", "evidence not found")
+            content = self.store.vault.get(organization_id=user.organization_id, object_key=row["object_key"])
+            if not verify_integrity(content, row["sha256"]):
+                raise APIError(409, "INTEGRITY_FAILURE", "stored evidence integrity check failed")
+            return self._json(200, {
+                "filename": row["filename"],
+                "content_type": row["content_type"],
+                "content_base64": base64.b64encode(content).decode("ascii"),
+                "sha256": row["sha256"],
+            })
         if method == "GET" and path.startswith("/v1/evidence/"):
             eid = path.rsplit("/", 1)[-1]
             row = self.store.evidence.get((user.organization_id, eid))
+            if row is None and self.repository is not None and hasattr(self.repository, "get_evidence"):
+                dbrow = self.repository.get_evidence(user.organization_id, eid)
+                if dbrow:
+                    row = dict(zip(("evidence_id","organization_id","case_id","filename","content_type","size_bytes","sha256","object_key","verified","created_by","verified_by","verified_at"), dbrow))
+                    self.store.evidence[(user.organization_id, eid)] = row
             if not row: raise APIError(404, "NOT_FOUND", "evidence not found")
             if not verify_integrity(self.store.vault.get(organization_id=user.organization_id, object_key=row["object_key"]), row["sha256"]):
                 raise APIError(409, "INTEGRITY_FAILURE", "stored evidence integrity check failed")
-            out = dict(row); out["status"] = "VERIFIED" if row.get("verified") else "PENDING"; out["download_url"] = sign_download_url(object_key=row["object_key"], organization_id=user.organization_id, secret=self.store.download_secret)
+            out = dict(row); out["status"] = "VERIFIED" if row.get("verified") else "PENDING"
             return self._json(200, {"evidence": out})
         if method == "POST" and path.startswith("/v1/evidence/") and path.endswith("/verify") and len(path.split("/")) == 5:
             self._require_role(user, "OWNER", "ADMIN", "ANALYST")
@@ -1952,19 +1975,19 @@ class ReviewDefenseAPI:
             path = "/index.html"
         elif path == "/app" or path == "/app/":
             path = "/index.html"
-        elif path in {"/about", "/about/"}:
-            path = "/about.html"
+        elif path in {"/client", "/client/", "/admin", "/admin/", "/connexion", "/inscription", "/verify-email"}:
+            path = "/workspace.html"
         elif path in {
             "/conformite/","/produit/","/comment-ca-marche/","/services/","/tarifs/","/ressources/",
             "/contact/","/mentions-legales/","/confidentialite/","/cgv/","/cgu/","/cookies/",
             "/securite/","/conservation-donnees/","/droits-rgpd/","/violation-donnees/",
             "/sous-traitants/","/ia-et-controle-humain/",
-            "/accept-invitation","/reset-password","/verify-email",
+            "/accept-invitation","/reset-password",
         }:
             # Public marketing and authentication deep links use the same stable frontend shell.
             # Serving index.html here keeps direct navigation and refreshes working.
             path = "/index.html"
-        if path in {"/index.html", "/landing.html", "/about.html", "/style.css"} or path.startswith("/assets/"):
+        if path in {"/index.html", "/landing.html", "/workspace.html", "/workspace.js", "/workspace.css", "/styles.css", "/script.js"} or path.startswith("/assets/"):
             from pathlib import Path
             import mimetypes
             root = Path(__file__).resolve().parents[1] / "frontend"
@@ -1977,6 +2000,8 @@ class ReviewDefenseAPI:
             if target and target.is_file():
                 body = target.read_bytes()
                 ctype = mimetypes.guess_type(str(target))[0] or "application/octet-stream"
+                if target.suffix.lower() in {".js", ".css", ".html"}:
+                    ctype = ctype + "; charset=utf-8"
                 elapsed = (_time.perf_counter() - started) * 1000
                 self.telemetry.increment("http_requests_total", labels={"method": environ.get("REQUEST_METHOD", "GET"), "path": path, "status": "200"})
                 self.telemetry.observe_ms("http_request_duration_ms", elapsed, labels={"method": environ.get("REQUEST_METHOD", "GET"), "path": path})
