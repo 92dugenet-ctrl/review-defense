@@ -50,5 +50,7 @@ jobs:
         run: node --check frontend/workspace.js
       - name: Check application JavaScript syntax
         run: node --check frontend/assets/app.js
-      - name: Run tests
+      - name: Run client hub tests
+        run: python -m pytest -q tests/test_client_monitoring_hub.py
+      - name: Run full test suite
         run: python -m pytest -q
