@@ -6,6 +6,7 @@ from __future__ import annotations
 import base64
 import hashlib
 import hmac
+import os
 import secrets
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -96,10 +97,11 @@ class InMemoryObjectStore:
 
 
 class FilesystemObjectStore:
-    """Local development adapter; production should use a private object store."""
+    """Tenant-isolated filesystem adapter for a private persistent volume."""
     def __init__(self, root: str | Path) -> None:
         self.root = Path(root).resolve()
-        self.root.mkdir(parents=True, exist_ok=True)
+        self.root.mkdir(parents=True, exist_ok=True, mode=0o700)
+        self.root.chmod(0o700)
 
     def _path(self, organization_id: str, object_key: str) -> Path:
         if not organization_id or not object_key.startswith(f"evidence/{organization_id}/"):
@@ -114,8 +116,15 @@ class FilesystemObjectStore:
         validate_upload(size_bytes=len(content), content_type=content_type, filename=filename)
         key = build_object_key(organization_id, evidence_id, filename)
         path = self._path(organization_id, key)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(content)
+        path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        parent = path.parent
+        while parent != self.root:
+            parent.chmod(0o700)
+            parent = parent.parent
+        # Create private objects with restrictive permissions from the first write.
+        fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(fd, "wb") as stored:
+            stored.write(content)
         return StoredObject(organization_id, evidence_id, key, len(content), content_type,
                             hashlib.sha256(content).hexdigest(), utc_now())
 
