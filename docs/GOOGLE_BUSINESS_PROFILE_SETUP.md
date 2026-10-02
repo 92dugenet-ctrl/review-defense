@@ -36,6 +36,8 @@ python -c 'import secrets; print(secrets.token_urlsafe(48))'
 
 Les deux clés doivent être persistantes entre redémarrages et identiques sur tous les workers. Ne pas réutiliser la clé MFA ou un secret PayPal. Les valeurs ne doivent jamais être commitées dans Git.
 
+Les documents clients sont stockés dans `REVIEW_DEFENSE_EVIDENCE_ROOT` (par défaut `/var/lib/review-defense/evidence` en production). Ce chemin doit être monté sur un volume privé et persistant partagé par les workers et conservé lors des redéploiements. Les répertoires sont limités à `0700` et les fichiers à `0600`.
+
 ## Parcours
 
 1. L'utilisateur authentifié démarre la connexion depuis `/client` ou `/admin`.
