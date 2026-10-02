@@ -1,0 +1,41 @@
+name: React frontend build
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - "frontend/src/**"
+      - "frontend/package.json"
+      - "frontend/vite.config.ts"
+      - "frontend/tsconfig*.json"
+      - ".github/workflows/react-build.yml"
+  pull_request:
+    branches: [develop]
+    paths:
+      - "frontend/src/**"
+      - "frontend/package.json"
+      - "frontend/vite.config.ts"
+      - "frontend/tsconfig*.json"
+      - ".github/workflows/react-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm install --no-audit --no-fund
+      - name: Typecheck and build React application
+        working-directory: frontend
+        run: npm run build
