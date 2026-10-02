@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { api, ApiError } from "@/services/api/client";
 import type { User } from "@/types/api";
+import { ACCESS_TOKEN_KEY, readAccessToken } from "@/auth/sessionToken";
 
 type SessionPayload = {
   access_token: string;
@@ -24,22 +25,17 @@ type AuthContextValue = {
   refresh: () => Promise<User | null>;
 };
 
-const TOKEN_KEY = "review-defense.access-token";
 const ORG_KEY = "review-defense.organization-id";
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-function readToken() {
-  return sessionStorage.getItem(TOKEN_KEY);
-}
-
 function saveSession(payload: SessionPayload) {
-  sessionStorage.setItem(TOKEN_KEY, payload.access_token);
+  sessionStorage.setItem(ACCESS_TOKEN_KEY, payload.access_token);
   sessionStorage.setItem(ORG_KEY, payload.organization_id);
 }
 
 function clearSession() {
-  sessionStorage.removeItem(TOKEN_KEY);
+  sessionStorage.removeItem(ACCESS_TOKEN_KEY);
   sessionStorage.removeItem(ORG_KEY);
 }
 
@@ -48,13 +44,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
-    if (!readToken()) {
+    if (!readAccessToken()) {
       setUser(null);
       return null;
     }
     try {
       const current = await api.get<User>("/v1/me", {
-        headers: { Authorization: `Bearer ${readToken()}` },
+        headers: { Authorization: `Bearer ${readAccessToken()}` },
       });
       setUser(current);
       return current;
@@ -99,7 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
-    const token = readToken();
+    const token = readAccessToken();
     try {
       if (token) {
         await api.post("/v1/logout", undefined, {
@@ -127,5 +123,5 @@ export function useAuth() {
 }
 
 export function authToken() {
-  return readToken();
+  return readAccessToken();
 }
