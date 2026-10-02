@@ -620,7 +620,7 @@ class ReviewDefenseAPI:
         if expires <= utc_now():
             raise APIError(400, "GOOGLE_OAUTH_STATE_INVALID", "Google OAuth state has expired")
         if error_value:
-            return 302, {"Location": "/app?page=client-monitoring&google=denied", "Cache-Control": "no-store"}, b""
+            return 302, {"Location": "/client?page=client-monitoring&google=denied", "Cache-Control": "no-store"}, b""
         if not code:
             raise APIError(400, "GOOGLE_OAUTH_INVALID", "Google OAuth callback is missing the authorization code")
         org_id = str(state_row["organization_id"])
@@ -645,7 +645,7 @@ class ReviewDefenseAPI:
         self.store.audit_event(org_id, user_id, "GOOGLE_CONNECTED", "google_connection:" + connection_id)
         if self.repository is not None and hasattr(self.repository, "security_event"):
             self.repository.security_event(org_id, user_id, "GOOGLE_CONNECTED", user_id, {"connection_id": connection_id})
-        return 302, {"Location": "/app?page=client-monitoring&google=connected", "Cache-Control": "no-store", "Pragma": "no-cache"}, b""
+        return 302, {"Location": "/client?page=client-monitoring&google=connected", "Cache-Control": "no-store", "Pragma": "no-cache"}, b""
 
     def handle(self, environ):
         path = urlsplit(environ.get("PATH_INFO", "/")).path.rstrip("/") or "/"
@@ -2360,7 +2360,7 @@ class ReviewDefenseAPI:
             status, headers, body = self._json(exc.status, {"error": {"code": exc.code, "message": exc.message, "details": exc.details}})
         except Exception:
             status, headers, body = self._json(500, {"error": {"code": "INTERNAL_ERROR", "message": "internal server error"}})
-        phrase = {200:"OK",201:"Created",400:"Bad Request",401:"Unauthorized",403:"Forbidden",404:"Not Found",409:"Conflict",413:"Payload Too Large",415:"Unsupported Media Type",422:"Unprocessable Entity",429:"Too Many Requests",500:"Internal Server Error"}.get(status,"Error")
+        phrase = {200:"OK",201:"Created",302:"Found",400:"Bad Request",401:"Unauthorized",403:"Forbidden",404:"Not Found",409:"Conflict",413:"Payload Too Large",415:"Unsupported Media Type",422:"Unprocessable Entity",429:"Too Many Requests",500:"Internal Server Error",502:"Bad Gateway",503:"Service Unavailable"}.get(status,"Error")
         elapsed = (_time.perf_counter() - started) * 1000
         self.telemetry.increment("http_requests_total", labels={"method": environ.get("REQUEST_METHOD", "GET"), "path": path, "status": str(status)})
         self.telemetry.observe_ms("http_request_duration_ms", elapsed, labels={"method": environ.get("REQUEST_METHOD", "GET"), "path": path})
