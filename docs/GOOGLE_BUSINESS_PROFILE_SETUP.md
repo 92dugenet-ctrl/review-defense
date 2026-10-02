@@ -41,7 +41,7 @@ Les deux clés doivent être persistantes entre redémarrages et identiques sur 
 1. L'utilisateur authentifié démarre la connexion depuis `/client` ou `/admin`.
 2. Le serveur crée un état signé à durée limitée et un vérificateur PKCE. L'état est stocké en base, lié à l'organisation et à l'utilisateur.
 3. Le navigateur est redirigé vers Google après une requête de démarrage authentifiée par Bearer Token.
-4. Le callback vérifie la signature, l'expiration et consomme l'état une seule fois. La migration `032_v641_google_oauth_state_callback_rls.sql` limite l'accès tenantless au seul état opaque transmis au callback.
+4. Le callback vérifie la signature, l'expiration et consomme atomiquement l'état une seule fois depuis PostgreSQL. Les migrations `032` et `033` limitent l'accès tenantless au seul état opaque transmis au callback et forcent l'application des politiques RLS sur les tables du hub.
 5. Les jetons d'accès et de renouvellement sont chiffrés avec Fernet avant persistance.
 6. L'utilisateur choisit un établissement. Le serveur vérifie que le compte et l'établissement appartiennent réellement à la connexion Google, puis synchronise jusqu'à 50 avis dans cette première page.
 7. Les jetons expirés sont renouvelés côté serveur. Si aucun jeton de renouvellement n'est disponible ou si Google le refuse, l'utilisateur doit reconnecter son compte.
@@ -69,10 +69,10 @@ Les deux clés doivent être persistantes entre redémarrages et identiques sur 
 
 ## Validation avant production
 
-- Appliquer toutes les migrations jusqu'à `032`.
+- Appliquer toutes les migrations jusqu'à `033`.
 - Configurer les quatre variables Google/cryptographiques ci-dessus sur chaque instance.
 - Vérifier l'URI de callback à l'identique dans Google Cloud.
-- Exécuter `node --check frontend/workspace.js`.
+- Exécuter `node --check frontend/workspace.js` et `node --check frontend/assets/app.js`.
 - Exécuter `python -m pytest -q tests/test_client_monitoring_hub.py tests/test_v57_google.py` puis la suite complète.
 - Effectuer un test OAuth avec un compte Google de test et vérifier l'isolation entre deux organisations.
 - Ne pas activer la fonctionnalité en production tant que le test OAuth réel et la vérification RLS PostgreSQL n'ont pas été effectués.
