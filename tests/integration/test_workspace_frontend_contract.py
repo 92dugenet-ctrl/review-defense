@@ -3,7 +3,7 @@ from pathlib import Path
 import shutil
 import subprocess
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 FRONTEND = (ROOT / "frontend" / "workspace.js").read_text(encoding="utf-8")
 API = (ROOT / "src" / "api_server.py").read_text(encoding="utf-8")
 SEO_RENDERER = (ROOT / "src" / "seo_renderer.py").read_text(encoding="utf-8")

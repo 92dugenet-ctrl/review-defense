@@ -20,9 +20,14 @@ def migration_files() -> list[Path]:
     return sorted(MIGRATIONS.glob("*.sql"), key=lambda path: path.name)
 
 
+def connect():
+    """Open the configured PostgreSQL connection for migration tooling."""
+    return psycopg.connect(database_url(), connect_timeout=5)
+
+
 def main() -> None:
     files = migration_files()
-    with psycopg.connect(database_url(), connect_timeout=5) as conn:
+    with connect() as conn:
         conn.execute(
             """
             CREATE TABLE IF NOT EXISTS schema_migrations (
