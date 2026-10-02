@@ -15,7 +15,7 @@ services:
   app:
     build: .
     environment:
-      REVIEW_DEFENSE_ENV: production
+      REVIEW_DEFENSE_ENV: development
       HOST: 0.0.0.0
       PORT: 8080
       DATABASE_URL: postgresql://review_defense:${POSTGRES_PASSWORD:-change-me}@postgres:5432/review_defense
@@ -23,6 +23,5 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    command: ["sh", "-c", "python scripts/migrate.py && gunicorn --bind 0.0.0.0:8080 --workers 2 --threads 4 --timeout 60 wsgi:app"]
 volumes:
   review_defense_pg:

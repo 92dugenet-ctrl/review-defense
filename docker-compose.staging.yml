@@ -30,7 +30,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    command: ["sh", "-c", "python scripts/migrate.py && gunicorn --bind 0.0.0.0:8080 --workers 2 --threads 4 --timeout 60 wsgi:app"]
   caddy:
     image: caddy:2-alpine
     environment:
