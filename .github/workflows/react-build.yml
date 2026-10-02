@@ -2,22 +2,17 @@ name: React frontend build
 
 on:
   push:
-    branches: [develop]
+    branches: [develop, main]
     paths:
-      - "frontend/src/**"
-      - "frontend/package.json"
-      - "frontend/index.html"
-      - "frontend/vite.config.ts"
-      - "frontend/tsconfig*.json"
+      - "frontend/**"
       - ".github/workflows/react-build.yml"
+      - "!frontend/dist/**"
   pull_request:
-    branches: [develop]
+    branches: [develop, main]
     paths:
-      - "frontend/src/**"
-      - "frontend/package.json"
-      - "frontend/vite.config.ts"
-      - "frontend/tsconfig*.json"
+      - "frontend/**"
       - ".github/workflows/react-build.yml"
+      - "!frontend/dist/**"
   workflow_dispatch:
 
 permissions:
@@ -34,9 +29,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package.json
       - name: Install frontend dependencies
         working-directory: frontend
         run: npm install --no-audit --no-fund
-      - name: Typecheck and build React application
+      - name: Typecheck
+        working-directory: frontend
+        run: npm run typecheck
+      - name: Build React application
         working-directory: frontend
         run: npm run build
