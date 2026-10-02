@@ -203,6 +203,14 @@ def test_postgres_oauth_state_rls_is_forced_and_consumed_atomically():
         ).fetchone()[0]
         state_a = f"oauth-test-a-{organization_id}"
         state_b = f"oauth-test-b-{organization_id}"
+        forced_tables = conn.execute(
+            "SELECT relname FROM pg_class "
+            "WHERE relname = ANY(%s) AND relrowsecurity AND relforcerowsecurity",
+            (["organization_profiles", "client_documents", "google_connections", "google_oauth_states"],),
+        ).fetchall()
+        assert {row[0] for row in forced_tables} == {
+            "organization_profiles", "client_documents", "google_connections", "google_oauth_states"
+        }
         conn.execute(sql.SQL("CREATE ROLE {} NOLOGIN").format(sql.Identifier(role_name)))
         conn.execute(
             sql.SQL("GRANT SELECT, INSERT, DELETE ON google_oauth_states TO {}").format(
