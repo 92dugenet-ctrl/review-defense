@@ -92,3 +92,33 @@ Les 29 références visibles ont été comparées à develop. develop est la bas
 - Références de base : develop et main.
 
 Les fichiers uniques d'une branche ancienne n'ont pas été importés uniquement parce qu'ils existaient : leur version, leur usage dans l'architecture actuelle et les dépendances associées ont été examinés avant décision.
+
+
+## Reprise ciblée du hub client / Google Business Profile — 2 octobre 2026
+
+### Vérification approfondie des dépendances
+
+L'examen du code complet confirme que la branche `feature/client-monitoring-hub` ne peut pas être intégrée comme un bloc :
+
+- Le fichier `src/google_business_profile.py` existe déjà dans la branche de consolidation. Il fournit les primitives OAuth/PKCE, la découverte des comptes et établissements, ainsi que la lecture des avis. Il n'est donc pas nécessaire de recopier ce module.
+- `src/postgres_api_repository.py` contient déjà les méthodes de persistance du profil organisationnel, des documents clients, des états OAuth et des connexions Google : `get_organization_profile`, `upsert_organization_profile`, `put_client_document`, `list_client_documents`, `save_google_oauth_state`, `consume_google_oauth_state`, `save_google_connection`, `list_google_connections`, `get_google_connection` et `consume_google_oauth_state_by_state`.
+- Le backend de la branche source possède un callback OAuth public `GET /v1/integrations/google/callback`, avec validation d'état signé, échange du code, chiffrement des jetons et lecture initiale des avis. Il ne fournit cependant pas le parcours HTTP complet attendu par l'interface.
+- Le frontend de la branche source appelle au minimum `GET /v1/integrations/google/start`, `GET /v1/integrations/google/locations`, `POST /v1/integrations/google/select-location`, `POST /v1/client/profile` et `POST /v1/client/documents`. Ces routes ne sont pas présentes dans le `src/api_server.py` actuel de la branche de consolidation.
+- La migration source `024_v641_client_monitoring_hub.sql` crée les tables `organization_profiles`, `client_documents`, `google_connections` et `google_oauth_states`, mais son numéro `024` est déjà occupé par `024_v641_rgpd_privacy_workflow.sql` dans la branche de consolidation.
+
+### Décision d'intégration
+
+Aucun code de route de la branche source n'est copié à cette étape. Le callback seul ne suffit pas à rendre le parcours utilisable et l'ajouter isolément créerait une intégration trompeuse : le bouton de connexion, le choix d'établissement, le profil et le dépôt documentaire resteraient incomplets.
+
+Les méthodes du repository et le client Google déjà présents constituent une base réutilisable. La suite devra ajouter un ensemble cohérent de routes tenant-scoped, avec contrôles de rôle, vérification de l'état OAuth à usage unique, stockage chiffré des jetons, gestion explicite des connexions multi-établissements et validation des documents (taille, type, empreinte et stockage). La sélection d'un établissement devra déclencher uniquement la synchronisation de lecture des avis ; aucune réponse, suppression ou autre mutation Google ne doit être ajoutée.
+
+La migration du hub devra être recréée sous un numéro libre déterminé après inventaire exhaustif des migrations de la branche cible, plutôt que renommée à l'aveugle. Il faudra aussi confirmer que les quatre tables ne sont pas déjà créées par une migration ultérieure et que leurs contraintes RLS correspondent à la convention actuelle.
+
+### État après cette reprise
+
+- Dépendances Python communes identifiées comme déjà présentes.
+- Méthodes de persistance nécessaires identifiées comme déjà présentes.
+- Cinq routes frontend attendues identifiées ; elles manquent dans l'API cible.
+- Collision de migration confirmée.
+- Aucune route partielle, migration conflictuelle ou fonctionnalité Google non sécurisée n'a été ajoutée.
+- Aucun test, build, connexion Google réelle, appel externe, déploiement ou merge n'a été effectué.
