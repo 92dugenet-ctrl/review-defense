@@ -63,3 +63,9 @@
     padding-bottom:12px;
   }
 }
+
+/* REVUE-DEFENSE-006 — current-state affordance */
+.workspace-timeline li:last-child{position:relative;margin-top:4px;padding-right:14px;background:var(--surface)}
+.workspace-timeline li:last-child strong{display:inline-flex;align-items:center;gap:6px;min-height:20px}
+.workspace-timeline li:last-child strong::after{content:"Étape actuelle";display:inline-flex;align-items:center;min-height:17px;padding:0 7px;border:1px solid rgba(45,108,255,.16);border-radius:999px;background:rgba(45,108,255,.06);color:var(--accent);font-size:8px;line-height:1;font-weight:700}
+@media(prefers-reduced-motion:reduce){.workspace-timeline li{transition:none}}
