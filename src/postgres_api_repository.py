@@ -646,11 +646,14 @@ class PostgresAPIRepository(PostgresRepository):
     def consume_google_oauth_state(self, organization_id: str, state: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT state,organization_id,user_id,code_verifier,expires_at FROM google_oauth_states WHERE state=%s FOR UPDATE", (state,))
-                row=cur.fetchone()
-                if row:
-                    cur.execute("DELETE FROM google_oauth_states WHERE state=%s", (state,))
-                return row
+                # DELETE ... RETURNING is a single atomic consume operation. It
+                # avoids a separate row-locking SELECT and cannot consume another state.
+                cur.execute(
+                    "DELETE FROM google_oauth_states WHERE state=%s "
+                    "RETURNING state,organization_id,user_id,code_verifier,expires_at",
+                    (state,),
+                )
+                return cur.fetchone()
 
     def save_google_connection(self, organization_id: str, connection: Mapping[str,Any]):
         with self.transaction(organization_id) as conn:
