@@ -1,3 +1,5 @@
+import { readAccessToken } from "@/auth/sessionToken";
+
 export type ApiErrorPayload = {
   code?: string;
   message?: string;
@@ -28,14 +30,23 @@ export async function apiRequest<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
+  const headers = new Headers(options.headers);
+  if (!headers.has("Accept")) headers.set("Accept", "application/json");
+  if (options.body && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
+
+  // The API authenticates protected routes with bearer tokens. Keep this in
+  // the shared transport so individual pages cannot accidentally omit it.
+  if (path.startsWith("/v1/") && !headers.has("Authorization")) {
+    const token = readAccessToken();
+    if (token) headers.set("Authorization", `Bearer ${token}`);
+  }
+
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     credentials: "include",
-    headers: {
-      Accept: "application/json",
-      ...(options.body ? { "Content-Type": "application/json" } : {}),
-      ...options.headers,
-    },
+    headers,
   });
 
   const payload = await parseResponse(response);
