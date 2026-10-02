@@ -66,6 +66,9 @@ def app(monkeypatch):
     monkeypatch.setenv("GOOGLE_OAUTH_CLIENT_SECRET", "test-client-secret")
     monkeypatch.setenv("REVIEW_DEFENSE_GOOGLE_TOKEN_KEY", Fernet.generate_key().decode())
     monkeypatch.setenv("REVIEW_DEFENSE_GOOGLE_STATE_KEY", "s" * 48)
+    # These endpoint tests exercise the in-memory adapter. PostgreSQL RLS is
+    # covered separately by the dedicated DATABASE_URL integration test below.
+    monkeypatch.delenv("DATABASE_URL", raising=False)
     api = ReviewDefenseAPI()
     users = {
         "owner": User("user-a", "org-a", "owner@example.com", "hash", "OWNER"),
