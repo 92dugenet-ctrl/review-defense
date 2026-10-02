@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tarifs — Review Defense</title>
+<style>
+
+:root {
+  --page: #ffffff;
+  --text: #111111;
+  --muted: #747474;
+  --soft: #f4f5f8;
+  --line: #e7e7e7;
+  --pill: #f7f7f8;
+  --max-width: 1180px;
+  --gap: 42px;
+  --radius: 16px;
+}
+* { box-sizing: border-box; }
+html {
+  font-family:Arial,Helvetica,sans-serif;
+  color: var(--text);
+  background: var(--page);
+}
+body { margin: 0; min-width: 320px; }
+button, select, a { font: inherit; }
+.catalogue { width: min(100% - 48px, var(--max-width)); margin: 0 auto; padding: 30px 0 70px; }
+.catalogue-toolbar { display: flex; align-items: center; justify-content: space-between; min-height: 42px; margin-bottom: 18px; font-size: 12px; }
+.toolbar-link { border: 0; padding: 8px 0; background: transparent; color: var(--text); cursor: pointer; letter-spacing: -0.01em; }
+.toolbar-link span { display: inline-block; margin-left: 4px; font-size: 15px; transform: translateY(1px); }
+.sort-control { display: flex; align-items: center; gap: 4px; color: #555; }
+.sort-control select { appearance: none; border: 0; background: transparent; color: var(--text); padding: 8px 20px 8px 2px; cursor: pointer; outline: none; background-image: linear-gradient(45deg, transparent 50%, #777 50%), linear-gradient(135deg, #777 50%, transparent 50%); background-position: calc(100% - 8px) 50%, calc(100% - 4px) 50%; background-size: 4px 4px, 4px 4px; background-repeat: no-repeat; }
+.catalogue-section{margin-top:64px}
+}
+.audit-card .product-visual{position:relative;overflow:hidden}
+.audit-card .product-info{position:relative;z-index:3;margin-top:0}
+.audit-card-visual{isolation:isolate;background:radial-gradient(circle at 50% 78%,rgba(8,105,255,.09),transparent 42%),linear-gradient(180deg,#f8fbff 0%,#eef5ff 100%)}
+.audit-stack{position:absolute;left:50%;top:50%;width:170px;height:145px;transform:translate(-50%,-38%);perspective:700px;transform-style:preserve-3d}
+.review-mini{position:absolute;display:block;width:112px;height:46px;left:50%;top:50%;margin:-23px 0 0 -56px;border:1px solid rgba(133,177,235,.58);border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(246,250,255,.96));box-shadow:0 8px 16px rgba(38,104,180,.12);transform-style:preserve-3d;opacity:var(--o);transform:translate3d(var(--x),var(--y),var(--z)) rotateX(54deg) rotateZ(var(--r));}
+.review-mini i{position:absolute;left:12px;top:13px;width:8px;height:8px;border-radius:50%;background:#0869ff;box-shadow:0 0 0 3px rgba(8,105,255,.09)}
+.review-mini b{position:absolute;left:28px;top:11px;font:700 8px/1 Arial,sans-serif;letter-spacing:1px;color:#0869ff}
+.review-mini em{position:absolute;left:28px;height:3px;border-radius:3px;background:#d8e7fb}
+.review-mini em:nth-of-type(1){top:25px;width:66px}
+.review-mini em:nth-of-type(2){top:33px;width:46px;background:#edf3fb}
+.audit-stack{transform:translate(-50%,-38%) perspective(700px) rotateX(0deg) scale(.92);transform-style:preserve-3d}
+.audit-stack-4{transform:translate(-50%,-38%) perspective(700px) scale(.88)}
+.audit-stack-5,.audit-stack-6{transform:translate(-50%,-35%) perspective(700px) scale(.82)}
+.audit-stack-7,.audit-stack-8,.audit-stack-9{transform:translate(-50%,-32%) perspective(700px) scale(.76)}
+@media(max-width:620px){.audit-stack{transform:translate(-50%,-38%) perspective(700px) scale(.78)}.audit-stack-5,.audit-stack-6{transform:translate(-50%,-34%) perspective(700px) scale(.70)}.audit-stack-7,.audit-stack-8,.audit-stack-9{transform:translate(-50%,-31%) perspective(700px) scale(.64)}}
+.product-visual{position:relative;border-bottom:1px solid #e7e9ec;margin-bottom:0;padding-bottom:1px}
+.product-info{padding-top:16px}
+.pack-visual picture,.audit-card-visual picture{display:block;width:100%;height:100%}
+.pack-visual img,.audit-card-visual img{display:block;width:100%;height:100%;object-fit:contain;border-radius:12px}
+.audit-card-visual{overflow:hidden}
+.catalogue-section:first-of-type{margin-top:0}
+.catalogue-section-title{margin:0 0 22px;font-size:22px;line-height:1.1;font-weight:500;letter-spacing:-.035em}
+.product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--gap);row-gap:38px}
+.product-grid.is-carousel{display:flex;overflow-x:auto;overflow-y:hidden;gap:var(--gap);padding:4px 2px 18px;scroll-snap-type:x mandatory;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.product-grid.is-carousel .product-card{flex:0 0 calc((100% - (var(--gap) * 2)) / 3);scroll-snap-align:start}
+.catalogue-section-note{margin:-12px 0 20px;color:#888;font-size:9px}
+.price{margin-top:4px;font-size:9px;line-height:1.35;font-weight:400}.price span{color:#444}
+
+.product-card { position: relative; min-width: 0; padding: 0; text-align: center; }
+.product-card.is-featured { padding: 10px 10px 18px; border-radius: var(--radius); background: var(--soft); }
+.badge { position: absolute; z-index: 2; top: 2px; left: 4px; display: inline-flex; align-items: center; min-height: 18px; padding: 2px 7px; border-radius: 999px; background: rgba(255, 255, 255, .9); color: #666; font-size: 8px; line-height: 1; letter-spacing: -.01em; }
+.product-visual { width: 100%; height: 185px; display: grid; place-items: center; margin-bottom: 5px; border-radius: 12px; background: radial-gradient(circle at 50% 52%, #f1f1f1 0 15%, transparent 16%), linear-gradient(180deg, transparent, rgba(0,0,0,.018)); }
+.product-info { position: relative; z-index: 1; }
+.brand, .meta, .price { margin: 0; }
+.brand { color: #8a8a8a; font-size: 9px; line-height: 1.35; letter-spacing: -.01em; }
+.product-card h2 { margin: 2px 0 2px; font-size: 12px; line-height: 1.2; font-weight:500; letter-spacing: -.025em; }
+.meta { color: #222; font-size: 9px; line-height: 1.4; }
+.price { margin-top: 4px; font-size: 9px; line-height: 1.35; font-weight: 500; }
+.price span { color: #444; }
+.product-action { display: inline-flex; align-items: center; justify-content: center; min-width: 64px; height: 27px; margin-top: 7px; padding: 0 12px; border: 1px solid #d7d7dc; border-radius: 999px; background: rgba(255,255,255,.72); color: #222; font-size: 9px; text-decoration: none; transition: background .18s ease, border-color .18s ease, transform .18s ease; }
+.product-action:hover { background: #fff; border-color: #bdbdc3; transform: translateY(-1px); }
+.footnote { margin: 42px 0 0; color: #8b8b8b; font-size: 9px; text-align: center; }
+@media (max-width: 900px) { .catalogue { width: min(100% - 32px, 720px); } .product-grid { column-gap: 22px; row-gap: 30px; } .product-visual { height: 155px; } }
+@media (max-width: 620px) { .catalogue { width: min(100% - 24px, 440px); padding-top: 20px; } .catalogue-toolbar { margin-bottom: 12px; } .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 14px; row-gap: 24px; } .product-visual { height: 135px; } .product-card.is-featured { padding: 8px 7px 14px; } }
+@media (max-width: 390px) { .product-grid { grid-template-columns: 1fr; } .product-visual { height: 180px; } }
+@media(max-width:900px){.product-grid.is-carousel .product-card{flex-basis:calc((100% - var(--gap))/2)}}
+@media(max-width:620px){.catalogue-section{margin-top:52px}.catalogue-section-title{font-size:19px}.product-grid.is-carousel{gap:14px}.product-grid.is-carousel .product-card{flex-basis:78%}}
+
+.product-card{transition:background-color .2s ease,transform .2s ease,box-shadow .2s ease}
+.product-card:hover{background:#f1f7ff;border-radius:16px;transform:translateY(-2px);box-shadow:0 10px 28px rgba(8,105,255,.07)}
+.product-card.is-featured:hover{background:#eaf4ff}
+.product-grid.is-carousel{scrollbar-width:none;-ms-overflow-style:none}
+.product-grid.is-carousel::-webkit-scrollbar{display:none}
+.catalogue-section{margin-top:72px}.catalogue-section-title{text-align:center}.catalogue-section-note{text-align:center;max-width:620px;margin:-8px auto 24px;color:#777;font-size:11px;line-height:1.5}
+.catalogue-section:first-of-type{margin-top:0}
+.catalogue-section-title{font-size:clamp(30px,3vw,42px);letter-spacing:-.05em}
+.catalogue{padding-top:72px}
+
+
+:root{--ink:#111;--muted:#5d6570;--line:#e7e9ec;--blue:#0869ff;--soft:#f6f7f9;--dark:#101419;--max:1540px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:#fff;font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit}
+.rd-top{height:62px;display:flex;align-items:center;gap:34px;padding:0 3.1vw;border-bottom:1px solid #eee;background:rgba(255,255,255,.96);position:sticky;top:0;z-index:30;backdrop-filter:blur(14px)}
+.rd-brand{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:500;white-space:nowrap}
+.rd-mark{color:var(--blue);font-size:22px;line-height:1}
+.rd-nav{display:flex;align-items:center;gap:31px;flex:1;font-size:13px}
+.rd-nav a{transition:color .2s}
+.rd-nav a:hover{color:var(--blue)}
+.rd-actions{display:flex;align-items:center;gap:14px}
+.rd-search{font-size:22px}
+.rd-btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:11px 20px;font-size:12px;font-weight:500}
+.rd-btn-blue{background:var(--blue);color:#fff}
+.rd-btn-dark{background:var(--dark);color:#fff}
+.rd-menu{display:none;border:0;background:none;font-size:23px}
+.rd-hero{margin:0 3.1vw;position:relative;height:min(47vw,620px);min-height:430px;overflow:hidden;border-radius:0 0 17px 17px;background:#0d1116}
+.rd-hero img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
+.rd-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.38),rgba(0,0,0,.04) 65%,rgba(0,0,0,.16))}
+.rd-hero-copy{position:absolute;z-index:2;left:6%;bottom:8%;max-width:760px;color:#fff}
+.rd-eyebrow{font-size:11px;letter-spacing:.08em;font-weight:500;color:var(--blue);margin-bottom:17px}
+.rd-hero .rd-eyebrow{color:#fff}
+.rd-hero h1{font-size:clamp(40px,5vw,64px);line-height:.94;letter-spacing:-.065em;font-weight:400;margin:0 0 22px}
+.rd-hero p{font-size:17px;line-height:1.45;max-width:650px;margin:0;color:rgba(255,255,255,.86)}
+.rd-section{max-width:var(--max);margin:auto;padding:92px 3.1vw}
+.rd-intro{display:grid;grid-template-columns:1fr 1fr;gap:7vw;align-items:start}
+.rd-intro h2,.rd-responsible h2,.rd-final h2{font-size:clamp(34px,3.8vw,52px);line-height:.98;letter-spacing:-.06em;font-weight:400;margin:0}
+.rd-intro>p{font-size:16px;line-height:1.58;max-width:600px;margin:2px 0;color:#333}
+.rd-blue-line{border-top:1px solid var(--line);margin-top:10px}
+.rd-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:65px}
+.rd-card{min-width:0}
+.rd-card-visual{height:245px;border-radius:14px;overflow:hidden;background:#edf2f7;position:relative}
+.rd-card-visual.review{background:linear-gradient(135deg,#101a27,#263b55)}
+.rd-card-visual.review:before{content:"★ ★ ★ ★ ★";position:absolute;left:22px;top:25px;color:#ffd25a;font-size:15px;letter-spacing:3px}
+.rd-card-visual.review:after{content:"Avis à analyser\A Très bon accueil mais problème sur ma dernière commande…";white-space:pre;position:absolute;left:22px;right:22px;bottom:25px;background:#fff;border-radius:12px;padding:17px;color:#18212b;font-size:12px;line-height:1.45;box-shadow:0 18px 40px rgba(0,0,0,.2)}
+.rd-card-visual.analysis{background:linear-gradient(135deg,#dcecff,#f8fbff)}
+.rd-card-visual.analysis:before{content:"Analyse";position:absolute;left:23px;top:22px;font-size:10px;font-weight:500;color:#3772b8;letter-spacing:.1em}
+.rd-card-visual.analysis:after{content:"Contexte\A ✓ Relation client\A ✓ Chronologie\A ✓ Éléments vérifiables";white-space:pre;position:absolute;left:22px;right:22px;top:62px;background:#fff;border-radius:13px;padding:18px;color:#17202a;font-size:12px;line-height:1.7;box-shadow:0 15px 35px rgba(30,80,140,.13)}
+.rd-card-visual.case{background:linear-gradient(135deg,#e8f6ef,#f8fcfa)}
+.rd-card-visual.case:after{content:"Dossier #RD-2408\A\A 07 éléments\A 03 points à vérifier\A Validation requise";white-space:pre;position:absolute;left:20px;right:20px;top:28px;background:#fff;border-radius:13px;padding:19px;color:#19241f;font-size:12px;line-height:1.55;box-shadow:0 15px 35px rgba(35,100,70,.12)}
+.rd-card-visual.control{background:linear-gradient(135deg,#121820,#26313d)}
+.rd-card-visual.control:before{content:"Review Defense";position:absolute;left:22px;top:23px;color:#fff;font-size:11px;font-weight:500}
+.rd-card-visual.control:after{content:"01  Analyse      ✓\A02  Décision      ✓\A03  Validation    •\A04  Suivi";white-space:pre;position:absolute;left:22px;right:22px;top:62px;border:1px solid rgba(255,255,255,.15);border-radius:13px;padding:20px;color:#fff;font-size:12px;line-height:2;background:rgba(255,255,255,.06)}
+.rd-card h3{font-size:17px;margin:15px 0 7px}
+.rd-card p{font-size:12px;line-height:1.5;color:var(--muted);margin:0 0 12px}
+.rd-card a{font-size:11px;color:var(--blue);font-weight:400}
+.rd-process{background:var(--soft);max-width:none}
+.rd-process-inner{max-width:var(--max);margin:auto;padding:92px 3.1vw}
+.rd-section-head{display:grid;grid-template-columns:1fr 1fr;gap:7vw}
+.rd-section-head p{font-size:16px;line-height:1.6;color:#505a65;max-width:580px;margin:4px 0}
+.rd-steps{margin-top:65px;border-top:1px solid #dfe3e7}
+.rd-step{display:grid;grid-template-columns:18% 1fr 1fr;gap:30px;padding:27px 0;border-bottom:1px solid #dfe3e7;align-items:start}
+.rd-step-num{font-size:12px;color:#6d7782;font-weight:500;letter-spacing:.05em}
+.rd-step h3{font-size:25px;font-weight:400;margin:0;letter-spacing:-.035em}
+.rd-step p{font-size:14px;line-height:1.55;color:#59636e;margin:0;max-width:540px}
+.rd-responsible{display:grid;grid-template-columns:.9fr 1.1fr;gap:7vw;align-items:center}
+.rd-responsible p{font-size:16px;line-height:1.6;color:var(--muted);max-width:500px;margin:28px 0}
+.rd-responsible-art{height:420px;border-radius:18px;overflow:hidden;position:relative;background:linear-gradient(135deg,#d9ebff,#eef7ff 48%,#dcecff)}
+.rd-responsible-art .window{position:absolute;left:12%;right:12%;top:13%;bottom:13%;background:#fff;border-radius:16px;box-shadow:0 25px 70px rgba(40,90,150,.2);padding:22px}
+.window-top{display:flex;gap:6px;margin-bottom:25px}
+.window-top i{width:8px;height:8px;border-radius:50%;background:#cbd4de}
+.window-title{font-size:10px;color:#65717d;margin-left:10px}
+.window-grid{display:grid;grid-template-columns:120px 1fr;gap:18px}
+.window-side{background:#f5f7f9;border-radius:10px;padding:14px;font-size:10px;color:#697481;display:flex;flex-direction:column;gap:13px}
+.window-side b{color:#17212b}
+.window-main{border:1px solid #edf0f3;border-radius:11px;padding:18px}
+.window-main small{font-size:8px;letter-spacing:.08em;color:#4c79b0;font-weight:500}
+.window-main h4{font-size:20px;letter-spacing:-.04em;margin:10px 0 20px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kpi{background:#f6f8fa;border-radius:9px;padding:12px}
+.kpi b{display:block;font-size:17px}.kpi span{font-size:8px;color:#73808c}
+.rd-final{background:#dff0ff}
+.rd-final-inner{max-width:var(--max);margin:auto;padding:92px 3.1vw;display:grid;grid-template-columns:1fr 330px;gap:70px;align-items:center}
+.rd-final h2{max-width:760px}
+.rd-final p{font-size:17px;line-height:1.55;color:#52616f;max-width:680px;margin:28px 0}
+.rd-phone{width:240px;height:470px;border:7px solid #101419;border-radius:35px;background:#f8fbff;padding:17px;justify-self:center;transform:rotate(2deg);box-shadow:25px 35px 75px rgba(40,100,150,.2)}
+.rd-phone-head{font-size:10px;font-weight:500;display:flex;justify-content:space-between}
+.rd-phone-title{text-align:center;font-size:14px;font-weight:500;margin-top:22px}
+.rd-bubble{margin-top:85px;background:#e2f0ff;border-radius:15px;padding:13px;font-size:10px;line-height:1.45}
+.rd-bubble.light{margin-top:9px;background:#fff}
+.rd-input{margin-top:115px;border:1px solid #dbe2e8;background:#fff;border-radius:99px;padding:10px;font-size:9px;color:#87929d}.rd-input b{float:right;color:#111}
+.rd-footer{border-top:1px solid #eee;padding:65px 3.1vw 35px;display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:50px}
+.rd-footer-brand{font-size:16px;font-weight:500}.rd-footer-col{display:flex;flex-direction:column;gap:9px;font-size:11px;color:#66717c}.rd-footer-col b{color:#111;margin-bottom:3px}
+.rd-footer small{grid-column:1/-1;color:#8a949e;font-size:10px;margin-top:30px}
+.rd-reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}.rd-reveal.is-visible{opacity:1;transform:none}
+@media(max-width:900px){
+.rd-nav,.rd-actions{display:none}.rd-menu{display:block;margin-left:auto}.rd-top{gap:14px}.rd-hero{height:64vw;min-height:430px}.rd-intro,.rd-section-head,.rd-responsible,.rd-final-inner{grid-template-columns:1fr}.rd-cards{grid-template-columns:repeat(2,1fr)}.rd-step{grid-template-columns:80px 1fr;gap:20px}.rd-step p{grid-column:2}.rd-final-inner{gap:45px}.rd-footer{grid-template-columns:1fr 1fr}
+}
+@media(max-width:580px){
+.rd-top{height:58px;padding:0 20px}.rd-hero{margin:0 20px;height:75vw;min-height:430px}.rd-hero-copy{left:7%;right:7%}.rd-hero h1{font-size:49px}.rd-hero p{font-size:14px}.rd-section,.rd-process-inner,.rd-final-inner{padding-left:20px;padding-right:20px}.rd-section{padding-top:72px;padding-bottom:72px}.rd-intro h2,.rd-responsible h2,.rd-final h2{font-size:44px}.rd-cards{grid-template-columns:1fr;margin-top:48px}.rd-card-visual{height:245px}.rd-step{grid-template-columns:1fr;gap:10px}.rd-step p{grid-column:auto}.rd-responsible-art{height:310px}.rd-responsible-art .window{left:7%;right:7%;padding:13px}.window-grid{grid-template-columns:85px 1fr}.window-side{font-size:8px}.window-main h4{font-size:16px}.rd-final-inner{padding-top:72px;padding-bottom:72px}.rd-footer{grid-template-columns:1fr;padding-left:20px;padding-right:20px}
+}
+
+body,button,input,textarea,select{font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}\n</style>
+<style>
+
+body,button,input,textarea,select{font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,h5,h6,p,a,button,label,small,strong,b,summary,input,textarea,select{font-weight:400!important;text-transform:none!important}
+@media(max-width:600px){}
+</style>
+<style>
+
+.services-hero h1,.services-intro h2,.service-copy h2,.services-cta h2{font-size:clamp(32px,4vw,52px)!important;line-height:1.08!important;font-weight:400!important;letter-spacing:-.018em!important}
+.services-lead{font-size:18px!important;line-height:1.5!important}
+.services-eyebrow,.service-number,.art-meta,.badge{font-size:12px!important;letter-spacing:.03em!important}
+.resources-grid .card h2,.dataset-list-title,.dataset-page h1,.dataset-card h2,.hero h1{font-weight:400!important;letter-spacing:-.018em!important}
+.resources-grid .card h2,.dataset-card h2{font-size:30px!important}
+.hero h1{font-size:clamp(40px,5vw,60px)!important}
+.hero-copy,.card p,.dataset-hero-copy p,.dataset-card p{font-size:17px!important;line-height:1.55!important}
+.explore,.dataset-card .overview{font-size:14px!important;font-weight:400!important}
+.catalogue-section-title{font-size:clamp(28px,3vw,42px)!important;font-weight:400!important}
+.catalogue-section-note{font-size:14px!important;line-height:1.5!important}
+.product-card h2{font-size:24px!important;font-weight:400!important}
+.brand,.meta,.price,.product-action,.footnote{font-weight:400!important}
+</style>
+</head>
+<body>
+<header class="rd-top">
+  <a class="rd-brand" href="/"><span class="rd-mark">◆</span> Review Defense</a>
+  <nav class="rd-nav" aria-label="Navigation principale">
+    <a href="/services">Services</a><a href="/fonctionnement" aria-current="page">Fonctionnement</a><a href="/resources">Resources</a><a href="/about">About</a><a href="/tarif">Tarifs</a>
+  </nav>
+  <div class="rd-actions"><a class="rd-search" href="/resources">⌕</a><a class="rd-btn rd-btn-blue" href="/analyse-avis-google/">Analyser un avis</a></div>
+  <button class="rd-menu" aria-label="Menu">☰</button>
+</header>
+<main class="catalogue">
+    <section class="catalogue-section">
+      <h2 class="catalogue-section-title">Audit de réputation</h2>
+      <p class="catalogue-section-note">Analysez vos avis et identifiez les situations qui peuvent nécessiter un examen au regard des règles applicables de la plateforme.</p>
+      <div class="product-grid is-carousel" aria-label="Audits — hors abonnement">
+      <article class="product-card audit-card">
+  <span class="badge">Audit</span>
+  <div class="product-visual audit-card-visual"><img src="/assets/audit/audit-01.jpg" alt="Illustration du volume d'avis audités" loading="eager" decoding="async"></div>
+  <div class="product-info"><p class="brand">Review Defense</p><h2>Audit de réputation</h2><p class="meta">1 à 9 avis</p><p class="price">79 € <span>/ audit</span></p></div>
+ </article>
+
+      <article class="product-card audit-card">
+  <span class="badge">Audit</span>
+  <div class="product-visual audit-card-visual"><img src="/assets/audit/audit-02.jpg" alt="Illustration du volume d'avis audités" loading="eager" decoding="async"></div>
+  <div class="product-info"><p class="brand">Review Defense</p><h2>Audit de réputation</h2><p class="meta">10 à 49 avis</p><p class="price">149 € <span>/ audit</span></p></div>
+ </article>
+
+      <article class="product-card audit-card">
+  <span class="badge">Audit</span>
+  <div class="product-visual audit-card-visual"><img src="/assets/audit/audit-03.jpg" alt="Illustration du volume d'avis audités" loading="eager" decoding="async"></div>
+  <div class="product-info"><p class="brand">Review Defense</p><h2>Audit de réputation</h2><p class="meta">50 à 99 avis</p><p class="price">249 € <span>/ audit</span></p></div>
+ </article>
+
+      <article class="product-card audit-card">
+  <span class="badge">Audit</span>
+  <div class="product-visual audit-card-visual"><img src="/assets/audit/audit-04.jpg" alt="Illustration du volume d'avis audités" loading="eager" decoding="async"></div>
+  <div class="product-info"><p class="brand">Review Defense</p><h2>Audit de réputation</h2><p class="meta">100 à 249 avis</p><p class="price">399 € <span>/ audit</span></p></div>
+ </article>
+
+      <article class="product-card audit-card">
+  <span class="badge">Audit</span>
+  <div class="product-visual audit-card-visual"><img src="/assets/audit/audit-05.jpg" alt="Illustration du volume d'avis audités" loading="eager" decoding="async"></div>
+  <div class="product-info"><p class="brand">Review Defense</p><h2>Audit de réputation</h2><p class="meta">250 à 499 avis</p><p class="price">599 € <span>/ audit</span></p></div>
+ </article>
+
+      <article class="product-card audit-card">
+  <span class="badge">Audit</span>
+  <div class="product-visual audit-card-visual"><img src="/assets/audit/audit-06.jpg" alt="Illustration du volume d'avis audités" loading="eager" decoding="async"></div>
+  <div class="product-info"><p class="brand">Review Defense</p><h2>Audit de réputation</h2><p class="meta">500 à 999 avis</p><p class="price">899 € <span>/ audit</span></p></div>
+ </article>
+
+      <article class="product-card audit-card">
+  <span class="badge">Audit</span>
+  <div class="product-visual audit-card-visual"><img src="/assets/audit/audit-07.jpg" alt="Illustration du volume d'avis audités" loading="eager" decoding="async"></div>
+  <div class="product-info"><p class="brand">Review Defense</p><h2>Audit de réputation</h2><p class="meta">1 000 à 2 499 avis</p><p class="price">1 290 € <span>/ audit</span></p></div>
+ </article>
+
+      <article class="product-card audit-card">
+  <span class="badge">Audit</span>
+  <div class="product-visual audit-card-visual"><img src="/assets/audit/audit-08.jpg" alt="Illustration du volume d'avis audités" loading="eager" decoding="async"></div>
+  <div class="product-info"><p class="brand">Review Defense</p><h2>Audit de réputation</h2><p class="meta">2 500 à 4 999 avis</p><p class="price">1 790 € <span>/ audit</span></p></div>
+ </article>
+
+      <article class="product-card audit-card is-featured">
+  <span class="badge">Audit</span>
+  <div class="product-visual audit-card-visual"><img src="/assets/audit/audit-09.jpg" alt="Illustration du volume d'avis audités" loading="eager" decoding="async"></div>
+  <div class="product-info"><p class="brand">Review Defense</p><h2>Audit de réputation</h2><p class="meta">5 000 à 9 999 avis</p><p class="price">2 490 € <span>/ audit</span></p></div>
+ </article>
+      </div>
+    </section>
+
+    <section class="catalogue-section">
+      <h2 class="catalogue-section-title">Traitement d’une situation liée à un avis</h2>
+      <p class="catalogue-section-note">Analysez un avis et préparez un dossier lorsque des éléments indiquent qu’il peut nécessiter un examen au regard des règles de la plateforme.</p>
+      <div class="product-grid is-carousel" aria-label="Traitement d’une situation liée à un avis">
+      <article class="product-card">
+        <span class="badge">Analyse</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">✦</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Analyse de conformité</h2>
+          <p class="meta">Analyse de l’avis et préparation du dossier</p>
+          <p class="price">49 € <span>à partir de</span></p>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <span class="badge">Préparation</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">✧</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Préparation du signalement</h2>
+          <p class="meta">Éléments et arguments pour le signalement</p>
+          <p class="price">99 € <span>à partir de</span></p>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <span class="badge">Dossier</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">✦</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Dossier renforcé</h2>
+          <p class="meta">Traitement approfondi et vérification des éléments</p>
+          <p class="price">159 € <span>à partir de</span></p>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <span class="badge">Suivi</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">✧</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Suivi du signalement</h2>
+          <p class="meta">Suivi renforcé de la procédure engagée</p>
+          <p class="price">219 € <span>à partir de</span></p>
+        </div>
+      </article>
+
+      <article class="product-card is-featured">
+        <span class="badge">Complet</span>
+        <div class="product-visual pack-visual"><img src="/assets/tarif/protection-continue/03-business.jpg" alt="Illustration de l’offre Business" loading="eager" decoding="async"></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Dossier complet</h2>
+          <p class="meta">Analyse, dossier et suivi avec validation à chaque étape</p>
+          <p class="price">275 € <span>maximum</span></p>
+          <a class="product-action" href="/analyse-avis-google/">Analyser un avis</a>
+        </div>
+      </article>
+      </div>
+    </section>
+
+    <section class="catalogue-section">
+      <h2 class="catalogue-section-title">Packs de traitement</h2>
+      <p class="catalogue-section-note">Regroupez plusieurs dossiers d’avis problématiques et choisissez le volume adapté à votre activité.</p>
+      <div class="product-grid is-carousel" aria-label="Packs de traitement">
+      <article class="product-card">
+        <span class="badge">Pack</span>
+        <div class="product-visual pack-visual"><img src="/assets/packs/pack-001.png" alt="Illustration du pack Starter 5" loading="eager" decoding="async"></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Starter 5</h2>
+          <p class="meta">5 dossiers d’avis problématiques</p>
+          <p class="price">490 € <span>/ pack</span></p>
+        </div>
+      </article>
+
+      <article class="product-card is-featured">
+        <span class="badge">Pack</span>
+        <div class="product-visual pack-visual"><img src="/assets/packs/pack-002.png" alt="Illustration du pack Plus 10" loading="eager" decoding="async"></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Plus 10</h2>
+          <p class="meta">10 dossiers d’avis problématiques</p>
+          <p class="price">990 € <span>/ pack</span></p>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <span class="badge">Pack</span>
+        <div class="product-visual pack-visual"><img src="/assets/packs/pack-003.png" alt="Illustration du pack Pro 25" loading="eager" decoding="async"></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Pro 25</h2>
+          <p class="meta">25 dossiers d’avis problématiques</p>
+          <p class="price">1 990 € <span>/ pack</span></p>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <span class="badge">Pack</span>
+        <div class="product-visual pack-visual"><img src="/assets/packs/pack-004.png" alt="Illustration du pack Business 50" loading="eager" decoding="async"></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Business 50</h2>
+          <p class="meta">50 dossiers d’avis problématiques</p>
+          <p class="price">3 490 € <span>/ pack</span></p>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <span class="badge">Pack</span>
+        <div class="product-visual pack-visual"><img src="/assets/packs/pack-005.png" alt="Illustration du pack Enterprise 100" loading="eager" decoding="async"></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Enterprise 100</h2>
+          <p class="meta">100 dossiers d’avis problématiques</p>
+          <p class="price">5 900 € <span>/ pack</span></p>
+        </div>
+      </article>
+      </div>
+    </section>
+
+    <section class="catalogue-section">
+      <h2 class="catalogue-section-title">Protection continue</h2>
+      <p class="catalogue-section-note">Surveillez vos avis, identifiez les situations à traiter et gardez le contrôle des actions engagées.</p>
+      <div class="product-grid" aria-label="Abonnements">
+      <article class="product-card is-featured">
+        <span class="badge">Essentiel</span>
+        <div class="product-visual pack-visual"><img src="/assets/tarif/protection-continue/01-essential.jpg" alt="Illustration de l’offre Essential" loading="eager" decoding="async"></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Essential</h2>
+          <p class="meta">Surveillance et identification des avis à traiter</p>
+          <p class="price">49 € <span>/ mois</span></p>
+          <a class="product-action" href="/analyse-avis-google/">Analyser un avis</a>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <span class="badge">Professionnel</span>
+        <div class="product-visual pack-visual"><img src="/assets/tarif/protection-continue/02-professional.jpg" alt="Illustration de l’offre Professional" loading="eager" decoding="async"></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Professional</h2>
+          <p class="meta">Analyse et suivi renforcé des dossiers</p>
+          <p class="price">89 € <span>/ mois</span></p>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <span class="badge">Business</span>
+        <div class="product-visual" aria-hidden="true"><span style="font-size:52px;color:#0869ff">◆</span></div>
+        <div class="product-info">
+          <p class="brand">Review Defense</p>
+          <h2>Business</h2>
+          <p class="meta">Gestion avancée des dossiers pour les équipes</p>
+          <p class="price">159 € <span>/ mois</span></p>
+        </div>
+      </article>
+      </div>
+    </section>
+<p class="footnote">Chaque action importante reste soumise à votre validation. Review Defense ne garantit pas la suppression d’un avis et accompagne l’examen des situations au regard des règles de la plateforme.</p>
+</main>
+<footer class="rd-footer">
+  <div class="rd-footer-brand"><span class="rd-mark">◆</span> Review Defense</div>
+  <div class="rd-footer-col"><b>Produit</b><a href="/services">Services</a><a href="/fonctionnement">Fonctionnement</a></div>
+  <div class="rd-footer-col"><b>Ressources</b><a href="/resources">Guides</a><a href="/analyse-avis-google/">Analyser un avis</a></div>
+  <div class="rd-footer-col"><b>Compte</b><a href="/app">Connexion</a><a href="/tarif">Tarifs</a></div>
+  <small>© 2026 Review Defense · Analyse, qualification et suivi des dossiers liés aux avis potentiellement non conformes aux règles des plateformes.</small>
+</footer>
+</body>
+</html>

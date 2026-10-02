@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Découvrez comment Review Defense analyse, structure et suit les situations liées aux avis en ligne.">
+<title>Fonctionnement — Review Defense</title>
+<style>
+:root{--ink:#111;--muted:#5d6570;--line:#e7e9ec;--blue:#0869ff;--soft:#f6f7f9;--dark:#101419;--max:1540px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:#fff;font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit}
+.rd-top{height:62px;display:flex;align-items:center;gap:34px;padding:0 3.1vw;border-bottom:1px solid #eee;background:rgba(255,255,255,.96);position:sticky;top:0;z-index:30;backdrop-filter:blur(14px)}
+.rd-brand{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:500;white-space:nowrap}
+.rd-mark{color:var(--blue);font-size:22px;line-height:1}
+.rd-nav{display:flex;align-items:center;gap:31px;flex:1;font-size:13px}
+.rd-nav a{transition:color .2s}
+.rd-nav a:hover{color:var(--blue)}
+.rd-actions{display:flex;align-items:center;gap:14px}
+.rd-search{font-size:22px}
+.rd-btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:11px 20px;font-size:12px;font-weight:500}
+.rd-btn-blue{background:var(--blue);color:#fff}
+.rd-btn-dark{background:var(--dark);color:#fff}
+.rd-menu{display:none;border:0;background:none;font-size:23px}
+.rd-hero{margin:0 3.1vw;position:relative;height:min(47vw,620px);min-height:430px;overflow:hidden;border-radius:0 0 17px 17px;background:#0d1116}
+.rd-hero img,.rd-hero-video{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
+.rd-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.38),rgba(0,0,0,.04) 65%,rgba(0,0,0,.16))}
+.rd-hero-copy{position:absolute;z-index:2;left:6%;bottom:8%;max-width:760px;color:#fff}
+.rd-eyebrow{font-size:11px;letter-spacing:.08em;font-weight:500;color:var(--blue);margin-bottom:17px}
+.rd-hero .rd-eyebrow{color:#fff}
+.rd-hero h1{font-size:clamp(40px,5vw,64px);line-height:.94;letter-spacing:-.065em;font-weight:400;margin:0 0 22px}
+.rd-hero p{font-size:17px;line-height:1.45;max-width:650px;margin:0;color:rgba(255,255,255,.86)}
+.rd-section{max-width:var(--max);margin:auto;padding:92px 3.1vw}
+.rd-intro{display:grid;grid-template-columns:1fr 1fr;gap:7vw;align-items:start}
+.rd-intro h2,.rd-responsible h2,.rd-final h2{font-size:clamp(34px,3.8vw,52px);line-height:.98;letter-spacing:-.06em;font-weight:400;margin:0}
+.rd-intro>p{font-size:16px;line-height:1.58;max-width:600px;margin:2px 0;color:#333}
+.rd-blue-line{border-top:1px solid var(--line);margin-top:10px}
+.rd-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:65px}
+.rd-card{min-width:0}
+.rd-card-visual{height:245px;border-radius:14px;overflow:hidden;background:#edf2f7;position:relative}
+.rd-card-visual.review{background:linear-gradient(135deg,#101a27,#263b55)}
+.rd-card-visual.review:before{content:"★ ★ ★ ★ ★";position:absolute;left:22px;top:25px;color:#ffd25a;font-size:15px;letter-spacing:3px}
+.rd-card-visual.review:after{content:"Avis à analyser\A Très bon accueil mais problème sur ma dernière commande…";white-space:pre;position:absolute;left:22px;right:22px;bottom:25px;background:#fff;border-radius:12px;padding:17px;color:#18212b;font-size:12px;line-height:1.45;box-shadow:0 18px 40px rgba(0,0,0,.2)}
+.rd-card-visual.analysis{background:linear-gradient(135deg,#dcecff,#f8fbff)}
+.rd-card-visual.analysis:before{content:"Analyse";position:absolute;left:23px;top:22px;font-size:10px;font-weight:500;color:#3772b8;letter-spacing:.1em}
+.rd-card-visual.analysis:after{content:"Contexte\A ✓ Relation client\A ✓ Chronologie\A ✓ Éléments vérifiables";white-space:pre;position:absolute;left:22px;right:22px;top:62px;background:#fff;border-radius:13px;padding:18px;color:#17202a;font-size:12px;line-height:1.7;box-shadow:0 15px 35px rgba(30,80,140,.13)}
+.rd-card-visual.case{background:linear-gradient(135deg,#e8f6ef,#f8fcfa)}
+.rd-card-visual.case:after{content:"Dossier #RD-2408\A\A 07 éléments\A 03 points à vérifier\A Validation requise";white-space:pre;position:absolute;left:20px;right:20px;top:28px;background:#fff;border-radius:13px;padding:19px;color:#19241f;font-size:12px;line-height:1.55;box-shadow:0 15px 35px rgba(35,100,70,.12)}
+.rd-card-visual.control{background:linear-gradient(135deg,#121820,#26313d)}
+.rd-card-visual.control:before{content:"Review Defense";position:absolute;left:22px;top:23px;color:#fff;font-size:11px;font-weight:500}
+.rd-card-visual.control:after{content:"01  Analyse      ✓\A02  Décision      ✓\A03  Validation    •\A04  Suivi";white-space:pre;position:absolute;left:22px;right:22px;top:62px;border:1px solid rgba(255,255,255,.15);border-radius:13px;padding:20px;color:#fff;font-size:12px;line-height:2;background:rgba(255,255,255,.06)}
+.rd-card h3{font-size:17px;margin:15px 0 7px}
+.rd-card p{font-size:12px;line-height:1.5;color:var(--muted);margin:0 0 12px}
+.rd-card a{font-size:11px;color:var(--blue);font-weight:400}
+.rd-process{background:var(--soft);max-width:none}
+.rd-process-inner{max-width:var(--max);margin:auto;padding:92px 3.1vw}
+.rd-section-head{display:grid;grid-template-columns:1fr 1fr;gap:7vw}
+.rd-section-head p{font-size:16px;line-height:1.6;color:#505a65;max-width:580px;margin:4px 0}
+.rd-steps{margin-top:65px;border-top:1px solid #dfe3e7}
+.rd-step{display:grid;grid-template-columns:18% 1fr 1fr;gap:30px;padding:27px 0;border-bottom:1px solid #dfe3e7;align-items:start}
+.rd-step-num{font-size:12px;color:#6d7782;font-weight:500;letter-spacing:.05em}
+.rd-step h3{font-size:25px;font-weight:400;margin:0;letter-spacing:-.035em}
+.rd-step p{font-size:14px;line-height:1.55;color:#59636e;margin:0;max-width:540px}
+.rd-responsible{display:grid;grid-template-columns:.9fr 1.1fr;gap:7vw;align-items:center}
+.rd-responsible p{font-size:16px;line-height:1.6;color:var(--muted);max-width:500px;margin:28px 0}
+.rd-responsible-art{height:420px;border-radius:18px;overflow:hidden;position:relative;background:linear-gradient(135deg,#d9ebff,#eef7ff 48%,#dcecff)}
+.rd-responsible-art .window{position:absolute;left:12%;right:12%;top:13%;bottom:13%;background:#fff;border-radius:16px;box-shadow:0 25px 70px rgba(40,90,150,.2);padding:22px}
+.window-top{display:flex;gap:6px;margin-bottom:25px}
+.window-top i{width:8px;height:8px;border-radius:50%;background:#cbd4de}
+.window-title{font-size:10px;color:#65717d;margin-left:10px}
+.window-grid{display:grid;grid-template-columns:120px 1fr;gap:18px}
+.window-side{background:#f5f7f9;border-radius:10px;padding:14px;font-size:10px;color:#697481;display:flex;flex-direction:column;gap:13px}
+.window-side b{color:#17212b}
+.window-main{border:1px solid #edf0f3;border-radius:11px;padding:18px}
+.window-main small{font-size:8px;letter-spacing:.08em;color:#4c79b0;font-weight:500}
+.window-main h4{font-size:20px;letter-spacing:-.04em;margin:10px 0 20px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kpi{background:#f6f8fa;border-radius:9px;padding:12px}
+.kpi b{display:block;font-size:17px}.kpi span{font-size:8px;color:#73808c}
+.rd-final{background:#dff0ff}
+.rd-final-inner{max-width:var(--max);margin:auto;padding:92px 3.1vw;display:grid;grid-template-columns:1fr 330px;gap:70px;align-items:center}
+.rd-final h2{max-width:760px}
+.rd-final p{font-size:17px;line-height:1.55;color:#52616f;max-width:680px;margin:28px 0}
+.rd-phone{width:240px;height:470px;border:7px solid #101419;border-radius:35px;background:#f8fbff;padding:17px;justify-self:center;transform:rotate(2deg);box-shadow:25px 35px 75px rgba(40,100,150,.2)}
+.rd-phone-head{font-size:10px;font-weight:500;display:flex;justify-content:space-between}
+.rd-phone-title{text-align:center;font-size:14px;font-weight:500;margin-top:22px}
+.rd-bubble{margin-top:85px;background:#e2f0ff;border-radius:15px;padding:13px;font-size:10px;line-height:1.45}
+.rd-bubble.light{margin-top:9px;background:#fff}
+.rd-input{margin-top:115px;border:1px solid #dbe2e8;background:#fff;border-radius:99px;padding:10px;font-size:9px;color:#87929d}.rd-input b{float:right;color:#111}
+.rd-footer{border-top:1px solid #eee;padding:65px 3.1vw 35px;display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:50px}
+.rd-footer-brand{font-size:16px;font-weight:500}.rd-footer-col{display:flex;flex-direction:column;gap:9px;font-size:11px;color:#66717c}.rd-footer-col b{color:#111;margin-bottom:3px}
+.rd-footer small{grid-column:1/-1;color:#8a949e;font-size:10px;margin-top:30px}
+.rd-reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}.rd-reveal.is-visible{opacity:1;transform:none}
+@media(max-width:900px){
+.rd-nav,.rd-actions{display:none}.rd-menu{display:block;margin-left:auto}.rd-top{gap:14px}.rd-hero{height:64vw;min-height:430px}.rd-intro,.rd-section-head,.rd-responsible,.rd-final-inner{grid-template-columns:1fr}.rd-cards{grid-template-columns:repeat(2,1fr)}.rd-step{grid-template-columns:80px 1fr;gap:20px}.rd-step p{grid-column:2}.rd-final-inner{gap:45px}.rd-footer{grid-template-columns:1fr 1fr}
+}
+@media(max-width:580px){
+.rd-top{height:58px;padding:0 20px}.rd-hero{margin:0 20px;height:75vw;min-height:430px}.rd-hero-copy{left:7%;right:7%}.rd-hero h1{font-size:49px}.rd-hero p{font-size:14px}.rd-section,.rd-process-inner,.rd-final-inner{padding-left:20px;padding-right:20px}.rd-section{padding-top:72px;padding-bottom:72px}.rd-intro h2,.rd-responsible h2,.rd-final h2{font-size:44px}.rd-cards{grid-template-columns:1fr;margin-top:48px}.rd-card-visual{height:245px}.rd-step{grid-template-columns:1fr;gap:10px}.rd-step p{grid-column:auto}.rd-responsible-art{height:310px}.rd-responsible-art .window{left:7%;right:7%;padding:13px}.window-grid{grid-template-columns:85px 1fr}.window-side{font-size:8px}.window-main h4{font-size:16px}.rd-final-inner{padding-top:72px;padding-bottom:72px}.rd-footer{grid-template-columns:1fr;padding-left:20px;padding-right:20px}
+}
+body,button,input,textarea,select{font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}\n</style>
+<style>
+
+body,button,input,textarea,select{font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,h5,h6,p,a,button,label,small,strong,b,summary,input,textarea,select{font-weight:400!important;text-transform:none!important}
+@media(max-width:600px){}
+</style>
+<style>
+
+.services-hero h1,.services-intro h2,.service-copy h2,.services-cta h2{font-size:clamp(32px,4vw,52px)!important;line-height:1.08!important;font-weight:400!important;letter-spacing:-.018em!important}
+.services-lead{font-size:18px!important;line-height:1.5!important}
+.services-eyebrow,.service-number,.art-meta,.badge{font-size:12px!important;letter-spacing:.03em!important}
+.resources-grid .card h2,.dataset-list-title,.dataset-page h1,.dataset-card h2,.hero h1{font-weight:400!important;letter-spacing:-.018em!important}
+.resources-grid .card h2,.dataset-card h2{font-size:30px!important}
+.hero h1{font-size:clamp(40px,5vw,60px)!important}
+.hero-copy,.card p,.dataset-hero-copy p,.dataset-card p{font-size:17px!important;line-height:1.55!important}
+.explore,.dataset-card .overview{font-size:14px!important;font-weight:400!important}
+.catalogue-section-title{font-size:clamp(28px,3vw,42px)!important;font-weight:400!important}
+.catalogue-section-note{font-size:14px!important;line-height:1.5!important}
+.product-card h2{font-size:24px!important;font-weight:400!important}
+.brand,.meta,.price,.product-action,.footnote{font-weight:400!important}
+</style>
+</head>
+<body>
+<header class="rd-top">
+  <a class="rd-brand" href="/"><span class="rd-mark">◆</span> Review Defense</a>
+  <nav class="rd-nav" aria-label="Navigation principale">
+    <a href="/services">Services</a><a href="/fonctionnement" aria-current="page">Fonctionnement</a><a href="/resources">Resources</a><a href="/about">About</a><a href="/tarif">Tarif</a>
+  </nav>
+  <div class="rd-actions"><a class="rd-search" href="/resources">⌕</a><a class="rd-btn rd-btn-blue" href="/analyse-avis-google/">Analyser un avis</a></div>
+  <button class="rd-menu" aria-label="Menu">☰</button>
+</header>
+
+<main>
+  <section class="rd-hero">
+    <video class="rd-hero-video" autoplay muted loop playsinline preload="metadata" aria-label="Présentation de Review Defense"><source src="/assets/hero/video_artisans_sans_texte.mp4" type="video/mp4"></video>
+    <div class="rd-hero-copy">
+      <div class="rd-eyebrow">Review Defense · Fonctionnement</div>
+      <h1>Comprendre.<br>Analyser.<br>Décider.</h1>
+      <p>Une expérience pensée pour transformer une situation liée à un avis en dossier clair, structuré et toujours sous votre contrôle.</p>
+    </div>
+  </section>
+
+  <section class="rd-section rd-reveal">
+    <div class="rd-intro">
+      <div><div class="rd-eyebrow">Comment ça marche</div><h2>Une défense pensée comme un parcours simple.</h2></div>
+      <p>Review Defense rassemble les informations utiles au même endroit : avis, contexte, éléments disponibles, propositions et suivi. L’outil aide à analyser la situation et à préparer les prochaines étapes, tandis que les décisions importantes restent soumises à votre validation.</p>
+    </div>
+    <div class="rd-cards">
+      <article class="rd-card"><div class="rd-card-visual review"></div><h3>01 · Décrire la situation</h3><p>Présentez l’avis, son contexte et les éléments dont vous disposez. Le dossier commence avec les informations que vous choisissez de partager.</p><a href="/analyse-avis-google/">Commencer une analyse →</a></article>
+      <article class="rd-card"><div class="rd-card-visual analysis"></div><h3>02 · Analyser les faits</h3><p>Structurez les informations disponibles et distinguez les éléments vérifiables des points qui demandent encore un contrôle.</p><a href="/analyse-avis-google/">Voir l’analyse →</a></article>
+      <article class="rd-card"><div class="rd-card-visual case"></div><h3>03 · Construire le dossier</h3><p>Regroupez l’avis, son contexte, les éléments disponibles, les décisions et les informations de suivi.</p><a href="/services">Découvrir les services →</a></article>
+      <article class="rd-card"><div class="rd-card-visual control"></div><h3>04 · Valider et suivre</h3><p>Examinez les propositions, validez les étapes importantes et conservez une trace claire du dossier.</p><a href="/app">Accéder à l’espace →</a></article>
+    </div>
+  </section>
+
+  <section class="rd-process">
+    <div class="rd-process-inner rd-reveal">
+      <div class="rd-section-head">
+        <div><div class="rd-eyebrow">Le workflow</div><h2>De l’avis au dossier, étape par étape.</h2></div>
+        <p>Le parcours sépare l’analyse, la décision et l’action. Cette structure permet de garder un contexte lisible et d’éviter qu’une action importante soit déclenchée sans validation.</p>
+      </div>
+      <div class="rd-steps">
+        <div class="rd-step"><span class="rd-step-num">01 · Analyse</span><h3>Identifier ce qui mérite d’être vérifié</h3><p>Le contenu de l’avis, la relation avec le client, la chronologie et les éléments disponibles sont regroupés dans un même contexte pour faciliter l’examen.</p></div>
+        <div class="rd-step"><span class="rd-step-num">02 · Qualification</span><h3>Structurer les faits et les éléments</h3><p>Les informations utiles sont organisées pour faciliter la compréhension du dossier et préparer la suite.</p></div>
+        <div class="rd-step"><span class="rd-step-num">03 · Décision</span><h3>Préparer une action adaptée</h3><p>Review Defense peut préparer une prochaine étape, tandis que la décision importante reste visible et soumise à votre contrôle.</p></div>
+        <div class="rd-step"><span class="rd-step-num">04 · Validation</span><h3>Vous gardez le dernier mot</h3><p>Une action externe importante reste soumise à l’autorisation explicite prévue par le parcours.</p></div>
+        <div class="rd-step"><span class="rd-step-num">05 · Suivi</span><h3>Conserver l’historique</h3><p>Le dossier reste organisé pour permettre de comprendre ce qui a été analysé, décidé et validé.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rd-section rd-reveal">
+    <div class="rd-responsible">
+      <div>
+        <div class="rd-eyebrow">Contrôle humain</div>
+        <h2>L’automatisation prépare. Vous décidez.</h2>
+        <p>Le rôle de Review Defense est de vous faire gagner du temps dans l’analyse et l’organisation. Les décisions importantes restent sous contrôle humain, avec une présentation claire des éléments utiles au dossier.</p>
+        <a class="rd-btn rd-btn-dark" href="/services">Découvrir les services</a>
+      </div>
+      <div class="rd-responsible-art">
+        <div class="window">
+          <div class="window-top"><i></i><i></i><i></i><span class="window-title">Review Defense · Control Center</span></div>
+          <div class="window-grid">
+            <div class="window-side"><b>Review Defense</b><span>Vue d’ensemble</span><span>Avis</span><span>Dossiers</span><span>Preuves</span><span>Suivi</span></div>
+            <div class="window-main"><small>Control workspace</small><h4>Validation requise</h4><div class="kpis"><div class="kpi"><b>07</b><span>éléments</span></div><div class="kpi"><b>03</b><span>à vérifier</span></div><div class="kpi"><b>01</b><span>action</span></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rd-final rd-reveal">
+    <div class="rd-final-inner">
+      <div><div class="rd-eyebrow">Review Defense</div><h2>Commencez par un avis.<br>Construisez le dossier.</h2><p>Décrivez votre situation, analysez les éléments disponibles et préparez la suite depuis un espace unique.</p><a class="rd-btn rd-btn-dark" href="/analyse-avis-google/">Analyser un avis →</a></div>
+      <div class="rd-phone"><div class="rd-phone-head"><span>9:41</span><span>● ● ▪</span></div><div class="rd-phone-title">Review Defense</div><div class="rd-bubble">Votre analyse est prête. 3 éléments nécessitent votre attention.</div><div class="rd-bubble light">Une prochaine étape peut être préparée avant votre validation.</div><div class="rd-input">Décrivez un avis… <b>↑</b></div></div>
+    </div>
+  </section>
+</main>
+
+<footer class="rd-footer">
+  <div class="rd-footer-brand"><span class="rd-mark">◆</span> Review Defense</div>
+  <div class="rd-footer-col"><b>Produit</b><a href="/services">Services</a><a href="/fonctionnement">Fonctionnement</a></div>
+  <div class="rd-footer-col"><b>Ressources</b><a href="/resources">Guides</a><a href="/analyse-avis-google/">Analyser un avis</a></div>
+  <div class="rd-footer-col"><b>Compte</b><a href="/app">Connexion</a><a href="/tarif">Tarif</a></div>
+  <small>© 2026 Review Defense · Analyse, qualification et suivi des dossiers liés aux avis en ligne.</small>
+</footer>
+
+<script>
+(function(){
+  const items=[...document.querySelectorAll('.rd-reveal')];
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');io.unobserve(e.target)}}),{threshold:.12});
+    items.forEach(x=>io.observe(x));
+  }else{items.forEach(x=>x.classList.add('is-visible'))}
+  const menu=document.querySelector('.rd-menu');
+  menu?.addEventListener('click',()=>{document.querySelector('.rd-nav')?.classList.toggle('mobile-open')});
+})();
+</script>
+</body>
+</html>
