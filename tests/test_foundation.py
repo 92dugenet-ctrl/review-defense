@@ -130,7 +130,7 @@ def test_migrations_contract():
     files = sorted(MIGRATIONS.glob("*.sql"))
     assert len(files) == 33
     assert files[0].name == "001_initial.sql"
-    assert files[-1].name == "033_v641_client_hub_force_rls.sql"
+    assert files[-1].name == "033_v645_client_hub_force_rls.sql"
     sql = "\n".join(x.read_text() for x in files)
     for table in [
         "organizations",
