@@ -183,13 +183,11 @@ def test_postgres_oauth_state_rls_is_forced_and_consumed_atomically():
     if not dsn:
         pytest.skip("DATABASE_URL is not configured")
     psycopg = pytest.importorskip("psycopg")
+    from psycopg import sql
+
     conn = psycopg.connect(dsn)
+    role_name = "rd_oauth_rls_" + __import__("uuid").uuid4().hex
     try:
-        bypass = conn.execute(
-            "SELECT rolsuper OR rolbypassrls FROM pg_roles WHERE rolname=current_user"
-        ).fetchone()[0]
-        if bypass:
-            pytest.skip("DATABASE_URL uses a superuser or BYPASSRLS role")
         organization_id = conn.execute(
             "INSERT INTO organizations(name) VALUES(%s) RETURNING id",
             ("oauth-rls-test",),
@@ -200,6 +198,12 @@ def test_postgres_oauth_state_rls_is_forced_and_consumed_atomically():
         ).fetchone()[0]
         state_a = f"oauth-test-a-{organization_id}"
         state_b = f"oauth-test-b-{organization_id}"
+        conn.execute(sql.SQL("CREATE ROLE {} NOLOGIN").format(sql.Identifier(role_name)))
+        conn.execute(
+            sql.SQL("GRANT SELECT, INSERT, DELETE ON google_oauth_states TO {}").format(
+                sql.Identifier(role_name)
+            )
+        )
         conn.execute(
             "SELECT set_config('app.organization_id', %s, true)",
             (str(organization_id),),
@@ -211,6 +215,11 @@ def test_postgres_oauth_state_rls_is_forced_and_consumed_atomically():
             (state_a, organization_id, user_id, "verifier-a",
              state_b, organization_id, user_id, "verifier-b"),
         )
+        conn.execute(sql.SQL("SET LOCAL ROLE {}").format(sql.Identifier(role_name)))
+        bypass = conn.execute(
+            "SELECT rolsuper OR rolbypassrls FROM pg_roles WHERE rolname=current_user"
+        ).fetchone()[0]
+        assert not bypass
         conn.execute("SELECT set_config('app.organization_id', '', true)")
         conn.execute("SELECT set_config('app.google_oauth_state', %s, true)", (state_a,))
         visible = conn.execute(
@@ -232,4 +241,3 @@ def test_postgres_oauth_state_rls_is_forced_and_consumed_atomically():
     finally:
         conn.rollback()
         conn.close()
-
