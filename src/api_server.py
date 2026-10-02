@@ -1149,7 +1149,6 @@ class ReviewDefenseAPI:
                     raise APIError(422, "VALIDATION_ERROR", key + " is too long")
                 profile[key] = value or None
             if profile.get("website"):
-                from urllib.parse import urlsplit
                 parsed = urlsplit(profile["website"] if "://" in profile["website"] else "https://" + profile["website"])
                 if parsed.scheme not in {"http", "https"} or not parsed.netloc or "@" in parsed.netloc:
                     raise APIError(422, "VALIDATION_ERROR", "website must be a valid http(s) URL")
