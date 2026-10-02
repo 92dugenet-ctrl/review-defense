@@ -31,6 +31,8 @@ def test_compose_environments_use_the_image_startup_contract():
 
 def test_production_compose_keeps_existing_published_ports_and_proxy():
     assert '"80:80", "443:443"' in COMPOSE_STAGING
+    assert 'PORT: "8080"' in COMPOSE_STAGING
+    assert 'expose: ["8080"]' in COMPOSE_STAGING
     assert '"${PORT:-8080}:8080"' in COMPOSE_PRODUCTION
     assert 'TRUST_PROXY: "true"' in COMPOSE_STAGING
     assert 'TRUST_PROXY: "true"' in COMPOSE_PRODUCTION
