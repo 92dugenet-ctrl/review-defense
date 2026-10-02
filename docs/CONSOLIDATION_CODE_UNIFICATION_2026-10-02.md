@@ -79,7 +79,7 @@ Aucun test automatisé, typecheck, build, test navigateur, test de connexion ser
 
 ## Inventaire des branches examinées
 
-Les 29 références visibles ont été comparées à develop. develop est la base de cette consolidation ; main est en retard de 18 commits et n'a pas été utilisé comme base.
+Les 30 branches visibles au 3 octobre 2026 (develop et 29 autres branches, dont main) ont été inventoriées. develop est la base de cette consolidation ; au moment de cette vérification, main est en retard de 147 commits par rapport à develop et n'a pas été utilisé comme base. Les têtes des branches secondaires sont restées inchangées pendant la mise à jour documentaire.
 
 - Déjà intégrées ou identiques pour les fichiers concernés : audit/muse-modular-20260930, feat/about-editorial-muse-layout, content/front-copy-2026-09-30, frontend/client-admin-workspace, processing-architecture-staging.
 - Sources plus anciennes ou remplacées par les fichiers actuels de develop : archive/pre-core-reset-2026-09-28, audit/public-routes-cleanup, automation/revue-defense-006, chore/public-site-coherent-audit, content/front-copy-hourly-2026-10-01, feat/frontend-consistent-layout, feat/frontend-short-home, feat/v6-40-white-blue-premium, fix/v6-40-e2e-dashboard-assertion, tmp-commercial-rebuild, ui/v6-40-premium-console, ux/v640-premium-landing.
