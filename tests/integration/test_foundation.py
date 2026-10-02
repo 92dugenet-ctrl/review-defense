@@ -4,7 +4,7 @@ import pathlib
 
 from wsgi import app
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
+ROOT = pathlib.Path(__file__).resolve().parents[2]
 MIGRATIONS = ROOT / "migrations"
 FRONTEND = ROOT / "frontend"
 
@@ -128,9 +128,9 @@ def test_unknown_public_route_is_not_spa():
 
 def test_migrations_contract():
     files = sorted(MIGRATIONS.glob("*.sql"))
-    assert len(files) == 30
+    assert len(files) == 33
     assert files[0].name == "001_initial.sql"
-    assert files[-1].name == "030_v644_billing_account_state.sql"
+    assert files[-1].name == "033_v641_client_hub_force_rls.sql"
     sql = "\n".join(x.read_text() for x in files)
     for table in [
         "organizations",
