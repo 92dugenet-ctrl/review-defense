@@ -83,7 +83,7 @@ const LEGACY_CONSOLE_VIEW_CONTRACT=[['dashboard'],['reviews'],['cases'],['worklo
 const CLIENT_CONSOLE_LEGACY_CONTRACT="'dashboard','reviews','cases','evidence','alerts','analytics'";
 const viewMeta={
  dashboard:['Vue d’ensemble','Ce qui nécessite votre attention maintenant'],
- client-monitoring:['Mon espace','Profil de votre organisation, documents et connexion Google Business Profile'],
+ 'client-monitoring':['Mon espace','Profil de votre organisation, documents et connexion Google Business Profile'],
  reviews:['Avis','Examiner les avis et qualifier ceux qui nécessitent un dossier'],
  cases:['Dossiers','Suivre chaque dossier, ses preuves et sa prochaine action'],
  evidence:['Preuves','Conserver et vérifier les éléments probants'],
@@ -108,7 +108,7 @@ function shell(){
  const visible=visibleNavItems();
  document.body.classList.add('console-mode');document.body.innerHTML=`<div id="app"><aside class="sidebar" id="console-sidebar" aria-label="Navigation principale"><div class="brand">REVIEW<span>DEFENSE</span></div><button class="workspace-switcher" type="button" data-action="command-palette" aria-label="Ouvrir le sélecteur d’espace de travail"><span>⌘</span> Workspace <small>⌘K</small></button><nav id="nav">${visible.map(([id,label])=>`<button type="button" data-view="${id}" data-nav="${id}" aria-label="Ouvrir ${label}">${label}</button>`).join('')}</nav></aside><main><header><div><div class="eyebrow">REVIEW DEFENSE</div><h1 id="title">Dashboard</h1><p id="subtitle">Vue opérationnelle</p></div><div class="header-actions"><button class="icon-btn mobile-nav-toggle" type="button" data-action="mobile-nav" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="console-sidebar">☰</button><button class="command-btn" type="button" onclick="openCommandPalette()">Rechercher <kbd>⌘ K</kbd></button><button id="logout" class="ghost">Déconnexion</button></div></header><section id="content"></section></main></div><div id="toast" role="status" aria-live="polite"></div>`}
 const views={
- client-monitoring:async()=>{
+ 'client-monitoring':async()=>{
    const [profileData,documentsData,googleData]=await Promise.all([api('/v1/client/profile'),api('/v1/client/documents'),api('/v1/integrations/google/locations')]);
    const p=profileData.profile||{},docs=documentsData.items||[],locations=googleData.items||[],connections=googleData.connections||[];
    const canEdit=['OWNER','ADMIN','CLIENT'].includes(state.me?.role);
