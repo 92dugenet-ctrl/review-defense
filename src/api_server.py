@@ -8,6 +8,7 @@ keeping the route/auth/error/idempotency contracts.
 from __future__ import annotations
 
 import os
+import re
 
 import base64
 import json
@@ -1147,7 +1148,14 @@ class ReviewDefenseAPI:
                     raise APIError(422, "VALIDATION_ERROR", key + " is too long")
                 profile[key] = value or None
             if profile.get("website"):
-                parsed = urlsplit(profile["website"] if "://" in profile["website"] else "https://" + profile["website"])
+                website = profile["website"]
+                # A bare hostname may omit its scheme, but a URI scheme such as
+                # javascript: must never be reinterpreted as a hostname.
+                scheme_like = re.match(r"^[a-z][a-z0-9+.-]*:", website, re.IGNORECASE)
+                host_with_port = re.match(r"^[a-z0-9.-]+:\\d+(?:/|$)", website, re.IGNORECASE)
+                if scheme_like and "://" not in website and not host_with_port:
+                    raise APIError(422, "VALIDATION_ERROR", "website must be a valid http(s) URL")
+                parsed = urlsplit(website if "://" in website else "https://" + website)
                 if parsed.scheme not in {"http", "https"} or not parsed.netloc or "@" in parsed.netloc:
                     raise APIError(422, "VALIDATION_ERROR", "website must be a valid http(s) URL")
             self.store.organization_profiles[user.organization_id] = profile
