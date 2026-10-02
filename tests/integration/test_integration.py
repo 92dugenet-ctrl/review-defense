@@ -47,7 +47,7 @@ def test_postgres_schema_and_rls_contract():
     dsn = os.environ["DATABASE_URL"]
     with psycopg.connect(dsn) as conn:
         assert conn.execute("SELECT count(*) FROM schema_migrations").fetchone()[0] == 33
-        assert conn.execute("SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1").fetchone()[0] == "033_v641_client_hub_force_rls"
+        assert conn.execute("SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1").fetchone()[0] == "033_v645_client_hub_force_rls"
         rls = conn.execute("""
             SELECT count(*) FROM pg_class c
             JOIN pg_namespace n ON n.oid=c.relnamespace
