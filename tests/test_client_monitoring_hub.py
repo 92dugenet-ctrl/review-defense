@@ -1,6 +1,7 @@
 import base64
 import io
 import json
+import os
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
@@ -176,3 +177,59 @@ def test_client_hub_is_wired_into_the_served_workspace():
     assert 'post("/v1/integrations/google/start",{})' in workspace_js
     assert '/v1/client/documents/' in workspace_js
     assert 'workspace.js' in workspace_html
+
+def test_postgres_oauth_state_rls_is_forced_and_consumed_atomically():
+    dsn = os.getenv("DATABASE_URL", "").strip()
+    if not dsn:
+        pytest.skip("DATABASE_URL is not configured")
+    psycopg = pytest.importorskip("psycopg")
+    conn = psycopg.connect(dsn)
+    try:
+        bypass = conn.execute(
+            "SELECT rolsuper OR rolbypassrls FROM pg_roles WHERE rolname=current_user"
+        ).fetchone()[0]
+        if bypass:
+            pytest.skip("DATABASE_URL uses a superuser or BYPASSRLS role")
+        organization_id = conn.execute(
+            "INSERT INTO organizations(name) VALUES(%s) RETURNING id",
+            ("oauth-rls-test",),
+        ).fetchone()[0]
+        user_id = conn.execute(
+            "INSERT INTO users(email,password_hash) VALUES(%s,%s) RETURNING id",
+            (f"oauth-rls-{organization_id}@example.test", "test-hash"),
+        ).fetchone()[0]
+        state_a = f"oauth-test-a-{organization_id}"
+        state_b = f"oauth-test-b-{organization_id}"
+        conn.execute(
+            "SELECT set_config('app.organization_id', %s, true)",
+            (str(organization_id),),
+        )
+        conn.execute(
+            "INSERT INTO google_oauth_states(state,organization_id,user_id,code_verifier,expires_at) "
+            "VALUES (%s,%s,%s,%s,now()+interval '10 minutes'), "
+            "(%s,%s,%s,%s,now()+interval '10 minutes')",
+            (state_a, organization_id, user_id, "verifier-a",
+             state_b, organization_id, user_id, "verifier-b"),
+        )
+        conn.execute("SELECT set_config('app.organization_id', '', true)")
+        conn.execute("SELECT set_config('app.google_oauth_state', %s, true)", (state_a,))
+        visible = conn.execute(
+            "SELECT state FROM google_oauth_states ORDER BY state"
+        ).fetchall()
+        assert visible == [(state_a,)]
+        consumed = conn.execute(
+            "DELETE FROM google_oauth_states WHERE state=%s RETURNING state,organization_id,user_id,code_verifier",
+            (state_a,),
+        ).fetchone()
+        assert consumed == (state_a, organization_id, user_id, "verifier-a")
+        assert conn.execute(
+            "SELECT count(*) FROM google_oauth_states WHERE state=%s", (state_a,)
+        ).fetchone()[0] == 0
+        conn.execute("SELECT set_config('app.google_oauth_state', %s, true)", (state_b,))
+        assert conn.execute(
+            "SELECT state FROM google_oauth_states"
+        ).fetchall() == [(state_b,)]
+    finally:
+        conn.rollback()
+        conn.close()
+
