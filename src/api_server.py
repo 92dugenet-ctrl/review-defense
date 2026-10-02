@@ -665,7 +665,6 @@ class ReviewDefenseAPI:
             return self._json(200 if result.status == "ok" else 503, {"status": result.status, "service": "review-defense", "version": "6.40", "checks": result.checks, "checked_at": result.checked_at})
         if method == "GET" and path == "/metrics":
             # Prometheus-compatible metrics contain only aggregate operational data.
-            import os
             configured = os.getenv("REVIEW_DEFENSE_METRICS_TOKEN")
             supplied = environ.get("HTTP_X_METRICS_TOKEN")
             if supplied is None:
@@ -716,7 +715,6 @@ class ReviewDefenseAPI:
                         self.store.audit_event(organization_id, None, "PASSWORD_RECOVERY_EMAIL_SENT", f"user:{user.user_id}")
                     except RecoveryEmailError as exc:
                         self.store.audit_event(organization_id, None, "PASSWORD_RECOVERY_EMAIL_FAILED", f"user:{user.user_id}", error=str(exc))
-                import os
                 if os.getenv("REVIEW_DEFENSE_EXPOSE_RECOVERY_TOKEN", "false").lower() == "true" and self.config.environment != "production":
                     return self._json(200, {"status":"requested", "recovery_token":raw, "expires_at":expires.isoformat()})
             return self._json(200, {"status":"requested"})
