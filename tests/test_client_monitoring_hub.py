@@ -1,6 +1,7 @@
 import base64
 import io
 import json
+from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
 import pytest
@@ -156,3 +157,20 @@ def test_google_selection_rejects_foreign_location(app, monkeypatch):
 def test_google_oauth_start_requires_authorized_role(app):
     status, _, _ = call(app, "POST", "/v1/integrations/google/start", {}, token="viewer")
     assert status == 403
+
+def test_oauth_callback_rls_is_limited_to_the_exact_signed_state():
+    root = Path(__file__).resolve().parents[1]
+    migration = (root / "migrations/032_v641_google_oauth_state_callback_rls.sql").read_text(encoding="utf-8")
+    repository = (root / "src/postgres_api_repository.py").read_text(encoding="utf-8")
+    assert "FOR SELECT" in migration and "FOR DELETE" in migration
+    assert "state = current_setting('app.google_oauth_state', true)" in migration
+    assert "set_config('app.google_oauth_state', %s, true)" in repository
+
+
+def test_client_hub_frontend_uses_authenticated_google_start_and_downloads_documents():
+    root = Path(__file__).resolve().parents[1]
+    app_js = (root / "frontend/assets/app.js").read_text(encoding="utf-8")
+    assert "client-monitoring:async" in app_js
+    assert "api('/v1/integrations/google/start',{method:'POST'" in app_js
+    assert "/v1/client/documents/" in app_js
+    assert "downloadClientDocument" in app_js
