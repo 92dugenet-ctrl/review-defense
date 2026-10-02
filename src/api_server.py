@@ -1034,7 +1034,7 @@ class ReviewDefenseAPI:
         # All v1 routes are tenant-bound to the authenticated user. There is no organization_id override.
 
 
-        if method == "GET" and path == "/v1/integrations/google/start":
+        if method in {"GET", "POST"} and path == "/v1/integrations/google/start":
             self._require_role(user, "OWNER", "ADMIN", "CLIENT")
             oauth_client, state_manager = self._google_oauth()
             authorization = state_manager.create(client_id=oauth_client.client_id, redirect_uri=self.config.public_base_url.rstrip("/") + "/v1/integrations/google/callback")
@@ -1046,6 +1046,8 @@ class ReviewDefenseAPI:
             if self.repository is not None and hasattr(self.repository, "save_google_oauth_state"):
                 self.repository.save_google_oauth_state(user.organization_id, authorization.state, user.user_id, authorization.code_verifier, expires_at)
             self.store.audit_event(user.organization_id, user.user_id, "GOOGLE_OAUTH_STARTED", "google_oauth")
+            if method == "POST":
+                return self._json(200, {"authorization_url": authorization.authorization_url}, {"Cache-Control": "no-store", "Pragma": "no-cache"})
             return 302, {"Location": authorization.authorization_url, "Cache-Control": "no-store", "Pragma": "no-cache"}, b""
 
         if method == "GET" and path == "/v1/integrations/google/locations":
