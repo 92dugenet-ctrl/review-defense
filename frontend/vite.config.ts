@@ -14,6 +14,12 @@ export default defineConfig({
     strictPort: true
   },
   build: {
-    sourcemap: true
+    sourcemap: true,
+    rollupOptions: {
+      input: {
+        legacy: fileURLToPath(new URL("./index.html", import.meta.url)),
+        react: fileURLToPath(new URL("./src/main.tsx", import.meta.url))
+      }
+    }
   }
 });
