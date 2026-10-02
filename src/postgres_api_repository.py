@@ -640,6 +640,7 @@ class PostgresAPIRepository(PostgresRepository):
     def save_google_oauth_state(self, organization_id: str, state: str, user_id: str, code_verifier: str, expires_at: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
+                cur.execute("DELETE FROM google_oauth_states WHERE organization_id=%s AND expires_at < now()", (organization_id,))
                 cur.execute("INSERT INTO google_oauth_states(state,organization_id,user_id,code_verifier,expires_at) VALUES(%s,%s,%s,%s,%s) ON CONFLICT(state) DO UPDATE SET code_verifier=EXCLUDED.code_verifier,expires_at=EXCLUDED.expires_at", (state,organization_id,user_id,code_verifier,expires_at))
 
     def consume_google_oauth_state(self, organization_id: str, state: str):
