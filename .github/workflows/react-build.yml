@@ -6,6 +6,7 @@ on:
     paths:
       - "frontend/src/**"
       - "frontend/package.json"
+      - "frontend/index.html"
       - "frontend/vite.config.ts"
       - "frontend/tsconfig*.json"
       - ".github/workflows/react-build.yml"
