@@ -1092,11 +1092,21 @@ class ReviewDefenseAPI:
             access_token, connection = self._google_access_token(user.organization_id, connection_id)
             client = GoogleBusinessProfileClient(organization_id=user.organization_id, access_token=access_token)
             try:
-                accounts, _ = client.list_accounts()
+                accounts, account_page = client.list_accounts()
+                pages = 0
+                while account_page and pages < 9:
+                    more, account_page = client.list_accounts(page_token=account_page)
+                    accounts += more
+                    pages += 1
                 account = next((x for x in accounts if x.name == account_id), None)
                 if account is None:
                     raise APIError(403, "GOOGLE_LOCATION_FORBIDDEN", "Google account does not belong to this connection")
-                locations, _ = client.list_locations(account_id)
+                locations, location_page = client.list_locations(account_id)
+                pages = 0
+                while location_page and pages < 9:
+                    more, location_page = client.list_locations(account_id, page_token=location_page)
+                    locations += more
+                    pages += 1
                 location = next((x for x in locations if x.name == location_id), None)
                 if location is None:
                     raise APIError(403, "GOOGLE_LOCATION_FORBIDDEN", "Google location does not belong to this account")
@@ -1162,7 +1172,7 @@ class ReviewDefenseAPI:
             content_type = str(body.get("content_type", "")).strip().lower()
             encoded = str(body.get("content_base64", "")).strip()
             category = str(body.get("category", "GENERAL")).strip().upper()
-            if not filename or len(filename) > 255 or filename != os.path.basename(filename) or "/" in filename or "\\\\" in filename:
+            if not filename or len(filename) > 255 or filename != os.path.basename(filename) or "/" in filename or "\\" in filename:
                 raise APIError(422, "VALIDATION_ERROR", "filename is invalid")
             if not encoded or len(encoded) > ((MAX_UPLOAD_BYTES + 2) // 3) * 4 + 8:
                 raise APIError(413, "PAYLOAD_TOO_LARGE", "document exceeds the upload limit")
