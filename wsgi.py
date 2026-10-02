@@ -1,15 +1,15 @@
-"""Single production WSGI entrypoint for the API and standalone frontend.
+"""Single production WSGI entrypoint for the API and public/client frontend.
 
-The frontend is the static application in the frontend/ directory. The API
-remains available under /v1/* and operational endpoints stay at their
-canonical root paths.
+The API remains available under /v1/* and operational endpoints stay at their
+canonical root paths. Public SEO pages are rendered by src.seo_site; the
+existing workspace shell continues to serve authenticated client/admin flows.
 """
-
 from pathlib import Path
+from urllib.parse import parse_qs
 import mimetypes
 
+from src import seo_site
 from src.api_server import create_app
-
 
 _application = create_app()
 
@@ -17,32 +17,68 @@ ROOT = Path(__file__).resolve().parent
 FRONTEND_ROOT = (ROOT / "frontend").resolve()
 _API_PREFIXES = ("/v1/",)
 _NON_API_PATHS = {"/health", "/healthz", "/metrics", "/ready"}
-_FRONTEND_FILES = {"/index.html", "/styles.css", "/script.js", "/workspace.css", "/workspace.js", "/workspace.html"}
+_FRONTEND_FILES = {
+    "/index.html", "/styles.css", "/script.js",
+    "/workspace.css", "/workspace.js", "/workspace.html",
+}
 _ROUTE_PAGES = {
-    "/services": "services.html",
-    "/services/": "services.html",
-    "/services.html": "services.html",
-    "/fonctionnement": "fonctionnement.html",
-    "/fonctionnement/": "fonctionnement.html",
-    "/fonctionnement.html": "fonctionnement.html",
-    "/resources": "resources.html",
-    "/resources/": "resources.html",
-    "/resources.html": "resources.html",
-    "/about": "about.html",
-    "/about/": "about.html",
-    "/about.html": "about.html",
-    "/tarif": "tarif.html",
-    "/tarif/": "tarif.html",
-    "/tarif.html": "tarif.html",
     "/client": "workspace.html",
     "/client/": "workspace.html",
     "/admin": "workspace.html",
     "/admin/": "workspace.html",
+    "/app": "workspace.html",
+    "/app/": "workspace.html",
+    "/connexion": "workspace.html",
+    "/inscription": "workspace.html",
+    "/verify-email": "workspace.html",
+    "/reset-password": "workspace.html",
+    "/accept-invitation": "workspace.html",
+    "/conformite/": "index.html",
+    "/mentions-legales/": "index.html",
+    "/confidentialite/": "index.html",
+    "/cgv/": "index.html",
+    "/cgu/": "index.html",
+    "/cookies/": "index.html",
+    "/securite/": "index.html",
+    "/conservation-donnees/": "index.html",
+    "/droits-rgpd/": "index.html",
+    "/violation-donnees/": "index.html",
+    "/sous-traitants/": "index.html",
+    "/ia-et-controle-humain/": "index.html",
+    "/about": "about.html",
+    "/about/": "about.html",
+    "/about.html": "about.html",
+}
+_QUERY_REDIRECTS = {
+    "features": "/produit/",
+    "product": "/produit/",
+    "how": "/comment-ca-marche/",
+    "pricing": "/tarifs/",
+    "resources": "/ressources/",
+}
+_PATH_REDIRECTS = {
+    "/login": "/app",
+    "/services": "/services/",
+    "/services.html": "/services/",
+    "/fonctionnement": "/comment-ca-marche/",
+    "/fonctionnement.html": "/comment-ca-marche/",
+    "/resources": "/ressources/",
+    "/resources/": "/ressources/",
+    "/resources.html": "/ressources/",
+    "/ressources": "/ressources/",
+    "/tarif": "/tarifs/",
+    "/tarif/": "/tarifs/",
+    "/tarif.html": "/tarifs/",
+    "/contact": "/contact/",
+    "/produit": "/produit/",
+    "/tarifs": "/tarifs/",
+    "/comment-ca-marche": "/comment-ca-marche/",
+    "/google-refuse-de-supprimer-mon-faux-avis-que-faire/": "/google-refuse-de-supprimer-mon-faux-avis/",
+    "/pourquoi-mon-avis-google-reste-en-ligne-conversationnel/": "/pourquoi-mon-avis-google-reste-en-ligne/",
 }
 
 
 def _redirect(location, start_response):
-    body = b""
     start_response(
         "301 Moved Permanently",
         [
@@ -51,7 +87,7 @@ def _redirect(location, start_response):
             ("Cache-Control", "no-store"),
         ],
     )
-    return [body]
+    return [b""]
 
 
 def _json_404(start_response):
@@ -70,8 +106,23 @@ def _json_404(start_response):
     return [body]
 
 
+def _seo_response(path, start_response):
+    rendered = seo_site.render(path)
+    if rendered is None:
+        return None
+    status, headers, body = rendered
+    phrases = {200: "OK", 301: "Moved Permanently", 404: "Not Found"}
+    response_headers = list(headers.items())
+    response_headers.append(("Content-Length", str(len(body))))
+    response_headers.append(("X-Content-Type-Options", "nosniff"))
+    response_headers.append(("X-Frame-Options", "DENY"))
+    response_headers.append(("Referrer-Policy", "strict-origin-when-cross-origin"))
+    start_response(f"{status} {phrases.get(status, 'OK')}", response_headers)
+    return [body]
+
+
 def _frontend_response(path, start_response):
-    if path in {"/", "/app", "/app/"}:
+    if path == "/":
         relative = "index.html"
     elif path in _ROUTE_PAGES:
         relative = _ROUTE_PAGES[path]
@@ -105,7 +156,7 @@ def _frontend_response(path, start_response):
         [
             ("Content-Type", content_type),
             ("Content-Length", str(len(body))),
-            ("Cache-Control", "no-cache" if candidate.name == "index.html" else "public, max-age=3600"),
+            ("Cache-Control", "no-cache" if candidate.name in {"index.html", "workspace.html"} else "public, max-age=3600"),
             ("X-Content-Type-Options", "nosniff"),
             ("X-Frame-Options", "DENY"),
             ("Referrer-Policy", "strict-origin-when-cross-origin"),
@@ -119,8 +170,22 @@ def app(environ, start_response):
     method = environ.get("REQUEST_METHOD", "GET").upper()
 
     if method == "GET":
-        if path in {"/services/", "/resources/", "/services.html", "/resources.html", "/ressources/"}:
-            return _redirect("/resources" if path in {"/resources/", "/resources.html", "/ressources/"} else "/services", start_response)
+        query = parse_qs(environ.get("QUERY_STRING", ""), keep_blank_values=True)
+        legacy_page = query.get("page", [None])[0]
+        if path == "/" and legacy_page in _QUERY_REDIRECTS:
+            return _redirect(_QUERY_REDIRECTS[legacy_page], start_response)
+
+        redirect = _PATH_REDIRECTS.get(path)
+        if redirect:
+            return _redirect(redirect, start_response)
+
+        # Canonical public SEO pages and the SEO network take precedence over
+        # legacy static-page aliases so only one public URL family is indexed.
+        if seo_site.is_seo_path(path):
+            response = _seo_response(path, start_response)
+            if response is not None:
+                return response
+
         frontend = _frontend_response(path, start_response)
         if frontend is not None:
             return frontend
