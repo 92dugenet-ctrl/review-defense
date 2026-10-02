@@ -116,9 +116,9 @@ def test_google_oauth_callback_locations_selection_and_replay_protection(app, mo
     import src.api_server as api_module
     monkeypatch.setattr(api_module, "GoogleOAuthClient", FakeOAuthClient)
     monkeypatch.setattr(api_module, "GoogleBusinessProfileClient", FakeGoogleClient)
-    status, headers, _ = call(app, "GET", "/v1/integrations/google/start", token="owner")
-    assert status == 302
-    authorization_url = headers["Location"]
+    status, _, data = call(app, "POST", "/v1/integrations/google/start", {}, token="owner")
+    assert status == 200
+    authorization_url = data["authorization_url"]
     assert "code_challenge_method=S256" in authorization_url
     state = parse_qs(urlsplit(authorization_url).query)["state"][0]
     status, headers, _ = call(app, "GET", "/v1/integrations/google/callback", query="code=auth-code&state=" + state)
@@ -142,8 +142,9 @@ def test_google_selection_rejects_foreign_location(app, monkeypatch):
     import src.api_server as api_module
     monkeypatch.setattr(api_module, "GoogleOAuthClient", FakeOAuthClient)
     monkeypatch.setattr(api_module, "GoogleBusinessProfileClient", FakeGoogleClient)
-    status, headers, _ = call(app, "GET", "/v1/integrations/google/start", token="owner")
-    state = parse_qs(urlsplit(headers["Location"]).query)["state"][0]
+    status, _, data = call(app, "POST", "/v1/integrations/google/start", {}, token="owner")
+    assert status == 200
+    state = parse_qs(urlsplit(data["authorization_url"]).query)["state"][0]
     call(app, "GET", "/v1/integrations/google/callback", query="code=auth-code&state=" + state)
     connection_id = next(iter(app.store.google_connections))[1]
     status, _, _ = call(app, "POST", "/v1/integrations/google/select-location",
@@ -153,5 +154,5 @@ def test_google_selection_rejects_foreign_location(app, monkeypatch):
 
 
 def test_google_oauth_start_requires_authorized_role(app):
-    status, _, _ = call(app, "GET", "/v1/integrations/google/start", token="viewer")
+    status, _, _ = call(app, "POST", "/v1/integrations/google/start", {}, token="viewer")
     assert status == 403
