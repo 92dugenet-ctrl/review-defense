@@ -2,120 +2,81 @@
 
 > Branche de référence : `develop`
 >
-> Ce guide explique comment se repérer dans le dépôt. Les explications de détail
-> doivent également se trouver dans les fichiers sources, au plus près des blocs concernés.
+> Les explications de détail doivent se trouver dans les fichiers sources, au plus près des blocs concernés.
 
 ## Architecture réellement exécutée
 
-Le projet comporte des zones de destination et des chemins historiques encore actifs.
-Ne pas supposer qu'un répertoire modulaire est automatiquement le code exécuté.
-
-| Élément | Rôle dans l'exécution |
+| Élément | Rôle |
 | --- | --- |
-| `scripts/start_production.sh` | Contrôle la configuration, applique les migrations, puis lance Gunicorn. |
-| `scripts/production_check.py` | Vérifie les prérequis de production avant le démarrage. |
-| `scripts/migrate.py` | Applique les fichiers `migrations/*.sql` dans PostgreSQL. |
-| `wsgi.py` | Route les requêtes HTTP vers SEO, fichiers frontend, API et endpoints opérationnels. |
-| `src/api_server.py` | Construit l'application API et ses services. |
-| `src/production_config.py` | Charge les paramètres de l'application et valide les prérequis runtime. |
-| `src/deployment.py` | Décrit l'URL publique, la confiance proxy et les en-têtes de sécurité. |
-| `frontend/src/main.tsx` | Monte l'application React dans le navigateur. |
-| `frontend/vite.config.ts` | Configure les entrées HTML, l'alias de sources et la compilation React. |
-| `Dockerfile` | Compile les ressources frontend et construit l'image backend Python. |
-| `docker-compose*.yml` | Décrit les services PostgreSQL, application et proxy selon l'environnement. |
+| `scripts/start_production.sh` | Contrôle la configuration, applique les migrations, lance Gunicorn. |
+| `scripts/production_check.py` | Vérifie les prérequis de production. |
+| `scripts/migrate.py` | Applique `migrations/*.sql`. |
+| `wsgi.py` | Route HTTP vers SEO, frontend, API et endpoints opérationnels. |
+| `src/api_server.py` | Construit l'application API courante. |
+| `src/production_config.py` | Charge et valide la configuration runtime. |
+| `src/deployment.py` | Décrit URL publique, proxy et en-têtes de sécurité. |
+| `frontend/src/main.tsx` | Monte React depuis `react.html`. |
+| `frontend/vite.config.ts` | Configure les deux entrées HTML, alias et Vite. |
 
-## Parcours de démarrage en production
+## Démarrage production
 
 ```text
-Docker / plateforme
-  └─ Dockerfile : image Python + frontend compilé
-      └─ scripts/start_production.sh
-          ├─ scripts/production_check.py
-          │   ├─ src.production_config.ProductionConfig
-          │   └─ src.deployment.DeploymentConfig
-          ├─ scripts/migrate.py
-          │   └─ migrations/*.sql → PostgreSQL
-          └─ Gunicorn
-              └─ wsgi:app
-                  ├─ src.api_server.create_app
-                  ├─ src.seo_site (pages SEO)
-                  └─ frontend/ (ressources et shells web)
+scripts/start_production.sh
+  → scripts/production_check.py
+  → scripts/migrate.py → migrations/*.sql
+  → Gunicorn → wsgi:app
+      ├─ src.api_server.create_app
+      ├─ src.seo_site
+      └─ frontend/ (pages et ressources web)
 ```
 
-## Parcours de démarrage React
+## Deux parcours frontend
 
-```text
-Vite / build frontend
-  └─ frontend/react.html
-      └─ frontend/src/main.tsx
-          ├─ AuthProvider
-          ├─ RouterProvider
-          └─ styles globaux
-```
+- `frontend/index.html` : site HTML historique servi à la racine par WSGI.
+- `frontend/react.html` : shell React qui charge `src/main.tsx`, puis `AuthProvider` et `RouterProvider`.
 
-Le frontend React et les pages HTML historiques coexistent. Le routage WSGI
-et les entrées Vite ne sont pas un seul et même mécanisme.
+Le routage WSGI, le rendu SEO, les pages statiques historiques et les routes React sont des mécanismes distincts. Voir [l'audit frontend](../../frontend/src/DEPENDENCY_AUDIT.md).
 
-## Répertoires du dépôt
+## Répertoires
 
 | Répertoire | Rôle |
 | --- | --- |
-| `frontend/` | Interface web, ressources publiques, espace applicatif et code React. |
-| `src/` | Implémentation Python actuellement importée par WSGI. |
-| `backend/` | Organisation cible par domaines et points de compatibilité ; vérifier chaque import avant usage. |
-| `database/` | Documentation et organisation cible du schéma. |
-| `migrations/` | Migrations SQL lues par le script opérationnel. |
+| `frontend/` | Site, ressources publiques, workspace historique et application React. |
+| `src/` | Implémentation Python importée par le WSGI courant. |
+| `backend/` | Arborescence parallèle par domaines et points de compatibilité ; vérifier chaque import. |
+| `database/` | Schéma et organisation documentaire cible ; ne pas présumer que ses migrations sont celles du démarrage. |
+| `migrations/` | SQL lu par `scripts/migrate.py`. |
 | `admin/` | Interfaces et fonctions réservées à l'administration. |
 | `docs/` | Documentation fonctionnelle, technique, juridique et sécurité. |
 | `.github/workflows/` | Automatisations GitHub Actions. |
-| `infrastructure/` | Documentation et zones cibles d'organisation de l'infrastructure. |
-| `monitoring/` | Configuration de supervision. |
 | `scripts/` | Démarrage, migration, maintenance et opérations. |
 
 ## Comment lire une fonctionnalité
 
-1. Repérer la page ou le composant dans le frontend réellement utilisé.
-2. Suivre l'appel au client HTTP et les données transmises.
-3. Retrouver la route API dans l'application WSGI/API.
-4. Suivre les services métier appelés et les règles qu'ils appliquent.
-5. Identifier le repository ou le stockage qui lit et écrit les données.
-6. Relier les opérations aux tables et migrations SQL correspondantes.
-7. Vérifier les autorisations et les effets de bord aux frontières des modules.
+1. Repérer la page dans le frontend réellement servi.
+2. Suivre le client HTTP et les données transmises.
+3. Retrouver la route dans `src.api_server`.
+4. Suivre les services métier et leurs règles.
+5. Identifier repository et stockage.
+6. Relier les opérations aux migrations réellement appliquées.
+7. Vérifier workers, scripts, imports indirects et frontières de sécurité.
 
-## Configuration
+## Convention de documentation
 
-Les variables sont fournies par l'environnement d'exécution, généralement Docker/Compose
-ou la plateforme d'hébergement. `.env.example` donne un modèle, pas des secrets utilisables.
-Les modules `src/production_config.py`, `src/deployment.py` et `src/config.py`
-ont des responsabilités distinctes : lire leurs commentaires avant de modifier une variable.
-
-## Convention de documentation dans le code
-
-- **Fichier** : rôle, périmètre, point d'entrée et relations importantes.
-- **Classe** : responsabilité, données portées et dépendances.
-- **Fonction** : objectif, paramètres, résultat, effets de bord et erreurs.
-- **Bloc non évident** : raison de l'ordre des opérations, règle métier ou contrainte.
-- **Flux inter-modules** : origine des données, transformation, destination et sécurité.
+- **Fichier** : rôle, périmètre, entrée et relations importantes.
+- **Classe** : responsabilité, données et dépendances.
+- **Fonction** : objectif, paramètres, résultat, effets et erreurs.
+- **Bloc non évident** : raison de l'ordre des opérations, règle ou contrainte.
+- **Flux inter-modules** : origine, transformation, destination et sécurité.
 
 Les commentaires doivent expliquer l'intention et les liens, pas reformuler chaque ligne.
-Ne pas inventer de comportement ni documenter de secrets. Pour les fichiers générés,
-documenter la source ou la commande de génération plutôt que le résultat compilé.
 
-## Contrôle de documentation
+## Avant de déclarer un module inutilisé
 
-Les modifications de ce chantier sont documentaires. La revue porte sur les différences Git,
-les imports et références visibles, la cohérence des chemins, les commentaires et les longueurs
-de lignes. Aucun test, build, suite de tests ou workflow de test ne doit être exécuté.
+Consulter [l'audit des modules inutilisés et redondants](./UNUSED_AND_REDUNDANT_MODULES_AUDIT.md). L'absence d'import direct ne prouve pas l'absence d'usage : examiner scripts, imports dynamiques, routes, HTML, CSS, workflows et configurations d'hébergement.
 
+## Contrôle documentaire
 
-## Architecture métier transversale
+La revue porte sur les diffs, imports et références visibles, chemins, commentaires et longueurs de lignes. Aucun test, build, typecheck, suite de tests ou workflow de test ne doit être exécuté.
 
-Pour suivre les parcours complets entre l'interface, l'API, les services métier, les intégrations et la persistance, consulter [BUSINESS_ARCHITECTURE.md](./BUSINESS_ARCHITECTURE.md). Ce document décrit notamment le parcours Google → avis → dossier → preuves → analyse → validation humaine → préparation locale, ainsi que les frontières des notifications, workers et paiements.
-
-## Cartographie technique exhaustive
-
-Pour l'inventaire des fichiers Python, TypeScript et SQL, les routes React, les familles d'API et les différences entre arborescences historiques et chemins actifs, consulter [TECHNICAL_MAP.md](./TECHNICAL_MAP.md).
-
-## Traçabilité des dépendances
-
-Pour suivre les appels entre les pages React, les routes API, les services métier, les intégrations, les repositories et les tables SQL, consulter [DEPENDENCY_MAP.md](./DEPENDENCY_MAP.md).
+Pour les flux métier, consulter [BUSINESS_ARCHITECTURE.md](./BUSINESS_ARCHITECTURE.md) ; pour les liens entre pages, endpoints, services et repositories, consulter [DEPENDENCY_MAP.md](./DEPENDENCY_MAP.md).
