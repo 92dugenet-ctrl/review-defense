@@ -120,7 +120,16 @@ class PostgresProcessingQueue:
                 for job_id, attempt, worker_id, request_id, correlation_id in rows:
                     conn.execute(
                         """INSERT INTO processing_job_events
-                        (event_id,job_id,organization_id,event_type,from_status,to_status,attempt,worker_id,request_id,correlation_id)
+                                                (event_id,
+                            job_id,
+                            organization_id,
+                            event_type,
+                            from_status,
+                            to_status,
+                            attempt,
+                            worker_id,
+                            request_id,
+                            correlation_id)
                         VALUES(%s,%s,%s,'lease_expired','processing','pending',%s,%s,%s,%s)""",
                         (str(uuid.uuid4()), job_id, organization_id, attempt, worker_id, request_id, correlation_id),
                     )
@@ -159,7 +168,16 @@ class PostgresProcessingQueue:
                 )
                 conn.execute(
                     """INSERT INTO processing_job_events
-                    (event_id,job_id,organization_id,event_type,from_status,to_status,attempt,worker_id,request_id,correlation_id)
+                                        (event_id,
+                        job_id,
+                        organization_id,
+                        event_type,
+                        from_status,
+                        to_status,
+                        attempt,
+                        worker_id,
+                        request_id,
+                        correlation_id)
                     VALUES(%s,%s,%s,'claimed','pending','processing',%s,%s,%s,%s)""",
                     (str(uuid.uuid4()), row[0], organization_id, attempt, worker_id, row[12], row[13]),
                 )
@@ -198,7 +216,17 @@ class PostgresProcessingQueue:
                 )
                 conn.execute(
                     """INSERT INTO processing_job_events
-                    (event_id,job_id,organization_id,event_type,from_status,to_status,attempt,worker_id,request_id,correlation_id,details)
+                                        (event_id,
+                        job_id,
+                        organization_id,
+                        event_type,
+                        from_status,
+                        to_status,
+                        attempt,
+                        worker_id,
+                        request_id,
+                        correlation_id,
+                        details)
                     VALUES(%s,%s,%s,%s,'processing',%s,%s,%s,%s,%s,%s::jsonb)""",
                     (str(uuid.uuid4()), job_id, organization_id,
                      "failed" if terminal else "retry_scheduled", target, attempt, worker_id,
@@ -224,7 +252,16 @@ class PostgresProcessingQueue:
                 )
                 conn.execute(
                     """INSERT INTO processing_job_events
-                    (event_id,job_id,organization_id,event_type,from_status,to_status,attempt,worker_id,request_id,correlation_id)
+                                        (event_id,
+                        job_id,
+                        organization_id,
+                        event_type,
+                        from_status,
+                        to_status,
+                        attempt,
+                        worker_id,
+                        request_id,
+                        correlation_id)
                     VALUES(%s,%s,%s,%s,'processing',%s,%s,%s,%s,%s)""",
                     (str(uuid.uuid4()), job_id, organization_id, event, target.value, row[0],
                      worker_id, row[1], row[2]),

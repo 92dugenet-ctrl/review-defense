@@ -53,7 +53,12 @@ class PostgresRepository:
         finally:
             conn.close()
 
-    def create_privacy_request(self, organization_id: str, requester_user_id: str, request_type: str, details: dict, due_at: str):
+        def create_privacy_request(self,
+         organization_id: str,
+         requester_user_id: str,
+         request_type: str,
+         details: dict,
+        due_at: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -146,14 +151,25 @@ class PostgresRepository:
     def list_case_review_checklist(self, organization_id: str, case_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT item_id, organization_id, case_id, code, label, required, completed, completed_by, completed_at, note FROM case_review_checklist WHERE case_id=%s ORDER BY code", (case_id,))
+                                cur.execute("SELECT item_id, organization_id, case_id, code, label, required, completed, completed_by, completed_at, note FROM case_review_checklist WHERE case_id=%s ORDER BY code",
+                     (case_id,
+                    ))
                 return cur.fetchall()
 
     def upsert_case_review_checklist(self, organization_id: str, item: dict):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
-                    INSERT INTO case_review_checklist (item_id, organization_id, case_id, code, label, required, completed, completed_by, completed_at, note)
+                                        INSERT INTO case_review_checklist (item_id,
+                         organization_id,
+                         case_id,
+                         code,
+                         label,
+                         required,
+                         completed,
+                         completed_by,
+                         completed_at,
+                        note)
                     VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     ON CONFLICT (organization_id, case_id, code) DO UPDATE SET
                       label=EXCLUDED.label, required=EXCLUDED.required, completed=EXCLUDED.completed,
@@ -163,5 +179,7 @@ class PostgresRepository:
     def get_case(self, organization_id: str, case_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT id, organization_id, review_id, state, created_at, updated_at FROM cases WHERE id=%s", (case_id,))
+                                cur.execute("SELECT id, organization_id, review_id, state, created_at, updated_at FROM cases WHERE id=%s",
+                     (case_id,
+                    ))
                 return cur.fetchone()
