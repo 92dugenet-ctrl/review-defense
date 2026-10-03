@@ -231,6 +231,41 @@ class ReviewDefenseAPI:
     def _auth_key(self, environ, email: str) -> str:
         return f"{environ.get('REMOTE_ADDR', 'unknown')}:{email}"
 
+    def _persistent_uuid(self, value: Any, field: str) -> str:
+        raw = str(value or "").strip()
+        if not raw:
+            raise APIError(422, "VALIDATION_ERROR", f"{field} is required")
+        if self.repository is None:
+            return raw
+        try:
+            return str(uuid.UUID(raw))
+        except (ValueError, TypeError, AttributeError) as exc:
+            raise APIError(422, "VALIDATION_ERROR", f"{field} must be a valid UUID") from exc
+
+    def _validate_persistent_resource_path(self, path: str) -> None:
+        if self.repository is None:
+            return
+        parts = path.split("/")
+        if len(parts) >= 4 and parts[1:3] in (["v1", "cases"], ["v1", "evidence"], ["v1", "escalations"]):
+            self._persistent_uuid(parts[3], "resource_id")
+        elif len(parts) >= 4 and parts[1:3] == ["v1", "notifications"]:
+            self._persistent_uuid(parts[3], "notification_id")
+        elif len(parts) >= 5 and parts[1:4] == ["v1", "privacy", "requests"]:
+            self._persistent_uuid(parts[4], "request_id")
+        elif len(parts) >= 6 and parts[1:4] == ["v1", "organization", "members"] and parts[5] == "role":
+            self._persistent_uuid(parts[4], "user_id")
+
+    def _user_for_organization(self, organization_id: str, user_id: str) -> User | None:
+        if self.repository is not None and hasattr(self.repository, "get_user_by_id"):
+            row = self.repository.get_user_by_id(organization_id, user_id)
+            if not row:
+                return None
+            user = User(str(row[0]), organization_id, str(row[1]), str(row[2]), str(row[3]))
+            self.store.users[user.user_id] = user
+            return user
+        user = self.store.users.get(user_id)
+        return user if user is not None and user.organization_id == organization_id else None
+
     def _calendar(self, organization_id: str):
         if organization_id not in self.store.sla_calendars and self.repository is not None and hasattr(self.repository, "get_sla_calendar"):
             row = self.repository.get_sla_calendar(organization_id)
@@ -308,15 +343,19 @@ class ReviewDefenseAPI:
 
     def _auth(self, environ) -> User:
         header = environ.get("HTTP_AUTHORIZATION", "")
-        if not header.startswith("Bearer "):
+        if not isinstance(header, str) or not header.startswith("Bearer "):
             raise APIError(401, "AUTH_REQUIRED", "authentication required")
         raw = header[7:].strip()
-        token_hash = hash_token(raw)
+        if not raw or len(raw) > 4096:
+            raise APIError(401, "AUTH_INVALID", "invalid or expired session")
+        try:
+            token_hash = hash_token(raw)
+        except ValueError as exc:
+            raise APIError(401, "AUTH_INVALID", "invalid or expired session") from exc
         session = self.store.sessions.get(token_hash)
         if session is None and self.repository is not None:
-            # Multi-worker production: the login request and the following browser
-            # request may land on different workers. Resolve the persisted session
-            # directly by its hashed bearer token instead of relying on local memory.
+            # Resolve the opaque token through the narrowly scoped lookup function
+            # when this worker has not seen the session yet.
             row = None
             if hasattr(self.repository, "get_session_by_token_hash"):
                 row = self.repository.get_session_by_token_hash(token_hash)
@@ -326,6 +365,21 @@ class ReviewDefenseAPI:
                 def parse(v):
                     if isinstance(v, datetime): return v
                     return datetime.fromisoformat(str(v).replace('Z','+00:00'))
+                session = Session(str(uid), str(org), str(role), token_hash, parse(expires_at), parse(revoked_at) if revoked_at else None)
+                self.store.sessions[token_hash] = session
+        # Do not trust a process-local session cache for revocation state. Another
+        # Gunicorn worker may have revoked this token since it was cached here.
+        if session is not None and self.repository is not None and hasattr(self.repository, "get_session"):
+            row = self.repository.get_session(session.organization_id, token_hash)
+            if not row:
+                self.store.sessions.pop(token_hash, None)
+                session = None
+            else:
+                _, uid, org, role, expires_at, revoked_at = row
+                from datetime import datetime
+                def parse(v):
+                    if isinstance(v, datetime): return v
+                    return datetime.fromisoformat(str(v).replace('Z', '+00:00'))
                 session = Session(str(uid), str(org), str(role), token_hash, parse(expires_at), parse(revoked_at) if revoked_at else None)
                 self.store.sessions[token_hash] = session
         if session is None or not session.active():
@@ -372,7 +426,7 @@ class ReviewDefenseAPI:
             return obj
         except APIError:
             raise
-        except (ValueError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        except (ValueError, UnicodeDecodeError, json.JSONDecodeError, RecursionError) as exc:
             raise APIError(400, "INVALID_JSON", "request body must be a JSON object") from exc
 
     def _idem(self, user: User, environ, body: Mapping[str, Any], producer: Callable[[], Any]):
@@ -691,7 +745,7 @@ class ReviewDefenseAPI:
                 email = normalize_email(str(body.get("email", "")))
             except ValueError as exc:
                 raise APIError(422, "VALIDATION_ERROR", str(exc)) from exc
-            organization_id = str(body.get("organization_id", "")).strip()
+            organization_id = self._persistent_uuid(body.get("organization_id", ""), "organization_id")
             if not organization_id:
                 raise APIError(422, "VALIDATION_ERROR", "organization_id is required")
             if not self.recovery_limiter.allow(self._auth_key(environ, email)):
@@ -723,7 +777,7 @@ class ReviewDefenseAPI:
 
         if method == "POST" and path == "/v1/auth/recovery/reset":
             body = self._body(environ)
-            organization_id = str(body.get("organization_id", "")).strip()
+            organization_id = self._persistent_uuid(body.get("organization_id", ""), "organization_id")
             token = str(body.get("recovery_token", ""))
             new_password = body.get("new_password", "")
             if not organization_id or not token:
@@ -755,6 +809,7 @@ class ReviewDefenseAPI:
                 if sess.user_id == user.user_id and sess.organization_id == organization_id:
                     self.store.sessions[th] = Session(sess.user_id,sess.organization_id,sess.role,sess.token_hash,sess.expires_at,utc_now())
             if self.repository is not None:
+                if hasattr(self.repository,"revoke_all_sessions"): self.repository.revoke_all_sessions(organization_id,user.user_id)
                 if hasattr(self.repository,"update_password"): self.repository.update_password(organization_id,user.user_id,new_hash)
                 if hasattr(self.repository,"consume_recovery_token"): self.repository.consume_recovery_token(organization_id,token_hash)
                 if hasattr(self.repository,"security_event"): self.repository.security_event(organization_id,user.user_id,"PASSWORD_RECOVERED",user.user_id)
@@ -764,7 +819,7 @@ class ReviewDefenseAPI:
 
         if method == "POST" and path == "/v1/auth/email-verification/verify":
             body = self._body(environ)
-            organization_id = str(body.get("organization_id", "")).strip()
+            organization_id = self._persistent_uuid(body.get("organization_id", ""), "organization_id")
             token = str(body.get("verification_token", ""))
             if not organization_id or not token:
                 raise APIError(422, "VALIDATION_ERROR", "organization_id and verification_token are required")
@@ -865,7 +920,7 @@ class ReviewDefenseAPI:
                 raise APIError(429, "AUTH_RATE_LIMITED", "too many authentication attempts")
             password = body.get("password", "")
             user = None
-            organization_id = str(body.get("organization_id", "")).strip()
+            organization_id = self._persistent_uuid(body.get("organization_id", ""), "organization_id")
             if self.repository is not None:
                 if not organization_id:
                     raise APIError(422, "VALIDATION_ERROR", "organization_id is required for persistent authentication")
@@ -904,7 +959,7 @@ class ReviewDefenseAPI:
                 email = normalize_email(str(body.get("email", "")))
             except ValueError as exc:
                 raise APIError(422, "VALIDATION_ERROR", str(exc)) from exc
-            organization_id = str(body.get("organization_id", "")).strip()
+            organization_id = self._persistent_uuid(body.get("organization_id", ""), "organization_id")
             token = str(body.get("invitation_token", ""))
             password = body.get("password", "")
             token_hash = hash_token(token)
@@ -1035,6 +1090,7 @@ class ReviewDefenseAPI:
         if method == "GET" and path == "/v1/integrations/google/callback":
             return self._google_callback(environ)
         user = self._auth(environ)
+        self._validate_persistent_resource_path(path)
         # All v1 routes are tenant-bound to the authenticated user. There is no organization_id override.
 
 
@@ -1088,7 +1144,7 @@ class ReviewDefenseAPI:
         if method == "POST" and path == "/v1/integrations/google/select-location":
             self._require_role(user, "OWNER", "ADMIN", "CLIENT")
             body = self._body(environ)
-            connection_id = str(body.get("connection_id", "")).strip()
+            connection_id = self._persistent_uuid(body.get("connection_id", ""), "connection_id")
             account_id = str(body.get("account_id", "")).strip()
             location_id = str(body.get("location_id", "")).strip()
             if not connection_id or not account_id or not location_id:
@@ -1476,12 +1532,13 @@ class ReviewDefenseAPI:
             self.store.users[user.user_id] = user
             current_hash = hash_token(environ.get("HTTP_AUTHORIZATION", "")[7:].strip())
             for th, sess in list(self.store.sessions.items()):
-                if sess.user_id == user.user_id:
+                if sess.user_id == user.user_id and sess.organization_id == user.organization_id:
                     self.store.sessions[th] = Session(sess.user_id, sess.organization_id, sess.role, sess.token_hash, sess.expires_at, utc_now())
             # Issue a fresh session after revoking all previous sessions.
             raw, fresh = issue_session(user_id=user.user_id, organization_id=user.organization_id, role=user.role, ttl_seconds=self.session_ttl)
             self.store.sessions[fresh.token_hash] = fresh
             if self.repository is not None:
+                if hasattr(self.repository, "revoke_all_sessions"): self.repository.revoke_all_sessions(user.organization_id, user.user_id)
                 if hasattr(self.repository, "update_password"): self.repository.update_password(user.organization_id, user.user_id, new_hash)
                 if hasattr(self.repository, "put_session"): self.repository.put_session(user.organization_id, fresh.token_hash, user.user_id, user.role, fresh.expires_at.isoformat())
                 if hasattr(self.repository, "security_event"): self.repository.security_event(user.organization_id, user.user_id, "PASSWORD_CHANGED", user.user_id)
@@ -1502,12 +1559,12 @@ class ReviewDefenseAPI:
             return self._json(200, {"access_token":raw, "token_type":"Bearer", "expires_at":fresh.expires_at.isoformat()})
         if method == "POST" and path == "/v1/auth/revoke-all":
             self._require_role(user, "OWNER", "ADMIN")
-            target = str(self._body(environ).get("user_id", user.user_id))
-            target_user = self.store.users.get(target)
-            if target_user is None or target_user.organization_id != user.organization_id:
+            target = self._persistent_uuid(self._body(environ).get("user_id", user.user_id), "user_id")
+            target_user = self._user_for_organization(user.organization_id, target)
+            if target_user is None:
                 raise APIError(404, "NOT_FOUND", "user not found")
             for th, sess in list(self.store.sessions.items()):
-                if sess.user_id == target:
+                if sess.user_id == target and sess.organization_id == user.organization_id:
                     self.store.sessions[th] = Session(sess.user_id, sess.organization_id, sess.role, sess.token_hash, sess.expires_at, utc_now())
             if self.repository is not None and hasattr(self.repository, "revoke_all_sessions"):
                 self.repository.revoke_all_sessions(user.organization_id, target)
@@ -1536,20 +1593,29 @@ class ReviewDefenseAPI:
             # Token is returned once to the caller; it is never persisted in clear text.
             return self._json(201,{k:v for k,v in row.items() if k != "token"}|{"invitation_token":token})
         if method == "GET" and path == "/v1/organization/members":
-            rows=[{"user_id":u.user_id,"email":u.email,"role":u.role} for u in self.store.users.values() if u.organization_id==user.organization_id]
+            if self.repository is not None and hasattr(self.repository, "list_members"):
+                rows = [
+                    {"user_id": str(uid), "email": str(email), "role": str(role)}
+                    for uid, email, role in (self.repository.list_members(user.organization_id) or [])
+                ]
+            else:
+                rows = [{"user_id":u.user_id,"email":u.email,"role":u.role} for u in self.store.users.values() if u.organization_id==user.organization_id]
             return self._json(200,{"items":rows,"count":len(rows)})
         if method == "POST" and path.startswith("/v1/organization/members/") and path.endswith("/role"):
             self._require_role(user,"OWNER","ADMIN")
-            target_id=path.split("/")[4]; body=self._body(environ); role=validate_role(str(body.get("role","")))
-            target=self.store.users.get(target_id)
-            if target is None or target.organization_id != user.organization_id: raise APIError(404,"NOT_FOUND","user not found")
+            target_id=self._persistent_uuid(path.split("/")[4], "user_id"); body=self._body(environ); role=validate_role(str(body.get("role","")))
+            target=self._user_for_organization(user.organization_id, target_id)
+            if target is None: raise APIError(404,"NOT_FOUND","user not found")
             if target.user_id == user.user_id: raise APIError(403,"FORBIDDEN","users cannot change their own role")
             if role=="OWNER" and user.role!="OWNER": raise APIError(403,"FORBIDDEN","only an owner can assign owner")
             if target.role=="OWNER" and role!="OWNER" and user.role!="OWNER": raise APIError(403,"FORBIDDEN","only an owner can demote an owner")
             target=User(target.user_id,target.organization_id,target.email,target.password_hash,role); self.store.users[target.user_id]=target
             for th,sess in list(self.store.sessions.items()):
-                if sess.user_id==target.user_id: self.store.sessions[th]=Session(sess.user_id,sess.organization_id,role,sess.token_hash,sess.expires_at,utc_now())
-            if self.repository is not None and hasattr(self.repository,"update_role"): self.repository.update_role(user.organization_id,target.user_id,role)
+                if sess.user_id==target.user_id and sess.organization_id==user.organization_id: self.store.sessions[th]=Session(sess.user_id,sess.organization_id,role,sess.token_hash,sess.expires_at,utc_now())
+            if self.repository is not None and hasattr(self.repository,"update_role"):
+                self.repository.update_role(user.organization_id,target.user_id,role)
+                if hasattr(self.repository,"revoke_all_sessions"):
+                    self.repository.revoke_all_sessions(user.organization_id,target.user_id)
             self.store.audit_event(user.organization_id,user.user_id,"ROLE_CHANGED",f"user:{target.user_id}",role=role)
             return self._json(200,{"user_id":target.user_id,"role":role})
         if method == "GET" and path == "/v1/organization/sla-calendar":
@@ -1607,7 +1673,7 @@ class ReviewDefenseAPI:
             return self._json(200, {"review": asdict(review), "claims": [asdict(c) for c in claims], "policy_signals": [asdict(s) for s in signals]})
         if method == "POST" and path == "/v1/evidence":
             body = self._body(environ)
-            case_id = str(body.get("case_id", ""))
+            case_id = self._persistent_uuid(body.get("case_id", ""), "case_id")
             case_key = (user.organization_id, case_id)
             if case_key not in self.store.cases and self.repository is not None and hasattr(self.repository, "get_case_persistent"):
                 row = self.repository.get_case_persistent(user.organization_id, case_id)

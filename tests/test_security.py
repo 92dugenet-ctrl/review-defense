@@ -128,3 +128,40 @@ def test_production_security_headers_contract():
     assert "geolocation=()" in headers["Permissions-Policy"]
     assert headers["Cross-Origin-Opener-Policy"] == "same-origin"
     assert headers["Cross-Origin-Resource-Policy"] == "same-origin"
+
+
+
+def test_empty_and_oversized_bearer_tokens_return_json_401_not_500():
+    api = ReviewDefenseAPI()
+    for token in ("", "x" * 4097):
+        status, headers, body = _request(
+            api, "/v1/me", headers={"Authorization": f"Bearer {token}"}
+        )
+        assert status == "401 Unauthorized"
+        assert headers["Content-Type"].startswith("application/json")
+        assert body["error"]["code"] == "AUTH_INVALID"
+
+
+def test_persistent_auth_rejects_malformed_organization_uuid_before_database_access():
+    api = ReviewDefenseAPI()
+    api.repository = object()  # Enable the persistent UUID contract without a live database.
+    status, _, body = _request(
+        api,
+        "/v1/auth/login",
+        "POST",
+        {"organization_id": "not-a-uuid", "email": "tenant@example.test", "password": "StrongPassword123!"},
+    )
+    assert status == "422 Unprocessable Entity"
+    assert body["error"]["code"] == "VALIDATION_ERROR"
+
+
+def test_malformed_json_is_a_client_error_with_stable_json_contract():
+    api = ReviewDefenseAPI()
+    status, headers, body = _request(
+        api, "/v1/auth/register", "POST",
+        body_override=b'{"email":',
+        content_type="application/json",
+    )
+    assert status == "400 Bad Request"
+    assert headers["Content-Type"].startswith("application/json")
+    assert body["error"]["code"] == "INVALID_JSON"
