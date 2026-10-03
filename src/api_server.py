@@ -1,9 +1,12 @@
-"""V6.0 production HTTP/API boundary for Review Defense.
+"""Application HTTP/API utilisée par le point d'entrée WSGI de production.
 
-Framework-neutral WSGI application. The reference implementation deliberately
-uses in-memory stores so the HTTP contract can be exercised without a running
-PostgreSQL/Google service. Production adapters can replace the stores while
-keeping the route/auth/error/idempotency contracts.
+wsgi.py importe create_app() depuis ce module et expose l'objet obtenu sous
+wsgi:app à Gunicorn. Cette classe WSGI centralise le routage métier /v1, la
+session, les permissions, les limites de requête et la conversion des erreurs.
+
+Les services spécialisés exécutent les règles métier ; repository délègue la
+persistance PostgreSQL. MemoryStore conserve un cache et un mode local, mais
+ne remplace pas le stockage partagé requis en production.
 """
 from __future__ import annotations
 
@@ -98,6 +101,13 @@ from .paypal_client import (
 
 
 class APIError(Exception):
+    """Erreur HTTP contrôlée convertie en réponse JSON par __call__.
+
+    status devient le statut HTTP ; code et message forment le contrat
+    d'erreur consommé par le client frontend ; details apporte un contexte
+    structuré facultatif sans exposer les exceptions internes.
+    """
+
     def __init__(self, status: int, code: str, message: str, details: Any = None):
         super().__init__(message)
         self.status, self.code, self.message, self.details = status, code, message, details
@@ -105,6 +115,12 @@ class APIError(Exception):
 
 @dataclass(frozen=True)
 class User:
+    """Identité résolue après authentification et liée à un tenant.
+
+    organization_id limite les données accessibles ; role porte les droits.
+    password_hash est une donnée interne qui ne doit jamais être renvoyée.
+    """
+
     user_id: str
     organization_id: str
     email: str
@@ -114,7 +130,14 @@ class User:
 
 
 class MemoryStore:
+    """Cache local des objets métier et état du mode sans PostgreSQL.
+
+    En production, repository porte les données partagées entre workers.
+    Les pièces jointes passent par un ObjectStore distinct du cache mémoire.
+    """
+
     def __init__(self) -> None:
+        """Initialise les collections métier et le stockage des pièces jointes."""
         self.users: dict[str, User] = {}
         self.sessions: dict[str, Session] = {}
         self.reviews: dict[tuple[str, str], ReviewContext] = {}
@@ -166,6 +189,7 @@ class MemoryStore:
         self.google_connections: dict[tuple[str, str], dict[str, Any]] = {}
 
     def audit_event(self, org: str, actor: str | None, action: str, resource: str, **meta: Any) -> None:
+        """Ajoute un événement d'audit associé à une organisation et un acteur."""
         self.audit.append({
             "event_id": str(uuid.uuid4()), "organization_id": org, "actor_id": actor,
             "action": action, "resource": resource, "at": utc_now().isoformat(), "meta": meta,
@@ -196,7 +220,14 @@ def _review_from_row(row: Any) -> ReviewContext:
 
 
 class ReviewDefenseAPI:
-    """Small WSGI API with explicit human-gated state transitions."""
+    """Application WSGI qui transforme environ en réponses HTTP.
+
+    handle() porte le routage et les règles d'endpoint. Les méthodes privées
+    partagent les contrôles transverses (authentification, JSON, rôles,
+    idempotence). Les services injectés réalisent les opérations métier.
+    __call__() adapte les réponses au protocole WSGI.
+    """
+
     def __init__(
         self,
         store: MemoryStore | None = None,
@@ -208,6 +239,11 @@ class ReviewDefenseAPI:
         delivery_func=deliver,
         config: ProductionConfig | None = None,
     ):
+        """Assemble les dépendances transverses et les services métier.
+
+        store porte l'état local ; repository est l'adaptateur PostgreSQL.
+        Les services reçoivent les deux pour gérer mode local et production.
+        """
         self.store = store or MemoryStore()
         self.config = config or ProductionConfig.from_env()
         self.config.validate_startup(require_database=(repository is not None or self.config.production))
@@ -419,6 +455,11 @@ class ReviewDefenseAPI:
         }
 
     def _auth(self, environ) -> User:
+        """Valide le Bearer token, la session, l'utilisateur et son rôle.
+
+        Avec repository, l'état de révocation et le rôle sont relus en base :
+        le cache d'un worker Gunicorn ne fait pas autorité pour ces contrôles.
+        """
         header = environ.get("HTTP_AUTHORIZATION", "")
         if not isinstance(header, str) or not header.startswith("Bearer "):
             raise APIError(401, "AUTH_REQUIRED", "authentication required")
@@ -486,6 +527,7 @@ class ReviewDefenseAPI:
         return user
 
     def _body(self, environ) -> dict[str, Any]:
+        """Lit un objet JSON dans la limite autorisée pour la route courante."""
         try:
             path = environ.get("PATH_INFO", "")
             limit = self.config.evidence_max_request_bytes if path.startswith(("/v1/evidence", "/v1/client/documents")) else self.config.max_request_bytes
@@ -509,6 +551,11 @@ class ReviewDefenseAPI:
             raise APIError(400, "INVALID_JSON", "request body must be a JSON object") from exc
 
     def _idem(self, user: User, environ, body: Mapping[str, Any], producer: Callable[[], Any]):
+        """Protège une mutation contre les répétitions réseau.
+
+        La clé est limitée à l'organisation et liée à l'empreinte du JSON.
+        La même clé avec un autre payload produit un conflit HTTP 409.
+        """
         key = environ.get("HTTP_IDEMPOTENCY_KEY")
         if not key:
             return producer()
@@ -527,6 +574,7 @@ class ReviewDefenseAPI:
             return result
 
     def _require_role(self, user: User, *roles: str):
+        """Refuse une action si le rôle n'est pas dans la liste autorisée."""
         if user.role not in roles:
             raise APIError(403, "FORBIDDEN", "role is not permitted for this operation")
 
@@ -806,6 +854,12 @@ class ReviewDefenseAPI:
         return 302, {"Location": "/client?page=client-monitoring&google=connected", "Cache-Control": "no-store", "Pragma": "no-cache"}, b""
 
     def handle(self, environ):
+        """Traite une requête et renvoie (status, headers, body).
+
+        Cette méthode applique les règles API sans appeler start_response.
+        __call__ adapte ensuite le tuple au protocole WSGI.
+        Les endpoints sont regroupés par domaine fonctionnel ci-dessous.
+        """
         path = urlsplit(environ.get("PATH_INFO", "/")).path.rstrip("/") or "/"
         method = environ.get("REQUEST_METHOD", "GET").upper()
         if path.startswith("/v1/") and method in {"POST", "PUT", "PATCH"} and path != "/v1/paypal/webhook":
@@ -846,6 +900,7 @@ class ReviewDefenseAPI:
                     dependencies["database"] = "error"
             status = "ready" if all(value == "ok" for value in dependencies.values()) else "not_ready"
             return self._json(200 if status == "ready" else 503, {"status": status, "dependencies": dependencies})
+        # AUTHENTIFICATION : inscription, connexion et récupération de compte.
         if method == "POST" and path == "/v1/auth/recovery/request":
             body = self._body(environ)
             try:
@@ -1183,6 +1238,7 @@ class ReviewDefenseAPI:
                 },
             )
 
+        # WEBHOOKS DE PAIEMENT : événements entrants traités après vérification.
         if method == "POST" and path == "/v1/paypal/webhook":
             length=int(environ.get("CONTENT_LENGTH") or 0)
             if length > 1000000:
@@ -1287,6 +1343,7 @@ class ReviewDefenseAPI:
                         paypal_id=paypal_id,
                     )
             return self._json(200,{"status":"accepted"})
+        # GOOGLE BUSINESS PROFILE : OAuth et sélection des établissements.
         if method == "GET" and path == "/v1/integrations/google/callback":
             return self._google_callback(environ)
         user = self._auth(environ)
@@ -1410,6 +1467,7 @@ class ReviewDefenseAPI:
                                    account_id=account_id, location_id=location_id, reviews_synced=len(sync.items))
             return self._json(200, {"status": "selected", "connection_id": connection_id, "location_id": location_id, "reviews_synced": len(sync.items)})
 
+        # ESPACE CLIENT : profil de l'organisation et documents associés.
         if method == "GET" and path == "/v1/client/profile":
             return self._json(200, {"profile": self._client_profile(user.organization_id)})
 
@@ -1585,6 +1643,7 @@ class ReviewDefenseAPI:
                 content,
             )
 
+        # FACTURATION : catalogue, abonnement et opérations PayPal.
         if method == "GET" and path == "/v1/billing":
             rows=list(self.store.billing.values())
             account=self.billing_accounts.get(user.organization_id)
@@ -1748,6 +1807,7 @@ class ReviewDefenseAPI:
                 },
             )
 
+        # SÉCURITÉ DU COMPTE : MFA, vérification email et gestion des sessions.
         if method == "POST" and path == "/v1/auth/email-verification/request":
             if self._email_verified(user):
                 return self._json(200, {"status": "already_verified"})
@@ -1808,6 +1868,7 @@ class ReviewDefenseAPI:
             self.store.audit_event(user.organization_id,user.user_id,"MFA_DISABLED",f"user:{user.user_id}")
             return self._json(200,{"status":"disabled"})
 
+        # CONFIDENTIALITÉ : export, demandes et consentements de données.
         if method == "GET" and path == "/v1/privacy/export":
             payload = self._privacy_export(user)
             self.store.audit_event(user.organization_id, user.user_id, "PRIVACY_EXPORT_REQUESTED", f"user:{user.user_id}")
@@ -2030,6 +2091,7 @@ class ReviewDefenseAPI:
                     self.repository.security_event(user.organization_id, user.user_id, "SESSIONS_REVOKED", target, {})
             self.store.audit_event(user.organization_id, user.user_id, "SESSIONS_REVOKED", f"user:{target}", target_user_id=target)
             return self._json(200, {"status":"sessions_revoked", "user_id":target})
+        # ORGANISATION : invitations, membres, rôles et calendrier SLA.
         if method == "POST" and path == "/v1/organization/invitations":
             self._require_role(user, "OWNER", "ADMIN")
             body = self._body(environ)
@@ -2146,6 +2208,7 @@ class ReviewDefenseAPI:
                 self.repository.upsert_sla_calendar(user.organization_id, payload)
             self.store.audit_event(user.organization_id, user.user_id, "SLA_CALENDAR_UPDATED", f"organization:{user.organization_id}", calendar=payload)
             return self._json(200, {"calendar":payload})
+        # AVIS ET PREUVES : avis, pièces jointes et vérification des éléments.
         if method == "POST" and path == "/v1/reviews":
             body = self._body(environ)
             rid = str(body.get("review_id", ""))
@@ -2503,6 +2566,7 @@ class ReviewDefenseAPI:
                  fact_ids=sorted(selected),
                 count=changed)
             return self._json(200, {"facts": facts, "verified_count": changed})
+        # PILOTAGE : file de traitement, affectations, escalades et notifications.
         if method == "GET" and path == "/v1/review-queue":
             items = []
             for (org, cid), case in self.store.cases.items():
@@ -2761,6 +2825,7 @@ class ReviewDefenseAPI:
             except ValueError as exc:
                 raise APIError(409,"STATE_CONFLICT",str(exc)) from exc
             return self._json(200,{"notification":n.payload()})
+        # DOSSIERS : validations humaines, soumissions et cycle de vie.
         if method == "GET" and path == "/v1/approvals":
             self._require_role(user, "OWNER", "ADMIN")
             rows = self.case_approvals.list_for_organization(organization_id=user.organization_id)
@@ -3574,6 +3639,11 @@ class ReviewDefenseAPI:
         raise APIError(404, "NOT_FOUND", "route not found")
 
     def __call__(self, environ, start_response):
+        """Adaptateur WSGI : trace, exceptions, métriques et en-têtes HTTP.
+
+        Les APIError conservent leur statut et leur code ; les exceptions
+        inattendues sont masquées derrière INTERNAL_ERROR côté client.
+        """
         # V6.29: every request receives a correlation ID and bounded telemetry.
         import time as _time
         started = _time.perf_counter()
@@ -3715,6 +3785,10 @@ class ReviewDefenseAPI:
 
 
 def create_app(*, store: MemoryStore | None = None, repository=None, config: ProductionConfig | None = None) -> ReviewDefenseAPI:
+    """Construit l'API et crée le repository PostgreSQL si DATABASE_URL existe.
+
+    wsgi.py appelle cette factory pour fournir l'objet chargé par Gunicorn.
+    """
     config = config or ProductionConfig.from_env()
     if repository is None and config.database_dsn:
         from .postgres_api_repository import PostgresAPIRepository

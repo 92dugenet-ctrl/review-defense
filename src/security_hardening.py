@@ -1,5 +1,8 @@
-"""V5.0 security-hardening primitives for Review Defense.
-Framework-neutral reference layer: no external network or Google calls.
+"""Primitives de sécurité transverses appelées par l'API.
+
+Le module fournit le hachage des mots de passe et tokens, le modèle de session,
+le rate limiting et la validation des fichiers. src.api_server orchestre ces
+fonctions dans les contrôles HTTP ; ce module ne définit pas de routes.
 """
 from __future__ import annotations
 
@@ -67,6 +70,12 @@ def hash_token(token: str) -> str:
 
 @dataclass(frozen=True)
 class Session:
+    """Session opaque liée à un utilisateur, une organisation et un rôle.
+
+    Seul le hash du token est conservé côté serveur ; le token brut est remis
+    au client lors de l'authentification.
+    """
+
     user_id: str
     organization_id: str
     role: str
@@ -90,7 +99,10 @@ def require_tenant(session: Session, organization_id: str) -> None:
 
 
 class RateLimiter:
-    """Thread-safe bounded fixed-window limiter."""
+    """Limiteur mémoire à fenêtre fixe, partagé entre threads du processus.
+
+    Cette instance locale ne constitue pas un compteur distribué entre workers.
+    """
     def __init__(self, *, limit: int, window_seconds: int = 60, max_keys: int = 10000):
         if limit <= 0 or window_seconds <= 0 or max_keys <= 0:
             raise ValueError("limit, window_seconds and max_keys must be positive")

@@ -1,4 +1,9 @@
-"""V6.2 authentication and organization identity primitives."""
+"""Primitives d'identité appelées par la couche API.
+
+Ce module normalise les emails, valide les rôles et construit les sessions.
+Il ne route aucune requête HTTP : src.api_server appelle ces fonctions dans
+les endpoints d'authentification et de gestion des membres.
+"""
 from __future__ import annotations
 import re
 from dataclasses import dataclass

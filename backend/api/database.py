@@ -1,3 +1,9 @@
+"""Helper PostgreSQL de l'arborescence backend.api.
+
+Le serveur de production construit son repository depuis src.api_server et
+src.postgres_api_repository ; ce module de connexion appartient à l'autre arbre.
+"""
+
 from __future__ import annotations
 
 import os
@@ -18,6 +24,7 @@ def database_url() -> str:
 
 @contextmanager
 def connection() -> Iterator[psycopg.Connection]:
+    """Ouvre une connexion psycopg dont le contexte gère commit/rollback."""
     settings = get_settings()
     with psycopg.connect(database_url(), connect_timeout=settings.db_connect_timeout) as conn:
         yield conn

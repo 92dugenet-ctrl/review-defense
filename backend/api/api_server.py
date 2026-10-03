@@ -1,9 +1,9 @@
-"""V6.0 production HTTP/API boundary for Review Defense.
+"""Copie parallèle historique de l'API Review Defense.
 
-Framework-neutral WSGI application. The reference implementation deliberately
-uses in-memory stores so the HTTP contract can be exercised without a running
-PostgreSQL/Google service. Production adapters can replace the stores while
-keeping the route/auth/error/idempotency contracts.
+Le point d'entrée de production wsgi.py importe create_app depuis src.api_server,
+pas depuis ce fichier. Cette implémentation conserve un contrat API similaire
+dans backend/api, mais n'est pas la source choisie par le WSGI de production.
+Ne pas confondre ces deux arbres lors d'une modification ou d'une migration.
 """
 from __future__ import annotations
 

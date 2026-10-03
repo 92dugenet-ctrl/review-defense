@@ -12,7 +12,14 @@ from typing import Any, Mapping
 from .postgres_repository import RepositoryError, PostgresRepository
 
 class PostgresAPIRepository(PostgresRepository):
-    # Public API resource identifiers are UUID columns in the PostgreSQL schema.
+    """Adaptateur SQL utilisé par src.api_server en mode PostgreSQL.
+
+    Il traduit les opérations métier en requêtes SQL et hérite de la gestion
+    transactionnelle et du contexte tenant de PostgresRepository. Les méthodes
+    reçoivent organization_id pour maintenir le cloisonnement des organisations.
+    """
+
+    # Les identifiants des ressources API correspondent aux colonnes UUID SQL.
     uses_uuid_ids = True
 
     def _row(self, cur, sql, params=()):

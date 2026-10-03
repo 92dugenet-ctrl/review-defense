@@ -1,4 +1,9 @@
-"""V4.1 frontend application-shell reference: route/role contracts only."""
+"""Contrat historique d'accès aux écrans frontend.
+
+ROUTES et ROLE_ACCESS décrivent les écrans et rôles de l'ancien shell.
+Ce contrôle d'affichage ne remplace jamais l'autorisation serveur :
+les endpoints API doivent vérifier eux-mêmes identité, tenant et rôle.
+"""
 from dataclasses import dataclass
 
 ROUTES = {
@@ -38,6 +43,7 @@ class SessionContext:
 
 
 def can_access(session: SessionContext, route: str) -> bool:
+    """Indique si le rôle peut afficher une route de l'ancien shell."""
     if session.role not in ROLE_ACCESS:
         return False
     return route in ROLE_ACCESS[session.role]
