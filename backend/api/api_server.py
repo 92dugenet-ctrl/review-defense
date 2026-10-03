@@ -333,7 +333,10 @@ class ReviewDefenseAPI:
             "privacy_requests": requests,
             "consents": consents,
             "audit_events": audit,
-            "note": "This export covers personal account and privacy-request data available through this endpoint; organization-owned business data remains subject to the applicable controller/processor relationship."
+            "note": (
+            "This export covers personal account and privacy-request data available through this endpoint; organi"
+            "zation-owned business data remains subject to the applicable controller/processor relationship."
+        )
         }
 
     def _auth(self, environ) -> User:
