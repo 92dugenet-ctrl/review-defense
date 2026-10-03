@@ -872,7 +872,8 @@ const views={
     'Pilotage') +
     (
       `<div class="hero-grid"><div class="hero-card"><div class="eyebrow">REVIEW DEFENSE</div><h2>Décider avec des preuves. Soumettre avec contrôle humain.</h2>` +
-      `<p>Chaque dossier reste suivi et protégé par des étapes explicites.</p><div class="hero-actions">${state.me?.role==='CLIENT'?'<button class="primary" onclick="showNewClientCase()">+ Nouveau dossier</button><button class="ghost" onclick="state.view=\'cases\';reviewDefenseRender()">Suivre mes dossiers</button>':(
+      `<p>Chaque dossier reste suivi et protégé par des étapes explicites.</p>
+      <div class="hero-actions">${state.me?.role==='CLIENT'?'<button class="primary" onclick="showNewClientCase()">+ Nouveau dossier</button><button class="ghost" onclick="state.view=\'cases\';reviewDefenseRender()">Suivre mes dossiers</button>':(
         '<button class="primary" onclick="state.view=\'cases\';reviewDefenseRender()">Ouvrir l' +
         'es dossiers</button><button class="ghost" onclick="state.view=\'approvals\';reviewDef' +
         'enseRender()">Voir les validations</button>'
@@ -884,7 +885,8 @@ const views={
       `<h3>Votre prochaine action</h3><p>Le tableau de bord met en avant ce qui mérite votre attention avant le reste.</p></div><span class="pill warning">${a.items?.filter(x=>String(x.status||'').toUpperCase()==='PENDING').length||0} validation(s)</span>` +
       `</div><div class="client-focus-grid"><button class="client-focus-item" type="button" onclick="state.view='cases';reviewDefenseRender()">` +
       `<span class="item-index">01</span><span><strong>Suivre les dossiers actifs</strong><small>${c.items?.filter(x=>['OPEN','IN_REVIEW','PENDING'].includes(String(x.status||'').toUpperCase())).length||0} dossier(s) en cours</small>` +
-      `</span><b>→</b></button>${state.me?.role==='CLIENT'?'<button class="client-focus-item" type="button" onclick="state.view=\'cases\';reviewDefenseRender()"><span class="item-index">02</span><span><strong>Compléter un dossier</strong><small>Ajouter les justificatifs manquants</small></span><b>→</b></button>':(
+      `</span><b>→</b></button>
+      ${state.me?.role==='CLIENT'?'<button class="client-focus-item" type="button" onclick="state.view=\'cases\';reviewDefenseRender()"><span class="item-index">02</span><span><strong>Compléter un dossier</strong><small>Ajouter les justificatifs manquants</small></span><b>→</b></button>':(
         "<button class=\"client-focus-item\" type=\"button\" onclick=\"state.view='approvals';" +
         "reviewDefenseRender()\"><span class=\"item-index\">02</span><span><strong>Vérifier le" +
         "s validations</strong><small>${a.items?.filter(x=>String(x.status||'').toUpperCase()=" +
@@ -1139,7 +1141,10 @@ const views={
     `${d.items?.length||0} signaux`) +
     (
       `<div class="panel"><div class="section-toolbar"><div><h3>Signaux actifs</h3><p>Prioriser les écarts SLA et contradictions à traiter.</p>` +
-      `</div><span class="pill warning">${(d.items||[]).filter(x=>x.status==='OPEN').length} ouverts</span></div>${(d.items||[]).length?`<table class="table"><thead><tr><th>Case</th><th>Niveau</th><th>Statut</th><th>Motif</th></tr></thead><tbody>${d.items.map(x=>`<tr><td>${esc(x.case_id)}</td><td>${esc(x.level)}</td><td>${esc(x.status)}</td><td>${esc(x.reason)}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">Aucune escalation active.<small>Le centre reste surveillé par les règles SLA.</small></div>'}</div>`
+      `</div><span class="pill warning">${(d.items||[]).filter(x=>x.status==='OPEN').length} ouverts</span></div>
+      ${(d.items||[]).length?`<table class="table"><thead><tr><th>Case</th><th>Niveau</th><th>Statut</th><th>Motif</th></tr></thead>
+      <tbody>${d.items.map(x=>`<tr><td>${esc(x.case_id)}</td><td>${esc(x.level)}</td><td>${esc(x.status)}</td><td>${esc(x.reason)}</td></tr>`).join('')}</tbody></table>`
+        :'<div class="empty">Aucune escalation active.<small>Le centre reste surveillé par les règles SLA.</small></div>'}</div>`
     )},
  evidence:async()=>{const d=await api('/v1/evidence');
   const items=d.items||[];
@@ -1455,7 +1460,10 @@ const views={
     '3 événements') +
     (
       `<div class="panel"><div class="section-toolbar"><div><h3>Journal d’audit</h3><p>TRACEABILITY · lecture seule · les événements sont enregistrés côté serveur.</p>` +
-      `</div><span class="pill">Lecture seule</span></div><div class="audit-list">${events.map(e=>`<article class="audit-item"><div class="audit-dot"></div><div class="audit-main"><div class="audit-top"><strong>${esc(e.type)}</strong><span>${esc(e.time)}</span></div><div class="audit-meta">${esc(e.actor)} · ${esc(e.target)}</div><p>${esc(e.result)}</p></div></article>`).join('')}</div>` +
+      `</div><span class="pill">Lecture seule</span></div>
+      <div class="audit-list">${events.map(e=>`<article class="audit-item"><div class="audit-dot"></div>
+        <div class="audit-main"><div class="audit-top"><strong>${esc(e.type)}</strong><span>${esc(e.time)}</span></div><div class="audit-meta">${esc(e.actor)} · ${esc(e.target)}</div>
+          <p>${esc(e.result)}</p></div></article>`).join('')}</div>` +
       `</div>`
     )},
  billing:async()=>{
@@ -1886,7 +1894,15 @@ async function downloadClientDocument(documentId){try{const headers={Accept:'app
   throw new Error(error?.error?.message||'Téléchargement impossible')}const blob=await response.blob();
   const disposition=response.headers.get('Content-Disposition')||'';
     const match=disposition.match(/filename="([^"] +
-    )"/);const link=document.createElement('a');const url=URL.createObjectURL(blob);link.href=url;link.download=match?.[1]||'document';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000)}catch(e){toast(e.message||'Téléchargement impossible','error')}}
+     )"/);
+   const link=document.createElement('a');
+   const url=URL.createObjectURL(blob);
+   link.href=url;
+   link.download=match?.[1]||'document';
+   document.body.appendChild(link);
+   link.click();
+   link.remove();
+   setTimeout(()=>URL.revokeObjectURL(url),30000)
 async function connectGoogle(){try{const result=await api('/v1/integrations/google/start',
   {method:'POST',
     body:JSON.stringify({})});
