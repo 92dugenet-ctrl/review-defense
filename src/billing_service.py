@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+
+# Règles d'état de facturation : centralise les statuts reconnus par le domaine. Le catalogue décrit les offres ; les échanges PayPal et les webhooks sont des adaptateurs séparés et ne doivent pas être confondus avec les droits UI.
 ACTIVE_STATUSES={'ACTIVE','COMPLETED','APPROVED','TRIALING'}
 TERMINAL_STATUSES={'CANCELLED','SUSPENDED','EXPIRED','PAYMENT_FAILED','DENIED','REVERSED','REFUNDED'}
 @dataclass(frozen=True)

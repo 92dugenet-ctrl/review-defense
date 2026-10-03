@@ -1,5 +1,7 @@
 """V1 Cases application seam for case identity and persistence hydration.
 
+# Frontière Cases : transforme les lignes du repository en objets métier et recharge le contexte d'un dossier. Les clés de cache incluent l'organisation pour isoler dossiers, preuves, faits et avis entre tenants.
+
 This module owns the Case record and the translation from the existing
 repository row into the runtime Case contract. It deliberately does not
 perform authorization, HTTP handling, business transitions, or persistence

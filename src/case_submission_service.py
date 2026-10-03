@@ -1,5 +1,7 @@
 """Cases submission preparation application seam.
 
+# Soumission : prépare uniquement un enregistrement local après approbation explicite. external_call=False matérialise la frontière : ce service ne contacte aucun service externe et ne soumet rien à Google.
+
 Creates the local submission record after explicit decision approval.
 This module never performs an external submission.
 """

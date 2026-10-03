@@ -1,5 +1,7 @@
 """Application service for auditable case escalations.
 
+# Escalades : convertit les indicateurs SLA en alertes suivies, expose une vue organisationnelle et délègue la mise en file des notifications au service dédié. L'accusé de réception et la résolution restent des actions humaines auditées.
+
 Owns escalation signal materialization and human acknowledgement/resolution
 persistence. HTTP authorization and response serialization remain in the API.
 """

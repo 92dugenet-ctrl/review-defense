@@ -1,5 +1,7 @@
 """Application service for the controlled notification lifecycle."""
 
+# Orchestrateur Notifications : applique la politique du tenant, crée les messages dans l'outbox, puis pilote livraison directe ou worker. Le repository persiste les états et l'audit conserve les événements de traitement.
+
 from __future__ import annotations
 
 from typing import Any, Callable
