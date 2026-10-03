@@ -36,7 +36,12 @@ class PostgresAPIRepository(PostgresRepository):
     def create_user(self, organization_id: str, email: str, password_hash: str, role: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO users(email,password_hash) VALUES(%s,%s) RETURNING id,email,password_hash""", (email.lower(), password_hash))
+                cur.execute("""INSERT INTO users(email,
+                    password_hash) VALUES(%s,
+                    %s)
+                    RETURNING id,
+                    email,
+                    password_hash""", (email.lower(), password_hash))
                 uid, em, ph = cur.fetchone()
                 cur.execute("INSERT INTO memberships(organization_id,user_id,role) VALUES(%s,%s,%s)", (organization_id, uid, role))
                 return str(uid), str(em), ph, role
@@ -44,13 +49,30 @@ class PostgresAPIRepository(PostgresRepository):
     def get_user_by_email(self, organization_id: str, email: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""SELECT u.id,u.email,u.password_hash,m.role FROM users u JOIN memberships m ON m.user_id=u.id WHERE m.organization_id=%s AND u.email=%s""", (organization_id,email.lower()))
+                cur.execute("""SELECT u.id,
+                    u.email,
+                    u.password_hash,
+                    m.role
+                    FROM users u JOIN memberships m ON m.user_id=u.id
+                    WHERE m.organization_id=%s
+                    AND u.email=%s""", (organization_id,email.lower()))
                 return cur.fetchone()
 
     def get_invitation_by_token(self, organization_id: str, token_hash: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""SELECT invitation_id,organization_id,email,role,token_hash,expires_at,invited_by,accepted_at,revoked_at FROM organization_invitations WHERE organization_id=%s AND token_hash=%s""", (organization_id,token_hash))
+                cur.execute("""SELECT invitation_id,
+                    organization_id,
+                    email,
+                    role,
+                    token_hash,
+                    expires_at,
+                    invited_by,
+                    accepted_at,
+                    revoked_at
+                    FROM organization_invitations
+                    WHERE organization_id=%s
+                    AND token_hash=%s""", (organization_id,token_hash))
                 return cur.fetchone()
 
     def mark_invitation_accepted(self, organization_id: str, invitation_id: str):
@@ -130,9 +152,40 @@ class PostgresAPIRepository(PostgresRepository):
     def upsert_review(self, organization_id: str, review: Mapping[str,Any]):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO api_reviews(organization_id,review_id,location_id,author_display_name,rating,review_text,published_at,updated_at,language,source,review_url)
-                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                ON CONFLICT(organization_id,review_id) DO UPDATE SET location_id=excluded.location_id,author_display_name=excluded.author_display_name,rating=excluded.rating,review_text=excluded.review_text,published_at=excluded.published_at,updated_at=excluded.updated_at,language=excluded.language,source=excluded.source,review_url=excluded.review_url""",
+                cur.execute("""INSERT INTO api_reviews(organization_id,
+                    review_id,
+                    location_id,
+                    author_display_name,
+                    rating,
+                    review_text,
+                    published_at,
+                    updated_at,
+                    language,
+                    source,
+                    review_url)
+                VALUES(%s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s)
+               
+                    ON CONFLICT(organization_id,
+                    review_id) DO UPDATE
+                    SET location_id=excluded.location_id,
+                    author_display_name=excluded.author_display_name,
+                    rating=excluded.rating,
+                    review_text=excluded.review_text,
+                    published_at=excluded.published_at,
+                    updated_at=excluded.updated_at,
+                    language=excluded.language,
+                    source=excluded.source,
+                    review_url=excluded.review_url""",
                 (organization_id,review['review_id'],review.get('location_id',''),review.get('author_display_name'),review['rating'],review['text'],review.get('published_at',''),review.get('updated_at'),review.get('language'),review.get('source','GOOGLE'),review.get('review_url')))
 
     def get_review(self, organization_id: str, review_id: str):
@@ -173,10 +226,19 @@ class PostgresAPIRepository(PostgresRepository):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
                 cur.execute(
-                    """SELECT id, case_id, event_type, actor_user_id, payload, created_at
-                       FROM case_events
-                       WHERE organization_id=%s AND case_id=%s
-                       ORDER BY created_at, id""",
+                    """SELECT id,
+                     case_id,
+                     event_type,
+                     actor_user_id,
+                     payload,
+                     created_at
+                      
+                    FROM case_events
+                      
+                    WHERE organization_id=%s
+                    AND case_id=%s
+                       ORDER BY created_at,
+                     id""",
                     (organization_id, case_id),
                 )
                 rows = []
@@ -229,8 +291,28 @@ class PostgresAPIRepository(PostgresRepository):
     def put_decision(self, organization_id: str, d: Mapping[str,Any]):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO api_decisions(organization_id,decision_id,case_id,status,kind,rationale,snapshot_sha256,created_by,created_at) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                ON CONFLICT(organization_id,decision_id) DO UPDATE SET status=excluded.status,snapshot_sha256=excluded.snapshot_sha256""", (organization_id,d['decision_id'],d['case_id'],d['status'],d['kind'],d['rationale'],d.get('snapshot_sha256'),d.get('created_by'),d['created_at']))
+                cur.execute("""INSERT INTO api_decisions(organization_id,
+                    decision_id,
+                    case_id,
+                    status,
+                    kind,
+                    rationale,
+                    snapshot_sha256,
+                    created_by,
+                    created_at) VALUES(%s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s)
+               
+                    ON CONFLICT(organization_id,
+                    decision_id) DO UPDATE
+                    SET status=excluded.status,
+                    snapshot_sha256=excluded.snapshot_sha256""", (organization_id,d['decision_id'],d['case_id'],d['status'],d['kind'],d['rationale'],d.get('snapshot_sha256'),d.get('created_by'),d['created_at']))
 
     def put_snapshot(self, organization_id: str, case_id: str, sha256: str, payload: Mapping[str,Any], frozen_by: str, frozen_at: str):
         with self.transaction(organization_id) as conn:
@@ -304,9 +386,41 @@ class PostgresAPIRepository(PostgresRepository):
     def put_evidence(self, organization_id: str, evidence: Mapping[str,Any]):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO api_evidence(organization_id,evidence_id,case_id,filename,content_type,size_bytes,sha256,object_key,verified,created_by,verified_by,verified_at)
-                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                ON CONFLICT(organization_id,evidence_id) DO UPDATE SET filename=excluded.filename,content_type=excluded.content_type,size_bytes=excluded.size_bytes,sha256=excluded.sha256,object_key=excluded.object_key,verified=excluded.verified,verified_by=excluded.verified_by,verified_at=excluded.verified_at""",
+                cur.execute("""INSERT INTO api_evidence(organization_id,
+                    evidence_id,
+                    case_id,
+                    filename,
+                    content_type,
+                    size_bytes,
+                    sha256,
+                    object_key,
+                    verified,
+                    created_by,
+                    verified_by,
+                    verified_at)
+                VALUES(%s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s)
+               
+                    ON CONFLICT(organization_id,
+                    evidence_id) DO UPDATE
+                    SET filename=excluded.filename,
+                    content_type=excluded.content_type,
+                    size_bytes=excluded.size_bytes,
+                    sha256=excluded.sha256,
+                    object_key=excluded.object_key,
+                    verified=excluded.verified,
+                    verified_by=excluded.verified_by,
+                    verified_at=excluded.verified_at""",
                 (organization_id,evidence['evidence_id'],evidence['case_id'],evidence['filename'],evidence['content_type'],evidence['size_bytes'],evidence['sha256'],evidence['object_key'],evidence.get('verified',False),evidence.get('created_by'),evidence.get('verified_by'),evidence.get('verified_at')))
 
     def list_evidence(self, organization_id: str, case_id: str):
@@ -336,9 +450,37 @@ class PostgresAPIRepository(PostgresRepository):
     def put_evidence_fact(self, organization_id: str, fact: Mapping[str,Any]):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO evidence_facts(organization_id,fact_id,evidence_id,case_id,key,kind,value,source_location,verified,verified_by,verified_at)
-                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                ON CONFLICT(fact_id) DO UPDATE SET key=excluded.key,kind=excluded.kind,value=excluded.value,source_location=excluded.source_location,verified=excluded.verified,verified_by=excluded.verified_by,verified_at=excluded.verified_at""",
+                cur.execute("""INSERT INTO evidence_facts(organization_id,
+                    fact_id,
+                    evidence_id,
+                    case_id,
+                    key,
+                    kind,
+                    value,
+                    source_location,
+                    verified,
+                    verified_by,
+                    verified_at)
+                VALUES(%s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s)
+               
+                    ON CONFLICT(fact_id) DO UPDATE
+                    SET key=excluded.key,
+                    kind=excluded.kind,
+                    value=excluded.value,
+                    source_location=excluded.source_location,
+                    verified=excluded.verified,
+                    verified_by=excluded.verified_by,
+                    verified_at=excluded.verified_at""",
                 (organization_id,fact['fact_id'],fact['evidence_id'],fact['case_id'],fact['key'],fact['kind'],fact['value'],fact.get('source_location',''),fact.get('verified',False),fact.get('verified_by'),fact.get('verified_at')))
 
     def list_evidence_facts(self, organization_id: str, case_id: str):
@@ -353,17 +495,67 @@ class PostgresAPIRepository(PostgresRepository):
     def put_fact_suggestion(self, organization_id: str, suggestion: Mapping[str,Any]):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO evidence_fact_suggestions(organization_id,suggestion_id,evidence_id,case_id,key,kind,value,source_location,confidence)
-                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                ON CONFLICT(organization_id,suggestion_id) DO UPDATE SET value=excluded.value,source_location=excluded.source_location,confidence=excluded.confidence""",
+                cur.execute("""INSERT INTO evidence_fact_suggestions(organization_id,
+                    suggestion_id,
+                    evidence_id,
+                    case_id,
+                    key,
+                    kind,
+                    value,
+                    source_location,
+                    confidence)
+                VALUES(%s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s)
+               
+                    ON CONFLICT(organization_id,
+                    suggestion_id) DO UPDATE
+                    SET value=excluded.value,
+                    source_location=excluded.source_location,
+                    confidence=excluded.confidence""",
                 (organization_id,suggestion['suggestion_id'],suggestion['evidence_id'],suggestion['case_id'],suggestion['key'],suggestion['kind'],suggestion['value'],suggestion.get('source_location',''),suggestion['confidence']))
 
     def put_contradiction(self, organization_id: str, finding: Mapping[str,Any]):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO contradiction_findings(organization_id,contradiction_id,case_id,claim_id,key,kind,claim_value,evidence_ids,evidence_values,description,confidence,requires_human_review)
-                VALUES(%s,%s,%s,%s,%s,%s,%s,%s::jsonb,%s::jsonb,%s,%s,%s)
-                ON CONFLICT(organization_id,contradiction_id) DO UPDATE SET evidence_ids=excluded.evidence_ids,evidence_values=excluded.evidence_values,description=excluded.description,confidence=excluded.confidence,requires_human_review=excluded.requires_human_review""",
+                cur.execute("""INSERT INTO contradiction_findings(organization_id,
+                    contradiction_id,
+                    case_id,
+                    claim_id,
+                    key,
+                    kind,
+                    claim_value,
+                    evidence_ids,
+                    evidence_values,
+                    description,
+                    confidence,
+                    requires_human_review)
+                VALUES(%s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s::jsonb,
+                    %s::jsonb,
+                    %s,
+                    %s,
+                    %s)
+               
+                    ON CONFLICT(organization_id,
+                    contradiction_id) DO UPDATE
+                    SET evidence_ids=excluded.evidence_ids,
+                    evidence_values=excluded.evidence_values,
+                    description=excluded.description,
+                    confidence=excluded.confidence,
+                    requires_human_review=excluded.requires_human_review""",
                 (organization_id,finding['contradiction_id'],finding['case_id'],finding['claim_id'],finding['key'],finding['kind'],finding['claim_value'],json.dumps(finding['evidence_ids']),json.dumps(finding['evidence_values']),finding['description'],finding['confidence'],finding.get('requires_human_review',True)))
 
     def assign_case(self, organization_id: str, case_id: str, user_id: str | None):
@@ -374,17 +566,64 @@ class PostgresAPIRepository(PostgresRepository):
     def upsert_sla_calendar(self, organization_id: str, calendar):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO organization_sla_calendars(organization_id,timezone,workdays,start_hour,end_hour,holidays,updated_at)
-                VALUES(%s,%s,%s::jsonb,%s,%s,%s::jsonb,now())
-                ON CONFLICT(organization_id) DO UPDATE SET timezone=excluded.timezone,workdays=excluded.workdays,start_hour=excluded.start_hour,end_hour=excluded.end_hour,holidays=excluded.holidays,updated_at=now()""",
+                cur.execute("""INSERT INTO organization_sla_calendars(organization_id,
+                    timezone,
+                    workdays,
+                    start_hour,
+                    end_hour,
+                    holidays,
+                    updated_at)
+                VALUES(%s,
+                    %s,
+                    %s::jsonb,
+                    %s,
+                    %s,
+                    %s::jsonb,
+                    now())
+               
+                    ON CONFLICT(organization_id) DO UPDATE
+                    SET timezone=excluded.timezone,
+                    workdays=excluded.workdays,
+                    start_hour=excluded.start_hour,
+                    end_hour=excluded.end_hour,
+                    holidays=excluded.holidays,
+                    updated_at=now()""",
                 (organization_id,calendar['timezone'],json.dumps(calendar['workdays']),calendar['start_hour'],calendar['end_hour'],json.dumps(calendar['holidays'])))
 
     def upsert_escalation(self, organization_id: str, e):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO case_escalations(organization_id,case_id,level,reason,status,acknowledged_by,acknowledged_at,resolved_by,resolved_at,updated_at)
-                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,now())
-                ON CONFLICT(organization_id,case_id,level) DO UPDATE SET reason=excluded.reason,status=excluded.status,acknowledged_by=excluded.acknowledged_by,acknowledged_at=excluded.acknowledged_at,resolved_by=excluded.resolved_by,resolved_at=excluded.resolved_at,updated_at=now()""",
+                cur.execute("""INSERT INTO case_escalations(organization_id,
+                    case_id,
+                    level,
+                    reason,
+                    status,
+                    acknowledged_by,
+                    acknowledged_at,
+                    resolved_by,
+                    resolved_at,
+                    updated_at)
+                VALUES(%s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    now())
+               
+                    ON CONFLICT(organization_id,
+                    case_id,
+                    level) DO UPDATE
+                    SET reason=excluded.reason,
+                    status=excluded.status,
+                    acknowledged_by=excluded.acknowledged_by,
+                    acknowledged_at=excluded.acknowledged_at,
+                    resolved_by=excluded.resolved_by,
+                    resolved_at=excluded.resolved_at,
+                    updated_at=now()""",
                 (organization_id,e['case_id'],e['level'],e['reason'],e['status'],e.get('acknowledged_by'),e.get('acknowledged_at'),e.get('resolved_by'),e.get('resolved_at')))
 
     def get_sla_calendar(self, organization_id: str):
@@ -398,8 +637,36 @@ class PostgresAPIRepository(PostgresRepository):
     def create_notification(self, organization_id: str, n):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO notification_outbox(organization_id,notification_id,case_id,escalation_level,channel,target,subject,body,status,created_by,created_at,dedupe_key,delivery_attempts,max_attempts)
-                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,0,%s) ON CONFLICT(organization_id,dedupe_key) DO NOTHING""",
+                cur.execute("""INSERT INTO notification_outbox(organization_id,
+                    notification_id,
+                    case_id,
+                    escalation_level,
+                    channel,
+                    target,
+                    subject,
+                    body,
+                    status,
+                    created_by,
+                    created_at,
+                    dedupe_key,
+                    delivery_attempts,
+                    max_attempts)
+                VALUES(%s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    0,
+                    %s)
+                    ON CONFLICT(organization_id,
+                    dedupe_key) DO NOTHING""",
                 (organization_id,n['notification_id'],n['case_id'],n['escalation_level'],n['channel'],n['target'],n['subject'],n['body'],n['status'],n.get('created_by'),n.get('created_at'),n['dedupe_key'],n.get('max_attempts',3)))
 
     def get_notification_policy(self, organization_id: str):
@@ -413,12 +680,56 @@ class PostgresAPIRepository(PostgresRepository):
     def upsert_notification_policy(self, organization_id: str, policy):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO organization_notification_policies(organization_id,enabled,levels,channels,quiet_start,quiet_end,allow_external) VALUES(%s,%s,%s,%s,%s,%s,%s) ON CONFLICT(organization_id) DO UPDATE SET enabled=EXCLUDED.enabled,levels=EXCLUDED.levels,channels=EXCLUDED.channels,quiet_start=EXCLUDED.quiet_start,quiet_end=EXCLUDED.quiet_end,allow_external=EXCLUDED.allow_external,updated_at=NOW()""", (organization_id,policy["enabled"],policy["levels"],policy["channels"],policy.get("quiet_start"),policy.get("quiet_end"),policy["allow_external"]))
+                cur.execute("""INSERT INTO organization_notification_policies(organization_id,
+                    enabled,
+                    levels,
+                    channels,
+                    quiet_start,
+                    quiet_end,
+                    allow_external) VALUES(%s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s)
+                    ON CONFLICT(organization_id) DO UPDATE
+                    SET enabled=EXCLUDED.enabled,
+                    levels=EXCLUDED.levels,
+                    channels=EXCLUDED.channels,
+                    quiet_start=EXCLUDED.quiet_start,
+                    quiet_end=EXCLUDED.quiet_end,
+                    allow_external=EXCLUDED.allow_external,
+                    updated_at=NOW()""", (organization_id,policy["enabled"],policy["levels"],policy["channels"],policy.get("quiet_start"),policy.get("quiet_end"),policy["allow_external"]))
 
     def get_notification(self, organization_id: str, notification_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""SELECT notification_id,organization_id,case_id,escalation_level,channel,target,subject,body,status,created_by,created_at,sent_by,sent_at,cancelled_by,cancelled_at,dedupe_key,delivery_attempts,last_attempt_at,delivery_error,max_attempts,next_attempt_at,dead_lettered_at FROM notification_outbox WHERE organization_id=%s AND notification_id=%s""", (organization_id,notification_id))
+                cur.execute("""SELECT notification_id,
+                    organization_id,
+                    case_id,
+                    escalation_level,
+                    channel,
+                    target,
+                    subject,
+                    body,
+                    status,
+                    created_by,
+                    created_at,
+                    sent_by,
+                    sent_at,
+                    cancelled_by,
+                    cancelled_at,
+                    dedupe_key,
+                    delivery_attempts,
+                    last_attempt_at,
+                    delivery_error,
+                    max_attempts,
+                    next_attempt_at,
+                    dead_lettered_at
+                    FROM notification_outbox
+                    WHERE organization_id=%s
+                    AND notification_id=%s""", (organization_id,notification_id))
                 row=cur.fetchone()
                 if not row: return None
                 names=("notification_id","organization_id","case_id","escalation_level","channel","target","subject","body","status","created_by","created_at","sent_by","sent_at","cancelled_by","cancelled_at","dedupe_key","delivery_attempts","last_attempt_at","delivery_error","max_attempts","next_attempt_at","dead_lettered_at")
@@ -433,9 +744,56 @@ class PostgresAPIRepository(PostgresRepository):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
                 if status:
-                    cur.execute("""SELECT notification_id,organization_id,case_id,escalation_level,channel,target,subject,body,status,created_by,created_at,sent_by,sent_at,cancelled_by,cancelled_at,dedupe_key,delivery_attempts,last_attempt_at,delivery_error,max_attempts,next_attempt_at,dead_lettered_at FROM notification_outbox WHERE organization_id=%s AND status=%s ORDER BY created_at DESC""", (organization_id,status))
+                    cur.execute("""SELECT notification_id,
+                    organization_id,
+                    case_id,
+                    escalation_level,
+                    channel,
+                    target,
+                    subject,
+                    body,
+                    status,
+                    created_by,
+                    created_at,
+                    sent_by,
+                    sent_at,
+                    cancelled_by,
+                    cancelled_at,
+                    dedupe_key,
+                    delivery_attempts,
+                    last_attempt_at,
+                    delivery_error,
+                    max_attempts,
+                    next_attempt_at,
+                    dead_lettered_at
+                    FROM notification_outbox
+                    WHERE organization_id=%s
+                    AND status=%s ORDER BY created_at DESC""", (organization_id,status))
                 else:
-                    cur.execute("""SELECT notification_id,organization_id,case_id,escalation_level,channel,target,subject,body,status,created_by,created_at,sent_by,sent_at,cancelled_by,cancelled_at,dedupe_key,delivery_attempts,last_attempt_at,delivery_error,max_attempts,next_attempt_at,dead_lettered_at FROM notification_outbox WHERE organization_id=%s ORDER BY created_at DESC""", (organization_id,))
+                    cur.execute("""SELECT notification_id,
+                    organization_id,
+                    case_id,
+                    escalation_level,
+                    channel,
+                    target,
+                    subject,
+                    body,
+                    status,
+                    created_by,
+                    created_at,
+                    sent_by,
+                    sent_at,
+                    cancelled_by,
+                    cancelled_at,
+                    dedupe_key,
+                    delivery_attempts,
+                    last_attempt_at,
+                    delivery_error,
+                    max_attempts,
+                    next_attempt_at,
+                    dead_lettered_at
+                    FROM notification_outbox
+                    WHERE organization_id=%s ORDER BY created_at DESC""", (organization_id,))
                 rows=[]
                 for row in cur.fetchall():
                     names=("notification_id","organization_id","case_id","escalation_level","channel","target","subject","body","status","created_by","created_at","sent_by","sent_at","cancelled_by","cancelled_at","dedupe_key","delivery_attempts","last_attempt_at","delivery_error","max_attempts","next_attempt_at","dead_lettered_at")
@@ -450,7 +808,20 @@ class PostgresAPIRepository(PostgresRepository):
     def update_notification(self, organization_id: str, n):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""UPDATE notification_outbox SET status=%s,sent_by=%s,sent_at=%s,cancelled_by=%s,cancelled_at=%s,delivery_attempts=%s,last_attempt_at=%s,delivery_error=%s,max_attempts=%s,next_attempt_at=%s,dead_lettered_at=%s WHERE organization_id=%s AND notification_id=%s""",
+                cur.execute("""UPDATE notification_outbox
+                    SET status=%s,
+                    sent_by=%s,
+                    sent_at=%s,
+                    cancelled_by=%s,
+                    cancelled_at=%s,
+                    delivery_attempts=%s,
+                    last_attempt_at=%s,
+                    delivery_error=%s,
+                    max_attempts=%s,
+                    next_attempt_at=%s,
+                    dead_lettered_at=%s
+                    WHERE organization_id=%s
+                    AND notification_id=%s""",
                 (n['status'],n.get('sent_by'),n.get('sent_at'),n.get('cancelled_by'),n.get('cancelled_at'),n.get('delivery_attempts',0),n.get('last_attempt_at'),n.get('delivery_error'),n.get('max_attempts',3),n.get('next_attempt_at'),n.get('dead_lettered_at'),organization_id,n['notification_id']))
 
     def record_notification_attempt(self, organization_id: str, n):
@@ -475,15 +846,57 @@ class PostgresAPIRepository(PostgresRepository):
     def upsert_contradiction_disposition(self, organization_id: str, disposition: Mapping[str,Any]):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO contradiction_dispositions(disposition_id,organization_id,case_id,contradiction_id,status,rationale,actor_id,created_at,requires_human_review)
-                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                ON CONFLICT(organization_id,contradiction_id) DO UPDATE SET status=EXCLUDED.status,rationale=EXCLUDED.rationale,actor_id=EXCLUDED.actor_id,created_at=EXCLUDED.created_at,requires_human_review=TRUE""",
+                cur.execute("""INSERT INTO contradiction_dispositions(disposition_id,
+                    organization_id,
+                    case_id,
+                    contradiction_id,
+                    status,
+                    rationale,
+                    actor_id,
+                    created_at,
+                    requires_human_review)
+                VALUES(%s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s)
+               
+                    ON CONFLICT(organization_id,
+                    contradiction_id) DO UPDATE
+                    SET status=EXCLUDED.status,
+                    rationale=EXCLUDED.rationale,
+                    actor_id=EXCLUDED.actor_id,
+                    created_at=EXCLUDED.created_at,
+                    requires_human_review=TRUE""",
                 (disposition['disposition_id'],organization_id,disposition['case_id'],disposition['contradiction_id'],disposition['status'],disposition['rationale'],disposition['actor_id'],disposition['created_at'],True))
 
     def append_contradiction_disposition_history(self, organization_id: str, history: Mapping[str,Any]):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO contradiction_disposition_history(history_id,organization_id,case_id,contradiction_id,disposition_id,status,rationale,actor_id,created_at,requires_human_review) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON CONFLICT(history_id) DO NOTHING""", (history['history_id'],organization_id,history['case_id'],history['contradiction_id'],history['disposition_id'],history['status'],history['rationale'],history['actor_id'],history['created_at'],True))
+                cur.execute("""INSERT INTO contradiction_disposition_history(history_id,
+                    organization_id,
+                    case_id,
+                    contradiction_id,
+                    disposition_id,
+                    status,
+                    rationale,
+                    actor_id,
+                    created_at,
+                    requires_human_review) VALUES(%s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s)
+                    ON CONFLICT(history_id) DO NOTHING""", (history['history_id'],organization_id,history['case_id'],history['contradiction_id'],history['disposition_id'],history['status'],history['rationale'],history['actor_id'],history['created_at'],True))
 
     def list_contradiction_disposition_history(self, organization_id: str, contradiction_id: str):
         with self.transaction(organization_id) as conn:
@@ -580,22 +993,81 @@ class PostgresAPIRepository(PostgresRepository):
     def create_billing_transaction(self, organization_id: str, row):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO billing_transactions(id,organization_id,user_id,offer_id,kind,status,currency,amount,paypal_order_id,paypal_subscription_id,paypal_event_id,metadata)
-                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                ON CONFLICT (id) DO NOTHING""",
+                cur.execute("""INSERT INTO billing_transactions(id,
+                    organization_id,
+                    user_id,
+                    offer_id,
+                    kind,
+                    status,
+                    currency,
+                    amount,
+                    paypal_order_id,
+                    paypal_subscription_id,
+                    paypal_event_id,
+                    metadata)
+                VALUES(%s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s)
+               
+                    ON CONFLICT (id) DO NOTHING""",
                 (row["id"],organization_id,row.get("user_id"),row["offer_id"],row["kind"],row["status"],row.get("currency","EUR"),row.get("amount"),row.get("paypal_order_id"),row.get("paypal_subscription_id"),row.get("paypal_event_id"),json.dumps(row.get("metadata",{}))))
     def update_billing_transaction(self, organization_id: str, row):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""UPDATE billing_transactions SET status=%s,paypal_order_id=COALESCE(%s,paypal_order_id),paypal_subscription_id=COALESCE(%s,paypal_subscription_id),paypal_event_id=COALESCE(%s,paypal_event_id),metadata=%s,updated_at=now() WHERE organization_id=%s AND id=%s""",
+                cur.execute("""UPDATE billing_transactions
+                    SET status=%s,
+                    paypal_order_id=COALESCE(%s,
+                    paypal_order_id),
+                    paypal_subscription_id=COALESCE(%s,
+                    paypal_subscription_id),
+                    paypal_event_id=COALESCE(%s,
+                    paypal_event_id),
+                    metadata=%s,
+                    updated_at=now()
+                    WHERE organization_id=%s
+                    AND id=%s""",
                 (row["status"],row.get("paypal_order_id"),row.get("paypal_subscription_id"),row.get("paypal_event_id"),json.dumps(row.get("metadata",{})),organization_id,row["id"]))
     def list_billing_transactions(self, organization_id: str, user_id=None):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
                 if user_id:
-                    cur.execute("""SELECT id,offer_id,kind,status,currency,amount,paypal_order_id,paypal_subscription_id,metadata,created_at,updated_at FROM billing_transactions WHERE organization_id=%s AND (user_id=%s OR user_id IS NULL) ORDER BY created_at DESC LIMIT 100""",(organization_id,user_id))
+                    cur.execute("""SELECT id,
+                    offer_id,
+                    kind,
+                    status,
+                    currency,
+                    amount,
+                    paypal_order_id,
+                    paypal_subscription_id,
+                    metadata,
+                    created_at,
+                    updated_at
+                    FROM billing_transactions
+                    WHERE organization_id=%s
+                    AND (user_id=%s OR user_id IS NULL) ORDER BY created_at DESC LIMIT 100""",(organization_id,user_id))
                 else:
-                    cur.execute("""SELECT id,offer_id,kind,status,currency,amount,paypal_order_id,paypal_subscription_id,metadata,created_at,updated_at FROM billing_transactions WHERE organization_id=%s ORDER BY created_at DESC LIMIT 100""",(organization_id,))
+                    cur.execute("""SELECT id,
+                    offer_id,
+                    kind,
+                    status,
+                    currency,
+                    amount,
+                    paypal_order_id,
+                    paypal_subscription_id,
+                    metadata,
+                    created_at,
+                    updated_at
+                    FROM billing_transactions
+                    WHERE organization_id=%s ORDER BY created_at DESC LIMIT 100""",(organization_id,))
                 names=("id","offer_id","kind","status","currency","amount","paypal_order_id","paypal_subscription_id","metadata","created_at","updated_at")
                 rows=[]
                 for x in cur.fetchall():
@@ -608,7 +1080,19 @@ class PostgresAPIRepository(PostgresRepository):
     def get_billing_by_order(self, organization_id: str, order_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""SELECT id,offer_id,kind,status,currency,amount,paypal_order_id,paypal_subscription_id,paypal_event_id,metadata FROM billing_transactions WHERE organization_id=%s AND paypal_order_id=%s""",(organization_id,order_id))
+                cur.execute("""SELECT id,
+                    offer_id,
+                    kind,
+                    status,
+                    currency,
+                    amount,
+                    paypal_order_id,
+                    paypal_subscription_id,
+                    paypal_event_id,
+                    metadata
+                    FROM billing_transactions
+                    WHERE organization_id=%s
+                    AND paypal_order_id=%s""",(organization_id,order_id))
                 row=cur.fetchone()
                 if not row: return None
                 return dict(zip(("id","offer_id","kind","status","currency","amount","paypal_order_id","paypal_subscription_id","paypal_event_id","metadata"),row))
@@ -621,14 +1105,30 @@ class PostgresAPIRepository(PostgresRepository):
     def record_billing_webhook(self, organization_id: str, event_id: str, payload):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""UPDATE billing_transactions SET paypal_event_id=%s,metadata=metadata || %s::jsonb,updated_at=now() WHERE organization_id=%s AND (paypal_order_id=%s OR paypal_subscription_id=%s)""",
+                cur.execute("""UPDATE billing_transactions
+                    SET paypal_event_id=%s,
+                    metadata=metadata || %s::jsonb,
+                    updated_at=now()
+                    WHERE organization_id=%s
+                    AND (paypal_order_id=%s OR paypal_subscription_id=%s)""",
                 (event_id,json.dumps({"last_webhook":payload}),organization_id,payload.get("_order_id"),payload.get("_subscription_id")))
 
     def get_billing_by_paypal_id_global(self, paypal_id: str):
         with self._connect() as conn:
             with conn.transaction():
                 with conn.cursor() as cur:
-                    cur.execute("""SELECT id,organization_id,offer_id,kind,status,currency,amount,paypal_order_id,paypal_subscription_id,metadata FROM billing_transactions WHERE paypal_order_id=%s OR paypal_subscription_id=%s LIMIT 1""",(paypal_id,paypal_id))
+                    cur.execute("""SELECT id,
+                    organization_id,
+                    offer_id,
+                    kind,
+                    status,
+                    currency,
+                    amount,
+                    paypal_order_id,
+                    paypal_subscription_id,
+                    metadata
+                    FROM billing_transactions
+                    WHERE paypal_order_id=%s OR paypal_subscription_id=%s LIMIT 1""",(paypal_id,paypal_id))
                     row=cur.fetchone()
                     if not row:return None
                     return dict(zip(("id","organization_id","offer_id","kind","status","currency","amount","paypal_order_id","paypal_subscription_id","metadata"),row))
@@ -689,18 +1189,77 @@ class PostgresAPIRepository(PostgresRepository):
     def upsert_organization_profile(self, organization_id: str, profile: Mapping[str,Any]):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO organization_profiles(organization_id,legal_name,website,phone,address,city,postal_code,country,sector,employee_count,description)
-                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                ON CONFLICT(organization_id) DO UPDATE SET legal_name=EXCLUDED.legal_name,website=EXCLUDED.website,phone=EXCLUDED.phone,address=EXCLUDED.address,city=EXCLUDED.city,postal_code=EXCLUDED.postal_code,country=EXCLUDED.country,sector=EXCLUDED.sector,employee_count=EXCLUDED.employee_count,description=EXCLUDED.description,updated_at=now()
-                RETURNING legal_name,website,phone,address,city,postal_code,country,sector,employee_count,description,updated_at""",
+                cur.execute("""INSERT INTO organization_profiles(organization_id,
+                    legal_name,
+                    website,
+                    phone,
+                    address,
+                    city,
+                    postal_code,
+                    country,
+                    sector,
+                    employee_count,
+                    description)
+                VALUES(%s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s)
+               
+                    ON CONFLICT(organization_id) DO UPDATE
+                    SET legal_name=EXCLUDED.legal_name,
+                    website=EXCLUDED.website,
+                    phone=EXCLUDED.phone,
+                    address=EXCLUDED.address,
+                    city=EXCLUDED.city,
+                    postal_code=EXCLUDED.postal_code,
+                    country=EXCLUDED.country,
+                    sector=EXCLUDED.sector,
+                    employee_count=EXCLUDED.employee_count,
+                    description=EXCLUDED.description,
+                    updated_at=now()
+               
+                    RETURNING legal_name,
+                    website,
+                    phone,
+                    address,
+                    city,
+                    postal_code,
+                    country,
+                    sector,
+                    employee_count,
+                    description,
+                    updated_at""",
                 (organization_id,profile.get("legal_name"),profile.get("website"),profile.get("phone"),profile.get("address"),profile.get("city"),profile.get("postal_code"),profile.get("country"),profile.get("sector"),profile.get("employee_count"),profile.get("description")))
                 return cur.fetchone()
 
     def put_client_document(self, organization_id: str, document: Mapping[str,Any]):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO client_documents(document_id,organization_id,filename,content_type,size_bytes,sha256,object_key,category,created_by)
-                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                cur.execute("""INSERT INTO client_documents(document_id,
+                    organization_id,
+                    filename,
+                    content_type,
+                    size_bytes,
+                    sha256,
+                    object_key,
+                    category,
+                    created_by)
+                VALUES(%s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s)""",
                 (document["document_id"],organization_id,document["filename"],document["content_type"],document["size_bytes"],document["sha256"],document["object_key"],document.get("category","GENERAL"),document.get("created_by")))
 
     def list_client_documents(self, organization_id: str):
@@ -737,9 +1296,35 @@ class PostgresAPIRepository(PostgresRepository):
     def save_google_connection(self, organization_id: str, connection: Mapping[str,Any]):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO google_connections(connection_id,organization_id,google_account_id,google_location_id,location_title,encrypted_access_token,encrypted_refresh_token,expires_at,status,created_by)
-                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                ON CONFLICT(connection_id) DO UPDATE SET google_account_id=EXCLUDED.google_account_id,google_location_id=EXCLUDED.google_location_id,encrypted_access_token=EXCLUDED.encrypted_access_token,encrypted_refresh_token=EXCLUDED.encrypted_refresh_token,expires_at=EXCLUDED.expires_at,status=EXCLUDED.status,updated_at=now()""",
+                cur.execute("""INSERT INTO google_connections(connection_id,
+                    organization_id,
+                    google_account_id,
+                    google_location_id,
+                    location_title,
+                    encrypted_access_token,
+                    encrypted_refresh_token,
+                    expires_at,
+                    status,
+                    created_by)
+                VALUES(%s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s)
+               
+                    ON CONFLICT(connection_id) DO UPDATE
+                    SET google_account_id=EXCLUDED.google_account_id,
+                    google_location_id=EXCLUDED.google_location_id,
+                    encrypted_access_token=EXCLUDED.encrypted_access_token,
+                    encrypted_refresh_token=EXCLUDED.encrypted_refresh_token,
+                    expires_at=EXCLUDED.expires_at,
+                    status=EXCLUDED.status,
+                    updated_at=now()""",
                 (connection["connection_id"],organization_id,connection.get("google_account_id"),connection.get("google_location_id"),connection.get("location_title"),connection["encrypted_access_token"],connection.get("encrypted_refresh_token"),connection["expires_at"],connection.get("status","CONNECTED"),connection.get("created_by")))
 
     def list_google_connections(self, organization_id: str):
