@@ -1903,7 +1903,11 @@ async function downloadClientDocument(documentId){try{const headers={Accept:'app
    document.body.appendChild(link);
    link.click();
    link.remove();
-   setTimeout(()=>URL.revokeObjectURL(url),30000)
+   setTimeout(()=>URL.revokeObjectURL(url),30000);
+ }catch(error){
+   toast(error.message||'Téléchargement impossible','error');
+ }
+}
 async function connectGoogle(){try{const result=await api('/v1/integrations/google/start',
   {method:'POST',
     body:JSON.stringify({})});
