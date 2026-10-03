@@ -122,9 +122,23 @@ def _body(slug: str, title: str, keyword: str) -> str:
     out.append(f'<div class="seo-answer"><strong>Réponse en bref</strong><p>{html.escape(sections[0][1])}</p></div>')
     for i,(h,p) in enumerate(sections):
         if i==0: continue
-        out.append(f'<section class="seo-section seo-section-{i}"><div class="seo-section-index">0{i}</div><div><h2>{html.escape(h)}</h2><p>{html.escape(p)}</p></div></section>')
+        out.append(f(
+            '<section class="seo-section seo-section-{i}">' +
+            'div class="seo-section-index">0{i}</div>' +
+            'div>' +
+            'h2>{html.escape(h)}</h2>' +
+            'p>{html.escape(p)}</p>' +
+            '/div>' +
+            '/section>'
+        ))
     if not service:
-        out.append('<section class="seo-section seo-checks"><div class="seo-section-index">08</div><div><h2>Checklist avant toute démarche</h2><div class="seo-checklist">')
+        out.append((
+            '<section class="seo-section seo-checks">' +
+            'div class="seo-section-index">08</div>' +
+            'div>' +
+            'h2>Checklist avant toute démarche</h2>' +
+            'div class="seo-checklist">'
+        ))
         for i,c in enumerate(topic["checks"],1):
             out.append(f'<div><b>0{i}</b><span>{html.escape(str(c))}</span></div>')
         out.append('</div></div></section>')
@@ -132,7 +146,16 @@ def _body(slug: str, title: str, keyword: str) -> str:
     for q,a in faq:
         out.append(f'<details><summary>{html.escape(q)}<span>+</span></summary><p>{html.escape(a)}</p></details>')
     out.append('</section>')
-    out.append('<section class="seo-cta"><div><span>REVIEW DEFENSE · ANALYSE</span><h2>Votre avis mérite un dossier clair.</h2><p>Structurez les faits, reliez les preuves et préparez la suite avec une validation humaine avant toute démarche externe.</p></div><a class="btn-primary" href="/inscription">Analyser mon avis →</a></section>')
+    out.append((
+            '<section class="seo-cta">' +
+            'div>' +
+            'span>REVIEW DEFENSE · ANALYSE</span>' +
+            'h2>Votre avis mérite un dossier clair.</h2>' +
+            'p>Structurez les faits, reliez les preuves et préparez la suite avec une validation humaine avant toute démarche externe.</p>' +
+            '/div>' +
+            'a class="btn-primary" href="/inscription">Analyser mon avis →</a>' +
+            '/section>'
+        ))
     out.append('</article>')
     return "".join(out)
 
@@ -168,15 +191,30 @@ def render_page(path: str) -> bytes:
         schema_graph[-1]["dateModified"]="2026-09-21"
     schema_graph.append({"@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in faq]})
     schema={"@context":"https://schema.org","@graph":schema_graph}
-    doc=f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{html.escape(_title_tag(slug,title))}</title><meta name="description" content="{html.escape(meta)}">
+    doc=(
+        f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{html.escape(_title_tag(slug,title))}</title>'''
+        f'''<meta name="description" content="{html.escape(meta)}">
 <link rel="canonical" href="{html.escape(canonical)}"><meta name="robots" content="index,follow,max-image-preview:large">
-<meta property="og:type" content="article"><meta property="og:title" content="{html.escape(_title_tag(slug,title))}"><meta property="og:description" content="{html.escape(meta)}"><meta property="og:url" content="{html.escape(canonical)}">
-<link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css?v=6500"><link rel="stylesheet" href="/assets/seo.css?v=6500"><style>{_RD_HEADER_CSS}</style>
-<script type="application/ld+json">{json.dumps(schema,ensure_ascii=False,separators=(",",":"))}</script></head><body>
-<div class="marketing"><header class="rd-top"><a class="rd-brand" href="/"><span class="rd-mark">◆</span> Review Defense</a><nav class="rd-nav" aria-label="Navigation principale"><a href="/services">Services</a><a href="/fonctionnement">Fonctionnement</a><a href="/resources">Resources</a><a href="/about">About</a><a href="/tarif">Tarif</a></nav><div class="rd-actions"><a class="rd-search" href="/resources">⌕</a><a class="rd-btn rd-btn-blue" href="/inscription">Analyser un avis</a></div><button class="rd-menu" aria-label="Menu">☰</button></header>
-<main class="seo-main"><nav class="breadcrumbs"><a href="/">Accueil</a><span>›</span><a href="/{hub_slug}/">{html.escape(hub_title)}</a><span>›</span><span>{html.escape(title)}</span></nav><header class="seo-hero"><div class="seo-hero-copy"><span>{html.escape(_cluster(slug).upper())}</span><h1>{html.escape(title)}</h1><p>{html.escape(meta)}</p><div class="seo-keyword">Sujet : {html.escape(keyword)}</div></div><div class="seo-hero-visual" style="background-image:url('{_article_visual(slug)}')" aria-hidden="true"></div></header>{_body(slug,title,keyword)}<aside class="seo-related"><h2>À lire ensuite</h2><ul>{related_html}</ul></aside></main>
-<footer class="public-footer"><div><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><p>Analyse, qualification et accompagnement autour des avis en ligne.</p></div><div><b>Produit</b><a href="/produit/">Fonctionnalités</a><a href="/tarifs/">Tarifs</a></div><div><b>Ressources</b><a href="/ressources/">Guides</a><a href="/inscription">Analyser un avis</a></div></footer></div></body></html>'''
+<meta property="og:type" content="article">'''
+        f'''<meta property="og:title" content="{html.escape(_title_tag(slug,title))}"><meta property="og:description" content="{html.escape(meta)}"><meta property="og:url" content="{html.escape(canonical)}">
+<link rel="stylesheet" href="/assets/app.css">'''
+        f'''<link rel="stylesheet" href="/assets/public.css?v=6500"><link rel="stylesheet" href="/assets/seo.css?v=6500"><style>{_RD_HEADER_CSS}</style>
+<script type="application/ld+json">{json.dumps(schema,ensure_ascii=False,separators=(",",":"))}</script>'''
+        f'''</head><body>
+<div class="marketing"><header class="rd-top"><a class="rd-brand" href="/"><span class="rd-mark">◆</span> Review Defense</a><nav class="rd-nav" aria-label="Navigation principale">'''
+        f'''<a href="/services">Services</a><a href="/fonctionnement">Fonctionnement</a><a href="/resources">Resources</a><a href="/about">About</a><a href="/tarif">Tarif</a>'''
+        f'''</nav><div class="rd-actions"><a class="rd-search" href="/resources">⌕</a><a class="rd-btn rd-btn-blue" href="/inscription">Analyser un avis</a></div>'''
+        f'''<button class="rd-menu" aria-label="Menu">☰</button></header>
+<main class="seo-main"><nav class="breadcrumbs"><a href="/">Accueil</a><span>›</span><a href="/{hub_slug}/">{html.escape(hub_title)}</a>'''
+        f'''<span>›</span><span>{html.escape(title)}</span></nav><header class="seo-hero"><div class="seo-hero-copy"><span>{html.escape(_cluster(slug).upper())}</span>'''
+        f'''<h1>{html.escape(title)}</h1><p>{html.escape(meta)}</p><div class="seo-keyword">Sujet : {html.escape(keyword)}</div></div><div class="seo-hero-visual" style="background-image:url('{_article_visual(slug)}')" aria-hidden="true">'''
+        f'''</div></header>{_body(slug,title,keyword)}<aside class="seo-related"><h2>À lire ensuite</h2><ul>{related_html}</ul></aside></main>
+<footer class="public-footer">'''
+        f'''<div><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><p>Analyse, qualification et accompagnement autour des avis en ligne.</p>'''
+        f'''</div><div><b>Produit</b><a href="/produit/">Fonctionnalités</a><a href="/tarifs/">Tarifs</a></div><div><b>Ressources</b><a href="/ressources/">Guides</a>'''
+        f'''<a href="/inscription">Analyser un avis</a></div></footer></div></body></html>'''
+    )
     return doc.encode("utf-8")
 
 def sitemap() -> bytes:

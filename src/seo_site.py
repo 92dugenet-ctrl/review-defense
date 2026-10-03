@@ -117,9 +117,42 @@ def _analysis_html():
     description="Analysez une situation liée à un avis Google, structurez les faits disponibles et préparez un dossier avec validation humaine."
     schema=json.dumps({"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":_url("/#organization"),"name":"Review Defense","url":_url("/")},{"@type":"WebSite","@id":_url("/#website"),"name":"Review Defense","url":_url("/"),"publisher":{"@id":_url("/#organization")}},{"@type":"Service","name":title,"description":description,"url":_url("/analyse-avis-google/"),"provider":{"@id":_url("/#organization")}}]},ensure_ascii=False,separators=(",",":"))
     script="""<script>(function(){window.dataLayer=window.dataLayer||[];var f=document.getElementById("rd-analysis-form");if(f){var started=false;f.addEventListener("input",function(){if(!started){started=true;window.dataLayer.push({event:"analysis_start",page:location.pathname});}});f.addEventListener("submit",function(e){e.preventDefault();window.dataLayer.push({event:"analysis_submit",page:location.pathname});location.href="/app";});}})();</script>"""
-    return f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{_e(title)}</title><meta name="description" content="{_e(description)}"><meta name="robots" content="index,follow"><link rel="canonical" href="{_e(_url("/analyse-avis-google/"))}"><meta property="og:type" content="website"><meta property="og:title" content="{_e(title)}"><meta property="og:description" content="{_e(description)}"><meta property="og:url" content="{_e(_url("/analyse-avis-google/"))}"><link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css"><script type="application/ld+json">{schema}</script></head><body><div class="marketing"><header class="public-header"><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><nav class="public-nav"><a href="/produit/">Produit</a><a href="/comment-ca-marche/">Comment ça fonctionne</a><a href="/services/">Services</a><a href="/tarifs/">Tarifs</a><a href="/ressources/">Ressources</a><a href="/contact/">Contact</a></nav><div class="public-actions"><a class="btn-secondary" href="/app">Connexion</a></div></header><main class="rd-analysis-main"><section class="rd-home-hero"><div class="rd-container rd-hero-grid"><div class="rd-hero-copy"><span class="rd-eyebrow-pill">ANALYSE D’AVIS GOOGLE</span><h1>Commencez par les faits.<br><span>Préparez la suite.</span></h1><p class="rd-hero-lead">Décrivez la situation, les éléments disponibles et ce que vous souhaitez vérifier. Review Defense structure l’analyse ; les décisions importantes restent humaines.</p><div class="rd-trust-line"><span>✓ Qualification</span><span>✓ Preuves</span><span>✓ Traçabilité</span><span>✓ Validation humaine</span></div></div><div class="rd-analysis-card"><div class="rd-card-kicker">ÉTAPE 01 · ANALYSE</div><h2>Décrivez votre situation</h2><p>Ne partagez ici que les informations nécessaires à l’analyse.</p><form id="rd-analysis-form"><label>URL de l’avis Google <span>(optionnel)</span><input name="review_url" type="url" placeholder="https://www.google.com/..."></label><label>Type de situation<select name="situation"><option>Avis que je souhaite examiner</option><option>Suspicion de faux avis</option><option>Signalement refusé</option><option>Plusieurs avis à examiner</option><option>Autre situation</option></select></label><label>Résumé des faits<textarea name="summary" rows="7" required placeholder="Quels faits souhaitez-vous vérifier ?"></textarea></label><button class="btn-primary rd-btn-lg" type="submit">Commencer l’analyse →</button><small>La soumission démarre le parcours Review Defense. Aucune action Google n’est exécutée automatiquement.</small></form></div></div></section><section class="rd-section rd-light"><div class="rd-container rd-value-grid"><article class="rd-value-card"><span>01</span><h2>Analyse</h2><p>Identifier les affirmations, faits et points à vérifier.</p></article><article class="rd-value-card"><span>02</span><h2>Décision</h2><p>Documenter ce qui est établi, incertain ou à confirmer.</p></article><article class="rd-value-card"><span>03</span><h2>Préparation</h2><p>Structurer les éléments utiles avant toute démarche externe.</p></article><article class="rd-value-card"><span>04</span><h2>Validation</h2><p>Une action importante reste soumise à une validation humaine explicite.</p></article></div></section><section class="rd-final-cta"><div class="rd-container"><span class="rd-eyebrow">GARDEZ LE CONTRÔLE</span><h2>L’automatisation prépare.<br><span>L’humain décide.</span></h2><p>La décision finale appartient à la plateforme concernée.</p><div class="seo-faq"><h2>Questions fréquentes</h2><details><summary>La suppression est-elle garantie ?</summary><p>Non. Review Defense prépare et structure les informations ; aucune suppression n’est garantie et la décision finale appartient à la plateforme concernée.</p></details><details><summary>Que se passe-t-il après l’analyse ?</summary><p>Le dossier peut être qualifié, documenté et soumis aux étapes de validation humaine prévues par le workflow.</p></details></div></div></section></main><footer class="public-footer"><div><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><p>Analyse, qualification et suivi des dossiers liés aux avis en ligne.</p></div><div><b>Produit</b><a href="/produit/">Fonctionnalités</a><a href="/tarifs/">Tarifs</a></div><div><b>Ressources</b><a href="/ressources/">Guides</a><a href="/analyse-avis-google/">Analyser un avis</a></div><div><b>Sécurité</b><span>Validation humaine</span><span>Traçabilité complète</span></div></footer></div>{script}</body></html>'''
+    return (
+        f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{_e(title)}</title>'''
+        f'''<meta name="description" content="{_e(description)}"><meta name="robots" content="index,follow"><link rel="canonical" href="{_e(_url("/analyse-avis-google/"))}">'''
+        f'''<meta property="og:type" content="website"><meta property="og:title" content="{_e(title)}"><meta property="og:description" content="{_e(description)}">'''
+        f'''<meta property="og:url" content="{_e(_url("/analyse-avis-google/"))}"><link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css">'''
+        f'''<script type="application/ld+json">{schema}</script></head><body><div class="marketing"><header class="public-header"><a class="public-brand" href="/">'''
+        f'''<b class="brand-mark">◆</b> Review Defense</a><nav class="public-nav"><a href="/produit/">Produit</a><a href="/comment-ca-marche/">Comment ça fonctionne</a>'''
+        f'''<a href="/services/">Services</a><a href="/tarifs/">Tarifs</a><a href="/ressources/">Ressources</a><a href="/contact/">Contact</a></nav><div class="public-actions">'''
+        f'''<a class="btn-secondary" href="/app">Connexion</a></div></header><main class="rd-analysis-main"><section class="rd-home-hero"><div class="rd-container rd-hero-grid">'''
+        f'''<div class="rd-hero-copy"><span class="rd-eyebrow-pill">ANALYSE D’AVIS GOOGLE</span><h1>Commencez par les faits.<br><span>Préparez la suite.</span></h1>'''
+        f'''<p class="rd-hero-lead">Décrivez la situation, les éléments disponibles et ce que vous souhaitez vérifier. Review Defense structure l’analyse ; les décisions importantes restent humaines.</p>'''
+        f'''<div class="rd-trust-line"><span>✓ Qualification</span><span>✓ Preuves</span><span>✓ Traçabilité</span><span>✓ Validation humaine</span></div></div><div class="rd-analysis-card">'''
+        f'''<div class="rd-card-kicker">ÉTAPE 01 · ANALYSE</div><h2>Décrivez votre situation</h2><p>Ne partagez ici que les informations nécessaires à l’analyse.</p>'''
+        f'''<form id="rd-analysis-form"><label>URL de l’avis Google <span>(optionnel)</span><input name="review_url" type="url" placeholder="https://www.google.com/...">'''
+        f'''</label><label>Type de situation<select name="situation"><option>Avis que je souhaite examiner</option><option>Suspicion de faux avis</option><option>Signalement refusé</option>'''
+        f'''<option>Plusieurs avis à examiner</option><option>Autre situation</option></select></label><label>Résumé des faits<textarea name="summary" rows="7" required placeholder="Quels faits souhaitez-vous vérifier ?">'''
+        f'''</textarea></label><button class="btn-primary rd-btn-lg" type="submit">Commencer l’analyse →</button><small>La soumission démarre le parcours Review Defense. Aucune action Google n’est exécutée automatiquement.</small>'''
+        f'''</form></div></div></section><section class="rd-section rd-light"><div class="rd-container rd-value-grid"><article class="rd-value-card"><span>01</span>'''
+        f'''<h2>Analyse</h2><p>Identifier les affirmations, faits et points à vérifier.</p></article><article class="rd-value-card"><span>02</span><h2>Décision</h2>'''
+        f'''<p>Documenter ce qui est établi, incertain ou à confirmer.</p></article><article class="rd-value-card"><span>03</span><h2>Préparation</h2><p>Structurer les éléments utiles avant toute démarche externe.</p>'''
+        f'''</article><article class="rd-value-card"><span>04</span><h2>Validation</h2><p>Une action importante reste soumise à une validation humaine explicite.</p>'''
+        f'''</article></div></section><section class="rd-final-cta"><div class="rd-container"><span class="rd-eyebrow">GARDEZ LE CONTRÔLE</span><h2>L’automatisation prépare.<br>'''
+        f'''<span>L’humain décide.</span></h2><p>La décision finale appartient à la plateforme concernée.</p><div class="seo-faq"><h2>Questions fréquentes</h2><details>'''
+        f'''<summary>La suppression est-elle garantie ?</summary><p>Non. Review Defense prépare et structure les informations ; aucune suppression n’est garantie et la décision finale appartient à la plateforme concernée.</p>'''
+        f'''</details><details><summary>Que se passe-t-il après l’analyse ?</summary><p>Le dossier peut être qualifié, documenté et soumis aux étapes de validation humaine prévues par le workflow.</p>'''
+        f'''</details></div></div></section></main><footer class="public-footer"><div><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a>'''
+        f'''<p>Analyse, qualification et suivi des dossiers liés aux avis en ligne.</p></div><div><b>Produit</b><a href="/produit/">Fonctionnalités</a><a href="/tarifs/">Tarifs</a>'''
+        f'''</div><div><b>Ressources</b><a href="/ressources/">Guides</a><a href="/analyse-avis-google/">Analyser un avis</a></div><div><b>Sécurité</b><span>Validation humaine</span>'''
+        f'''<span>Traçabilité complète</span></div></footer></div>{script}</body></html>'''
+    )
 COMMERCIAL={
- "/":{"title":"Review Defense | Analyse et défense de votre réputation","description":"Analysez vos avis Google, documentez les éléments utiles et préparez vos dossiers avec une validation humaine.","eyebrow":"REPUTATION INTELLIGENCE · POUR LES ENTREPRISES","h1":"Analysez vos avis Google.<br><span>Préparez vos dossiers.</span><br>Gardez le contrôle.","lead":"Review Defense aide les entreprises à analyser, qualifier, documenter et suivre les situations liées aux avis Google.","sections":[("Analyse structurée","Examinez le contenu, le contexte et les éléments qui méritent une vérification."),("Preuves documentées","Reliez les éléments disponibles aux affirmations et conservez une trace claire."),("Décision humaine","Les étapes importantes restent soumises à une validation humaine explicite.")]},
+ "/":{"title":"Review Defense | Analyse et défense de votre réputation","description":"Analysez vos avis Google, documentez les éléments utiles et préparez vos dossiers avec une validation humaine.","eyebrow":"REPUTATION INTELLIGENCE · POUR LES ENTREPRISES","h1":(
+            "Analysez vos avis Google.<br>" +
+            "span>Préparez vos dossiers.</span>" +
+            "br>Gardez le contrôle."
+        ),"lead":"Review Defense aide les entreprises à analyser, qualifier, documenter et suivre les situations liées aux avis Google.","sections":[("Analyse structurée","Examinez le contenu, le contexte et les éléments qui méritent une vérification."),("Preuves documentées","Reliez les éléments disponibles aux affirmations et conservez une trace claire."),("Décision humaine","Les étapes importantes restent soumises à une validation humaine explicite.")]},
  "/produit/":{"title":"Produit Review Defense | Analyse, preuves et traçabilité","description":"Une console B2B pour analyser les avis, structurer les preuves, suivre les dossiers et conserver une traçabilité complète.","eyebrow":"LE PRODUIT","h1":"Une console B2B pour<br><span>des dossiers maîtrisés.</span>","lead":"Une expérience opérationnelle qui rassemble analyse, preuves, dossiers, validations et suivi.","sections":[("Analyse","Qualifiez les éléments qui nécessitent une vérification."),("Preuves","Associez les éléments factuels au dossier concerné."),("Workflow contrôlé","Analyse → décision → gel → validation humaine → préparation contrôlée."),("Audit","Conservez une chronologie lisible des décisions et événements importants."),("Sécurité","Contrôle d’accès, MFA et garde-fous serveur.")]},
  "/comment-ca-marche/":{"title":"Comment ça fonctionne | Review Defense","description":"Découvrez le workflow Review Defense : analyse, décision, gel, validation humaine et préparation contrôlée.","eyebrow":"LE WORKFLOW","h1":"Une chaîne de contrôle<br><span>simple à suivre.</span>","lead":"L’automatisation prépare et structure. Les décisions importantes restent explicitement validées par un humain.","sections":[("01 · Analyse","Identifier les éléments à examiner."),("02 · Décision","Documenter le raisonnement et les points à vérifier."),("03 · Gel","Fixer le dossier avant toute étape contrôlée."),("04 · Human Approval","Valider explicitement la suite."),("05 · Préparation contrôlée","Préparer une démarche externe sans exécution automatique.")]},
  "/services/":{"title":"Services | Review Defense","description":"Analyse d’avis, préparation de dossiers et accompagnement structuré pour les situations liées à votre réputation en ligne.","eyebrow":"SERVICES","h1":"De l’analyse au dossier<br><span>prêt à être examiné.</span>","lead":"Un accompagnement structuré pour qualifier les situations, documenter les faits et suivre les démarches.","sections":[("Analyse d’avis","Examiner le contenu, le contexte et les éléments disponibles."),("Préparation de dossier","Organiser faits, preuves et chronologie."),("Suivi","Conserver l’historique des décisions et événements."),("Validation humaine","Aucune action externe importante sans validation explicite."),("Limites","Aucun résultat déterminé n’est garanti.")]},
@@ -156,7 +189,14 @@ def _services_html():
     @media(max-width:900px){.svc-hero-grid,.svc-service-row,.svc-cta-inner{grid-template-columns:1fr}.svc-service-row:nth-child(even) .svc-copy,.svc-service-row:nth-child(even) .svc-media{order:initial}.svc-visual{min-height:500px}.svc-media{min-height:390px}.svc-window{min-height:440px}.svc-cta-inner{gap:30px}}
     @media(max-width:620px){.svc-hero{padding-top:70px}.svc-hero h1{font-size:52px}.svc-hero-actions{flex-direction:column;align-items:stretch}.svc-btn{width:100%}.svc-visual{padding:16px;min-height:390px;border-radius:24px}.svc-window{min-height:350px}.svc-window-body{grid-template-columns:90px 1fr}.svc-sidebar{font-size:9px;padding:15px 8px}.svc-dashboard{padding:18px}.svc-dashboard h3{font-size:21px}.svc-kpis{grid-template-columns:1fr}.svc-service-list{padding-top:60px}.svc-service-row{padding:75px 0}.svc-media{padding:18px;min-height:340px}.svc-copy h3{font-size:40px}.svc-cta{padding:85px 0}}
     """
-    nav='<a href="/produit/">Produit</a><a href="/comment-ca-marche/">Comment ça fonctionne</a><a href="/services/">Services</a><a href="/tarifs/">Tarifs</a><a href="/ressources/">Ressources</a><a href="/contact/">Contact</a>'
+    nav=(
+            '<a href="/produit/">Produit</a>' +
+            'a href="/comment-ca-marche/">Comment ça fonctionne</a>' +
+            'a href="/services/">Services</a>' +
+            'a href="/tarifs/">Tarifs</a>' +
+            'a href="/ressources/">Ressources</a>' +
+            'a href="/contact/">Contact</a>'
+        )
     services=[
       ("01","Analyse des avis","Comprendre ce qui mérite d’être vérifié avant de décider quoi que ce soit.","Examinez le contenu, le contexte et les signaux disponibles. L’objectif est de séparer les faits observables des éléments qui restent à confirmer.","review"),
       ("02","Dossier & preuves","Rassembler les éléments utiles dans un dossier clair.","Centralisez captures, URL, échanges, dates et pièces pertinentes. Chaque élément peut être relié à l’affirmation qu’il permet de vérifier.","evidence"),
@@ -165,30 +205,255 @@ def _services_html():
       ("05","Validation humaine","L’automatisation prépare. Vous décidez.","Les actions importantes restent soumises à une validation explicite. Review Defense ne transforme pas une analyse en action externe automatique.","approval"),
     ]
     visuals={
-      "review":'<div class="svc-art-card"><span class="svc-art-meta">ANALYSE · AVIS #REV-88421</span><h4>Situation à examiner</h4><div class="svc-review-head"><span class="svc-stars">★★★★★</span><span class="svc-badge">À VÉRIFIER</span></div><div class="svc-review"><p>« Expérience très décevante, je n’ai jamais été client de cet établissement… »</p></div><div class="svc-kpis"><div class="svc-kpi"><b>03</b><span>signaux</span></div><div class="svc-kpi"><b>07</b><span>éléments</span></div><div class="svc-kpi"><b>01</b><span>dossier</span></div></div></div>',
-      "evidence":'<div class="svc-art-card"><span class="svc-art-meta">DOSSIER · PREUVES</span><h4>Éléments associés</h4><div class="svc-evidence-row"><div class="svc-evidence-icon">↗</div><div><b>URL de l’avis</b><small> · source publique</small></div><span class="svc-status">LIÉE</span></div><div class="svc-evidence-row"><div class="svc-evidence-icon">▣</div><div><b>Capture datée</b><small> · 30/09/2026</small></div><span class="svc-status">VÉRIFIÉE</span></div><div class="svc-evidence-row"><div class="svc-evidence-icon">✦</div><div><b>Échange client</b><small> · contexte</small></div><span class="svc-status">À LIRE</span></div></div>',
-      "reply":'<div class="svc-art-card"><span class="svc-art-meta">RÉPONSE · BROUILLON</span><h4>Préparation assistée</h4><div class="svc-chat"><div class="svc-bubble">Voici les éléments factuels disponibles dans le dossier.</div><div class="svc-bubble me">Prépare une réponse courte, professionnelle et factuelle.</div><div class="svc-bubble">Brouillon prêt. Vérifiez le contenu avant toute publication.</div></div><div class="svc-compose">Relire le brouillon… <b style="float:right">→</b></div></div>',
-      "timeline":'<div class="svc-art-card"><span class="svc-art-meta">SUIVI · CHRONOLOGIE</span><h4>Un dossier, une vue claire</h4><div class="svc-timeline"><div class="svc-step"><b>Analyse terminée</b><span>Les éléments disponibles ont été qualifiés.</span></div><div class="svc-step"><b>Dossier complété</b><span>Les preuves utiles ont été associées.</span></div><div class="svc-step"><b>Signalement préparé</b><span>Le contenu et le motif ont été revus.</span></div><div class="svc-step"><b>Validation requise</b><span>Une décision humaine reste nécessaire.</span></div></div></div>',
-      "approval":'<div class="svc-approval"><div class="svc-approval-top"><small>ÉTAPE CONTRÔLÉE</small><span class="svc-badge">APPROBATION</span></div><h4>Prêt pour votre validation</h4><p>Le dossier est structuré. Aucune action externe n’est exécutée tant que vous n’avez pas validé explicitement la suite.</p><div class="svc-approval-actions"><span class="selected">Valider</span><span>Modifier</span><span>Refuser</span></div></div>'
+      "review":(
+            '<div class="svc-art-card">' +
+            'span class="svc-art-meta">ANALYSE · AVIS #REV-88421</span>' +
+            'h4>Situation à examiner</h4>' +
+            'div class="svc-review-head">' +
+            'span class="svc-stars">★★★★★</span>' +
+            'span class="svc-badge">À VÉRIFIER</span>' +
+            '/div>' +
+            'div class="svc-review">' +
+            'p>« Expérience très décevante, je n’ai jamais été client de cet établissement… »</p>' +
+            '/div>' +
+            'div class="svc-kpis">' +
+            'div class="svc-kpi">' +
+            'b>03</b>' +
+            'span>signaux</span>' +
+            '/div>' +
+            'div class="svc-kpi">' +
+            'b>07</b>' +
+            'span>éléments</span>' +
+            '/div>' +
+            'div class="svc-kpi">' +
+            'b>01</b>' +
+            'span>dossier</span>' +
+            '/div>' +
+            '/div>' +
+            '/div>'
+        ),
+      "evidence":(
+            '<div class="svc-art-card">' +
+            'span class="svc-art-meta">DOSSIER · PREUVES</span>' +
+            'h4>Éléments associés</h4>' +
+            'div class="svc-evidence-row">' +
+            'div class="svc-evidence-icon">↗</div>' +
+            'div>' +
+            'b>URL de l’avis</b>' +
+            'small> · source publique</small>' +
+            '/div>' +
+            'span class="svc-status">LIÉE</span>' +
+            '/div>' +
+            'div class="svc-evidence-row">' +
+            'div class="svc-evidence-icon">▣</div>' +
+            'div>' +
+            'b>Capture datée</b>' +
+            'small> · 30/09/2026</small>' +
+            '/div>' +
+            'span class="svc-status">VÉRIFIÉE</span>' +
+            '/div>' +
+            'div class="svc-evidence-row">' +
+            'div class="svc-evidence-icon">✦</div>' +
+            'div>' +
+            'b>Échange client</b>' +
+            'small> · contexte</small>' +
+            '/div>' +
+            'span class="svc-status">À LIRE</span>' +
+            '/div>' +
+            '/div>'
+        ),
+      "reply":(
+            '<div class="svc-art-card">' +
+            'span class="svc-art-meta">RÉPONSE · BROUILLON</span>' +
+            'h4>Préparation assistée</h4>' +
+            'div class="svc-chat">' +
+            'div class="svc-bubble">Voici les éléments factuels disponibles dans le dossier.</div>' +
+            'div class="svc-bubble me">Prépare une réponse courte, professionnelle et factuelle.</div>' +
+            'div class="svc-bubble">Brouillon prêt. Vérifiez le contenu avant toute publication.</div>' +
+            '/div>' +
+            'div class="svc-compose">Relire le brouillon… <b style="float:right">→</b>' +
+            '/div>' +
+            '/div>'
+        ),
+      "timeline":(
+            '<div class="svc-art-card">' +
+            'span class="svc-art-meta">SUIVI · CHRONOLOGIE</span>' +
+            'h4>Un dossier, une vue claire</h4>' +
+            'div class="svc-timeline">' +
+            'div class="svc-step">' +
+            'b>Analyse terminée</b>' +
+            'span>Les éléments disponibles ont été qualifiés.</span>' +
+            '/div>' +
+            'div class="svc-step">' +
+            'b>Dossier complété</b>' +
+            'span>Les preuves utiles ont été associées.</span>' +
+            '/div>' +
+            'div class="svc-step">' +
+            'b>Signalement préparé</b>' +
+            'span>Le contenu et le motif ont été revus.</span>' +
+            '/div>' +
+            'div class="svc-step">' +
+            'b>Validation requise</b>' +
+            'span>Une décision humaine reste nécessaire.</span>' +
+            '/div>' +
+            '/div>' +
+            '/div>'
+        ),
+      "approval":(
+            '<div class="svc-approval">' +
+            'div class="svc-approval-top">' +
+            'small>ÉTAPE CONTRÔLÉE</small>' +
+            'span class="svc-badge">APPROBATION</span>' +
+            '/div>' +
+            'h4>Prêt pour votre validation</h4>' +
+            'p>Le dossier est structuré. Aucune action externe n’est exécutée tant que vous n’avez pas validé explicitement la suite.</p>' +
+            'div class="svc-approval-actions">' +
+            'span class="selected">Valider</span>' +
+            'span>Modifier</span>' +
+            'span>Refuser</span>' +
+            '/div>' +
+            '/div>'
+        )
     }
-    rows="".join(f'<article class="svc-service-row"><div class="svc-copy"><span class="svc-number">{n} · SERVICE</span><h3>{_e(h)}</h3><p>{_e(d)}</p><p>{_e(t)}</p><a href="/analyse-avis-google/">Démarrer une analyse →</a></div><div class="svc-media">{visuals[k]}</div></article>' for n,h,d,t,k in services)
+    rows="".join(f(
+            '<article class="svc-service-row">' +
+            'div class="svc-copy">' +
+            'span class="svc-number">{n} · SERVICE</span>' +
+            'h3>{_e(h)}</h3>' +
+            'p>{_e(d)}</p>' +
+            'p>{_e(t)}</p>' +
+            'a href="/analyse-avis-google/">Démarrer une analyse →</a>' +
+            '/div>' +
+            'div class="svc-media">{visuals[k]}</div>' +
+            '/article>'
+        ) for n,h,d,t,k in services)
     schema=json.dumps({"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":_url("/#organization"),"name":"Review Defense","url":_url("/")},{"@type":"WebSite","@id":_url("/#website"),"name":"Review Defense","url":_url("/"),"publisher":{"@id":_url("/#organization")}},{"@type":"Service","@id":_url("/services/")+"#service","name":"Services Review Defense","description":"Analyse d’avis, préparation de dossiers, suivi et validation humaine.","provider":{"@id":_url("/#organization")}}]},ensure_ascii=False,separators=(",",":"))
-    return f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Services | Review Defense</title><meta name="description" content="Analysez les avis, préparez les dossiers, structurez les réponses et suivez les démarches liées à votre réputation en ligne."><meta name="robots" content="index,follow"><link rel="canonical" href="{_e(_url("/services/"))}"><meta property="og:type" content="website"><meta property="og:title" content="Services | Review Defense"><meta property="og:description" content="Analyse, preuves, réponses, suivi et validation humaine pour les situations liées aux avis en ligne."><meta property="og:url" content="{_e(_url("/services/"))}"><link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css"><link rel="stylesheet" href="/assets/seo.css"><script type="application/ld+json">{schema}</script><style>{styles}</style></head><body><div class="marketing svc-page"><header class="public-header"><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><nav class="public-nav">{nav}</nav><div class="public-actions"><a class="btn-secondary" href="/app">Connexion</a><a class="btn-primary" href="/analyse-avis-google/">Analyser un avis →</a></div></header><main><section class="svc-hero"><div class="svc-container svc-hero-grid"><div><span class="svc-eyebrow">SERVICES · REVIEW DEFENSE</span><h1>Une suite de services pour <span>défendre votre réputation.</span></h1><p class="svc-lead">De l’analyse d’un avis jusqu’au suivi d’un dossier, Review Defense rassemble les informations utiles dans une expérience claire, structurée et sous votre contrôle.</p><div class="svc-hero-actions"><a class="svc-btn svc-btn-primary" href="/analyse-avis-google/">Analyser un avis →</a><a class="svc-btn svc-btn-secondary" href="/comment-ca-marche/">Voir le fonctionnement</a></div><div class="svc-hero-note"><span>✓ Analyse structurée</span><span>✓ Preuves documentées</span><span>✓ Validation humaine</span></div></div><div class="svc-visual"><div class="svc-window"><div class="svc-window-top"><span class="svc-dot"></span><span class="svc-dot"></span><span class="svc-dot"></span><span class="svc-window-title">Review Defense · Control Center</span></div><div class="svc-window-body"><aside class="svc-sidebar"><strong>REVIEW DEFENSE</strong><span class="active">Vue d’ensemble</span><span>Avis</span><span>Dossiers</span><span>Preuves</span><span>Suivi</span></aside><div class="svc-dashboard"><small>CONTROL WORKSPACE</small><h3>Votre réputation, en un seul espace.</h3><div class="svc-kpis"><div class="svc-kpi"><b>24</b><span>avis suivis</span></div><div class="svc-kpi"><b>07</b><span>dossiers actifs</span></div><div class="svc-kpi"><b>03</b><span>à valider</span></div></div><div class="svc-review"><div class="svc-review-head"><span class="svc-stars">★★★★★</span><span class="svc-badge">ANALYSE</span></div><p>Un nouvel avis nécessite une vérification du contexte et des éléments disponibles.</p></div></div></div></div></div></div></section><section class="svc-service-list"><div class="svc-container"><div class="svc-intro"><span class="svc-eyebrow">LES SERVICES</span><h2>Chaque situation mérite <span>le bon niveau d’attention.</span></h2><p>Une page pensée comme une conversation : chaque bloc présente un service, son utilité et une représentation visuelle de ce que l’utilisateur retrouve dans l’espace Review Defense.</p></div>{rows}</div></section><section class="svc-cta"><div class="svc-container svc-cta-inner"><div><span class="svc-eyebrow">COMMENCER</span><h2>Commencez par un avis.<br><span>Construisez le dossier.</span></h2><p>Décrivez votre situation et les éléments disponibles. Review Defense structure l’analyse ; les décisions importantes restent humaines.</p></div><a class="svc-btn svc-btn-primary" href="/analyse-avis-google/">Analyser un avis →</a></div></section></main><footer class="public-footer"><div><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><p>Analyse, qualification et suivi des dossiers liés aux avis en ligne.</p></div><div><b>Produit</b><a href="/produit/">Fonctionnalités</a><a href="/tarifs/">Tarifs</a></div><div><b>Ressources</b><a href="/ressources/">Guides</a><a href="/analyse-avis-google/">Analyser un avis</a></div><div><b>Sécurité</b><span>Validation humaine</span><span>Traçabilité complète</span></div></footer></div></body></html>'''
+    return (
+        f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Services | Review Defense</title>'''
+        f'''<meta name="description" content="Analysez les avis, préparez les dossiers, structurez les réponses et suivez les démarches liées à votre réputation en ligne.">'''
+        f'''<meta name="robots" content="index,follow"><link rel="canonical" href="{_e(_url("/services/"))}"><meta property="og:type" content="website"><meta property="og:title" content="Services | Review Defense">'''
+        f'''<meta property="og:description" content="Analyse, preuves, réponses, suivi et validation humaine pour les situations liées aux avis en ligne."><meta property="og:url" content="{_e(_url("/services/"))}">'''
+        f'''<link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css"><link rel="stylesheet" href="/assets/seo.css"><script type="application/ld+json">{schema}</script>'''
+        f'''<style>{styles}</style></head><body><div class="marketing svc-page"><header class="public-header"><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a>'''
+        f'''<nav class="public-nav">{nav}</nav><div class="public-actions"><a class="btn-secondary" href="/app">Connexion</a><a class="btn-primary" href="/analyse-avis-google/">Analyser un avis →</a>'''
+        f'''</div></header><main><section class="svc-hero"><div class="svc-container svc-hero-grid"><div><span class="svc-eyebrow">SERVICES · REVIEW DEFENSE</span>'''
+        f'''<h1>Une suite de services pour <span>défendre votre réputation.</span></h1><p class="svc-lead">De l’analyse d’un avis jusqu’au suivi d’un dossier, Review Defense rassemble les informations utiles dans une expérience claire, structurée et sous votre contrôle.</p>'''
+        f'''<div class="svc-hero-actions"><a class="svc-btn svc-btn-primary" href="/analyse-avis-google/">Analyser un avis →</a><a class="svc-btn svc-btn-secondary" href="/comment-ca-marche/">Voir le fonctionnement</a>'''
+        f'''</div><div class="svc-hero-note"><span>✓ Analyse structurée</span><span>✓ Preuves documentées</span><span>✓ Validation humaine</span></div></div><div class="svc-visual">'''
+        f'''<div class="svc-window"><div class="svc-window-top"><span class="svc-dot"></span><span class="svc-dot"></span><span class="svc-dot"></span><span class="svc-window-title">Review Defense · Control Center</span>'''
+        f'''</div><div class="svc-window-body"><aside class="svc-sidebar"><strong>REVIEW DEFENSE</strong><span class="active">Vue d’ensemble</span><span>Avis</span>'''
+        f'''<span>Dossiers</span><span>Preuves</span><span>Suivi</span></aside><div class="svc-dashboard"><small>CONTROL WORKSPACE</small><h3>Votre réputation, en un seul espace.</h3>'''
+        f'''<div class="svc-kpis"><div class="svc-kpi"><b>24</b><span>avis suivis</span></div><div class="svc-kpi"><b>07</b><span>dossiers actifs</span></div><div class="svc-kpi">'''
+        f'''<b>03</b><span>à valider</span></div></div><div class="svc-review"><div class="svc-review-head"><span class="svc-stars">★★★★★</span><span class="svc-badge">ANALYSE</span>'''
+        f'''</div><p>Un nouvel avis nécessite une vérification du contexte et des éléments disponibles.</p></div></div></div></div></div></div></section><section class="svc-service-list">'''
+        f'''<div class="svc-container"><div class="svc-intro"><span class="svc-eyebrow">LES SERVICES</span><h2>Chaque situation mérite <span>le bon niveau d’attention.</span>'''
+        f'''</h2><p>Une page pensée comme une conversation : chaque bloc présente un service, son utilité et une représentation visuelle de ce que l’utilisateur retrouve dans l’espace Review Defense.</p>'''
+        f'''</div>{rows}</div></section><section class="svc-cta"><div class="svc-container svc-cta-inner"><div><span class="svc-eyebrow">COMMENCER</span><h2>Commencez par un avis.<br>'''
+        f'''<span>Construisez le dossier.</span></h2><p>Décrivez votre situation et les éléments disponibles. Review Defense structure l’analyse ; les décisions importantes restent humaines.</p>'''
+        f'''</div><a class="svc-btn svc-btn-primary" href="/analyse-avis-google/">Analyser un avis →</a></div></section></main><footer class="public-footer"><div>'''
+        f'''<a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><p>Analyse, qualification et suivi des dossiers liés aux avis en ligne.</p>'''
+        f'''</div><div><b>Produit</b><a href="/produit/">Fonctionnalités</a><a href="/tarifs/">Tarifs</a></div><div><b>Ressources</b><a href="/ressources/">Guides</a>'''
+        f'''<a href="/analyse-avis-google/">Analyser un avis</a></div><div><b>Sécurité</b><span>Validation humaine</span><span>Traçabilité complète</span></div></footer>'''
+        f'''</div></body></html>'''
+    )
 
 def _commercial_html(path):
     if path=="/services/":
         return _services_html()
     d=COMMERCIAL[path]
-    cards="".join(f'<article class="rd-value-card"><span>{i:02d}</span><h2>{_e(h)}</h2><p>{_e(t)}</p></article>' for i,(h,t) in enumerate(d["sections"],1))
-    nav='<a href="/produit/">Produit</a><a href="/comment-ca-marche/">Comment ça fonctionne</a><a href="/services/">Services</a><a href="/tarifs/">Tarifs</a><a href="/ressources/">Ressources</a><a href="/contact/">Contact</a>'
+    cards="".join(f(
+            '<article class="rd-value-card">' +
+            'span>{i:02d}</span>' +
+            'h2>{_e(h)}</h2>' +
+            'p>{_e(t)}</p>' +
+            '/article>'
+        ) for i,(h,t) in enumerate(d["sections"],1))
+    nav=(
+            '<a href="/produit/">Produit</a>' +
+            'a href="/comment-ca-marche/">Comment ça fonctionne</a>' +
+            'a href="/services/">Services</a>' +
+            'a href="/tarifs/">Tarifs</a>' +
+            'a href="/ressources/">Ressources</a>' +
+            'a href="/contact/">Contact</a>'
+        )
     schema=json.dumps({"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":_url("/#organization"),"name":"Review Defense","url":_url("/")},{"@type":"WebSite","@id":_url("/#website"),"name":"Review Defense","url":_url("/"),"publisher":{"@id":_url("/#organization")}},{"@type":"WebPage","name":d["title"],"description":d["description"],"url":_url(path),"isPartOf":{"@id":_url("/#website")}}]},ensure_ascii=False,separators=(",",":"))
     extra=""
     if path=="/ressources/":
         links=_related({"path":path,"cluster":"Faux avis"},_pages())[:5]
-        extra='<section class="rd-section rd-light"><div class="rd-container"><span class="rd-eyebrow">GUIDES SEO</span><h2>Explorer les guides par situation.</h2><div class="rd-value-grid">'+''.join(f'<article class="rd-value-card"><h2>{_e(p["h1"])}</h2><a href="{_e(p["path"])}">Lire le guide →</a></article>' for p in links)+'</div></div></section>'
+        extra=(
+            '<section class="rd-section rd-light">' +
+            'div class="rd-container">' +
+            'span class="rd-eyebrow">GUIDES SEO</span>' +
+            'h2>Explorer les guides par situation.</h2>' +
+            'div class="rd-value-grid">'
+        )+''.join(f(
+            '<article class="rd-value-card">' +
+            'h2>{_e(p["h1"])}</h2>' +
+            'a href="{_e(p["path"])}">Lire le guide →</a>' +
+            '/article>'
+        ) for p in links)+(
+            '</div>' +
+            '/div>' +
+            '/section>'
+        )
     if path=="/contact/":
-        extra='<section class="rd-section rd-light"><div class="rd-container rd-contact-grid"><div><span class="rd-eyebrow">CONTACT</span><h2>Une question ?<br><span>Une démo ?</span></h2><p>Présentez votre besoin. Les demandes commerciales restent séparées des dossiers d’avis.</p></div><form class="rd-contact-form" id="rd-contact-form"><label>Nom complet<input name="name" required></label><label>E-mail professionnel<input name="email" type="email" required></label><label>Entreprise<input name="company"></label><label>Message<textarea name="message" rows="5" required></textarea><button class="btn-primary" type="submit">Envoyer le message →</button></form></div></section>'
-    return f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{_e(d["title"])}</title><meta name="description" content="{_e(d["description"])}"><meta name="robots" content="index,follow"><link rel="canonical" href="{_e(_url(path))}"><meta property="og:type" content="website"><meta property="og:title" content="{_e(d["title"])}"><meta property="og:description" content="{_e(d["description"])}"><meta property="og:url" content="{_e(_url(path))}"><link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css"><link rel="stylesheet" href="/assets/seo.css"><script type="application/ld+json">{schema}</script></head><body><div class="marketing"><header class="public-header"><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><nav class="public-nav">{nav}</nav><div class="public-actions"><a class="btn-secondary" href="/app">Connexion</a><a class="btn-primary" href="/analyse-avis-google/">Analyser un avis →</a></div></header><main class="rd-commercial-main"><section class="rd-home-hero"><div class="rd-container rd-hero-grid"><div class="rd-hero-copy"><span class="rd-eyebrow-pill">{_e(d["eyebrow"])}</span><h1>{d["h1"]}</h1><p class="rd-hero-lead">{_e(d["lead"])}</p><div class="rd-hero-actions"><a class="btn-primary rd-btn-lg" href="/analyse-avis-google/">Analyser un avis →</a><a class="btn-secondary rd-btn-lg" href="/comment-ca-marche/">Voir comment ça fonctionne</a></div><div class="rd-trust-line"><span>✓ Analyse structurée</span><span>✓ Preuves documentées</span><span>✓ Validation humaine</span></div></div><div class="rd-product-stage"><div class="rd-product-window"><div class="rd-window-top"><b>Review Defense · Control Center</b></div><div class="rd-window-body"><aside><strong>REVIEW DEFENSE</strong><span class="active">Dashboard</span><span>Avis</span><span>Analyse</span><span>Dossiers</span><span>Preuves</span><span>Audit</span></aside><div class="rd-preview-main"><div class="rd-preview-head"><div><small>CONTROL WORKSPACE</small><h3>Dossier #REV-88421</h3></div><span class="rd-mini-badge">APPROVAL REQUIRED</span></div><div class="rd-review-preview"><b>Analyse, preuves et prochaine étape</b><span>Décision humaine requise avant toute étape contrôlée</span></div><div class="rd-analysis-columns"><div><small>SIGNAUX</small><strong>03</strong><span>à examiner</span></div><div><small>PREUVES</small><strong>07</strong><span>associées</span></div><div><small>STATUT</small><strong>Gel</strong><span>validation requise</span></div></div><div class="rd-preview-chain"><span class="done">01 Analyse</span><span class="done">02 Décision</span><span class="current">03 Gel</span><span>04 Approbation</span></div></div></div></div></div></div></section><section class="rd-section rd-light"><div class="rd-container"><div class="rd-section-heading"><span class="rd-eyebrow">VALEUR</span><h2>Une information claire avant<br><span>une décision importante.</span></h2><p>{_e(d["lead"])}</p></div><div class="rd-value-grid">{cards}</div></div></section><section class="rd-section"><div class="rd-container rd-split"><div class="rd-section-heading"><span class="rd-eyebrow">CONTRÔLE</span><h2>Analyse → Décision → Gel<br><span>→ Human Approval.</span></h2><p>L’automatisation prépare. L’humain décide. Les étapes importantes restent visibles et traçables.</p><a class="btn-secondary" href="/comment-ca-marche/">Découvrir le workflow →</a></div><div class="rd-workflow"><div class="rd-workflow-item done"><b>01</b><div><strong>Analyse</strong><span>Identifier les éléments à examiner.</span></div></div><div class="rd-workflow-item done"><b>02</b><div><strong>Décision</strong><span>Documenter le raisonnement.</span></div></div><div class="rd-workflow-item current"><b>03</b><div><strong>Gel</strong><span>Fixer le dossier avant approbation.</span></div></div><div class="rd-workflow-item"><b>04</b><div><strong>Human Approval</strong><span>Valider explicitement la suite.</span></div></div><div class="rd-workflow-item"><b>05</b><div><strong>Préparation contrôlée</strong><span>Préparer sans exécution automatique.</span></div></div></div></div></section>{extra}<section class="rd-final-cta"><div class="rd-container"><span class="rd-eyebrow">REVIEW DEFENSE</span><h2>Gardez le contrôle<br><span>de votre dossier.</span></h2><p>Commencez par une analyse structurée et préparez la suite avec des éléments vérifiables.</p><a class="btn-primary rd-btn-lg" href="/analyse-avis-google/">Analyser un avis →</a><small>La décision finale appartient toujours à la plateforme concernée.</small></div></section></main><footer class="public-footer"><div><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><p>Analyse, qualification et suivi des dossiers liés aux avis en ligne.</p></div><div><b>Produit</b><a href="/produit/">Fonctionnalités</a><a href="/tarifs/">Tarifs</a></div><div><b>Ressources</b><a href="/ressources/">Guides</a><a href="/analyse-avis-google/">Analyser un avis</a></div><div><b>Sécurité</b><span>Validation humaine</span><span>Traçabilité complète</span></div></footer></div></body></html>'''
+        extra=(
+            '<section class="rd-section rd-light">' +
+            'div class="rd-container rd-contact-grid">' +
+            'div>' +
+            'span class="rd-eyebrow">CONTACT</span>' +
+            'h2>Une question ?<br>' +
+            'span>Une démo ?</span>' +
+            '/h2>' +
+            'p>Présentez votre besoin. Les demandes commerciales restent séparées des dossiers d’avis.</p>' +
+            '/div>' +
+            'form class="rd-contact-form" id="rd-contact-form">' +
+            'label>Nom complet<input name="name" required>' +
+            '/label>' +
+            'label>E-mail professionnel<input name="email" type="email" required>' +
+            '/label>' +
+            'label>Entreprise<input name="company">' +
+            '/label>' +
+            'label>Message<textarea name="message" rows="5" required>' +
+            '/textarea>' +
+            'button class="btn-primary" type="submit">Envoyer le message →</button>' +
+            '/form>' +
+            '/div>' +
+            '/section>'
+        )
+    return (
+        f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{_e(d["title"])}</title>'''
+        f'''<meta name="description" content="{_e(d["description"])}"><meta name="robots" content="index,follow"><link rel="canonical" href="{_e(_url(path))}"><meta property="og:type" content="website">'''
+        f'''<meta property="og:title" content="{_e(d["title"])}"><meta property="og:description" content="{_e(d["description"])}"><meta property="og:url" content="{_e(_url(path))}">'''
+        f'''<link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css"><link rel="stylesheet" href="/assets/seo.css"><script type="application/ld+json">{schema}</script>'''
+        f'''</head><body><div class="marketing"><header class="public-header"><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><nav class="public-nav">{nav}</nav>'''
+        f'''<div class="public-actions"><a class="btn-secondary" href="/app">Connexion</a><a class="btn-primary" href="/analyse-avis-google/">Analyser un avis →</a>'''
+        f'''</div></header><main class="rd-commercial-main"><section class="rd-home-hero"><div class="rd-container rd-hero-grid"><div class="rd-hero-copy"><span class="rd-eyebrow-pill">{_e(d["eyebrow"])}</span>'''
+        f'''<h1>{d["h1"]}</h1><p class="rd-hero-lead">{_e(d["lead"])}</p><div class="rd-hero-actions"><a class="btn-primary rd-btn-lg" href="/analyse-avis-google/">Analyser un avis →</a>'''
+        f'''<a class="btn-secondary rd-btn-lg" href="/comment-ca-marche/">Voir comment ça fonctionne</a></div><div class="rd-trust-line"><span>✓ Analyse structurée</span>'''
+        f'''<span>✓ Preuves documentées</span><span>✓ Validation humaine</span></div></div><div class="rd-product-stage"><div class="rd-product-window"><div class="rd-window-top">'''
+        f'''<b>Review Defense · Control Center</b></div><div class="rd-window-body"><aside><strong>REVIEW DEFENSE</strong><span class="active">Dashboard</span><span>Avis</span>'''
+        f'''<span>Analyse</span><span>Dossiers</span><span>Preuves</span><span>Audit</span></aside><div class="rd-preview-main"><div class="rd-preview-head"><div>'''
+        f'''<small>CONTROL WORKSPACE</small><h3>Dossier #REV-88421</h3></div><span class="rd-mini-badge">APPROVAL REQUIRED</span></div><div class="rd-review-preview">'''
+        f'''<b>Analyse, preuves et prochaine étape</b><span>Décision humaine requise avant toute étape contrôlée</span></div><div class="rd-analysis-columns"><div>'''
+        f'''<small>SIGNAUX</small><strong>03</strong><span>à examiner</span></div><div><small>PREUVES</small><strong>07</strong><span>associées</span></div><div><small>STATUT</small>'''
+        f'''<strong>Gel</strong><span>validation requise</span></div></div><div class="rd-preview-chain"><span class="done">01 Analyse</span><span class="done">02 Décision</span>'''
+        f'''<span class="current">03 Gel</span><span>04 Approbation</span></div></div></div></div></div></div></section><section class="rd-section rd-light"><div class="rd-container">'''
+        f'''<div class="rd-section-heading"><span class="rd-eyebrow">VALEUR</span><h2>Une information claire avant<br><span>une décision importante.</span></h2><p>{_e(d["lead"])}</p>'''
+        f'''</div><div class="rd-value-grid">{cards}</div></div></section><section class="rd-section"><div class="rd-container rd-split"><div class="rd-section-heading">'''
+        f'''<span class="rd-eyebrow">CONTRÔLE</span><h2>Analyse → Décision → Gel<br><span>→ Human Approval.</span></h2><p>L’automatisation prépare. L’humain décide. Les étapes importantes restent visibles et traçables.</p>'''
+        f'''<a class="btn-secondary" href="/comment-ca-marche/">Découvrir le workflow →</a></div><div class="rd-workflow"><div class="rd-workflow-item done"><b>01</b>'''
+        f'''<div><strong>Analyse</strong><span>Identifier les éléments à examiner.</span></div></div><div class="rd-workflow-item done"><b>02</b><div><strong>Décision</strong>'''
+        f'''<span>Documenter le raisonnement.</span></div></div><div class="rd-workflow-item current"><b>03</b><div><strong>Gel</strong><span>Fixer le dossier avant approbation.</span>'''
+        f'''</div></div><div class="rd-workflow-item"><b>04</b><div><strong>Human Approval</strong><span>Valider explicitement la suite.</span></div></div><div class="rd-workflow-item">'''
+        f'''<b>05</b><div><strong>Préparation contrôlée</strong><span>Préparer sans exécution automatique.</span></div></div></div></div></section>{extra}<section class="rd-final-cta">'''
+        f'''<div class="rd-container"><span class="rd-eyebrow">REVIEW DEFENSE</span><h2>Gardez le contrôle<br><span>de votre dossier.</span></h2><p>Commencez par une analyse structurée et préparez la suite avec des éléments vérifiables.</p>'''
+        f'''<a class="btn-primary rd-btn-lg" href="/analyse-avis-google/">Analyser un avis →</a><small>La décision finale appartient toujours à la plateforme concernée.</small>'''
+        f'''</div></section></main><footer class="public-footer"><div><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><p>Analyse, qualification et suivi des dossiers liés aux avis en ligne.</p>'''
+        f'''</div><div><b>Produit</b><a href="/produit/">Fonctionnalités</a><a href="/tarifs/">Tarifs</a></div><div><b>Ressources</b><a href="/ressources/">Guides</a>'''
+        f'''<a href="/analyse-avis-google/">Analyser un avis</a></div><div><b>Sécurité</b><span>Validation humaine</span><span>Traçabilité complète</span></div></footer>'''
+        f'''</div></body></html>'''
+    )
 
 def render(path):
     if path=="/analyse-avis-google/":
@@ -200,7 +465,12 @@ def render(path):
         return 200,{"Content-Type":"text/plain; charset=utf-8","Cache-Control":"public, max-age=3600"},f"User-agent: *\nAllow: /\nDisallow: /app\nDisallow: /v1/\nDisallow: /reset-password\nDisallow: /verify-email\nDisallow: /accept-invitation\nSitemap: {_url('/sitemap.xml')}\n".encode()
     if path=="/sitemap.xml":
         paths=list(dict.fromkeys(["/"]+[x for x in COMMERCIAL if x!="/"]+[p["path"] for p in pages]))
-        body='<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(f"<url><loc>{_e(_url(path))}</loc><lastmod>{SITE_MODIFIED}</lastmod></url>" for path in paths)+"</urlset>"
+        body='<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(f(
+            "<url>" +
+            "loc>{_e(_url(path))}</loc>" +
+            "lastmod>{SITE_MODIFIED}</lastmod>" +
+            "/url>"
+        ) for path in paths)+"</urlset>"
         return 200,{"Content-Type":"application/xml; charset=utf-8","Cache-Control":"public, max-age=3600"},body.encode()
     page=next((p for p in pages if p["path"]==path),None)
     if not page: return None
@@ -213,7 +483,24 @@ def render(path):
     display_title=page["title"] if title_counts.get(page["title"],0)==1 else page["title"]+" — "+page["cluster"]+" | Review Defense"
     cta_label="Demander l'analyse" if page["service"] else "Analyser mon avis"
     script="""<script>(function(){window.dataLayer=window.dataLayer||[];document.addEventListener("click",function(e){var x=e.target.closest("[data-rd-track]");if(x){window.dataLayer.push(["click",x.getAttribute("data-rd-track"),location.pathname]);}});})();</script>"""
-    body=f"""<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{_e(display_title)}</title><meta name="description" content="{_e(page["description"])}"><meta name="robots" content="index,follow"><link rel="canonical" href="{_e(c)}"><meta property="og:type" content="article"><meta property="og:title" content="{_e(display_title)}"><meta property="og:description" content="{_e(page["description"])}"><meta property="og:url" content="{_e(c)}"><link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css"><script type="application/ld+json">{schema}</script></head><body><div class="marketing"><header class="public-header"><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><nav class="public-nav"><a href="/produit/">Produit</a><a href="/comment-ca-marche/">Comment ça fonctionne</a><a href="/services/">Services</a><a href="/tarifs/">Tarifs</a><a href="/ressources/">Ressources</a><a href="/contact/">Contact</a></nav><div class="public-actions"><a class="btn-secondary" href="/app">Connexion</a><a class="btn-primary" href="/analyse-avis-google/">Analyser un avis →</a></div></header><main class="seo-main"><div class="seo-breadcrumb"><a href="/">Accueil</a> <span>›</span> <span>{_e(page["cluster"])}</span> <span>›</span> <span>{_e(page["h1"])}</span></div><article class="seo-article"><span class="eyebrow">{_e(page["cluster"]).upper()}</span><h1>{_e(page["h1"])}</h1><p class="seo-lead">Guide pratique sur <strong>{_e(page["keyword"])}</strong> : vérification des faits, qualification du problème, éléments à conserver et prochaines étapes.</p><div class="seo-content">{sections}</div><section class="seo-disclaimer"><strong>À retenir :</strong> un avis négatif ou contesté n’est pas automatiquement supprimable. Le signalement doit correspondre aux faits observables ; aucune suppression n’est garantie et la décision finale appartient à la plateforme.</section><section class="seo-faq"><h2>Questions fréquentes</h2>{faq}</section><section class="seo-related"><h2>À lire également</h2><ul>{related}</ul><p><a href="/signaler-un-avis-google/">Comment signaler un avis Google</a> · <a href="/analyse-avis-google/">Analyser votre avis Google</a></p></section><section class="seo-cta"><h2>Besoin d’analyser votre avis ?</h2><p>Structurez votre dossier avec Review Defense et gardez une validation humaine sur les étapes importantes.</p><a class="btn-primary" href="/analyse-avis-google/">{cta_label} →</a></section></article></main><footer class="public-footer"><div><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><p>Analyse, qualification et suivi des dossiers liés aux avis en ligne.</p></div><div><b>Produit</b><a href="/produit/">Fonctionnalités</a><a href="/tarifs/">Tarifs</a></div><div><b>Ressources</b><a href="/ressources/">Guides</a><a href="/analyse-avis-google/">Analyser un avis</a></div><div><b>Sécurité</b><span>Validation humaine</span><span>Traçabilité complète</span></div></footer></div>{script}</body></html>"""
+    body=(
+        f"""<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{_e(display_title)}</title>"""
+        f"""<meta name="description" content="{_e(page["description"])}"><meta name="robots" content="index,follow"><link rel="canonical" href="{_e(c)}"><meta property="og:type" content="article">"""
+        f"""<meta property="og:title" content="{_e(display_title)}"><meta property="og:description" content="{_e(page["description"])}"><meta property="og:url" content="{_e(c)}">"""
+        f"""<link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css"><script type="application/ld+json">{schema}</script></head>"""
+        f"""<body><div class="marketing"><header class="public-header"><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><nav class="public-nav">"""
+        f"""<a href="/produit/">Produit</a><a href="/comment-ca-marche/">Comment ça fonctionne</a><a href="/services/">Services</a><a href="/tarifs/">Tarifs</a><a href="/ressources/">Ressources</a>"""
+        f"""<a href="/contact/">Contact</a></nav><div class="public-actions"><a class="btn-secondary" href="/app">Connexion</a><a class="btn-primary" href="/analyse-avis-google/">Analyser un avis →</a>"""
+        f"""</div></header><main class="seo-main"><div class="seo-breadcrumb"><a href="/">Accueil</a> <span>›</span> <span>{_e(page["cluster"])}</span> <span>›</span> <span>{_e(page["h1"])}</span>"""
+        f"""</div><article class="seo-article"><span class="eyebrow">{_e(page["cluster"]).upper()}</span><h1>{_e(page["h1"])}</h1><p class="seo-lead">Guide pratique sur <strong>{_e(page["keyword"])}</strong> : vérification des faits, qualification du problème, éléments à conserver et prochaines étapes.</p>"""
+        f"""<div class="seo-content">{sections}</div><section class="seo-disclaimer"><strong>À retenir :</strong> un avis négatif ou contesté n’est pas automatiquement supprimable. Le signalement doit correspondre aux faits observables ; aucune suppression n’est garantie et la décision finale appartient à la plateforme.</section>"""
+        f"""<section class="seo-faq"><h2>Questions fréquentes</h2>{faq}</section><section class="seo-related"><h2>À lire également</h2><ul>{related}</ul><p><a href="/signaler-un-avis-google/">Comment signaler un avis Google</a> · <a href="/analyse-avis-google/">Analyser votre avis Google</a>"""
+        f"""</p></section><section class="seo-cta"><h2>Besoin d’analyser votre avis ?</h2><p>Structurez votre dossier avec Review Defense et gardez une validation humaine sur les étapes importantes.</p>"""
+        f"""<a class="btn-primary" href="/analyse-avis-google/">{cta_label} →</a></section></article></main><footer class="public-footer"><div><a class="public-brand" href="/">"""
+        f"""<b class="brand-mark">◆</b> Review Defense</a><p>Analyse, qualification et suivi des dossiers liés aux avis en ligne.</p></div><div><b>Produit</b><a href="/produit/">Fonctionnalités</a>"""
+        f"""<a href="/tarifs/">Tarifs</a></div><div><b>Ressources</b><a href="/ressources/">Guides</a><a href="/analyse-avis-google/">Analyser un avis</a></div><div>"""
+        f"""<b>Sécurité</b><span>Validation humaine</span><span>Traçabilité complète</span></div></footer></div>{script}</body></html>"""
+    )
     return 200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"public, max-age=300"},body.encode()
 
 def is_seo_path(path):
