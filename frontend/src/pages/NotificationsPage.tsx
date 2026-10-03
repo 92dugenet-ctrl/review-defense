@@ -1,6 +1,6 @@
 import{useEffect,useState}from"react";import{api}from"@/services/api/client";
 import { PageHeading } from "@/components/layout/PageHeading";
-import { FeedbackMessage } from "@/components/common/FeedbackMessage";
+import { FeedbackMessage } from "@/components/layout/FeedbackMessage";
 export function NotificationsPage(){const[data,setData]=useState<any[]>([]),[error,setError]=useState(""),[busy,setBusy]=useState<string|null>(null);
 const load=()=>api.get<any>("/v1/notifications").then(x=>setData(x.items??[])).catch(e=>setError(e instanceof Error?e.message:"Impossible de charger les notifications."));useEffect(()=>{void load()},[]);
 const action=async(id:string,kind:"deliver"|"cancel")=>{setBusy(id+"-"+kind);setError("");try{await api.post("/v1/notifications/"+id+"/"+kind);await load()}catch(e){setError(e instanceof Error?e.message:"Action impossible.")}finally{setBusy(null)}};
