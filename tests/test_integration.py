@@ -47,7 +47,7 @@ def make_app(dsn):
 def test_postgres_schema_and_rls_contract():
     dsn = os.environ["DATABASE_URL"]
     with psycopg.connect(dsn) as conn:
-        assert conn.execute("SELECT count(*) FROM schema_migrations").fetchone()[0] == 34
+        assert conn.execute("SELECT count(*) FROM schema_migrations").fetchone()[0] == 35
         assert conn.execute("SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1").fetchone()[0] == "034_v646_force_privacy_billing_rls"
         rls = conn.execute("""
             SELECT count(*) FROM pg_class c

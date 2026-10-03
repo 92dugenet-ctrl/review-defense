@@ -1713,7 +1713,12 @@ class ReviewDefenseAPI:
                     suggested = extract_text_fact_suggestions(evidence_id=evidence_id, content=extracted_text.encode("utf-8"), content_type="text/plain")
                     for suggestion in suggested:
                         facts.append({
-                            "fact_id": suggestion.suggestion_id,
+                            # The extraction engine's public suggestion IDs are prefixed strings;
+                            # evidence_facts.fact_id is a PostgreSQL UUID column.
+                            "fact_id": str(uuid.uuid5(
+                                uuid.NAMESPACE_URL,
+                                f"review-defense:evidence:{evidence_id}:suggestion:{suggestion.suggestion_id}",
+                            )),
                             "evidence_id": evidence_id,
                             "case_id": case_id,
                             "organization_id": user.organization_id,

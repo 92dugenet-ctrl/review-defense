@@ -128,7 +128,7 @@ def test_unknown_public_route_is_not_spa():
 
 def test_migrations_contract():
     files = sorted(MIGRATIONS.glob("*.sql"))
-    assert len(files) == 34
+    assert len(files) == 35
     assert files[0].name == "001_initial.sql"
     assert files[-1].name == "034_v646_force_privacy_billing_rls.sql"
     sql = "\n".join(x.read_text() for x in files)
