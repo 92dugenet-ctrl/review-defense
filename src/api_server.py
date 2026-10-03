@@ -1775,13 +1775,15 @@ class ReviewDefenseAPI:
                     row["organization_id"] = user.organization_id
                     row["user_id"] = user.user_id
             self.store.privacy_consents.append(row)
-                        self.store.audit_event(user.organization_id,
-                 user.user_id,
-                 "PRIVACY_CONSENT_RECORDED",
-                 f"consent:{row['id']}",
-                 purpose=purpose,
-                 granted=granted,
-                policy_version=policy_version)
+            self.store.audit_event(
+                user.organization_id,
+                user.user_id,
+                "PRIVACY_CONSENT_RECORDED",
+                f"consent:{row['id']}",
+                purpose=purpose,
+                granted=granted,
+                policy_version=policy_version,
+            )
             return self._json(201, {"consent": row})
 
         if method == "GET" and path == "/v1/me":
