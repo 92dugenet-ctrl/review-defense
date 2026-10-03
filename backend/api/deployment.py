@@ -14,9 +14,18 @@ class DeploymentConfig:
     @classmethod
     def from_env(cls) -> "DeploymentConfig":
         return cls(
-            public_base_url=os.getenv("REVIEW_DEFENSE_PUBLIC_BASE_URL", "http://localhost:8080").rstrip("/"),
-            environment=os.getenv("REVIEW_DEFENSE_ENV", "development").lower(),
-            trust_proxy=os.getenv("TRUST_PROXY", "false").lower() in {"1", "true", "yes", "on"},
+            public_base_url=os.getenv(
+                "REVIEW_DEFENSE_PUBLIC_BASE_URL",
+                "http://localhost:8080",
+            ).rstrip("/"),
+            environment=os.getenv(
+                "REVIEW_DEFENSE_ENV",
+                "development",
+            ).lower(),
+            trust_proxy=os.getenv(
+                "TRUST_PROXY",
+                "false",
+            ).lower() in {"1", "true", "yes", "on"},
         )
 
     @property
@@ -26,25 +35,41 @@ class DeploymentConfig:
     def validate(self) -> None:
         if self.production and not self.public_base_url.startswith("https://"):
             raise ValueError("production public base URL must use HTTPS")
+
         if self.production and self.trust_proxy is False:
             # A public TLS reverse proxy normally terminates TLS before WSGI.
             # Requiring explicit opt-in prevents trusting spoofable forwarded headers.
-            raise ValueError("TRUST_PROXY=true is required when production runs behind a trusted reverse proxy")
+            raise ValueError(
+                "TRUST_PROXY=true is required when production runs "
+                "behind a trusted reverse proxy"
+            )
 
 
 CSP = (
     "default-src 'self'; "
-    "base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; "
-    "script-src 'self' 'unsafe-inline' https://www.paypal.com https://www.paypalobjects.com; style-src 'self' 'unsafe-inline'; "
-    "img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://www.paypal.com https://api-m.paypal.com; frame-src 'self' https://www.paypal.com https://www.sandbox.paypal.com; "
-    "media-src 'none'; worker-src 'none'; manifest-src 'self'"
+    "base-uri 'self'; "
+    "object-src 'none'; "
+    "frame-ancestors 'none'; "
+    "form-action 'self'; "
+    "script-src 'self' 'unsafe-inline' "
+    "https://www.paypal.com https://www.paypalobjects.com; "
+    "style-src 'self' 'unsafe-inline'; "
+    "img-src 'self' data:; "
+    "font-src 'self' data:; "
+    "connect-src 'self' https://www.paypal.com https://api-m.paypal.com; "
+    "frame-src 'self' https://www.paypal.com https://www.sandbox.paypal.com; "
+    "media-src 'none'; "
+    "worker-src 'none'; "
+    "manifest-src 'self'"
 )
 
 
 def security_headers(*, production: bool) -> dict[str, str]:
     headers = {
         "Content-Security-Policy": CSP,
-        "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+        "Permissions-Policy": (
+            "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+        ),
         "Cross-Origin-Opener-Policy": "same-origin",
         "Cross-Origin-Resource-Policy": "same-origin",
         "X-Content-Type-Options": "nosniff",
@@ -52,5 +77,7 @@ def security_headers(*, production: bool) -> dict[str, str]:
         "Referrer-Policy": "no-referrer",
     }
     if production:
-        headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        headers["Strict-Transport-Security"] = (
+            "max-age=31536000; includeSubDomains"
+        )
     return headers
