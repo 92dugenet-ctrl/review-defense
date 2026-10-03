@@ -3,18 +3,17 @@ import { PublicActionLink } from "../PublicActionLink";
 export function HomeHero() {
   return (
     <section className="scene hero" id="hero">
-      <div className="hero-video-bg">
+      <div className="hero-video-bg" aria-hidden="true">
         <video
           autoPlay
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
           poster="/visual-workspace.svg"
-          aria-label="Présentation de Review Defense"
         >
           <source
-            src="https://www.ariaditerra.com/wp-content/uploads/2023/02/coverr-chef-preparing-a-dish-at-a-restaurant-6248-1080p.mp4"
+            src="/assets/hero/review-defense-hero-centered-fixed-1920x1080.mp4"
             type="video/mp4"
           />
         </video>
@@ -36,7 +35,7 @@ export function HomeHero() {
 
         <PublicActionLink to="/register">Créer mon espace</PublicActionLink>
 
-        <div className="muse-word">
+        <div className="muse-word" aria-hidden="true">
           <span>Review</span>
           <b>◌</b>
           <span>Defense</span>

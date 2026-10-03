@@ -1115,3 +1115,12 @@ footer {
     column-gap: 18px;
   }
 }
+
+.site-header nav a[aria-current="page"] {
+  color: #0879f9;
+  font-weight: 750;
+}
+.mobile-menu a[aria-current="page"] {
+  color: #0879f9;
+  font-weight: 750;
+}

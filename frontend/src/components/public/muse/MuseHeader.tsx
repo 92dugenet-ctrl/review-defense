@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const navigation = [
   ["/produit", "Produit"],
@@ -23,9 +23,9 @@ export function MuseHeader({ menuOpen, onMenuToggle }: MuseHeaderProps) {
 
         <nav aria-label="Navigation principale">
           {navigation.map(([path, label]) => (
-            <Link key={path} to={path}>
+            <NavLink key={path} to={path}>
               {label}
-            </Link>
+            </NavLink>
           ))}
         </nav>
 
@@ -54,14 +54,20 @@ export function MuseHeader({ menuOpen, onMenuToggle }: MuseHeaderProps) {
         aria-hidden={!menuOpen}
       >
         {navigation.map(([path, label]) => (
-          <Link key={path} to={path} tabIndex={menuOpen ? 0 : -1}>
+          <NavLink
+            key={path}
+            to={path}
+            tabIndex={menuOpen ? 0 : -1}
+            onClick={() => { if (menuOpen) onMenuToggle(); }}
+          >
             {label}
-          </Link>
+          </NavLink>
         ))}
         <Link
           className="pill blue"
           to="/register"
           tabIndex={menuOpen ? 0 : -1}
+          onClick={() => { if (menuOpen) onMenuToggle(); }}
         >
           Créer mon espace
         </Link>

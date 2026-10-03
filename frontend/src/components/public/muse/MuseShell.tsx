@@ -24,7 +24,17 @@ export function MuseShell({ children }: MuseShellProps) {
 
   useEffect(() => {
     document.body.classList.toggle("is-locked", menuOpen);
-    return () => document.body.classList.remove("is-locked");
+    if (!menuOpen) return () => document.body.classList.remove("is-locked");
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      window.removeEventListener("keydown", closeOnEscape);
+      document.body.classList.remove("is-locked");
+    };
   }, [menuOpen]);
 
   return (
