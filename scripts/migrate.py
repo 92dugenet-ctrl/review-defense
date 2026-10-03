@@ -65,6 +65,19 @@ def main() -> None:
         ).fetchall()
         applied = {row[0]: (row[1], row[2]) for row in rows}
 
+        full_versions = {path.stem for path in files}
+        legacy_prefixes = {path.name.split("_", 1)[0] for path in files}
+        ambiguous = sorted(
+            version
+            for version in applied
+            if version in legacy_prefixes and version not in full_versions
+        )
+        if ambiguous:
+            raise RuntimeError(
+                "legacy numeric-only migration versions require manual "
+                f"reconciliation before continuing: {', '.join(ambiguous)}"
+            )
+
         for path in files:
             version = path.stem
             checksum = hashlib.sha256(path.read_bytes()).hexdigest()

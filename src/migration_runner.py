@@ -69,6 +69,23 @@ def apply_migrations(
                     for row in cur.fetchall()
                 }
 
+                full_versions = {path.stem for path in files}
+                legacy_prefixes = {
+                    path.name.split("_", 1)[0] for path in files
+                }
+                ambiguous = sorted(
+                    version
+                    for version in done
+                    if version in legacy_prefixes
+                    and version not in full_versions
+                )
+                if ambiguous:
+                    raise MigrationError(
+                        "legacy numeric-only migration versions require "
+                        "manual reconciliation before continuing: "
+                        + ", ".join(ambiguous)
+                    )
+
                 for path in files:
                     version = path.stem
                     checksum = migration_checksum(path)

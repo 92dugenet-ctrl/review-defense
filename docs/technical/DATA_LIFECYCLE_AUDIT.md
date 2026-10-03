@@ -27,7 +27,9 @@ Le lot N harmonise les identifiants et empreintes des migrations dans les deux r
 
 ### Contrat unifié dans le lot N
 
-Les deux runners utilisent désormais le nom complet du fichier comme identifiant, le même verrou advisory et les colonnes `filename` et `checksum`. Les entrées historiques sans empreinte sont complétées à partir du fichier correspondant ; une divergence déjà renseignée provoque une erreur plutôt qu'une réexécution silencieuse.
+Les deux runners utilisent désormais le nom complet du fichier comme identifiant, le même verrou advisory et les colonnes `filename` et `checksum`. Les entrées historiques sans empreinte sont complétées à partir du fichier correspondant ; une divergence déjà renseignée provoque une erreur plutôt qu'une réexécution silencieuse. Les runners refusent également de continuer si le registre contient un ancien identifiant numérique seul (par exemple `023`) : cette situation nécessite une réconciliation manuelle, car le dépôt ne permet pas de savoir avec certitude lequel des fichiers partageant ce préfixe a été appliqué.
+
+Aucune base réelle n'a été consultée ; la présence éventuelle de ces anciens identifiants dans un environnement déployé reste donc à confirmer avant migration de version du runner.
 
 La migration `023_v70_paypal_billing.sql` n'est pas renommée : cela évite de changer l'identité d'une migration potentiellement déjà appliquée. La seconde arborescence n'est pas synchronisée automatiquement.
 
