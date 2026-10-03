@@ -32,24 +32,45 @@ def _organization() -> str:
 def run_processing_once() -> None:
     queue = PostgresProcessingQueue(_dsn())
     organization_id = _organization()
-    worker_id = os.getenv("REVIEW_DEFENSE_WORKER_ID", socket.gethostname())
-    job = queue.claim(organization_id=organization_id, worker_id=worker_id, lease_seconds=60)
+    worker_id = os.getenv(
+        "REVIEW_DEFENSE_WORKER_ID",
+        socket.gethostname(),
+    )
+    job = queue.claim(
+        organization_id=organization_id,
+        worker_id=worker_id,
+        lease_seconds=60,
+    )
     if job is None:
         return
+
     handlers = {}
     spec = os.getenv("REVIEW_DEFENSE_JOB_HANDLERS", "").strip()
     if spec:
         for item in spec.split(","):
             module_name, function_name = item.split(":", 1)
-            handlers[item] = getattr(importlib.import_module(module_name), function_name)
+            module = importlib.import_module(module_name)
+            handlers[item] = getattr(module, function_name)
+
     handler = handlers.get(job.kind)
     if handler is None:
-        queue.fail(organization_id, job.job_id, worker_id, f"no handler registered for {job.kind}")
+        queue.fail(
+            organization_id,
+            job.job_id,
+            worker_id,
+            f"no handler registered for {job.kind}",
+        )
         return
+
     try:
         handler(job.payload)
     except Exception as exc:
-        queue.fail(organization_id, job.job_id, worker_id, f"{type(exc).__name__}: {exc}")
+        queue.fail(
+            organization_id,
+            job.job_id,
+            worker_id,
+            f"{type(exc).__name__}: {exc}",
+        )
     else:
         queue.complete(organization_id, job.job_id, worker_id)
 
