@@ -50,7 +50,8 @@ def contract_checks() -> dict[str, bool]:
         # Worker count and threading are configured by the actual Gunicorn launcher.
         "two_workers": (
             "--workers" in startup
-            and "GUNICORN_WORKERS" in startup
+            and "GUNICORN_WORKERS:-" in startup
+            and ":-2}}" in startup
             and "GUNICORN_THREADS" in startup
             and "GUNICORN_TIMEOUT" in startup
         ),
