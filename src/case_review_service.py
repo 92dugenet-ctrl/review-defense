@@ -1,5 +1,7 @@
 """Application service for case review checklists and readiness."""
 
+# Revue humaine : construit et persiste une checklist à partir des signaux, contradictions et éléments manquants. La readiness décrit l'état du dossier ; elle ne constitue pas une décision automatique ni une soumission externe.
+
 from __future__ import annotations
 
 from dataclasses import asdict

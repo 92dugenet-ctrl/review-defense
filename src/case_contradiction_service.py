@@ -1,5 +1,7 @@
 """Cases contradiction application seam.
 
+# Contradictions : applique le moteur d'analyse aux affirmations et faits de preuve, puis conserve les constats et les décisions humaines associées avec leur historique. Ce service orchestre le domaine ; le moteur ne décide pas du traitement final.
+
 Owns contradiction analysis and human disposition persistence side effects.
 """
 from __future__ import annotations
