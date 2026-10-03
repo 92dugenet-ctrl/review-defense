@@ -117,11 +117,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   /** Authenticate an existing user and load the resulting profile. */
   const login = useCallback(
     async (email: string, password: string, organizationId: string) => {
-      const payload = await api.post<SessionPayload>("/v1/auth/login", {
-        email,
-        password,
-        organization_id: organizationId,
-      });
+      const payload = await api.post<SessionPayload>(
+        "/v1/auth/login",
+        {
+          email,
+          password,
+          organization_id: organizationId,
+        },
+        { headers: { "X-Session-Mode": "cookie" } },
+      );
 
       saveSession(payload);
 
@@ -139,11 +143,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   /** Create an account; the API may require email verification first. */
   const register = useCallback(
     async (email: string, organizationName: string, password: string) => {
-      const payload = await api.post<RegisterPayload>("/v1/auth/register", {
-        email,
-        organization_name: organizationName,
-        password,
-      });
+      const payload = await api.post<RegisterPayload>(
+        "/v1/auth/register",
+        {
+          email,
+          organization_name: organizationName,
+          password,
+        },
+        { headers: { "X-Session-Mode": "cookie" } },
+      );
 
       if (!payload.access_token && !payload.csrf_token) {
         throw new ApiError(

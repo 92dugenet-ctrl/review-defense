@@ -18,9 +18,12 @@
 
 - REVIEW_DEFENSE_COOKIE_AUTH_ENABLED est un nouveau drapeau de configuration,
   désactivé par défaut pour permettre un déploiement coordonné.
-- Lorsque le mode est activé, les réponses qui créent/renouvellent une session
-  placent le token opaque dans un cookie HttpOnly, SameSite=Lax, Path=/ et
-  Secure en production. Le bearer token est retiré du JSON de réponse.
+- Lorsque le mode est activé, le frontend React demande explicitement le mode
+  cookie via X-Session-Mode: cookie. Seules ces réponses (et les rotations
+  effectuées depuis une session cookie) placent le token opaque dans un cookie
+  HttpOnly, SameSite=Lax, Path=/ et Secure en production. Le bearer token est
+  retiré du JSON de réponse. Les clients historiques sans cet en-tête gardent
+  le contrat Bearer et continuent de recevoir access_token.
 - Le cookie de production utilise le préfixe __Host- (Secure, Path=/ et sans
   attribut Domain). Le mode local utilise un nom de cookie sans préfixe.
 - Le serveur accepte le cookie comme source d'authentification lorsque le
@@ -31,7 +34,8 @@
   Les routes publiques d'authentification et le webhook PayPal sont exemptés.
 - Le frontend React conserve le jeton CSRF uniquement en mémoire et l'ajoute
   aux requêtes mutantes. Au rechargement, il le récupère via le cookie.
-- Le mode Bearer existant reste pris en charge lorsque le drapeau est désactivé.
+- Le mode Bearer existant reste pris en charge lorsque le drapeau est désactivé
+  ou lorsqu'un client historique ne demande pas explicitement X-Session-Mode.
 
 ## Activation coordonnée
 

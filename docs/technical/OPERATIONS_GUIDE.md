@@ -299,4 +299,6 @@ Consulter [SECURITY_REMEDIATION_V.md](./SECURITY_REMEDIATION_V.md).
 - Les mutations authentifiées par cookie exigent X-CSRF-Token. Le jeton CSRF
   est dérivé du secret de session et conservé uniquement en mémoire frontend.
 - Les déploiements qui conservent l'authentification Bearer existante ne sont
-  pas modifiés ; le mode cookie doit être activé de manière coordonnée.
+  pas modifiés ; le frontend React demande explicitement X-Session-Mode: cookie.
+  Les écrans historiques qui n'envoient pas cet en-tête conservent leur réponse
+  access_token et leur authentification Bearer.
