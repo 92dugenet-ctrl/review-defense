@@ -959,7 +959,17 @@ class PostgresAPIRepository(PostgresRepository):
                     "created_at","requires_human_review")
                 rows=[]
                 for row in cur.fetchall():
-                    d=dict(zip(names,row)); d["created_at"]=d["created_at"].isoformat() if hasattr(d["created_at"],"isoformat") else str(d["created_at"]); d["organization_id"]=str(d["organization_id"]); d["case_id"]=str(d["case_id"]); d["actor_id"]=str(d["actor_id"]); rows.append(d)
+                    item = dict(zip(names, row))
+                    created_at = item["created_at"]
+                    item["created_at"] = (
+                        created_at.isoformat()
+                        if hasattr(created_at, "isoformat")
+                        else str(created_at)
+                    )
+                    item["organization_id"] = str(item["organization_id"])
+                    item["case_id"] = str(item["case_id"])
+                    item["actor_id"] = str(item["actor_id"])
+                    rows.append(item)
                 return rows
 
     def get_contradiction_disposition(self, organization_id: str, contradiction_id: str):
@@ -974,7 +984,14 @@ class PostgresAPIRepository(PostgresRepository):
                 if not row: return None
                 names=("disposition_id","organization_id","case_id","contradiction_id","status","rationale","actor_id","created_at",
                     "requires_human_review")
-                d=dict(zip(names,row)); d["created_at"]=d["created_at"].isoformat() if hasattr(d["created_at"],"isoformat") else str(d["created_at"])
+                item = dict(zip(names, row))
+                created_at = item["created_at"]
+                item["created_at"] = (
+                    created_at.isoformat()
+                    if hasattr(created_at, "isoformat")
+                    else str(created_at)
+                )
+                return item
                 return d
 
     def get_mfa_state(self, organization_id: str, user_id: str):
@@ -1156,7 +1173,8 @@ class PostgresAPIRepository(PostgresRepository):
                 rows=[]
                 for x in cur.fetchall():
                     d=dict(zip(names,x))
-                    d["id"]=str(d["id"]); d["amount"]=str(d["amount"]) if d["amount"] is not None else None
+                    d["id"] = str(d["id"])
+                    d["amount"] = str(d["amount"]) if d["amount"] is not None else None
                     for k in ("created_at","updated_at"):
                         d[k]=d[k].isoformat() if hasattr(d[k],"isoformat") else str(d[k])
                     rows.append(d)
@@ -1242,8 +1260,21 @@ class PostgresAPIRepository(PostgresRepository):
         ), (organization_id,))
                 row = cur.fetchone()
                 if not row:return None
-                d=dict(zip(("organization_id","plan_code","status","paypal_subscription_id","offer_id","current_period_start",
-                            "current_period_end","cancel_at_period_end","created_at","updated_at"),row)); d["organization_id"]=str(d["organization_id"])
+                d = dict(zip(
+                    (
+                        "organization_id",
+                        "plan_code",
+                        "status",
+                        "paypal_subscription_id",
+                        "offer_id",
+                        "current_period_start",
+                        "current_period_end",
+                        "created_at",
+                        "updated_at",
+                    ),
+                    row,
+                ))
+                d["organization_id"] = str(d["organization_id"])
                 for k in ("current_period_start","current_period_end","created_at","updated_at"):
                     if d[k] is not None and hasattr(d[k],"isoformat"): d[k]=d[k].isoformat()
                 return d
@@ -1283,8 +1314,15 @@ class PostgresAPIRepository(PostgresRepository):
                 )
                 out = []
                 for x in cur.fetchall():
-                    d=dict(zip(names,x)); d["event_id"]=str(d["event_id"]); d["created_at"]=d["created_at"].isoformat() if hasattr(d["created_at"],
-                        "isoformat") else str(d["created_at"]); out.append(d)
+                    item = dict(zip(names, x))
+                    item["event_id"] = str(item["event_id"])
+                    created_at = item["created_at"]
+                    item["created_at"] = (
+                        created_at.isoformat()
+                        if hasattr(created_at, "isoformat")
+                        else str(created_at)
+                    )
+                    out.append(item)
                 return out
 
     def get_organization_profile(self, organization_id: str):
