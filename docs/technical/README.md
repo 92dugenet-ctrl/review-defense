@@ -16,6 +16,7 @@ Cette documentation décrit le code présent et les chemins d'exécution observ�
 - [Audit des traitements asynchrones](./ASYNC_PROCESSING_AUDIT.md) — files, leases, retries, notifications, Google Pub/Sub, PayPal et idempotence des effets externes.
 - [Audit de cohérence métier des dossiers](./CASE_BUSINESS_CONSISTENCY_AUDIT.md) — états, avis, preuves, snapshots, décisions, approbations, soumissions et facturation.
 - [Audit des permissions et de l'isolation multi-tenant](./ACCESS_CONTROL_RBAC_AUDIT.md) — authentification, rôles, routes API, accès aux ressources et politiques RLS.
+- [Audit sécurité API et données sensibles](./SECURITY_API_DATA_AUDIT.md) — sessions, récupération de compte, MFA, fichiers, en-têtes HTTP, limites de débit, intégrations et données de facturation.
 
 ## Règles de maintenance
 

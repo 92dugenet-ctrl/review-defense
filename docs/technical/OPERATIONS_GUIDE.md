@@ -224,3 +224,22 @@ Points de vigilance :
 - Le fallback mémoire de facturation construit des listes sans filtre explicite par organisation.
 
 Priorités : permissions explicites sur routes sensibles, catalogue RBAC central, filtrage de tous les fallbacks tenant, puis uniformisation de FORCE RLS après vérification PostgreSQL. Aucun changement runtime n'est inclus dans ce lot.
+
+
+## 16. Sécurité API et données sensibles — lot S
+
+Consulter [SECURITY_API_DATA_AUDIT.md](./SECURITY_API_DATA_AUDIT.md) avant toute modification de l'authentification, des sessions, des fichiers, des intégrations ou des paramètres de déploiement.
+
+Points de vigilance :
+- La consommation d'un token de récupération et le changement de mot de passe ne sont pas regroupés dans une transaction atomique ; le résultat de la consommation n'est pas vérifié.
+- Les réponses HTML et statiques du frontend ne reçoivent pas les en-têtes de sécurité appliqués aux réponses API/SEO.
+- Les limiteurs de connexion et de récupération sont locaux au processus et ne forment pas un quota partagé entre workers.
+- Le bearer token frontend est conservé dans sessionStorage ; la CSP autorise encore unsafe-inline.
+- Le contrôle de présence de la clé MFA ne traite pas le libellé `prod` comme le fait ProductionConfig.
+- STARTTLS SMTP peut être désactivé en production.
+- Le validateur de fichiers repose sur le Content-Type déclaré par le client ; ajouter une détection réelle du format.
+- Le webhook PayPal conserve actuellement le payload événementiel complet dans l'historique de facturation.
+
+Priorités : atomicité récupération, en-têtes statiques, rate limiting distribué ; ensuite session navigateur/CSP, configuration MFA/SMTP et détection des formats ; enfin minimisation des données PayPal et gouvernance des clés. Aucun changement runtime n'est inclus dans ce lot.
+
+Aucun test, build, typecheck, lint ou workflow GitHub Actions ne doit être exécuté.
