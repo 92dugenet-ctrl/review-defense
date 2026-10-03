@@ -56,6 +56,9 @@ export function useMuseMotion() {
       scenes.forEach((scene) => sceneObserver?.observe(scene));
     } else {
       scenes.forEach((scene) => scene.classList.add("active"));
+      document
+        .querySelectorAll<HTMLElement>(".reveal")
+        .forEach((element) => element.classList.add("is-visible"));
     }
 
     const updateScrollState = () => {
