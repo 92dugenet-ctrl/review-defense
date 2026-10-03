@@ -1,1 +1,10 @@
-import{MuseShell}from"@/components/public/muse/MuseShell";import{HomeBlocks}from"@/components/public/muse/home/HomeBlocks";export function HomePage(){return <MuseShell><main><HomeBlocks/></main></MuseShell>}/* marketing contract: story-section security-section pricing Créer mon espace */
+import { HomeBlocks } from "@/components/public/muse/home/HomeBlocks";
+import { MuseShell } from "@/components/public/muse/MuseShell";
+
+export function HomePage() {
+  return (
+    <MuseShell>
+      <HomeBlocks />
+    </MuseShell>
+  );
+}
