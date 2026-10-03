@@ -1,3 +1,19 @@
-# Module boundary
+# Composants du site public
 
-This directory is part of the target Review Defense architecture. Existing implementation is migrated here only after its dependencies, routes, configuration, data contracts, and tests have been checked. Do not remove the legacy source until the replacement is verified.
+## Rôle
+
+Composants réutilisables du site vitrine : navigation, pied de page, animations et assemblage des blocs de page.
+
+## Organisation
+
+- `PublicHeader.tsx` et `PublicFooter.tsx` : chrome commun du site.
+- `MuseMotion.tsx` : comportement/animation transversale.
+- `muse/` : sections et compositions propres aux pages Home, Product, Method, Pricing, Security et Contact.
+
+## Dépendances
+
+Les composants dépendent de React et des styles/assets du site public. Ils ont un équivalent parallèle sous `src/components/public/`; vérifier les écarts avant toute fusion ou suppression.
+
+## État
+
+Structure cible/copie de transition. Le build Vite configuré utilise actuellement `src/main.tsx`, pas un point d'entrée autonome dans ce dossier.

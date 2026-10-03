@@ -1,3 +1,5 @@
-# Module boundary
+# Documents — espace documentaire
 
-This directory is part of the target Review Defense architecture. Existing implementation is migrated here only after its dependencies, routes, configuration, data contracts, and tests have been checked. Do not remove the legacy source until the replacement is verified.
+Emplacement prévu pour les vues de consultation et de gestion des documents et preuves. Aucun fichier de page React n'est actuellement présent dans ce sous-dossier.
+
+Les droits d'accès, l'appartenance à une organisation et à un dossier, ainsi que les opérations de stockage restent contrôlés par le backend. Avant d'ajouter une page, définir les contrats API et les états d'accès/refus attendus.

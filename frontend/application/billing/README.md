@@ -1,3 +1,7 @@
-# Module boundary
+# Billing — page de facturation
 
-This directory is part of the target Review Defense architecture. Existing implementation is migrated here only after its dependencies, routes, configuration, data contracts, and tests have been checked. Do not remove the legacy source until the replacement is verified.
+Regroupe l'interface de consultation du catalogue et des informations de facturation. Les paiements, abonnements, webhooks et changements de droits restent pilotés par le backend et le fournisseur de paiement.
+
+Ne jamais exposer de secret PayPal dans le bundle frontend. Préserver les contrats API et les retours d'état de paiement.
+
+Structure cible sous `application/`; ne pas la confondre avec une route de production active sans vérifier le routeur et le serveur.
