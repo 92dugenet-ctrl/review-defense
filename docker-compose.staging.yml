@@ -5,12 +5,16 @@ services:
       POSTGRES_DB: review_defense_staging
       POSTGRES_USER: review_defense
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
-    volumes: [review_defense_staging_pg:/var/lib/postgresql/data]
+    volumes:
+      - review_defense_staging_pg:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U review_defense -d review_defense_staging"]
+      test:
+        - CMD-SHELL
+        - pg_isready -U review_defense -d review_defense_staging
       interval: 5s
       timeout: 5s
       retries: 12
+
   app:
     build: .
     environment:
@@ -24,23 +28,29 @@ services:
       PAYPAL_CLIENT_ID: ${PAYPAL_CLIENT_ID:-}
       PAYPAL_CLIENT_SECRET: ${PAYPAL_CLIENT_SECRET:-}
       REVIEW_DEFENSE_EVIDENCE_ROOT: /data/evidence
-    expose: ["8080"]
+    expose:
+      - "8080"
     volumes:
       - review_defense_staging_evidence:/data/evidence
     depends_on:
       postgres:
         condition: service_healthy
+
   caddy:
     image: caddy:2-alpine
     environment:
       TLS_ADMIN_EMAIL: ${TLS_ADMIN_EMAIL:?set TLS_ADMIN_EMAIL}
       REVIEW_DEFENSE_DOMAIN: ${REVIEW_DEFENSE_DOMAIN:?set REVIEW_DEFENSE_DOMAIN}
-    ports: ["80:80", "443:443"]
+    ports:
+      - "80:80"
+      - "443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
-    depends_on: [app]
+    depends_on:
+      - app
+
 volumes:
   review_defense_staging_pg:
   review_defense_staging_evidence:
