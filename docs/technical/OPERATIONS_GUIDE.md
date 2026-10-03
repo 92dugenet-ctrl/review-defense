@@ -206,3 +206,21 @@ Points de vigilance :
 - Les statuts PayPal de billing.py ne sont pas tous classés comme actifs ou terminaux dans billing_service.py.
 
 Priorités : intégrité/invalidation des snapshots, hydratation durable du contexte décisionnel, transitions d'état centralisées, puis harmonisation des statuts de facturation. Aucun changement runtime n'est inclus dans ce lot.
+
+
+## 15. Permissions, rôles et isolation multi-tenant — lot R
+
+Consulter [ACCESS_CONTROL_RBAC_AUDIT.md](./ACCESS_CONTROL_RBAC_AUDIT.md) avant toute modification des rôles, endpoints, documents, preuves, données financières ou politiques RLS.
+
+Points de vigilance :
+- L'authentification recharge le rôle effectif depuis l'appartenance PostgreSQL, mais plusieurs routes n'appliquent pas de contrôle RBAC.
+- POST /v1/reviews et POST /v1/evidence sont accessibles à tout utilisateur authentifié du tenant.
+- Les routes de lecture/contenu des preuves n'appliquent pas de contrôle de rôle.
+- GET /v1/billing et GET /v1/billing/events ne limitent pas la lecture par rôle.
+- GET /v1/organization/members et les routes de lecture/téléchargement des documents n'appliquent pas de garde RBAC.
+- GET /v1/review-queue et GET /v1/integrations/google/locations n'ont pas de garde de rôle explicite.
+- Le routeur React applique RequireAuth mais ne restreint pas les pages par rôle ; l'API doit rester l'autorité.
+- FORCE RLS est présent pour certains groupes, mais pas uniformément dans les migrations examinées. Vérifier le rôle DB effectif et les propriétaires.
+- Le fallback mémoire de facturation construit des listes sans filtre explicite par organisation.
+
+Priorités : permissions explicites sur routes sensibles, catalogue RBAC central, filtrage de tous les fallbacks tenant, puis uniformisation de FORCE RLS après vérification PostgreSQL. Aucun changement runtime n'est inclus dans ce lot.
