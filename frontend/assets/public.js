@@ -13,7 +13,9 @@ function ensureSeoArticles(){
    const finish=(fn)=>{if(settled)return;settled=true;fn()};
    const timeout=window.setTimeout(()=>{__seoArticlesPromise=null;finish(()=>reject(new Error('Le contenu éditorial met trop de temps à répondre.')))},8000);
    script.onload=()=>{window.clearTimeout(timeout);finish(()=>resolve(window.REVIEW_DEFENSE_SEO_ARTICLES||{}))};
-   script.onerror=()=>{window.clearTimeout(timeout);__seoArticlesPromise=null;finish(()=>reject(new Error('Impossible de charger les ressources éditoriales.')))};
+      script.onerror=()=>{window.clearTimeout(timeout);
+     __seoArticlesPromise=null;
+     finish(()=>reject(new Error('Impossible de charger les ressources éditoriales.')))};
    document.head.appendChild(script);
  });
  return __seoArticlesPromise;
@@ -79,10 +81,19 @@ function setPublicMeta(page){
  document.title=m[0];
   const setMeta=(selector,
    attr,
-   value)=>{let el=document.querySelector(selector);if(!el){el=document.createElement('meta');Object.entries(attr).forEach(([k,v])=>el.setAttribute(k,v));document.head.appendChild(el)}el.setAttribute('content',
+      value)=>{let el=document.querySelector(selector);
+     if(!el){el=document.createElement('meta');
+     Object.entries(attr).forEach(([k,v])=>el.setAttribute(k,v));
+     document.head.appendChild(el)}el.setAttribute('content',
    value)};
- let d=document.querySelector('meta[name="description"]'); if(!d){d=document.createElement('meta');d.name='description';document.head.appendChild(d)} d.content=m[1];
- let c=document.querySelector('link[rel="canonical"]'); if(!c){c=document.createElement('link');c.rel='canonical';document.head.appendChild(c)} c.href=location.origin+(PUBLIC_ROUTES[page]||'/');
+  let d=document.querySelector('meta[name="description"]');
+    if(!d){d=document.createElement('meta');
+   d.name='description';
+   document.head.appendChild(d)} d.content=m[1];
+  let c=document.querySelector('link[rel="canonical"]');
+    if(!c){c=document.createElement('link');
+   c.rel='canonical';
+   document.head.appendChild(c)} c.href=location.origin+(PUBLIC_ROUTES[page]||'/');
  const canonical=c.href;
  setMeta('meta[property="og:title"]',{property:'og:title'},m[0]);
  setMeta('meta[property="og:description"]',{property:'og:description'},m[1]);
@@ -129,7 +140,13 @@ function publicShell(active,body){
 }
 function ensureMuseLandingStyles(){const x=document.getElementById('rd-muse-landing-styles');if(x)x.remove()}
 
-function ensurePublicStyles(){ensureMuseLandingStyles();if(document.getElementById('public-styles'))return;const link=document.createElement('link');link.id='public-styles';link.rel='stylesheet';link.href='/assets/public.css?v='+PUBLIC_ASSET_VERSION;document.head.appendChild(link)}
+function ensurePublicStyles(){ensureMuseLandingStyles();
+  if(document.getElementById('public-styles'))return;
+  const link=document.createElement('link');
+  link.id='public-styles';
+  link.rel='stylesheet';
+  link.href='/assets/public.css?v='+PUBLIC_ASSET_VERSION;
+  document.head.appendChild(link)}
 function productMockup(){
  return (
    '<div class="rd-product-stage"><div class="rd-product-glow"></div><div class="rd-product-window"><div class="rd-window-top"><div class="window-dots">' +
@@ -448,7 +465,8 @@ function servicesPage(){
  );
 }
 function selectPricingOffer(type,name,price,offerId){
- try{localStorage.setItem('rd_selected_offer',JSON.stringify({type,name,price,offer_id:offerId||null,selected_at:new Date().toISOString()}));}catch(e){}
+  try{localStorage.setItem('rd_selected_offer',JSON.stringify({type,name,price,offer_id:offerId||null,selected_at:new Date().toISOString()}));
+   }catch(e){}
  location.href='/app?pricing_offer='+encodeURIComponent(offerId||type);
 }
 function pricingPage(){
@@ -781,7 +799,16 @@ function compliancePage(){
   );
 }
 
-function submitPublicContact(event){event.preventDefault();const f=new FormData(event.currentTarget);const name=String(f.get('name')||'').trim();const email=String(f.get('email')||'').trim();const company=String(f.get('company')||'').trim();const message=String(f.get('message')||'').trim();const subject=encodeURIComponent('Contact Review Defense'+(company?' · '+company:''));const body=encodeURIComponent('Nom : '+name+'\nE-mail : '+email+'\nEntreprise : '+company+'\n\n'+message);location.href='mailto:contact@review-defense.com?subject='+subject+'&body='+body;toast('Votre client e-mail va s’ouvrir pour finaliser l’envoi.',
+function submitPublicContact(event){event.preventDefault();
+  const f=new FormData(event.currentTarget);
+  const name=String(f.get('name')||'').trim();
+  const email=String(f.get('email')||'').trim();
+  const company=String(f.get('company')||'').trim();
+  const message=String(f.get('message')||'').trim();
+  const subject=encodeURIComponent('Contact Review Defense'+(company?' · '+company:''));
+  const body=encodeURIComponent('Nom : '+name+'\nE-mail : '+email+'\nEntreprise : '+company+'\n\n'+message);
+  location.href='mailto:contact@review-defense.com?subject='+subject+'&body='+body;
+  toast('Votre client e-mail va s’ouvrir pour finaliser l’envoi.',
   'success')}
 function contactPage(){return (
   '<section class="contact-layout premium-contact"><div class="page-mountain"></div><div><span>BESOIN D’AIDE ?</span><h1>Besoin de voir<br>' +
@@ -796,7 +823,10 @@ function editorializePublicPage(active){
 const main=document.querySelector('.marketing main');if(!main)return;
 const sections=[...main.children].filter(node=>node.tagName==='SECTION');
 sections.forEach((s,i)=>{s.classList.add('rd-story-scene');s.dataset.scene=String(i+1).padStart(2,'0');s.style.visibility='visible';s.style.opacity='1'});
-const shell=document.querySelector('.marketing');if(shell){shell.dataset.storyPage=active||'home';shell.dataset.storyScenes=String(sections.length);shell.setAttribute('data-story-scenes',String(sections.length))}
+const shell=document.querySelector('.marketing');
+  if(shell){shell.dataset.storyPage=active||'home';
+  shell.dataset.storyScenes=String(sections.length);
+  shell.setAttribute('data-story-scenes',String(sections.length))}
 }
 
 function marketingLayout(active,body){
@@ -810,7 +840,9 @@ function marketingLayout(active,body){
  publicCta?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();location.href='/analyse-avis-google/'}});
  const menu=document.getElementById('mobile-menu');
  const nav=document.getElementById('public-nav');
- const closePublicMenu=()=>{nav?.classList.remove('open');menu?.setAttribute('aria-expanded','false');menu?.setAttribute('aria-label','Ouvrir le menu')};
+  const closePublicMenu=()=>{nav?.classList.remove('open');
+   menu?.setAttribute('aria-expanded','false');
+   menu?.setAttribute('aria-label','Ouvrir le menu')};
  menu?.addEventListener('click',()=>{const open=nav?.classList.toggle('open')||false;menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Fermer le menu':'Ouvrir le menu')});
  menu?.addEventListener('keydown',e=>{if(e.key==='Escape'&&nav?.classList.contains('open')){e.preventDefault();closePublicMenu();menu.focus()}});
  document.querySelectorAll('.public-nav [data-public]').forEach(x=>x.addEventListener('click',()=>{closePublicMenu();menu?.focus()}));
