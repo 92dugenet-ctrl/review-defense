@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
-
 import { MuseScene, Reveal } from "./MuseScene";
+import { PublicActionLink } from "./PublicActionLink";
 
 type NextMuseSceneProps = {
   eyebrow: string;
@@ -24,9 +23,7 @@ export function NextMuseScene({
       <Reveal>
         <div className="muse-eyebrow">{eyebrow}</div>
         <h2>{title}</h2>
-        <Link className="muse-pill muse-blue" to={to}>
-          {label}
-        </Link>
+        <PublicActionLink to={to}>{label}</PublicActionLink>
       </Reveal>
     </MuseScene>
   );

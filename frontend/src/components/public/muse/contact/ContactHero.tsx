@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
-
 import { MuseScene, Reveal } from "../MuseScene";
+import { PublicActionLink } from "../PublicActionLink";
 
 export function ContactHero() {
   return (
@@ -17,9 +16,7 @@ export function ContactHero() {
           de contrôle. Pour une question précise, dites-nous ce que vous
           cherchez à organiser.
         </p>
-        <Link className="muse-pill muse-blue" to="/produit">
-          Voir le produit
-        </Link>
+        <PublicActionLink to="/produit">Voir le produit</PublicActionLink>
       </Reveal>
     </MuseScene>
   );

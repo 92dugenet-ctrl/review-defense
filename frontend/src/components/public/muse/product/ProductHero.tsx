@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
-
 import { MuseScene, Reveal } from "../MuseScene";
+import { PublicActionLink } from "../PublicActionLink";
 
 export function ProductHero() {
   return (
@@ -15,9 +14,7 @@ export function ProductHero() {
           Analysez, documentez, suivez et validez dans une expérience
           pensée comme une suite de scènes de travail.
         </p>
-        <Link className="muse-pill muse-blue" to="/register">
-          Créer mon espace
-        </Link>
+        <PublicActionLink to="/register">Créer mon espace</PublicActionLink>
       </Reveal>
     </MuseScene>
   );

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { PublicActionLink } from "../PublicActionLink";
 
 export function HomeHero() {
   return (
@@ -34,9 +34,7 @@ export function HomeHero() {
           avec plus de contexte et de contrôle.
         </p>
 
-        <Link className="pill blue" to="/register">
-          Créer mon espace
-        </Link>
+        <PublicActionLink to="/register">Créer mon espace</PublicActionLink>
 
         <div className="muse-word">
           <span>Review</span>
