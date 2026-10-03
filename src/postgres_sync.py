@@ -86,14 +86,22 @@ class PostgresJobQueue:
                 cur.execute("SELECT id,payload_fingerprint FROM background_jobs WHERE organization_id=%s AND idempotency_key=%s",(organization_id,idempotency_key)); old=cur.fetchone()
                 if old:
                     if old[1]!=fp: raise JobIdempotencyConflict("idempotency key reused with different payload")
-                    cur.execute("SELECT id,organization_id,kind,payload,state,priority,attempts,max_attempts,extract(epoch from run_after),idempotency_key,payload_fingerprint,lease_owner,extract(epoch from leased_until),last_error,extract(epoch from created_at),extract(epoch from updated_at) FROM background_jobs WHERE id=%s",(old[0],))
+                    cur.execute((
+            "SELECT id,organization_id,kind,payload,state,priority,attempts,max_attempts,extract(epoch from run_a" +
+            "fter),idempotency_key,payload_fingerprint,lease_owner,extract(epoch from leased_until),last_error,ex" +
+            "tract(epoch from created_at),extract(epoch from updated_at) FROM background_jobs WHERE id=%s"
+        ),(old[0],))
                     return self._job_from_row(cur.fetchone())
             cur.execute("""INSERT INTO background_jobs (organization_id,kind,payload,state,priority,max_attempts,run_after,idempotency_key,payload_fingerprint)
                          VALUES (%s,%s,%s::jsonb,'QUEUED',%s,%s,COALESCE(to_timestamp(%s),now()),%s,%s) RETURNING id,organization_id,kind,payload,state,priority,attempts,max_attempts,extract(epoch from run_after),idempotency_key,payload_fingerprint,lease_owner,extract(epoch from leased_until),last_error,extract(epoch from created_at),extract(epoch from updated_at)""",(organization_id,kind,json.dumps(payload,sort_keys=True),priority,max_attempts,run_after,idempotency_key,fp))
             return self._job_from_row(cur.fetchone())
     def get(self,job_id,*,organization_id=None):
         with self.repo._tx(organization_id or "") as (_,cur):
-            q="SELECT id,organization_id,kind,payload,state,priority,attempts,max_attempts,extract(epoch from run_after),idempotency_key,payload_fingerprint,lease_owner,extract(epoch from leased_until),last_error,extract(epoch from created_at),extract(epoch from updated_at) FROM background_jobs WHERE id=%s"
+            q=(
+            "SELECT id,organization_id,kind,payload,state,priority,attempts,max_attempts,extract(epoch from run_a" +
+            "fter),idempotency_key,payload_fingerprint,lease_owner,extract(epoch from leased_until),last_error,ex" +
+            "tract(epoch from created_at),extract(epoch from updated_at) FROM background_jobs WHERE id=%s"
+        )
             cur.execute(q,(job_id,)); r=cur.fetchone()
             if not r: raise JobNotFound(job_id)
             if organization_id and str(r[1])!=organization_id: raise JobNotFound(job_id)
