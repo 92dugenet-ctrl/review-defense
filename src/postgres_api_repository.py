@@ -765,7 +765,8 @@ class PostgresAPIRepository(PostgresRepository):
                 cur.execute("SELECT timezone,workdays,start_hour,end_hour,holidays FROM organization_sla_calendars WHERE organization_id=%s",
                     (organization_id,))
                 row=cur.fetchone()
-                if not row: return None
+                if not row:
+                    return None
                 return {"timezone":row[0],"workdays":row[1],"start_hour":row[2],"end_hour":row[3],"holidays":row[4]}
 
     def create_notification(self, organization_id: str, n):
@@ -902,7 +903,8 @@ class PostgresAPIRepository(PostgresRepository):
                     WHERE organization_id=%s
                     AND notification_id=%s""", (organization_id,notification_id))
                 row=cur.fetchone()
-                if not row: return None
+                if not row:
+                    return None
                 names=("notification_id","organization_id","case_id","escalation_level","channel","target","subject","body","status",
                     "created_by","created_at","sent_by","sent_at","cancelled_by","cancelled_at","dedupe_key","delivery_attempts","last_attempt_at",
                     "delivery_error","max_attempts","next_attempt_at","dead_lettered_at")
@@ -1149,7 +1151,8 @@ class PostgresAPIRepository(PostgresRepository):
             "%s"
         ), (organization_id, contradiction_id))
                 row=cur.fetchone()
-                if not row: return None
+                if not row:
+                    return None
                 names=("disposition_id","organization_id","case_id","contradiction_id","status","rationale","actor_id","created_at",
                     "requires_human_review")
                 item = dict(zip(names, row))
@@ -1399,7 +1402,8 @@ class PostgresAPIRepository(PostgresRepository):
                     WHERE organization_id=%s
                     AND paypal_order_id=%s""",(organization_id,order_id))
                 row=cur.fetchone()
-                if not row: return None
+                if not row:
+                    return None
                 return dict(zip(("id","offer_id","kind","status","currency","amount","paypal_order_id","paypal_subscription_id",
                             "paypal_event_id","metadata"),row))
     def billing_event_seen(self, event_id: str):
@@ -1436,7 +1440,8 @@ class PostgresAPIRepository(PostgresRepository):
                     FROM billing_transactions
                     WHERE paypal_order_id=%s OR paypal_subscription_id=%s LIMIT 1""",(paypal_id,paypal_id))
                     row=cur.fetchone()
-                    if not row:return None
+                    if not row:
+                    return None
                     return dict(zip(("id","organization_id","offer_id","kind","status","currency","amount","paypal_order_id","paypal_subscription_id",
                                 "metadata"),row))
     def update_billing_global(self, row):
@@ -1462,7 +1467,8 @@ class PostgresAPIRepository(PostgresRepository):
             "s"
         ), (organization_id,))
                 row = cur.fetchone()
-                if not row:return None
+                if not row:
+                    return None
                 d = dict(zip(
                     (
                         "organization_id",
