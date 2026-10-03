@@ -65,6 +65,10 @@ class CaseService:
         key = (organization_id, case_id)
         if repository is not None and hasattr(repository, "list_evidence"):
             for row in repository.list_evidence(organization_id, case_id) or []:
+                # The repository query is tenant- and case-scoped, but validate
+                # the returned row as a second boundary before caching it.
+                if len(row) < 12 or str(row[1]) != organization_id or str(row[2]) != case_id:
+                    continue
                 evidence = {
                     "evidence_id": str(row[0]),
                     "organization_id": str(row[1]),
@@ -83,6 +87,10 @@ class CaseService:
 
         if repository is not None and hasattr(repository, "list_evidence_facts"):
             for row in repository.list_evidence_facts(organization_id, case_id) or []:
+                # Facts must belong to the requested case even if an adapter
+                # accidentally returns rows outside its query predicate.
+                if len(row) < 10 or str(row[2]) != case_id:
+                    continue
                 fact = {
                     "fact_id": str(row[0]),
                     "evidence_id": str(row[1]),
@@ -105,12 +113,22 @@ class CaseService:
                 store.reviews[(organization_id, case.review_id)] = review
 
         evidence = [
-            value for (org_id, _), value in store.evidence.items()
-            if org_id == organization_id
+            value
+            for (key, value) in store.evidence.items()
+            if key[0] == organization_id
+            and isinstance(value, dict)
+            and str(value.get("organization_id", organization_id)) == organization_id
+            and str(value.get("case_id", "")) == case_id
         ]
-        evidence_facts = [
-            value for (org_id, _), value in store.evidence_facts.items()
-            if org_id == organization_id
-        ]
+        evidence_facts = []
+        for (org_id, _), cached in store.evidence_facts.items():
+            if org_id != organization_id:
+                continue
+            # Older store versions may hold one fact or a list of facts per key.
+            records = cached if isinstance(cached, list) else [cached]
+            evidence_facts.extend(
+                fact for fact in records
+                if isinstance(fact, dict) and str(fact.get("case_id", "")) == case_id
+            )
         return case, review, evidence, evidence_facts
 
