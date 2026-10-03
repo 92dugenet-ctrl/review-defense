@@ -105,7 +105,7 @@ export function useMuseMotion() {
       sceneObserver?.disconnect();
       window.removeEventListener("scroll", updateScrollState);
       window.removeEventListener("resize", updateScrollState);
-      document
+      root
         .querySelectorAll<HTMLElement>(".reveal")
         .forEach((element) => {
           element.style.removeProperty("transition-delay");
