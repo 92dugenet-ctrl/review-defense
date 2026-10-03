@@ -19,79 +19,145 @@ class PostgresAPIRepository(PostgresRepository):
         cur.execute(sql, params)
         return cur.fetchone()
 
-    def create_organization_and_owner(self, organization_name: str, email: str, password_hash: str):
+    def create_organization_and_owner(
+        self,
+        organization_name: str,
+        email: str,
+        password_hash: str,
+    ):
         """Create a new tenant and its first OWNER atomically."""
         if not organization_name or len(organization_name.strip()) > 200:
             raise ValueError("invalid organization name")
         with self._connect() as conn:
             with conn.transaction():
                 with conn.cursor() as cur:
-                    cur.execute("INSERT INTO organizations(name) VALUES(%s) RETURNING id", (organization_name.strip(),))
+                    cur.execute(
+                        """
+                        INSERT INTO organizations(name)
+                        VALUES (%s)
+                        RETURNING id
+                        """,
+                        (organization_name.strip(),),
+                    )
                     organization_id = str(cur.fetchone()[0])
-                    cur.execute("SELECT set_config('app.organization_id', %s, true)", (organization_id,))
-                    cur.execute("INSERT INTO users(email,password_hash) VALUES(%s,%s) RETURNING id,email,password_hash", (email.lower(),
-                            password_hash))
+                    cur.execute(
+                        "SELECT set_config('app.organization_id', %s, true)",
+                        (organization_id,),
+                    )
+                    cur.execute(
+                        """
+                        INSERT INTO users(email, password_hash)
+                        VALUES (%s, %s)
+                        RETURNING id, email, password_hash
+                        """,
+                        (email.lower(), password_hash),
+                    )
                     uid, em, ph = cur.fetchone()
-                    cur.execute("INSERT INTO memberships(organization_id,user_id,role) VALUES(%s,%s,'OWNER')", (organization_id,
-                            uid))
+                    cur.execute(
+                        """
+                        INSERT INTO memberships(
+                            organization_id,
+                            user_id,
+                            role
+                        )
+                        VALUES (%s, %s, 'OWNER')
+                        """,
+                        (organization_id, uid),
+                    )
                     return organization_id, str(uid), str(em), ph, "OWNER"
 
     def create_user(self, organization_id: str, email: str, password_hash: str, role: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""INSERT INTO users(email,
-                    password_hash) VALUES(%s,
-                    %s)
-                    RETURNING id,
-                    email,
-                    password_hash""", (email.lower(), password_hash))
+                cur.execute(
+                    """
+                    INSERT INTO users(email, password_hash)
+                    VALUES (%s, %s)
+                    RETURNING id, email, password_hash
+                    """,
+                    (email.lower(), password_hash),
+                )
                 uid, em, ph = cur.fetchone()
-                cur.execute("INSERT INTO memberships(organization_id,user_id,role) VALUES(%s,%s,%s)", (organization_id, uid, role))
+                cur.execute(
+                    """
+                    INSERT INTO memberships(organization_id, user_id, role)
+                    VALUES (%s, %s, %s)
+                    """,
+                    (organization_id, uid, role),
+                )
                 return str(uid), str(em), ph, role
 
     def get_user_by_email(self, organization_id: str, email: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""SELECT u.id,
-                    u.email,
-                    u.password_hash,
-                    m.role
-                    FROM users u JOIN memberships m ON m.user_id=u.id
-                    WHERE m.organization_id=%s
-                    AND u.email=%s""", (organization_id,email.lower()))
+                cur.execute(
+                    """
+                    SELECT
+                        u.id,
+                        u.email,
+                        u.password_hash,
+                        m.role
+                    FROM users AS u
+                    JOIN memberships AS m ON m.user_id = u.id
+                    WHERE m.organization_id = %s
+                      AND u.email = %s
+                    """,
+                    (organization_id, email.lower()),
+                )
                 return cur.fetchone()
 
     def get_invitation_by_token(self, organization_id: str, token_hash: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("""SELECT invitation_id,
-                    organization_id,
-                    email,
-                    role,
-                    token_hash,
-                    expires_at,
-                    invited_by,
-                    accepted_at,
-                    revoked_at
+                cur.execute(
+                    """
+                    SELECT
+                        invitation_id,
+                        organization_id,
+                        email,
+                        role,
+                        token_hash,
+                        expires_at,
+                        invited_by,
+                        accepted_at,
+                        revoked_at
                     FROM organization_invitations
-                    WHERE organization_id=%s
-                    AND token_hash=%s""", (organization_id,token_hash))
+                    WHERE organization_id = %s
+                      AND token_hash = %s
+                    """,
+                    (organization_id, token_hash),
+                )
                 return cur.fetchone()
 
     def mark_invitation_accepted(self, organization_id: str, invitation_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute((
-            "UPDATE organization_invitations SET accepted_at=now(),updated_at=now() WHERE organization_id=%s AND " +
-            "invitation_id=%s AND accepted_at IS NULL AND revoked_at IS NULL"
-        ), (organization_id,invitation_id))
+                cur.execute(
+                    """
+                    UPDATE organization_invitations
+                    SET accepted_at = now(), updated_at = now()
+                    WHERE organization_id = %s
+                      AND invitation_id = %s
+                      AND accepted_at IS NULL
+                      AND revoked_at IS NULL
+                    """,
+                    (organization_id, invitation_id),
+                )
                 return cur.rowcount == 1
 
     def list_members(self, organization_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT u.id,u.email,m.role FROM users u JOIN memberships m ON m.user_id=u.id WHERE m.organization_id=%s ORDER BY u.email",
-                    (organization_id,))
+                cur.execute(
+                    """
+                    SELECT u.id, u.email, m.role
+                    FROM users AS u
+                    JOIN memberships AS m ON m.user_id = u.id
+                    WHERE m.organization_id = %s
+                    ORDER BY u.email
+                    """,
+                    (organization_id,),
+                )
                 return cur.fetchall()
 
 
@@ -143,24 +209,70 @@ class PostgresAPIRepository(PostgresRepository):
                     ),
                 )
 
-    def touch_session(self, organization_id: str, token_hash: str, user_agent: str | None = None, ip_hash: str | None = None):
+    def touch_session(
+        self,
+        organization_id: str,
+        token_hash: str,
+        user_agent: str | None = None,
+        ip_hash: str | None = None,
+    ):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("UPDATE api_sessions SET last_seen_at=now(), user_agent=COALESCE(%s,user_agent), ip_hash=COALESCE(%s,ip_hash) WHERE token_hash=%s",
-                    (user_agent, ip_hash, token_hash))
+                cur.execute(
+                    """
+                    UPDATE api_sessions
+                    SET
+                        last_seen_at = now(),
+                        user_agent = COALESCE(%s, user_agent),
+                        ip_hash = COALESCE(%s, ip_hash)
+                    WHERE token_hash = %s
+                    """,
+                    (user_agent, ip_hash, token_hash),
+                )
 
     def revoke_all_sessions(self, organization_id: str, user_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("UPDATE api_sessions SET revoked_at=now() WHERE organization_id=%s AND user_id=%s AND revoked_at IS NULL",
-                    (organization_id,user_id))
+                cur.execute(
+                    """
+                    UPDATE api_sessions
+                    SET revoked_at = now()
+                    WHERE organization_id = %s
+                      AND user_id = %s
+                      AND revoked_at IS NULL
+                    """,
+                    (organization_id, user_id),
+                )
 
-    def security_event(self, organization_id: str, actor_user_id: str | None, event_type: str, target_user_id: str | None = None,
-        metadata: dict | None = None):
+    def security_event(
+        self,
+        organization_id: str,
+        actor_user_id: str | None,
+        event_type: str,
+        target_user_id: str | None = None,
+        metadata: dict | None = None,
+    ):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("INSERT INTO security_events(organization_id,actor_user_id,event_type,target_user_id,metadata) VALUES(%s,%s,%s,%s,%s::jsonb)",
-                    (organization_id,actor_user_id,event_type,target_user_id,json.dumps(metadata or {})))
+                cur.execute(
+                    """
+                    INSERT INTO security_events(
+                        organization_id,
+                        actor_user_id,
+                        event_type,
+                        target_user_id,
+                        metadata
+                    )
+                    VALUES (%s, %s, %s, %s, %s::jsonb)
+                    """,
+                    (
+                        organization_id,
+                        actor_user_id,
+                        event_type,
+                        target_user_id,
+                        json.dumps(metadata or {}),
+                    ),
+                )
 
     def get_session_by_token_hash(self, token_hash: str):
         """Load a persisted session before tenant context is known.
@@ -182,14 +294,29 @@ class PostgresAPIRepository(PostgresRepository):
     def get_session(self, organization_id: str, token_hash: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT token_hash,user_id,organization_id,role,expires_at,revoked_at FROM api_sessions WHERE token_hash=%s",
-                    (token_hash,))
+                cur.execute(
+                    """
+                    SELECT
+                        token_hash,
+                        user_id,
+                        organization_id,
+                        role,
+                        expires_at,
+                        revoked_at
+                    FROM api_sessions
+                    WHERE token_hash = %s
+                    """,
+                    (token_hash,),
+                )
                 return cur.fetchone()
 
     def revoke_session(self, organization_id: str, token_hash: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("UPDATE api_sessions SET revoked_at=now() WHERE token_hash=%s", (token_hash,))
+                cur.execute(
+                    "UPDATE api_sessions SET revoked_at = now() WHERE token_hash = %s",
+                    (token_hash,),
+                )
 
     def upsert_review(self, organization_id: str, review: Mapping[str,Any]):
         with self.transaction(organization_id) as conn:
@@ -409,22 +536,73 @@ class PostgresAPIRepository(PostgresRepository):
                     ),
                 )
 
-    def put_snapshot(self, organization_id: str, case_id: str, sha256: str, payload: Mapping[str,Any], frozen_by: str, frozen_at: str):
+    def put_snapshot(
+        self,
+        organization_id: str,
+        case_id: str,
+        sha256: str,
+        payload: Mapping[str, Any],
+        frozen_by: str,
+        frozen_at: str,
+    ):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute((
-            "INSERT INTO api_dossier_snapshots(organization_id,case_id,sha256,payload,frozen_by,frozen_at) VALUES" +
-            "(%s,%s,%s,%s::jsonb,%s,%s) ON CONFLICT(organization_id,case_id) DO UPDATE SET sha256=excluded.sha256" +
-            ",payload=excluded.payload,frozen_by=excluded.frozen_by,frozen_at=excluded.frozen_at"
-        ), (organization_id,case_id,sha256,json.dumps(payload,sort_keys=True),frozen_by,frozen_at))
+                cur.execute(
+                    """
+                    INSERT INTO api_dossier_snapshots(
+                        organization_id,
+                        case_id,
+                        sha256,
+                        payload,
+                        frozen_by,
+                        frozen_at
+                    )
+                    VALUES (%s, %s, %s, %s::jsonb, %s, %s)
+                    ON CONFLICT (organization_id, case_id)
+                    DO UPDATE SET
+                        sha256 = EXCLUDED.sha256,
+                        payload = EXCLUDED.payload,
+                        frozen_by = EXCLUDED.frozen_by,
+                        frozen_at = EXCLUDED.frozen_at
+                    """,
+                    (
+                        organization_id,
+                        case_id,
+                        sha256,
+                        json.dumps(payload, sort_keys=True),
+                        frozen_by,
+                        frozen_at,
+                    ),
+                )
 
     def put_approval(self, organization_id: str, a: Mapping[str,Any]):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute((
-            "INSERT INTO api_approvals(organization_id,approval_id,case_id,decision_id,actor_id,actor_role,snapsh" +
-            "ot_sha256,approved_at) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"
-        ), (organization_id,a['approval_id'],a['case_id'],a['decision_id'],a['actor_id'],a['actor_role'],a['snapshot_sha256'],a['approved_at']))
+                cur.execute(
+                    """
+                    INSERT INTO api_approvals(
+                        organization_id,
+                        approval_id,
+                        case_id,
+                        decision_id,
+                        actor_id,
+                        actor_role,
+                        snapshot_sha256,
+                        approved_at
+                    )
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    """,
+                    (
+                        organization_id,
+                        a["approval_id"],
+                        a["case_id"],
+                        a["decision_id"],
+                        a["actor_id"],
+                        a["actor_role"],
+                        a["snapshot_sha256"],
+                        a["approved_at"],
+                    ),
+                )
 
     def list_approvals(self, organization_id: str):
         with self.transaction(organization_id) as conn:
@@ -1197,14 +1375,34 @@ class PostgresAPIRepository(PostgresRepository):
     def consume_mfa_counter(self, organization_id: str, user_id: str, counter: int) -> bool:
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("UPDATE users SET mfa_last_counter=%s WHERE id=%s AND (mfa_last_counter IS NULL OR mfa_last_counter < %s)",
-                    (counter,user_id,counter))
+                cur.execute(
+                    """
+                    UPDATE users
+                    SET mfa_last_counter = %s
+                    WHERE id = %s
+                      AND (
+                          mfa_last_counter IS NULL
+                          OR mfa_last_counter < %s
+                      )
+                    """,
+                    (counter, user_id, counter),
+                )
                 return cur.rowcount == 1
 
     def disable_mfa(self, organization_id: str, user_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("UPDATE users SET mfa_enabled=false,mfa_secret_enc=NULL,mfa_enabled_at=NULL WHERE id=%s", (user_id,))
+                cur.execute(
+                    """
+                    UPDATE users
+                    SET
+                        mfa_enabled = false,
+                        mfa_secret_enc = NULL,
+                        mfa_enabled_at = NULL
+                    WHERE id = %s
+                    """,
+                    (user_id,),
+                )
 
     def create_recovery_token(self, organization_id: str, user_id: str, token_hash: str, expires_at: str):
         with self.transaction(organization_id) as conn:
@@ -1247,25 +1445,48 @@ class PostgresAPIRepository(PostgresRepository):
     def get_email_verified(self, organization_id: str, user_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT email_verified_at IS NOT NULL FROM users WHERE id=%s", (user_id,))
+                cur.execute(
+                    "SELECT email_verified_at IS NOT NULL FROM users WHERE id = %s",
+                    (user_id,),
+                )
                 row = cur.fetchone()
                 return bool(row[0]) if row else False
 
     def mark_email_verified(self, organization_id: str, user_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("UPDATE users SET email_verified_at=COALESCE(email_verified_at, now()) WHERE id=%s", (user_id,))
+                cur.execute(
+                    """
+                    UPDATE users
+                    SET email_verified_at = COALESCE(email_verified_at, now())
+                    WHERE id = %s
+                    """,
+                    (user_id,),
+                )
 
     def set_email_unverified(self, organization_id: str, user_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("UPDATE users SET email_verified_at=NULL WHERE id=%s", (user_id,))
+                cur.execute(
+                    "UPDATE users SET email_verified_at = NULL WHERE id = %s",
+                    (user_id,),
+                )
 
     def create_email_verification_token(self, organization_id: str, user_id: str, token_hash: str, expires_at: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("INSERT INTO email_verification_tokens(organization_id,user_id,token_hash,expires_at) VALUES(%s,%s,%s,%s)",
-                    (organization_id,user_id,token_hash,expires_at))
+                cur.execute(
+                    """
+                    INSERT INTO email_verification_tokens(
+                        organization_id,
+                        user_id,
+                        token_hash,
+                        expires_at
+                    )
+                    VALUES (%s, %s, %s, %s)
+                    """,
+                    (organization_id, user_id, token_hash, expires_at),
+                )
 
     def get_email_verification_token(self, organization_id: str, token_hash: str):
         with self.transaction(organization_id) as conn:
@@ -1441,9 +1662,24 @@ class PostgresAPIRepository(PostgresRepository):
                     WHERE paypal_order_id=%s OR paypal_subscription_id=%s LIMIT 1""",(paypal_id,paypal_id))
                     row=cur.fetchone()
                     if not row:
-                    return None
-                    return dict(zip(("id","organization_id","offer_id","kind","status","currency","amount","paypal_order_id","paypal_subscription_id",
-                                "metadata"),row))
+                        return None
+                    return dict(
+                        zip(
+                            (
+                                "id",
+                                "organization_id",
+                                "offer_id",
+                                "kind",
+                                "status",
+                                "currency",
+                                "amount",
+                                "paypal_order_id",
+                                "paypal_subscription_id",
+                                "metadata",
+                            ),
+                            row,
+                        )
+                    )
     def update_billing_global(self, row):
         self.update_billing_transaction(str(row["organization_id"]),row)
 
