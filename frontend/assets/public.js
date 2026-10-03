@@ -1328,49 +1328,113 @@ if (document.readyState === "loading") {
   bootPublicRoute();
 }
 
-function invitationSignupPage(){
- ensurePublicStyles();
- const p=new URLSearchParams(location.search);
- const token=p.get('token')||p.get('invitation_token')||'';
- const org=p.get('organization_id')||'';
- const email=p.get('email')||'';
- document.body.innerHTML=(
-   '<main class="auth-page"><div class="auth-card"><div class="brand large">REVIEW<span>DEFENSE</span></div><div class="auth-shell-premium">' +
-   '<div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Activation de votre compte</small>' +
-   '</div></div><div class="auth-trust-row"><span>Compte sécurisé</span><span>Accès organisationnel</span><span>MFA disponible</span>' +
-   '</div><form id="invitation-signup" class="stack auth-form"><div><div class="eyebrow">ACCOUNT ACTIVATION</div><h1>Créer mon compte</h1>' +
-   '<p>Activez votre accès à Review Defense à partir de l’invitation reçue de votre organisation.</p></div><label>Organisation<input name="organization_id" autocomplete="organization" required value="'
- )+esc(org)+'"></label><label>Email professionnel<input name="email" type="email" autocomplete="email" required value="'+esc(email)+'"></label><label>Code d’invitation<input name="invitation_token" autocomplete="one-time-code" required value="'+esc(token)+(
-   '"></label><label>Mot de passe<input name="password" type="password" autocomplete="new-password" minlength="12" required></label>' +
-   '<label>Confirmer le mot de passe<input name="password_confirmation" type="password" autocomplete="new-password" minlength="12" required>' +
-   '</label><button class="btn-primary auth-submit" type="submit">Activer mon compte</button><div id="signup-error" class="error">' +
-   '</div><button type="button" class="link-btn" id="signup-login">J’ai déjà un compte</button></form><div class="auth-boundary">' +
-   '<strong>Accès client</strong><span>Votre rôle et vos permissions sont définis par l’organisation qui vous invite. Les actions sensibles restent soumises aux contrôles humains.</span>' +
-   '</div></div></div></main>'
- );
- document.getElementById('invitation-signup').onsubmit=async e=>{
-   e.preventDefault();
-   const f=new FormData(e.currentTarget);
-   const password=String(f.get('password')||''), confirmation=String(f.get('password_confirmation')||'');
-   const err=document.getElementById('signup-error');
-   if(password!==confirmation){err.textContent='Les deux mots de passe ne correspondent pas.';return}
-   try{
-     const d=await api('/v1/organization/invitations/accept',{method:'POST',body:JSON.stringify({
-       organization_id:String(f.get('organization_id')),email:String(f.get('email')),invitation_token:String(f.get('invitation_token')),password
-     })});
-     if(d.access_token){localStorage.setItem('rd_token',d.access_token);location.href='/app';return}
-     document.querySelector('.auth-form').innerHTML=(
-       '<div class="eyebrow">EMAIL VERIFICATION</div>' +
-       'h1>Vérifiez votre e-mail</h1>' +
-       'p>Votre compte a été créé. Consultez votre boîte mail pour confirmer votre adresse avant de vous connecter.</p>' +
-       'button type="button" class="btn-primary" id="go-login">Retour à la connexion</button>'
-     );
-     document.getElementById('go-login').onclick=()=>renderLogin();
-   }catch(x){err.textContent=x.message||'Impossible d’activer le compte.'}
- };
- document.getElementById('signup-login').onclick=()=>renderLogin();
-}
+function invitationSignupPage() {
+  ensurePublicStyles();
 
+  const params = new URLSearchParams(location.search);
+  const token = params.get("token")
+    || params.get("invitation_token")
+    || "";
+  const organizationId = params.get("organization_id") || "";
+  const email = params.get("email") || "";
+
+  document.body.innerHTML = (
+    '<main class="auth-page"><div class="auth-card">'
+    + '<div class="brand large">REVIEW<span>DEFENSE</span></div>'
+    + '<div class="auth-shell-premium">'
+    + '<div class="auth-brand-lockup"><span class="auth-mark">RD</span>'
+    + "<div><strong>REVIEW DEFENSE</strong>"
+    + "<small>Activation de votre compte</small></div></div>"
+    + '<div class="auth-trust-row"><span>Compte sécurisé</span>'
+    + "<span>Accès organisationnel</span><span>MFA disponible</span>"
+    + '</div><form id="invitation-signup" class="stack auth-form">'
+    + '<div><div class="eyebrow">ACCOUNT ACTIVATION</div>'
+    + "<h1>Créer mon compte</h1>"
+    + "<p>Activez votre accès à Review Defense à partir de "
+    + "l’invitation reçue de votre organisation.</p></div>"
+    + '<label>Organisation<input name="organization_id" '
+    + 'autocomplete="organization" required value="'
+  ) + esc(organizationId) + '"></label>'
+    + '<label>Email professionnel<input name="email" type="email" '
+    + 'autocomplete="email" required value="' + esc(email) + '"></label>'
+    + '<label>Code d’invitation<input name="invitation_token" '
+    + 'autocomplete="one-time-code" required value="' + esc(token) + (
+      '"></label><label>Mot de passe<input name="password" '
+      + 'type="password" autocomplete="new-password" minlength="12" '
+      + 'required></label>'
+      + '<label>Confirmer le mot de passe<input '
+      + 'name="password_confirmation" type="password" '
+      + 'autocomplete="new-password" minlength="12" required></label>'
+      + '<button class="btn-primary auth-submit" type="submit">'
+      + 'Activer mon compte</button>'
+      + '<div id="signup-error" class="error"></div>'
+      + '<button type="button" class="link-btn" id="signup-login">'
+      + 'J’ai déjà un compte</button></form>'
+      + '<div class="auth-boundary"><strong>Accès client</strong>'
+      + "<span>Votre rôle et vos permissions sont définis par "
+      + "l’organisation qui vous invite. Les actions sensibles restent "
+      + "soumises aux contrôles humains.</span>"
+      + "</div></div></div></main>"
+    );
+
+  const signupForm = document.getElementById("invitation-signup");
+  signupForm.onsubmit = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const password = String(formData.get("password") || "");
+    const confirmation = String(
+      formData.get("password_confirmation") || ""
+    );
+    const errorElement = document.getElementById("signup-error");
+
+    if (password !== confirmation) {
+      errorElement.textContent = (
+        "Les deux mots de passe ne correspondent pas."
+      );
+      return;
+    }
+
+    try {
+      const response = await api(
+        "/v1/organization/invitations/accept",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            organization_id: String(formData.get("organization_id")),
+            email: String(formData.get("email")),
+            invitation_token: String(
+              formData.get("invitation_token")
+            ),
+            password,
+          }),
+        }
+      );
+
+      if (response.access_token) {
+        localStorage.setItem("rd_token", response.access_token);
+        location.href = "/app";
+        return;
+      }
+
+      document.querySelector(".auth-form").innerHTML = (
+        '<div class="eyebrow">EMAIL VERIFICATION</div>'
+        + "<h1>Vérifiez votre e-mail</h1>"
+        + "<p>Votre compte a été créé. Consultez votre boîte mail "
+        + "pour confirmer votre adresse avant de vous connecter.</p>"
+        + '<button type="button" class="btn-primary" id="go-login">'
+        + "Retour à la connexion</button>"
+      );
+      document.getElementById("go-login").onclick = () => renderLogin();
+    } catch (error) {
+      errorElement.textContent = (
+        error.message || "Impossible d’activer le compte."
+      );
+    }
+  };
+
+  document.getElementById("signup-login").onclick = () => renderLogin();
+}
 
 function initPremiumInteractions(){
   const root=document.querySelector('.marketing');
