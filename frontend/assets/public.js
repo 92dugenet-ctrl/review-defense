@@ -170,7 +170,8 @@ function homePage(){ /* HOME CONTRACT: hero + interface only. Pricing, articles,
    `</div><div class="matterhorn-haze"></div><div class="matterhorn-glow"></div></div><div class="hero-orbit hero-orbit-a"></div>` +
    `<div class="hero-orbit hero-orbit-b"></div></div><div class="rd-container rd-hero-grid"><div class="rd-hero-copy"><div class="hero-status-line">` +
    `<span class="status-pulse"></span><span>ANALYSE ACTIVE</span><i></i><span>WORKSPACE SÉCURISÉ</span></div><span class="rd-eyebrow-pill">REPUTATION INTELLIGENCE · POUR LES ENTREPRISES</span>` +
-   `<h1>Reprenez le contrôle de<br><span>votre réputation.</span></h1><p class="rd-hero-lead">Analysez vos avis Google et identifiez rapidement les éléments à vérifier. Review Defense vous aide à structurer les preuves et à préparer un dossier clair, avec une validation humaine à chaque étape.</p>` +
+    `<h1>Reprenez le contrôle de<br><span>votre réputation.</span></h1>` +
+    `<p class="rd-hero-lead">Analysez vos avis Google et identifiez rapidement les éléments à vérifier. Review Defense vous aide à structurer les preuves et à préparer un dossier clair, avec une validation humaine à chaque étape.</p>` +
    `<div class="rd-hero-actions"><button class="btn-primary rd-btn-lg" onclick="location.href=&quot;/analyse-avis-google/&quot;">Analyser un avis <span>→</span>` +
    `</button><button class="btn-secondary rd-btn-lg" onclick="showPublicPage(&quot;how&quot;)"><span class="play-dot">▶</span> Voir comment ça marche</button>` +
    `</div><div class="rd-trust-line"><span>✓ Analyse structurée</span><span>✓ Preuves documentées</span><span>✓ Décisions humaines</span>` +
@@ -236,7 +237,8 @@ function featuresPage(){
    `<small>À vérifier par l’équipe</small></div><div class="product-floating product-floating-b"><span>HUMAN APPROVAL</span><strong>Décision verrouillée</strong>` +
    `<small>Traçabilité active</small></div></div></section><section class="product-intro rd-section"><div class="rd-container product-two-col">` +
    `<div class="rd-section-heading"><span class="rd-eyebrow">LE PRODUIT</span><h2>Ne regardez plus seulement l’avis.<br><span>Regardez tout ce qu’il implique.</span>` +
-   `</h2><p>Un avis problématique ne se résume pas à une note ou à quelques lignes. Review Defense rassemble les informations utiles autour d’une même situation pour permettre à une équipe de comprendre le contexte, d’identifier ce qui mérite une vérification et de préparer une réponse documentée.</p>` +
+    `</h2><p>Un avis problématique ne se résume pas à une note ou à quelques lignes. Review Defense rassemble les informations utiles autour d’une même situation` +
+    ` pour permettre à une équipe de comprendre le contexte, d’identifier ce qui mérite une vérification et de préparer une réponse documentée.</p>` +
    `<p>La plateforme n’exécute pas automatiquement d’action sensible sur Google. Elle organise le travail et conserve un point de validation humain avant toute démarche externe.</p>` +
    `</div><div class="product-principle-card"><div class="principle-icon">RD</div><span>CORE PRINCIPLE</span><h3>Préparation ≠ exécution.</h3>` +
    `<p>Chaque étape sensible reste sous le contrôle explicite de l’utilisateur habilité.</p><div class="principle-line"><b>Analyse</b>` +
@@ -264,7 +266,8 @@ function featuresPage(){
 `</div></div></section><section class="product-interface rd-section">` +
 ` +
    `<div class="rd-container product-interface-grid"><div class="product-interface-copy"><span class="rd-eyebrow">LA CONSOLE</span>` +
-   `<h2>Une vue opérationnelle,<br><span>pas un simple rapport.</span></h2><p>Le tableau de bord permet de passer rapidement de la vision globale au dossier détaillé. Les équipes voient les avis à examiner, les dossiers actifs, les validations en attente et les éléments qui nécessitent une action.</p>` +
+    `<h2>Une vue opérationnelle,<br><span>pas un simple rapport.</span></h2>` +
+    `<p>Le tableau de bord permet de passer rapidement de la vision globale au dossier détaillé. Les équipes voient les avis à examiner, les dossiers actifs, les validations en attente et les éléments qui nécessitent une action.</p>` +
    `<div class="interface-list"><div><b>01</b><span><strong>Tableau de bord</strong><small>Vue synthétique de l’activité et des priorités.</small>` +
    `</span></div><div><b>02</b><span><strong>Fiche d’avis</strong><small>Contexte, signaux, qualification et historique.</small></span>` +
    `</div><div><b>03</b><span><strong>Dossier</strong><small>Chronologie, preuves, décisions et validations.</small></span></div>` +
@@ -382,7 +385,8 @@ function howPage(){
  )+roles.map(x=>'<article><span class="pillar-number">'+x[0]+'</span><i>◎</i><small>RÔLE</small><h3>'+x[1]+'</h3><p>'+x[2]+'</p></article>').join('')+'</div></div></section>'+
  (
    '<section class="rd-section human-gate how-human-gate"><div><span class="rd-eyebrow">HUMAN GATE · CONTRÔLE EXPLICITE</span><h2>Préparation ≠ exécution.</h2>' +
-   '<p>Review Defense n’effectue pas automatiquement la suppression, le signalement ou la réponse à un avis Google. Le parcours est conçu autour de la chaîne <strong>Décision → Gel → Approbation humaine → Préparation contrôlée</strong>. Google conserve la décision finale concernant ses contenus.</p>' +
+    '<p>Review Defense n’effectue pas automatiquement la suppression, le signalement ou la réponse à un avis Google. Le parcours est conçu autour de la chaîne ' +
+    '<strong>Décision → Gel → Approbation humaine → Préparation contrôlée</strong>. Google conserve la décision finale concernant ses contenus.</p>' +
    '<div class="how-boundary-grid"><span>✓ Décision documentée</span><span>✓ Dossier gelable</span><span>✓ Approbation explicite</span>' +
    '<span>✓ Action externe non automatique</span></div></div><button class="btn-primary" onclick="location.href=&quot;/analyse-avis-google/&quot;">Analyser un avis →</button>' +
    '</section>'
@@ -528,7 +532,8 @@ function pricingPage(){
    'Identification des avis problématiques',
    'Thèmes récurrents et axes d’amélioration',
    'Recommandations personnalisées',
-   'Rapport détaillé et priorisation'].map(x=>'<li><i>✓</i>'+x+'</li>').join('')+'</ul><div class="reference-table"><div class="reference-table-head"><span>Nombre d’avis</span><b>Prix</b></div>'+audits.map(x=>'<button type="button" class="reference-table-row" onclick="selectPricingOffer(\'audit\',\'Audit '+x[0]+' avis\',\''+x[1]+'\',\'audit_'+x[0].replace(/[^0-9]/g,
+   'Rapport détaillé et priorisation'].map(x=>'<li><i>✓</i>'+x+'</li>').join('')+'</ul><div class="reference-table"><div class="reference-table-head"><span>Nombre d’avis</span><b>Prix</b></div>'+
+    audits.map(x=>'<button type="button" class="reference-table-row" onclick="selectPricingOffer(\'audit\',\'Audit '+x[0]+' avis\',\''+x[1]+'\',\'audit_'+x[0].replace(/[^0-9]/g,
    '_')+'\')"><span>'+x[0]+'</span><b>'+x[1]+'</b></button>').join('')+'</div><button class="reference-panel-cta blue-cta" type="button" onclick="selectPricingOffer(\'audit\',\'Audit de réputation\',\'Selon volume\',\'audit\')">Demander un audit <span>→</span></button></article>'+
   (
     '<article class="reference-panel defense-panel">' +
@@ -566,7 +571,8 @@ function pricingPage(){
       ['Suivi du dossier',
      'et historique complet<br>dans mon espace',
      '▥']].map((x,
-     i)=>(i?'<span class="journey-arrow">→</span>':'')+'<button type="button" class="journey-card" onclick="'+(i===1?"selectPricingOffer('defense_step','Analyse initiale et qualification','49 €','defense_01')":"location.href='/app'")+'"><i>'+x[2]+'</i><strong>'+x[0]+'</strong><small>'+x[1]+'</small></button>').join('')+(
+     i)=>(i?'<span class="journey-arrow">→</span>':'')+'<button type="button" class="journey-card" onclick="'+(i===1?"selectPricingOffer('defense_step','Analyse initiale et qualification','49 €','defense_01')":"location.href='/app'")+'"><i>'+x[2]+
+    '</i><strong>'+x[0]+'</strong><small>'+x[1]+'</small></button>').join('')+(
    '</div></section><section class="reference-why"><div class="reference-lower-head"><div class="reference-lower-icon crown">♛</div>' +
    '<div><h3>Pourquoi choisir Review Defense ?</h3></div></div><ul><li>Une méthodologie professionnelle</li><li>Des prix transparents et sans surprise</li>' +
    '<li>Vous gardez le contrôle à chaque étape</li><li>Aucune promesse de suppression (Google reste décisionnaire)</li><li>Un suivi complet de tous vos dossiers</li>' +
@@ -806,7 +812,8 @@ function compliancePage(){
    '<span>Review Defense.</span></h1><p>Politiques, droits, sécurité et règles d’usage : chaque document est accessible depuis cette vue, sans détour.</p>' +
    '</section>'
  )+
-  '<section class="feature-grid premium-grid legal-hub-grid">'+docs.map(x=>'<button type="button" class="legal-hub-card" onclick="showPublicPage(&quot;'+x[3]+'&quot;)"><i>'+x[0]+'</i><small>'+x[1].toUpperCase()+'</small><h3>'+x[2]+'</h3><p>'+x[4]+'</p><span>Ouvrir le document →</span></button>').join('')+'</section>'+
+  '<section class="feature-grid premium-grid legal-hub-grid">'+docs.map(x=>'<button type="button" class="legal-hub-card" onclick="showPublicPage(&quot;'+x[3]+'&quot;)"><i>'+x[0]+'</i><small>'+x[1].toUpperCase()+'</small><h3>'+x[2]+'</h3><p>'+x[4]+
+    '</p><span>Ouvrir le document →</span></button>').join('')+'</section>'+
   (
     '<section class="human-gate"><div><span class="rd-eyebrow">PARCOURS RGPD</span><h2>Une demande concernant vos données&nbsp;?</h2>' +
     '<p>Le centre RGPD permet de comprendre vos droits. Les demandes de compte peuvent aussi être enregistrées depuis l’espace client.</p>' +
@@ -953,7 +960,21 @@ if(push&&PUBLIC_ROUTES[page]&&location.pathname!==PUBLIC_ROUTES[page])history.pu
 marketingLayout(route[0],route[1]());clearPublicLoading();
 };
 publicLoadingState();
-if(page==='resources'||!PUBLIC_ROUTES[page])ensureSeoArticles().then(()=>{if(navigationToken!==__publicNavigationToken)return;Object.keys(window.REVIEW_DEFENSE_SEO_ARTICLES||{}).forEach(slug=>PUBLIC_ROUTES[slug]='/'+slug+'/');render()}).catch(()=>{if(navigationToken!==__publicNavigationToken)return;clearPublicLoading();marketingLayout('resources',publicLoadError())});
+if(page==='resources'||!PUBLIC_ROUTES[page]){
+  ensureSeoArticles()
+    .then(()=>{
+      if(navigationToken!==__publicNavigationToken)return;
+      Object.keys(window.REVIEW_DEFENSE_SEO_ARTICLES||{}).forEach(
+        slug=>PUBLIC_ROUTES[slug]='/'+slug+'/'
+      );
+      render();
+    })
+    .catch(()=>{
+      if(navigationToken!==__publicNavigationToken)return;
+      clearPublicLoading();
+      marketingLayout('resources',publicLoadError());
+    });
+}
 else if(navigationToken===__publicNavigationToken)render();
 }
 
