@@ -1811,7 +1811,15 @@ class ReviewDefenseAPI:
         if method == "GET" and path == "/v1/privacy/export":
             payload = self._privacy_export(user)
             self.store.audit_event(user.organization_id, user.user_id, "PRIVACY_EXPORT_REQUESTED", f"user:{user.user_id}")
-            return self._json(200, payload, {"Content-Disposition": 'attachment; filename="review-defense-rgpd-export.json"'})
+            return self._json(
+                200,
+                payload,
+                {
+                    "Content-Disposition": (
+                        'attachment; filename="review-defense-rgpd-export.json"'
+                    )
+                },
+            )
 
         if method == "GET" and path == "/v1/privacy/requests":
             self._require_role(user, "OWNER", "ADMIN", "ANALYST", "CLIENT", "VIEWER")
