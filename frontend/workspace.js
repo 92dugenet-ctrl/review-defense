@@ -64,53 +64,72 @@ function verifyEmail(){
 }
 
 function recovery(){
-  const params=new URLSearchParams(location.search),
-   organizationId=params.get("organization_id")||localStorage.getItem("rd_org_id")||"",
-   token=params.get("token")||"",
-   resetting=Boolean(token);
-  app.innerHTML='<main class="login"><section class="loginbox"><div><b style="color:#0878ee(
-    ">◆</b> Review Defense</div>" +
-    "h1>' +
-   (resetting?'Choisir un nouveau mot de passe':'Récupérer mon compte') +
-   '</h1>" +
-    "p>' +
-   (resetting?'Définissez un nouveau mot de passe.':'Indiquez votre organisation et votre adresse email. Si le compte existe, un lien sera envoyé.') +
-   '</p>" +
-    "form id="
-  )recovery-form">' +
-   (resetting?'':(
-        '<div class="field"><label>Identifiant de votre organisation</label><input name="organ' +
-        'ization_id" required value="'
-      ) +
-   esc(organizationId) +
-   '"></div>') +
-   '<div class="field"><label>Email</label><input name="email" type="email" required autocomplete="email"></div>' +
-   (resetting
-     ? '<div class="field"><label>Nouveau mot de passe</label>' +
-       '<input name="new_password" type="password" required minlength="12" ' +
-        'autocomplete="new-password"></div>'
-     : ''
-   ) +
-   (
-        '<div class="err" id="recovery-error" role="alert"></div><button class="btn primary" t' +
-        'ype="submit" style="width:100%">'
-      ) +
-   (resetting?'Enregistrer le mot de passe':'Envoyer le lien de récupération') +
-   '</button></form><p><a href="/connexion">Retour à la connexion</a></p></section></main>';
- const form=document.getElementById("recovery-form");
-  form.onsubmit=async ev=>{ev.preventDefault();const button=form.querySelector('button[type="submit"]'),
-   err=document.getElementById("recovery-error");button.disabled=true;err.textContent="";
-  try{const data=Object.fromEntries(new FormData(form));if(resetting){await post("/v1/auth/recovery/reset",
-   {organization_id:organizationId,
-   recovery_token:token,
-   new_password:data.new_password});app.querySelector(".loginbox").innerHTML=(
-        '<div><b style="color:#0878ee">◆</b> Review Defense</div><h1>Mot de passe modifié</h1>' +
-        '<p>Votre mot de passe a été mis à jour.</p><a class="btn primary" href="/connexion">S' +
-        'e connecter</a>'
-      )}else{localStorage.setItem("rd_org_id",
-   data.organization_id);await post("/v1/auth/recovery/request",
-   data);err.textContent="Si un compte correspond à ces informations, un email de récupération sera envoyé."}}
- catch(error){err.textContent=error.message}finally{if(button.isConnected)button.disabled=false}};
+  const params=new URLSearchParams(location.search);
+  const organizationId=params.get("organization_id")||localStorage.getItem("rd_org_id")||"";
+  const token=params.get("token")||"";
+  const resetting=Boolean(token);
+  const organizationField=resetting
+    ? '<input type="hidden" name="organization_id" value="' + esc(organizationId) + '">'
+    : '<div class="field"><label for="recovery-organization">Identifiant de votre organisation</label><input id="recovery-organization" name="organization_id" required value="' + esc(organizationId) + '"></div>';
+  const emailField=resetting
+    ? ""
+    : '<div class="field"><label for="recovery-email">Email</label><input id="recovery-email" name="email" type="email" required autocomplete="email"></div>';
+  const passwordField=resetting
+    ? '<div class="field"><label for="recovery-password">Nouveau mot de passe</label><input id="recovery-password" name="new_password" type="password" required minlength="12" maxlength="256" autocomplete="new-password"></div>'
+    : "";
+  app.innerHTML=(
+    '<main class="login"><section class="loginbox"><div><b style="color:#0878ee">◆</b> Review Defense</div><h1>' +
+    (resetting?"Choisir un nouveau mot de passe":"Récupérer mon compte") +
+    '</h1><p>' +
+    (resetting
+      ?"Définissez un nouveau mot de passe d’au moins 12 caractères."
+      :"Indiquez votre organisation et votre adresse email. Si le compte existe, un lien sera envoyé.") +
+    '</p><form id="recovery-form" novalidate>' +
+    organizationField + emailField + passwordField +
+    '<div class="err" id="recovery-error" role="alert" aria-live="polite"></div><button class="btn primary" type="submit" style="width:100%">' +
+    (resetting?"Enregistrer le mot de passe":"Envoyer le lien de récupération") +
+    '</button></form><p><a href="/connexion">Retour à la connexion</a></p></section></main>'
+  );
+  const form=document.getElementById("recovery-form");
+  form.onsubmit=async ev=>{
+    ev.preventDefault();
+    const submitButton=form.querySelector('button[type="submit"]');
+    const errorBox=document.getElementById("recovery-error");
+    if(!form.reportValidity())return;
+    submitButton.disabled=true;
+    errorBox.textContent="";
+    try{
+      const data=Object.fromEntries(new FormData(form));
+      if(resetting){
+        if(!organizationId){
+          throw Error("Le lien de récupération est incomplet. Demandez un nouveau lien.");
+        }
+        await post("/v1/auth/recovery/reset",{
+          organization_id:organizationId,
+          recovery_token:token,
+          new_password:data.new_password
+        });
+        app.querySelector(".loginbox").innerHTML=(
+          '<div><b style="color:#0878ee">◆</b> Review Defense</div><h1>Mot de passe modifié</h1>' +
+          '<p>Votre mot de passe a été mis à jour. Vous pouvez maintenant vous connecter.</p>' +
+          '<a class="btn primary" href="/connexion">Se connecter</a>'
+        );
+        return;
+      }
+      const requestedOrganizationId=String(data.organization_id||"").trim();
+      localStorage.setItem("rd_org_id",requestedOrganizationId);
+      await post("/v1/auth/recovery/request",{
+        organization_id:requestedOrganizationId,
+        email:data.email
+      });
+      errorBox.textContent="Si un compte correspond à ces informations, un email de récupération sera envoyé.";
+      form.reset();
+    }catch(error){
+      errorBox.textContent=error.message||"Une erreur est survenue. Réessayez.";
+    }finally{
+      if(submitButton.isConnected)submitButton.disabled=false;
+    }
+  };
 }
 function acceptInvitation(){
   const params=new URLSearchParams(location.search),
