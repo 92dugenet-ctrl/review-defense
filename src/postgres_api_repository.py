@@ -1318,7 +1318,7 @@ class PostgresAPIRepository(PostgresRepository):
                         n.get("dead_lettered_at"),
                         organization_id,
                         n["notification_id"],
-                    ),,
+                    ),
                 )
 
     def get_escalation(self, organization_id: str, case_id: str, level: str):
@@ -1947,7 +1947,7 @@ class PostgresAPIRepository(PostgresRepository):
                         row.get("status"),
                         row.get("offer_id"),
                         json.dumps(row.get("payload", {})),
-                    ),,
+                    ),
                 )
     def list_billing_events(self, organization_id):
         with self.transaction(organization_id) as conn:
