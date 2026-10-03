@@ -1093,15 +1093,11 @@ def _services_html():
         f'''<h1>Une suite de services pour <span>défendre votre réputation.</span></h1>'''
         f'''<p class="svc-lead">De l’analyse d’un avis jusqu’au suivi d’un dossier, Review Defense rassemble les informations utiles dans une expérience claire, '''
         f'''structurée et sous votre contrôle.</p><div class="svc-hero-actions"><a class="svc-btn svc-btn-primary" href="/analyse-avis-google/">Analyser un avis →</a>'''
-        (
         f'''<a class="svc-btn svc-btn-secondary" href="/comment-ca-marche/">Voir le fonctionnement</a></div><div class="svc-hero-note">'''
         f'''<span>✓ Analyse structurée</span>'''
-    )
         f'''<span>✓ Preuves documentées</span><span>✓ Validation humaine</span></div></div><div class="svc-visual"><div class="svc-window"><div class="svc-window-top">'''
-        (
         f'''<span class="svc-dot"></span><span class="svc-dot"></span><span class="svc-dot"></span>'''
         f'''<span class="svc-window-title">Review Defense · Control Center</span>'''
-    )
         f'''</div><div class="svc-window-body"><aside class="svc-sidebar"><strong>REVIEW DEFENSE</strong><span class="active">Vue d’ensemble</span><span>Avis</span>'''
         f'''<span>Dossiers</span><span>Preuves</span><span>Suivi</span></aside><div class="svc-dashboard"><small>CONTROL WORKSPACE</small>'''
         f'''<h3>Votre réputation, en un seul espace.</h3><div class="svc-kpis"><div class="svc-kpi"><b>24</b><span>avis suivis</span></div><div class="svc-kpi">'''
@@ -1200,14 +1196,31 @@ def render(path):
         body='<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(f"<url><loc>{_e(_url(path))}</loc><lastmod>{SITE_MODIFIED}</lastmod></url>" for path in paths)+"</urlset>"
         return 200,{"Content-Type":"application/xml; charset=utf-8","Cache-Control":"public, max-age=3600"},body.encode()
     page=next((p for p in pages if p["path"]==path),None)
-    if not page: return None
-    sections=''.join(f'<section><h2>{_e(h)}</h2><p>{_e(t)}</p></section>' for h,t in _sections(page))
-    faq=''.join(f'<details><summary>{_e(q)}</summary><p>{_e(a)}</p></details>' for q,a in _faq_items(page))
-    related=''.join(f'<li><a href="{_e(p["path"])}">{_e(p["h1"])}</a></li>' for p in _related(page,pages))
+    if not page:
+        return None
+    sections = "".join(
+        f'<section><h2>{_e(heading)}</h2><p>{_e(text)}</p></section>'
+        for heading, text in _sections(page)
+    )
+    faq = "".join(
+        f'<details><summary>{_e(question)}</summary><p>{_e(answer)}</p></details>'
+        for question, answer in _faq_items(page)
+    )
+    related = "".join(
+        f'<li><a href="{_e(item["path"])}">{_e(item["h1"])}</a></li>'
+        for item in _related(page, pages)
+    )
     c=_url(page["path"])
-    schema=json.dumps(_schema(page),ensure_ascii=False,separators=(",",":"))
+    schema = json.dumps(
+        _schema(page),
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
     title_counts={}
-    for item in pages: title_counts[item["title"]]=title_counts.get(item["title"],0)+1
+    for item in pages:
+        title_counts[item["title"]] = (
+            title_counts.get(item["title"], 0) + 1
+        )
     display_title=page["title"] if title_counts.get(page["title"],0)==1 else page["title"]+" — "+page["cluster"]+" | Review Defense"
     cta_label="Demander l'analyse" if page["service"] else "Analyser mon avis"
     script = (
@@ -1219,10 +1232,8 @@ def render(path):
         f"""<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">"""
         f"""<title>{_e(display_title)}</title><meta name="description" content="{_e(page["description"])}"><meta name="robots" content="index,follow">"""
         f"""<link rel="canonical" href="{_e(c)}"><meta property="og:type" content="article"><meta property="og:title" content="{_e(display_title)}">"""
-        (
         f"""<meta property="og:description" content="{_e(page["description"])}"><meta property="og:url" content="{_e(c)}">"""
         f"""<link rel="stylesheet" href="/assets/app.css">"""
-    )
         f"""<link rel="stylesheet" href="/assets/public.css"><script type="application/ld+json">{schema}</script></head><body><div class="marketing">"""
         f"""<header class="public-header"><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><nav class="public-nav">"""
         f"""<a href="/produit/">Produit</a><a href="/comment-ca-marche/">Comment ça fonctionne</a><a href="/services/">Services</a><a href="/tarifs/">Tarifs</a>"""
@@ -1247,4 +1258,8 @@ def render(path):
     return 200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"public, max-age=300"},body.encode()
 
 def is_seo_path(path):
-    return path in {"/robots.txt","/sitemap.xml"} or path in COMMERCIAL or any(p["path"]==path for p in _pages())
+    return (
+        path in {"/robots.txt", "/sitemap.xml"}
+        or path in COMMERCIAL
+        or any(page["path"] == path for page in _pages())
+    )
