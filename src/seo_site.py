@@ -404,11 +404,39 @@ def _schema(page):
 def _analysis_html():
     title="Analyse d’avis Google | Review Defense"
     description="Analysez une situation liée à un avis Google, structurez les faits disponibles et préparez un dossier avec validation humaine."
-        schema=json.dumps({"@context":"https://schema.org",
-      "@graph":[{"@type":"Organization","@id":_url("/#organization"),"name":"Review Defense","url":_url("/")},{"@type":"WebSite","@id":_url("/#website"),"name":"Review Defense","url":_url("/"),"publisher":{"@id":_url("/#organization")}},{"@type":"Service","name":title,"description":description,"url":_url("/analyse-avis-google/"),"provider":{"@id":_url("/#organization")}}]},
-      ensure_ascii=False,
-      separators=(",",
-      ":"))
+    schema = json.dumps(
+        {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "Organization",
+                    "@id": _url("/#organization"),
+                    "name": "Review Defense",
+                    "url": _url("/")
+                },
+                {
+                    "@type": "WebSite",
+                    "@id": _url("/#website"),
+                    "name": "Review Defense",
+                    "url": _url("/"),
+                    "publisher": {
+                        "@id": _url("/#organization")
+                    }
+                },
+                {
+                    "@type": "Service",
+                    "name": title,
+                    "description": description,
+                    "url": _url("/analyse-avis-google/"),
+                    "provider": {
+                        "@id": _url("/#organization")
+                    }
+                }
+            ]
+        },
+        ensure_ascii=False,
+        separators=(",", ":")
+    )
     script="""<script>(function(){window.dataLayer=window.dataLayer||[];var f=document.getElementById("rd-analysis-form");if(f){var started=false;f.addEventListener("input",function(){if(!started){started=true;window.dataLayer.push({event:"analysis_start",page:location.pathname});}});f.addEventListener("submit",function(e){e.preventDefault();window.dataLayer.push({event:"analysis_submit",page:location.pathname});location.href="/app";});}})();</script>"""
     return (
         f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{_e(title)}</title>'''

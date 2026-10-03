@@ -246,8 +246,23 @@ function featuresPage(){
    `</div><div class="product-pillar-grid">${pillars.map(x=>'<article class="product-pillar-card"><span class="pillar-number">'+x[0]+'</span><i>'+x[1]+'</i><small>MODULE</small><h3>'+x[2]+'</h3><p>'+x[3]+'</p><a href="#product-workflow">Voir dans le parcours ↓</a></article>').join('')}</div>` +
    `</div></section><section id="product-workflow" class="product-workflow rd-section"><div class="rd-container"><div class="rd-section-heading">` +
    `<span class="rd-eyebrow">LE PARCOURS</span><h2>De quelques lignes<br><span>à une décision documentée.</span></h2><p>Le produit suit une logique progressive. L’objectif n’est pas d’automatiser la décision, mais de réduire le temps passé à chercher, comparer et organiser les informations.</p>` +
-   `</div><div class="product-flow-visual"><div class="flow-line"></div>'+[['01','⌕','Collecte','L’avis et les informations disponibles sont rassemblés.'],['02','◈','Analyse','Les signaux, affirmations et éléments à examiner sont structurés.'],['03','◇','Preuves','Les pièces utiles sont reliées aux éléments concernés.'],['04','✓','Décision','L’équipe documente la décision et peut geler le dossier.'],['05','↗','Approbation','Une validation humaine explicite autorise la préparation.']].map((x,i)=>'<article>` +
-   `<span>'+x[0]+'</span><i>'+x[1]+'</i><h3>'+x[2]+'</h3><p>'+x[3]+'</p></article>').join('')+'</div></div></section><section class="product-interface rd-section">` +
+   `</div><div class="product-flow-visual"><div class="flow-line"></div>` +
+[
+  ['01', '⌕', 'Collecte', 'L’avis et les informations disponibles sont rassemblés.'],
+  ['02', '◈', 'Analyse', 'Les signaux, affirmations et éléments à examiner sont structurés.'],
+  ['03', '◇', 'Preuves', 'Les pièces utiles sont reliées aux éléments concernés.'],
+  ['04', '✓', 'Décision', 'L’équipe documente la décision et peut geler le dossier.'],
+  ['05', '↗', 'Approbation', 'Une validation humaine explicite autorise la préparation.']
+].map((step) =>
+  '<article>' +
+    '<span>' + step[0] + '</span>' +
+    '<i>' + step[1] + '</i>' +
+      '<h3>' + step[2] + '</h3>' +
+    '<p>' + step[3] + '</p>' +
+  '</article>'
+).join('') +
+`</div></div></section><section class="product-interface rd-section">` +
+` +
    `<div class="rd-container product-interface-grid"><div class="product-interface-copy"><span class="rd-eyebrow">LA CONSOLE</span>` +
    `<h2>Une vue opérationnelle,<br><span>pas un simple rapport.</span></h2><p>Le tableau de bord permet de passer rapidement de la vision globale au dossier détaillé. Les équipes voient les avis à examiner, les dossiers actifs, les validations en attente et les éléments qui nécessitent une action.</p>` +
    `<div class="interface-list"><div><b>01</b><span><strong>Tableau de bord</strong><small>Vue synthétique de l’activité et des priorités.</small>` +
