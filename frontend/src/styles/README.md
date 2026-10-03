@@ -43,3 +43,31 @@ Ces fichiers ne sont pas supprimés : les copies historiques peuvent être réf�
 ## Règle de modification
 
 Toute suppression ou fusion doit établir les imports React, les références HTML, les URLs servies par WSGI et la sortie de build. Ne pas déduire l'inutilité d'une feuille de son seul nom, de son emplacement ou de son ancienneté.
+
+## Vérification des chargements (commit 89aab5d)
+
+### React
+
+Chargements directs confirmés :
+- `src/main.tsx` importe `src/styles/tokens.css` et `src/styles/global.css`.
+- `src/components/public/muse/MuseShell.tsx` importe `src/styles/muse-v3.css`. Les pages React publiques actives qui utilisent `MuseShell` héritent donc de cette feuille.
+- `src/pages/MusePublicPage.tsx` importe également `muse-v3.css` ; cette page est une variante historique et n'est pas la page d'accueil active du routeur.
+- Les variantes `PublicProductPage`, `PublicMethodPage`, `PublicSecurityPage`, `PublicPricingPage` importent `public-secondary.css` ; `PublicPageExperiences` importe `public-pages-distinct.css`. Elles ne sont pas les pages actuellement associées aux routes publiques principales du routeur.
+
+Les pages publiques actives actuelles (`HomePage`, `ProductPage`, `MethodPage`, `SecurityPage`, `PricingPage`, `ContactPage`) utilisent le shell Muse. Aucun import direct de `muse-landing.css` ou `src/styles/public.css` n'a été trouvé dans les points d'entrée et composants de route examinés. Cela ne suffit pas à autoriser leur suppression : les imports indirects et les usages non-React doivent encore être contrôlés.
+
+### HTML historique / runtime statique
+
+Chargements HTML confirmés :
+- `frontend/workspace.html` : `/styles.css`, `/workspace.css`, `/assets/premium-console-v640.css?v=6401`, puis `/workspace.js`.
+- `frontend/index.html` : `styles.css` et `script.js`.
+- `frontend/services.html` : `/styles.css` et `/script.js`.
+- `frontend/landing.html` : `/assets/public.css?v=6711` et `/assets/public.js?v=6711`.
+- `frontend/public/pages/index.html` : `styles.css` et `script.js`.
+- `frontend/application/dashboard/workspace.html` : `/styles.css` et `/workspace.css`.
+
+Ces liens confirment que plusieurs feuilles hors de `src/styles/` restent nécessaires à des pages HTML historiques. Ne pas supprimer ou déplacer `frontend/styles.css`, `frontend/workspace.css`, `frontend/assets/premium-console-v640.css`, `frontend/assets/public.css` ou `frontend/public/styles/styles.css` dans cette étape.
+
+### Limites de l'audit
+
+La vérification a couvert le point d'entrée React, les pages du routeur, les composants de shell Muse et les principales pages HTML identifiées dans l'arbre. Elle ne constitue pas encore une analyse d'exécution navigateur ni une preuve que les feuilles non directement importées sont sans usage. Aucun CSS n'est supprimé dans cette étape.
