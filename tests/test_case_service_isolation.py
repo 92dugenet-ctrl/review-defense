@@ -41,8 +41,8 @@ def test_hydrate_context_returns_only_requested_case_and_tenant_data():
         "fact_id": "cached-f2", "case_id": "case-2"
     }
     store.evidence_facts[("org-a", "cached-f1")] = [
-        {"fact_id": "cached-f1", "case_id": "case-1"},
-        {"fact_id": "cached-f2b", "case_id": "case-2"},
+        {"fact_id": "cached-f1", "case_id": "case-1", "evidence_id": "e1"},
+        {"fact_id": "cached-f2b", "case_id": "case-2", "evidence_id": "cached-e2"},
     ]
 
     loaded_case, review, evidence, facts = CaseService.hydrate_context(
@@ -52,5 +52,5 @@ def test_hydrate_context_returns_only_requested_case_and_tenant_data():
     assert loaded_case is case
     assert review.review_id == "review-1"
     assert {item["evidence_id"] for item in evidence} == {"e1"}
-    assert {item["fact_id"] for item in facts} == {"f1", "f3", "cached-f1"}
+    assert {item["fact_id"] for item in facts} == {"f1", "cached-f1"}
     assert all(item["case_id"] == "case-1" for item in evidence + facts)

@@ -120,6 +120,7 @@ class CaseService:
             and str(value.get("organization_id", organization_id)) == organization_id
             and str(value.get("case_id", "")) == case_id
         ]
+        target_evidence_ids = {str(item["evidence_id"]) for item in evidence}
         evidence_facts = []
         for (org_id, _), cached in store.evidence_facts.items():
             if org_id != organization_id:
@@ -128,7 +129,9 @@ class CaseService:
             records = cached if isinstance(cached, list) else [cached]
             evidence_facts.extend(
                 fact for fact in records
-                if isinstance(fact, dict) and str(fact.get("case_id", "")) == case_id
+                if isinstance(fact, dict)
+                and str(fact.get("case_id", "")) == case_id
+                and str(fact.get("evidence_id", "")) in target_evidence_ids
             )
         return case, review, evidence, evidence_facts
 
