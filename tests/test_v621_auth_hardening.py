@@ -47,10 +47,11 @@ def test_persistent_login_is_tenant_scoped_and_survives_empty_memory_store():
 
 def test_auth_attempts_are_rate_limited_without_affecting_normal_api_rate_limit():
     app = create_app()
+    organization_id = "00000000-0000-4000-8000-000000000001"
     for i in range(8):
-        status, _ = call(app, "POST", "/v1/auth/login", {"email": "missing@example.com", "password": "wrong password 123"})
+        status, _ = call(app, "POST", "/v1/auth/login", {"organization_id": organization_id, "email": "missing@example.com", "password": "wrong password 123"})
         assert status == 401
-    status, data = call(app, "POST", "/v1/auth/login", {"email": "missing@example.com", "password": "wrong password 123"})
+    status, data = call(app, "POST", "/v1/auth/login", {"organization_id": organization_id, "email": "missing@example.com", "password": "wrong password 123"})
     assert status == 429 and data["error"]["code"] == "AUTH_RATE_LIMITED"
 
 
