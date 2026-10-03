@@ -14,7 +14,9 @@ Le dossier `src/` est la source React explicitement référencée par la configu
 - `components/layout/` : shell et navigation de l'application.
 - `components/public/` : composants du site public et sections Muse.
 - `pages/` : pages publiques, authentification, espace client et administration.
-- `services/api/`, `hooks/`, `types/` : client API, hooks et contrats.
+- `services/api/client.ts` : client API canonique utilisé par les pages React. Il centralise la lecture du jeton via `auth/sessionToken` et l'ajout du Bearer sur les requêtes `/v1/`.
+- `hooks/` : hooks React, dont `useApi.ts` qui délègue au client canonique.
+- `types/` : contrats TypeScript partagés.
 - `styles/` : tokens, styles globaux et feuilles publiques.
 
 ## Relation avec application/ et public/

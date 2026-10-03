@@ -9,7 +9,7 @@ Les copies strictement identiques de pages, composants, hooks, types et points d
 ## Contenu conservé ici
 
 - Les README fonctionnels servent de repères de migration.
-- `services/api/client.ts` est conservé comme ancienne variante à comparer : il ne doit pas être utilisé comme source canonique sans migration explicite.
+- `services/api/client.ts` est une variante historique, hors compilation React actuelle (`tsconfig.app.json` inclut uniquement `src/`). Elle diffère du client actif : elle ne lit pas le jeton partagé `readAccessToken()` et n'ajoute donc pas l'en-tête Bearer aux requêtes `/v1/`. Ne pas l'importer dans une nouvelle page ni la recopier dans `src/`.
 - `dashboard/workspace.html`, `workspace.js` et `workspace.css` sont conservés comme copies historiques. Le workspace racine reste le chemin utilisé par les routes WSGI; ne pas déplacer ni supprimer ces fichiers sans vérification des références.
 
 ## Règles
