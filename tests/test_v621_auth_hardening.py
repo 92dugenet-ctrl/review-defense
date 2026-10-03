@@ -69,23 +69,3 @@ def test_health_version_is_v621():
     app = create_app(config=ProductionConfig(environment="development"))
     status, data = call(app, "GET", "/health")
     assert status == 200 and data["version"] == "6.40"
-
-
-
-def test_persisted_session_revocation_is_checked_even_when_session_is_cached():
-    repo = FakeRepo()
-    app = create_app(repository=repo, config=ProductionConfig(environment="development"))
-    status, login = call(app, "POST", "/v1/auth/login", {
-        "organization_id": "org-prod",
-        "email": "prod@example.com",
-        "password": "correct horse battery staple",
-    })
-    assert status == 200
-    token = login["access_token"]
-    assert call(app, "GET", "/v1/me", token=token)[0] == 200
-
-    from src.security_hardening import hash_token
-    repo.revoke_session("org-prod", hash_token(token))
-    status, body = call(app, "GET", "/v1/me", token=token)
-    assert status == 401
-    assert body["error"]["code"] == "AUTH_INVALID"

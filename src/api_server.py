@@ -235,7 +235,7 @@ class ReviewDefenseAPI:
         raw = str(value or "").strip()
         if not raw:
             raise APIError(422, "VALIDATION_ERROR", f"{field} is required")
-        if self.repository is None:
+        if self.repository is None or not getattr(self.repository, "uses_uuid_ids", False):
             return raw
         try:
             return str(uuid.UUID(raw))
@@ -243,7 +243,7 @@ class ReviewDefenseAPI:
             raise APIError(422, "VALIDATION_ERROR", f"{field} must be a valid UUID") from exc
 
     def _validate_persistent_resource_path(self, path: str) -> None:
-        if self.repository is None:
+        if self.repository is None or not getattr(self.repository, "uses_uuid_ids", False):
             return
         parts = path.split("/")
         if len(parts) >= 4 and parts[1:3] in (["v1", "cases"], ["v1", "evidence"], ["v1", "escalations"]):

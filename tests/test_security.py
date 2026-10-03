@@ -143,8 +143,11 @@ def test_empty_and_oversized_bearer_tokens_return_json_401_not_500():
 
 
 def test_persistent_auth_rejects_malformed_organization_uuid_before_database_access():
+    class UUIDContractRepo:
+        uses_uuid_ids = True
+
     api = ReviewDefenseAPI()
-    api.repository = object()  # Enable the persistent UUID contract without a live database.
+    api.repository = UUIDContractRepo()  # Enable the PostgreSQL UUID contract without a live database.
     status, _, body = _request(
         api,
         "/v1/auth/login",

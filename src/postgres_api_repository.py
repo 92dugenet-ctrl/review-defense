@@ -12,6 +12,9 @@ from typing import Any, Mapping
 from .postgres_repository import RepositoryError, PostgresRepository
 
 class PostgresAPIRepository(PostgresRepository):
+    # Public API resource identifiers are UUID columns in the PostgreSQL schema.
+    uses_uuid_ids = True
+
     def _row(self, cur, sql, params=()):
         cur.execute(sql, params); return cur.fetchone()
 
