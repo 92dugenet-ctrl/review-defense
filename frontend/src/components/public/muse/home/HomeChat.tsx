@@ -37,16 +37,12 @@ export function HomeChat() {
         <div className="chat-copy">
           <div className="eyebrow">L'EXPÉRIENCE REVIEW DEFENSE</div>
           <h2>Une interface qui suit votre façon de traiter un dossier.</h2>
-          <div className="chips" role="tablist" aria-label="Étapes de traitement">
+          <div className="chips" role="group" aria-label="Étapes de traitement">
             {(Object.keys(experiences) as ExperienceTab[]).map((tab) => (
               <button
                 key={tab}
                 type="button"
-                role="tab"
-                id={`experience-tab-${tab.toLowerCase()}`}
-                aria-selected={activeTab === tab}
-                aria-controls="experience-panel"
-                tabIndex={activeTab === tab ? 0 : -1}
+                aria-pressed={activeTab === tab}
                 className={activeTab === tab ? "active" : ""}
                 onClick={() => setActiveTab(tab)}
               >
@@ -59,8 +55,7 @@ export function HomeChat() {
         <div
           className="chat-window"
           id="experience-panel"
-          role="tabpanel"
-          aria-labelledby={`experience-tab-${activeTab.toLowerCase()}`}
+          aria-live="polite"
         >
           <div className="chat-head">Review Defense <span>●</span></div>
           <div className="chat-bubble">{activeExperience.prompt}</div>
