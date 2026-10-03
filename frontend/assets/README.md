@@ -6,10 +6,10 @@ Ce dossier contient les feuilles CSS, scripts JavaScript, images, illustrations 
 
 ## Groupes de fichiers
 
-- `public.css`, `home.css`, `seo.css`, `premium-console-v640.css) et autres feuilles : styles publics et console.
-- `public.js`, `home.js`, `app.js), `console-*.js), `billing.js), `i18n.js) : comportements et modules JavaScript historiques.
-- `seo-articles.js`, `seo-renderer.js) : rendu/contenu SEO.
-- `hero/`, `audit/`, `legal/`, `packs/`, `partners/`, `tarif/`, `traitement/) : médias et illustrations.
+- `public.css`, `home.css`, `seo.css`, `premium-console-v640.css` et autres feuilles : styles publics et console.
+- `public.js`, `home.js`, `app.js`, `console-*.js`, `billing.js`, `i18n.js` : comportements et modules JavaScript historiques.
+- `seo-articles.js`, `seo-renderer.js` : rendu/contenu SEO.
+- `hero/`, `audit/`, `legal/`, `packs/`, `partners/`, `tarif/`, `traitement/` : médias et illustrations.
 
 ## État runtime
 

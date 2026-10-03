@@ -3,13 +3,13 @@
 ## Rôle actuel
 
 Le dossier `src/` est la source React explicitement référencée par la configuration Vite actuelle :
-- `vite.config.ts` ajoute `src/main.tsx) comme entrée React.
+- `vite.config.ts` ajoute `src/main.tsx` comme entrée React.
 - L'alias `@` pointe vers `./src`.
 - `tsconfig` doit rester cohérent avec cet alias.
 
 ## Organisation
 
-- `main.tsx`, `app/router.tsx) : montage React et routes.
+- `main.tsx`, `app/router.tsx` : montage React et routes.
 - `auth/` : contexte et garde d'authentification.
 - `components/layout/` : shell et navigation de l'application.
 - `components/public/` : composants du site public et sections Muse.
