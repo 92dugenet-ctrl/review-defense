@@ -106,3 +106,8 @@ documenter la source ou la commande de génération plutôt que le résultat com
 Les modifications de ce chantier sont documentaires. La revue porte sur les différences Git,
 les imports et références visibles, la cohérence des chemins, les commentaires et les longueurs
 de lignes. Aucun test, build, suite de tests ou workflow de test ne doit être exécuté.
+
+
+## Architecture métier transversale
+
+Pour suivre les parcours complets entre l'interface, l'API, les services métier, les intégrations et la persistance, consulter [BUSINESS_ARCHITECTURE.md](./BUSINESS_ARCHITECTURE.md). Ce document décrit notamment le parcours Google → avis → dossier → preuves → analyse → validation humaine → préparation locale, ainsi que les frontières des notifications, workers et paiements.
