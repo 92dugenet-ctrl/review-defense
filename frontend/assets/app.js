@@ -596,12 +596,14 @@ const LEGACY_CONSOLE_VIEW_CONTRACT=[['dashboard'],
   ['alerts'],
   ['audit'],
   ['settings']];
-const CLIENT_CONSOLE_LEGACY_CONTRACT="'dashboard',
-  'reviews',
-  'cases',
-  'evidence',
-  'alerts',
-  'analytics'";
+const CLIENT_CONSOLE_LEGACY_CONTRACT = [
+  "dashboard",
+  "reviews",
+  "cases",
+  "evidence",
+  "alerts",
+  "analytics",
+];
 const viewMeta={
  dashboard:['Vue d’ensemble','Ce qui nécessite votre attention maintenant'],
  'client-monitoring':['Mon espace','Profil de votre organisation, documents et connexion Google Business Profile'],
