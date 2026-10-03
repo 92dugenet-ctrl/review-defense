@@ -8,6 +8,7 @@ SET LOCAL. No external/Google mutation is performed here.
 """
 from __future__ import annotations
 import json
+import threading
 from contextlib import contextmanager
 from dataclasses import asdict
 from typing import Any, Mapping
@@ -23,6 +24,55 @@ class PostgresAPIRepository(PostgresRepository):
 
     # Les identifiants des ressources API correspondent aux colonnes UUID SQL.
     uses_uuid_ids = True
+
+    def __init__(self, dsn: str, connect_factory=None):
+        super().__init__(dsn, connect_factory)
+        self._rate_limit_cleanup_count = 0
+        self._rate_limit_cleanup_lock = threading.Lock()
+
+    def allow_rate_limit(self, key_hash: str, *, limit: int, window_seconds: int) -> bool:
+        """Atomically consume a shared fixed-window quota across API workers."""
+        if len(key_hash) != 64 or any(c not in "0123456789abcdef" for c in key_hash):
+            raise ValueError("invalid distributed rate-limit key")
+        if limit <= 0 or window_seconds <= 0:
+            raise ValueError("invalid distributed rate-limit settings")
+        conn = self._connect()
+        try:
+            with conn.transaction():
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        INSERT INTO api_rate_limits
+                            (key_hash, window_started_at, hit_count, expires_at)
+                        VALUES (%s, now(), 1, now() + (%s * interval '1 second'))
+                        ON CONFLICT (key_hash) DO UPDATE SET
+                            window_started_at = CASE
+                                WHEN api_rate_limits.window_started_at
+                                    <= now() - (%s * interval '1 second')
+                                THEN now() ELSE api_rate_limits.window_started_at
+                            END,
+                            hit_count = CASE
+                                WHEN api_rate_limits.window_started_at
+                                    <= now() - (%s * interval '1 second')
+                                THEN 1 ELSE api_rate_limits.hit_count + 1
+                            END,
+                            expires_at = now() + (%s * interval '1 second')
+                        RETURNING hit_count <= %s
+                        """,
+                        (key_hash, window_seconds, window_seconds,
+                         window_seconds, window_seconds, limit),
+                    )
+                    allowed = bool(cur.fetchone()[0])
+            with self._rate_limit_cleanup_lock:
+                self._rate_limit_cleanup_count += 1
+                cleanup = self._rate_limit_cleanup_count % 500 == 0
+            if cleanup:
+                with conn.transaction():
+                    with conn.cursor() as cur:
+                        cur.execute("DELETE FROM api_rate_limits WHERE expires_at < now()")
+            return allowed
+        finally:
+            conn.close()
 
     def _row(self, cur, sql, params=()):
         cur.execute(sql, params)

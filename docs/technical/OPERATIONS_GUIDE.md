@@ -262,3 +262,20 @@ Points toujours ouverts :
 - La détection du type réel des fichiers et la minimisation du payload PayPal ne sont pas modifiées dans ce lot.
 
 Aucun test, build, typecheck, lint ou workflow GitHub Actions n'a été exécuté.
+
+
+## 18. Quotas partagés et uploads — lot U
+
+Consulter [SECURITY_REMEDIATION_U.md](./SECURITY_REMEDIATION_U.md).
+
+- La migration 035_v647_distributed_rate_limits.sql crée la table globale
+  api_rate_limits. Elle doit être appliquée par le mécanisme habituel de
+  migration avant de déployer le code qui utilise le compteur partagé.
+- En mode PostgreSQL, les quotas HTTP, de connexion et de récupération sont
+  atomiques et communs aux workers. Si PostgreSQL ne peut pas les servir,
+  les requêtes sont refusées temporairement avec HTTP 503.
+- Le mode mémoire local reste limité à un processus et n'est pas distribué.
+- Les uploads acceptés sont contrôlés sur leurs signatures binaires ou leur
+  encodage UTF-8 ; un Content-Type déclaré par le navigateur ne suffit plus.
+- La CSP stricte reste un chantier distinct : les gestionnaires JavaScript et
+  styles inline historiques doivent être migrés avant retrait de unsafe-inline.

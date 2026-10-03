@@ -132,14 +132,58 @@ class RateLimiter:
             return True
 
 
-def validate_upload(*, size_bytes: int, content_type: str, filename: str) -> None:
+def validate_upload(
+    *,
+    size_bytes: int,
+    content_type: str,
+    filename: str,
+    content: bytes | None = None,
+) -> None:
+    """Validate upload metadata and, when available, the actual byte signature."""
     if size_bytes < 0 or size_bytes > MAX_UPLOAD_BYTES:
         raise ValueError("upload exceeds configured size limit")
-    if content_type not in ALLOWED_UPLOAD_TYPES:
+    normalized_type = content_type.split(";", 1)[0].strip().lower()
+    if normalized_type not in ALLOWED_UPLOAD_TYPES:
         raise ValueError("unsupported content type")
     name = Path(filename).name
-    if not name or name != filename or ".." in name:
+    if (
+        not name
+        or name != filename
+        or ".." in name
+        or len(name) > 255
+        or any(ord(char) < 32 or ord(char) == 127 for char in name)
+    ):
         raise ValueError("unsafe filename")
+    if content is None:
+        return
+    if len(content) != size_bytes:
+        raise ValueError("upload size does not match its content")
+    signatures = {
+        "application/pdf": content.startswith(b"%PDF-"),
+        "image/jpeg": content.startswith(bytes((0xFF, 0xD8, 0xFF))),
+        "image/png": content.startswith(bytes((0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A))),
+        "image/webp": (
+            len(content) >= 12
+            and content[:4] == b"RIFF"
+            and content[8:12] == b"WEBP"
+        ),
+    }
+    if normalized_type in signatures:
+        if not signatures[normalized_type]:
+            raise ValueError("file signature does not match declared content type")
+        return
+    if normalized_type in {"text/plain", "text/csv"}:
+        try:
+            decoded = content.decode("utf-8", errors="strict")
+        except UnicodeDecodeError as exc:
+            raise ValueError("text uploads must use valid UTF-8") from exc
+        if "\x00" in decoded or any(
+            ord(char) < 32 and char not in "\t\n\r\f"
+            for char in decoded
+        ):
+            raise ValueError("text upload contains binary control characters")
+        return
+    raise ValueError("unsupported content type")
 
 
 def content_sha256(content: bytes) -> str:

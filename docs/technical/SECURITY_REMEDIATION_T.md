@@ -43,3 +43,7 @@ Lorsque la récupération ou la vérification d'adresse est activée en producti
 Relecture des blocs modifiés dans `src/api_server.py`, `src/postgres_api_repository.py`, `src/production_config.py` et `src/recovery_email.py`. Aucun test, build, typecheck, lint, workflow GitHub Actions, appel réseau applicatif ou accès à une base de données n'a été effectué.
 
 Aucun changement n'a été apporté aux interfaces d'administration ni aux règles métier de traitement des avis.
+
+
+Suite : consulter [SECURITY_REMEDIATION_U.md](./SECURITY_REMEDIATION_U.md)
+pour les quotas partagés PostgreSQL et la validation des signatures de fichiers.

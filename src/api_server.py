@@ -326,6 +326,23 @@ class ReviewDefenseAPI:
     def _auth_key(self, environ, email: str) -> str:
         return f"{environ.get('REMOTE_ADDR', 'unknown')}:{email}"
 
+    def _allow_rate_limit(self, limiter: RateLimiter, key: str, scope: str) -> bool:
+        """Use a shared atomic quota in PostgreSQL-backed deployments."""
+        if self.repository is None or not hasattr(self.repository, "allow_rate_limit"):
+            return limiter.allow(key)
+        import hashlib
+
+        key_hash = hashlib.sha256(f"{scope}:{key}".encode("utf-8")).hexdigest()
+        try:
+            return self.repository.allow_rate_limit(
+                key_hash, limit=limiter.limit, window_seconds=limiter.window_seconds
+            )
+        except Exception as exc:
+            raise APIError(
+                503, "RATE_LIMIT_UNAVAILABLE",
+                "shared rate limiting is temporarily unavailable",
+            ) from exc
+
     def _persistent_uuid(self, value: Any, field: str) -> str:
         raw = str(value or "").strip()
         if self.repository is None or not getattr(self.repository, "uses_uuid_ids", False):
@@ -866,7 +883,9 @@ class ReviewDefenseAPI:
             content_type = environ.get("CONTENT_TYPE", "").split(";", 1)[0].strip().lower()
             if content_type != "application/json":
                 raise APIError(415, "UNSUPPORTED_MEDIA_TYPE", "application/json content type is required")
-        if not self.limiter.allow(environ.get("REMOTE_ADDR", "unknown")):
+        if not self._allow_rate_limit(
+            self.limiter, environ.get("REMOTE_ADDR", "unknown"), "request"
+        ):
             raise APIError(429, "RATE_LIMITED", "rate limit exceeded")
         if method == "GET" and path == "/health":
             result = health_check(checks={"store": lambda: self.store is not None})
@@ -910,7 +929,9 @@ class ReviewDefenseAPI:
             organization_id = self._persistent_uuid(body.get("organization_id", ""), "organization_id")
             if not organization_id:
                 raise APIError(422, "VALIDATION_ERROR", "organization_id is required")
-            if not self.recovery_limiter.allow(self._auth_key(environ, email)):
+            if not self._allow_rate_limit(
+                self.recovery_limiter, self._auth_key(environ, email), "recovery"
+            ):
                 raise APIError(429, "RECOVERY_RATE_LIMITED", "too many recovery requests")
             user = None
             if self.repository is not None:
@@ -1117,7 +1138,9 @@ class ReviewDefenseAPI:
                 email = normalize_email(str(body.get("email", "")))
             except ValueError as exc:
                 raise APIError(422, "VALIDATION_ERROR", str(exc)) from exc
-            if not self.auth_limiter.allow(self._auth_key(environ, email)):
+            if not self._allow_rate_limit(
+                self.auth_limiter, self._auth_key(environ, email), "authentication"
+            ):
                 raise APIError(429, "AUTH_RATE_LIMITED", "too many authentication attempts")
             password = body.get("password", "")
             user = None
@@ -1568,7 +1591,12 @@ class ReviewDefenseAPI:
                 raise APIError(422, "VALIDATION_ERROR", "document category is invalid")
             try:
                 content = base64.b64decode(encoded, validate=True)
-                validate_upload(size_bytes=len(content), content_type=content_type, filename=filename)
+                validate_upload(
+                    size_bytes=len(content),
+                    content_type=content_type,
+                    filename=filename,
+                    content=content,
+                )
             except (ValueError, TypeError) as exc:
                 raise APIError(422, "INVALID_UPLOAD", str(exc)) from exc
             document_id = str(uuid.uuid4())
