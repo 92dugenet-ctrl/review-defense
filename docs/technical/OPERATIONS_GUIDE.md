@@ -160,3 +160,17 @@ Repères opérationnels :
 - Les sauvegardes locales sont créées en permissions `0600`. Les mots de passe PostgreSQL sont transmis via `PGPASSWORD`, pas dans les arguments des processus.
 - Aucune rétention ou purge automatique globale n'est déclarée par ces scripts. Les délais et règles d'effacement doivent être décidés et documentés avant exploitation.
 - Les restaurations restent destructives et exigent une cible explicite ainsi que `--confirm`.
+
+
+## 12. Suppressions et intégrité référentielle — lot O
+
+Consulter [DELETION_INTEGRITY_AUDIT.md](./DELETION_INTEGRITY_AUDIT.md) avant toute suppression de compte, d'organisation, de dossier, de preuve ou de document.
+
+Précautions :
+
+- Le statut `COMPLETED` d'une demande `ERASURE` ne déclenche pas à lui seul l'effacement des données ou des fichiers.
+- Plusieurs références utilisateur utilisent `RESTRICT` ou le comportement SQL par défaut `NO ACTION` ; une suppression physique d'utilisateur peut être bloquée par les demandes RGPD, événements de dossier, invitations ou documents.
+- Les métadonnées SQL et les octets du coffre de preuves sont séparés. Une cascade SQL ne supprime pas les fichiers du volume.
+- Certaines références dossier/preuve sont des identifiants sans clé étrangère. Leur intégrité dépend donc des services applicatifs.
+- Ne pas ajouter de cascade ou modifier une contrainte publiée sans inventorier les données et contraintes déjà présentes dans les environnements.
+- Une suppression coordonnée doit être durable, idempotente et reprenable, car PostgreSQL et le stockage de fichiers ne partagent pas une transaction atomique.
