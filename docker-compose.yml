@@ -1,13 +1,19 @@
+# Environnement local de développement : PostgreSQL + application.
+# Ce fichier n'ajoute pas de reverse proxy TLS ; le port 8080 est publié directement.
 services:
   postgres:
+    # Base relationnelle utilisée par l'application.
     image: postgres:16-alpine
     environment:
       POSTGRES_DB: review_defense
       POSTGRES_USER: review_defense
+      # Valeur de secours pratique en local uniquement ; à remplacer via .env.
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
     volumes:
+      # Volume nommé : les données survivent à la recréation du conteneur.
       - review_defense_pg:/var/lib/postgresql/data
     healthcheck:
+      # Docker vérifie que PostgreSQL accepte les connexions avant de démarrer app.
       test:
         - CMD-SHELL
         - pg_isready -U review_defense -d review_defense
@@ -16,17 +22,22 @@ services:
       retries: 10
 
   app:
+    # Construit l'image à partir du Dockerfile à la racine du dépôt.
     build: .
     environment:
       REVIEW_DEFENSE_ENV: development
       HOST: 0.0.0.0
       PORT: 8080
+      # Le nom postgres correspond au DNS interne du service Compose ci-dessus.
       DATABASE_URL: postgresql://review_defense:${POSTGRES_PASSWORD:-change-me}@postgres:5432/review_defense
     ports:
+      # Port hôte:port conteneur.
       - "8080:8080"
     depends_on:
       postgres:
+        # L'application attend que le healthcheck PostgreSQL soit valide.
         condition: service_healthy
 
 volumes:
+  # Stockage durable des données PostgreSQL locales.
   review_defense_pg:

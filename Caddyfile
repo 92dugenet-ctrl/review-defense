@@ -1,13 +1,22 @@
 {
+    # Adresse utilisée par Caddy pour les notifications liées aux certificats TLS.
     email {$TLS_ADMIN_EMAIL}
+    # Active l'obtention et le renouvellement automatiques des certificats HTTPS.
     auto_https on
 }
 
 {$REVIEW_DEFENSE_DOMAIN} {
+    # Compresse les réponses avant de les transmettre au navigateur.
     encode gzip
+
+    # Caddy termine TLS côté public puis relaie HTTP sur le réseau Docker privé.
+    # Le service "app" et le port 8080 correspondent au docker-compose.staging.yml.
     reverse_proxy app:8080
+
     header {
+        # Ne pas divulguer la bannière de serveur dans les réponses.
         -Server
+        # HSTS demande au navigateur de réutiliser HTTPS pour ce domaine.
         Strict-Transport-Security "max-age=31536000; includeSubDomains"
     }
 }

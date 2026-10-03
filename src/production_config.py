@@ -1,12 +1,22 @@
-"""V6.20 production configuration and startup validation."""
+"""Configuration de production et contrôles bloquants au démarrage.
+
+ProductionConfig regroupe les paramètres consommés par l'API : base de données,
+limites de requête, emails transactionnels, URL publique et confiance proxy.
+from_env() lit l'environnement du processus ; validate_startup() refuse les
+combinaisons dangereuses avant de servir des requêtes.
+"""
 from __future__ import annotations
+
 import os
 from dataclasses import dataclass
 
 TRUTHY = {"1", "true", "yes", "on"}
 
+
 @dataclass(frozen=True)
 class ProductionConfig:
+    """Snapshot immuable de la configuration opérationnelle de l'API."""
+
     environment: str = "development"
     host: str = "127.0.0.1"
     port: int = 8080
@@ -27,21 +37,26 @@ class ProductionConfig:
 
     @classmethod
     def from_env(cls) -> "ProductionConfig":
+        """Lit les variables runtime et convertit les nombres/indicateurs typés."""
         configured_env = os.getenv("REVIEW_DEFENSE_ENV", "").strip().lower()
         public_base_url = os.getenv("REVIEW_DEFENSE_PUBLIC_BASE_URL", "http://localhost:8080").rstrip("/")
         env = configured_env or (
             "production" if public_base_url.startswith("https://") else "development"
         )
+
         port = int(os.getenv("PORT", "8080"))
         if not 1 <= port <= 65535:
             raise ValueError("PORT must be between 1 and 65535")
+
         max_request = int(os.getenv("MAX_REQUEST_BYTES", "1000000"))
         evidence_max = int(os.getenv("EVIDENCE_MAX_REQUEST_BYTES", "35000000"))
         recovery_email_enabled = os.getenv("REVIEW_DEFENSE_RECOVERY_EMAIL_ENABLED", "false").lower() in TRUTHY
         require_email_verification = os.getenv("REVIEW_DEFENSE_REQUIRE_EMAIL_VERIFICATION", "false").lower() in TRUTHY
         smtp_port = int(os.getenv("SMTP_PORT", "587"))
+
         if max_request <= 0 or evidence_max <= 0:
             raise ValueError("request limits must be positive")
+
         return cls(
             environment=env,
             host=os.getenv("HOST", "127.0.0.1"),
@@ -64,17 +79,23 @@ class ProductionConfig:
 
     @property
     def production(self) -> bool:
+        """Reconnaît les deux libellés utilisés pour l'environnement de production."""
         return self.environment in {"production", "prod"}
 
     def validate_startup(self, *, require_database: bool | None = None) -> None:
+        """Vérifie les prérequis avant de lancer ou d'exposer l'API."""
         if self.production and not self.secure_headers:
             raise ValueError("SECURE_HEADERS cannot be disabled in production")
+
         if self.production and not self.database_dsn and (require_database is not False):
             raise ValueError("DATABASE_URL is required in production")
+
         if self.production and self.host in {"127.0.0.1", "localhost", "::1"}:
             raise ValueError("production server must bind to a non-loopback host")
+
         if self.recovery_email_enabled or self.require_email_verification:
             if not self.smtp_host or not self.smtp_sender:
                 raise ValueError("SMTP_HOST and SMTP_SENDER are required when authentication email is enabled")
+
             if self.production and not self.public_base_url.startswith("https://"):
                 raise ValueError("production authentication email links require an HTTPS public base URL")

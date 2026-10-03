@@ -1,3 +1,5 @@
+# Déploiement de production sans Caddy intégré : le trafic TLS peut être terminé
+# par le proxy ou load balancer externe à cette stack.
 services:
   postgres:
     image: postgres:16
@@ -7,6 +9,7 @@ services:
       POSTGRES_USER: review_defense
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
     volumes:
+      # Conservation des données même si le conteneur PostgreSQL est remplacé.
       - review_defense_pg:/var/lib/postgresql/data
     healthcheck:
       test:
@@ -33,8 +36,10 @@ services:
       PAYPAL_CLIENT_SECRET: ${PAYPAL_CLIENT_SECRET:-}
       REVIEW_DEFENSE_EVIDENCE_ROOT: /data/evidence
     volumes:
+      # Stockage persistant des fichiers justificatifs.
       - review_defense_evidence:/data/evidence
     ports:
+      # Port hôte configurable, redirigé vers le port interne Gunicorn 8080.
       - "${PORT:-8080}:8080"
 
 volumes:

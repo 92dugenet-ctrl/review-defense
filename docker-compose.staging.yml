@@ -1,9 +1,11 @@
+# Environnement de préproduction : base dédiée, application privée et proxy TLS Caddy.
 services:
   postgres:
     image: postgres:16-alpine
     environment:
       POSTGRES_DB: review_defense_staging
       POSTGRES_USER: review_defense
+      # Compose refuse de démarrer si le secret de staging n'est pas fourni.
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
     volumes:
       - review_defense_staging_pg:/var/lib/postgresql/data
@@ -22,21 +24,25 @@ services:
       HOST: 0.0.0.0
       PORT: "8080"
       REVIEW_DEFENSE_PUBLIC_BASE_URL: ${REVIEW_DEFENSE_PUBLIC_BASE_URL:?set public URL}
+      # Les en-têtes forwarded ne sont acceptés que parce que Caddy est le proxy de confiance.
       TRUST_PROXY: "true"
       DATABASE_URL: postgresql://review_defense:${POSTGRES_PASSWORD}@postgres:5432/review_defense_staging
       REVIEW_DEFENSE_MFA_ENCRYPTION_KEY: ${REVIEW_DEFENSE_MFA_ENCRYPTION_KEY:?set MFA key}
       PAYPAL_CLIENT_ID: ${PAYPAL_CLIENT_ID:-}
       PAYPAL_CLIENT_SECRET: ${PAYPAL_CLIENT_SECRET:-}
       REVIEW_DEFENSE_EVIDENCE_ROOT: /data/evidence
+    # expose rend le port accessible aux autres services Docker, sans le publier sur l'hôte.
     expose:
       - "8080"
     volumes:
+      # Les preuves sont conservées hors du système de fichiers éphémère du conteneur.
       - review_defense_staging_evidence:/data/evidence
     depends_on:
       postgres:
         condition: service_healthy
 
   caddy:
+    # Reverse proxy : termine HTTPS et transmet les requêtes vers app:8080.
     image: caddy:2-alpine
     environment:
       TLS_ADMIN_EMAIL: ${TLS_ADMIN_EMAIL:?set TLS_ADMIN_EMAIL}
@@ -45,6 +51,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
+      # Configuration en lecture seule ; Caddy stocke certificats et état dans ses volumes.
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config

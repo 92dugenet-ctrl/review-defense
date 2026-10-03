@@ -1,4 +1,10 @@
-"""V6.27 production deployment/security contracts."""
+"""Contrats de déploiement et de sécurité HTTP.
+
+DeploymentConfig décrit l'adresse publique et la relation avec le reverse proxy.
+validate() est appelé par le contrôle pré-démarrage et par la composition API
+en production. security_headers() fournit les en-têtes que les réponses HTTP
+peuvent appliquer ; ce module ne configure pas lui-même Caddy ou Gunicorn.
+"""
 from __future__ import annotations
 
 import os
@@ -7,12 +13,15 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class DeploymentConfig:
+    """Paramètres de déploiement immuables chargés depuis l'environnement."""
+
     public_base_url: str
     environment: str
     trust_proxy: bool
 
     @classmethod
     def from_env(cls) -> "DeploymentConfig":
+        """Construit le contrat de déploiement à partir des variables runtime."""
         return cls(
             public_base_url=os.getenv("REVIEW_DEFENSE_PUBLIC_BASE_URL", "http://localhost:8080").rstrip("/"),
             environment=os.getenv("REVIEW_DEFENSE_ENV", "development").lower(),
@@ -21,17 +30,21 @@ class DeploymentConfig:
 
     @property
     def production(self) -> bool:
+        """Indique si les contrôles stricts de production doivent être appliqués."""
         return self.environment in {"production", "prod"}
 
     def validate(self) -> None:
+        """Refuse les combinaisons de production incompatibles avec un proxy TLS."""
         if self.production and not self.public_base_url.startswith("https://"):
             raise ValueError("production public base URL must use HTTPS")
+
         if self.production and self.trust_proxy is False:
-            # A public TLS reverse proxy normally terminates TLS before WSGI.
-            # Requiring explicit opt-in prevents trusting spoofable forwarded headers.
+            # Un proxy TLS termine HTTPS avant WSGI ; ses en-têtes ne sont fiables
+            # que si ce déploiement l'a explicitement déclaré comme proxy de confiance.
             raise ValueError("TRUST_PROXY=true is required when production runs behind a trusted reverse proxy")
 
 
+# Politique CSP centralisée pour limiter les origines autorisées par le navigateur.
 CSP = (
     "default-src 'self'; "
     "base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; "
@@ -42,6 +55,7 @@ CSP = (
 
 
 def security_headers(*, production: bool) -> dict[str, str]:
+    """Retourne les en-têtes de défense en profondeur à appliquer aux réponses."""
     headers = {
         "Content-Security-Policy": CSP,
         "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
@@ -51,6 +65,8 @@ def security_headers(*, production: bool) -> dict[str, str]:
         "X-Frame-Options": "DENY",
         "Referrer-Policy": "no-referrer",
     }
+
     if production:
         headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+
     return headers
