@@ -2040,7 +2040,7 @@ class ReviewDefenseAPI:
                 key, kind, value = str(f.get("key", "")), str(f.get("kind", "")), str(f.get("value", ""))
                 if not key or not kind or not value or len(key) > 200 or len(kind) > 80 or len(value) > 5000:
                     raise APIError(422, "VALIDATION_ERROR", "each fact requires bounded key, kind and value")
-                                facts.append({"fact_id": str(uuid.uuid4()),
+                facts.append({"fact_id": str(uuid.uuid4()),
                      "evidence_id": evidence_id,
                      "case_id": case_id,
                      "organization_id": user.organization_id,
@@ -2054,7 +2054,7 @@ class ReviewDefenseAPI:
                     "verified_at": None})
             extracted_text = ""
             extraction_method = "not-run"
-                        if not facts and content_type.lower().split(";",
+            if not facts and content_type.lower().split(";",
                  1)[0].strip() in {"text/plain",
                  "text/csv",
                  "application/json",
@@ -2088,7 +2088,7 @@ class ReviewDefenseAPI:
                         })
                 except ExtractionError:
                     extraction_method = "failed"
-                        row = {"evidence_id": evidence_id,
+            row = {"evidence_id": evidence_id,
                  "organization_id": user.organization_id,
                  "case_id": case_id,
                  "filename": filename,
@@ -2108,13 +2108,13 @@ class ReviewDefenseAPI:
                 for fact in facts:
                     self.repository.put_evidence_fact(user.organization_id, fact)
             self.store.audit_event(user.organization_id, user.user_id, "EVIDENCE_UPLOADED", f"evidence:{evidence_id}", sha256=obj.sha256, case_id=case_id)
-                        row = dict(row)
-                        row["download_url"] = sign_download_url(object_key=obj.object_key,
+            row = dict(row)
+            row["download_url"] = sign_download_url(object_key=obj.object_key,
                  organization_id=user.organization_id,
                 secret=self.store.download_secret)
             return self._json(201, {"evidence": row})
         if method == "GET" and path == "/v1/evidence":
-                        rows = [dict(e,
+            rows = [dict(e,
                  status=("VERIFIED" if e.get("verified") else "PENDING")) for (org,
                  _),
                 e in self.store.evidence.items() if org == user.organization_id]
@@ -2125,7 +2125,7 @@ class ReviewDefenseAPI:
             if row is None and self.repository is not None and hasattr(self.repository, "get_evidence"):
                 dbrow = self.repository.get_evidence(user.organization_id, eid)
                 if dbrow:
-                                        row = dict(zip(("evidence_id",
+                    row = dict(zip(("evidence_id",
                         "organization_id",
                         "case_id",
                         "filename",
