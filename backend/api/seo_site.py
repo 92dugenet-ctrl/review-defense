@@ -993,14 +993,14 @@ def _services_html():
     }
     
     """
-    nav=(
-            '<a href="/produit/">Produit</a><' +
-            'a href="/comment-ca-marche/">Comment ça fonctionne</a><' +
-            'a href="/services/">Services</a><' +
-            'a href="/tarifs/">Tarifs</a><' +
-            'a href="/ressources/">Ressources</a><' +
-            'a href="/contact/">Contact</a>'
-        )
+    nav = (
+        '<a href="/produit/">Produit</a>'
+        '<a href="/comment-ca-marche/">Comment ça fonctionne</a>'
+        '<a href="/services/">Services</a>'
+        '<a href="/tarifs/">Tarifs</a>'
+        '<a href="/ressources/">Ressources</a>'
+        '<a href="/contact/">Contact</a>'
+    )
     services=[
             ("01",
           "Analyse des avis",
@@ -1139,29 +1139,56 @@ def _services_html():
             '/div>'
         )
     }
-        rows="".join(f'<article class="svc-service-row"><div class="svc-copy"><span class="svc-number">{n} · SERVICE</span><h3>{_e(h)}</h3><p>{_e(d)}</p><p>{_e(t)}</p><a href="/analyse-avis-google/">Démarrer une analyse →</a></div><div class="svc-media">{visuals[k]}</div></article>' for n,
-        h,
-        d,
-        t,
-        k in services)
-        schema=json.dumps({"@context":"https://schema.org",
-        "@graph":[{"@type":"Organization",
-        "@id":_url("/#organization"),
-        "name":"Review Defense",
-        "url":_url("/")},
-        {"@type":"WebSite",
-        "@id":_url("/#website"),
-        "name":"Review Defense",
-        "url":_url("/"),
-        "publisher":{"@id":_url("/#organization")}},
-        {"@type":"Service",
-        "@id":_url("/services/")+"#service",
-        "name":"Services Review Defense",
-        "description":"Analyse d’avis, préparation de dossiers, suivi et validation humaine.",
-        "provider":{"@id":_url("/#organization")}}]},
+    rows = "".join(
+        f'<article class="svc-service-row">'
+        f'<div class="svc-copy">'
+        f'<span class="svc-number">{number} · SERVICE</span>'
+        f'<h3>{_e(title)}</h3>'
+        f'<p>{_e(description)}</p>'
+        f'<p>{_e(details)}</p>'
+        f'<a href="/analyse-avis-google/">Démarrer une analyse →</a>'
+        f'</div>'
+        f'<div class="svc-media">{visuals[visual_key]}</div>'
+        f'</article>'
+        for number, title, description, details, visual_key in services
+    )
+
+    schema = json.dumps(
+        {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "Organization",
+                    "@id": _url("/#organization"),
+                    "name": "Review Defense",
+                    "url": _url("/")
+                },
+                {
+                    "@type": "WebSite",
+                    "@id": _url("/#website"),
+                    "name": "Review Defense",
+                    "url": _url("/"),
+                    "publisher": {
+                        "@id": _url("/#organization")
+                    }
+                },
+                {
+                    "@type": "Service",
+                    "@id": _url("/services/") + "#service",
+                    "name": "Services Review Defense",
+                    "description": (
+                        "Analyse d’avis, préparation de dossiers, "
+                        "suivi et validation humaine."
+                    ),
+                    "provider": {
+                        "@id": _url("/#organization")
+                    }
+                }
+            ]
+        },
         ensure_ascii=False,
-        separators=(",",
-        ":"))
+        separators=(",", ":")
+    )
     return (
         f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Services | Review Defense</title><meta name="description" content="Analysez les avis, préparez les dossiers, structurez les réponses et suivez les démarches liées à votre réputation en ligne.">'''
         f'''<meta name="robots" content="index,follow"><link rel="canonical" href="{_e(_url("/services/"))}"><meta property="og:type" content="website"><meta property="og:title" content="Services | Review Defense">'''
@@ -1190,36 +1217,61 @@ def _commercial_html(path):
     if path=="/services/":
         return _services_html()
     d=COMMERCIAL[path]
-        cards="".join(f'<article class="rd-value-card"><span>{i:02d}</span><h2>{_e(h)}</h2><p>{_e(t)}</p></article>' for i,
-        (h,
-        t) in enumerate(d["sections"],
-        1))
-    nav=(
-            '<a href="/produit/">Produit</a><' +
-            'a href="/comment-ca-marche/">Comment ça fonctionne</a><' +
-            'a href="/services/">Services</a><' +
-            'a href="/tarifs/">Tarifs</a><' +
-            'a href="/ressources/">Ressources</a><' +
-            'a href="/contact/">Contact</a>'
+    cards = "".join(
+        f'<article class="rd-value-card">'
+        f'<span>{index:02d}</span>'
+        f'<h2>{_e(title)}</h2>'
+        f'<p>{_e(description)}</p>'
+        f'</article>'
+        for index, (title, description) in enumerate(
+            d["sections"],
+            1
         )
-        schema=json.dumps({"@context":"https://schema.org",
-        "@graph":[{"@type":"Organization",
-        "@id":_url("/#organization"),
-        "name":"Review Defense",
-        "url":_url("/")},
-        {"@type":"WebSite",
-        "@id":_url("/#website"),
-        "name":"Review Defense",
-        "url":_url("/"),
-        "publisher":{"@id":_url("/#organization")}},
-        {"@type":"WebPage",
-        "name":d["title"],
-        "description":d["description"],
-        "url":_url(path),
-        "isPartOf":{"@id":_url("/#website")}}]},
+    )
+
+    nav = (
+        '<a href="/produit/">Produit</a>'
+        '<a href="/comment-ca-marche/">Comment ça fonctionne</a>'
+        '<a href="/services/">Services</a>'
+        '<a href="/tarifs/">Tarifs</a>'
+        '<a href="/ressources/">Ressources</a>'
+        '<a href="/contact/">Contact</a>'
+    )
+
+    schema = json.dumps(
+        {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "Organization",
+                    "@id": _url("/#organization"),
+                    "name": "Review Defense",
+                    "url": _url("/")
+                },
+                {
+                    "@type": "WebSite",
+                    "@id": _url("/#website"),
+                    "name": "Review Defense",
+                    "url": _url("/"),
+                    "publisher": {
+                        "@id": _url("/#organization")
+                    }
+                },
+                {
+                    "@type": "WebPage",
+                    "name": d["title"],
+                    "description": d["description"],
+                    "url": _url(path),
+                    "isPartOf": {
+                        "@id": _url("/#website")
+                    }
+                }
+            ]
+        },
         ensure_ascii=False,
-        separators=(",",
-        ":"))
+        separators=(",", ":")
+    )
+
     extra=""
     if path=="/ressources/":
         links=_related({"path":path,"cluster":"Faux avis"},_pages())[:5]
