@@ -85,7 +85,12 @@ function recovery(){
    esc(organizationId) +
    '"></div>') +
    '<div class="field"><label>Email</label><input name="email" type="email" required autocomplete="email"></div>' +
-   (resetting?'<div class="field"><label>Nouveau mot de passe</label><input name="new_password" type="password" required minlength="12" autocomplete="new-password"></div>':'') +
+   (resetting
+     ? '<div class="field"><label>Nouveau mot de passe</label>' +
+       '<input name="new_password" type="password" required minlength="12" ' +
+       '<input autocomplete="new-password" type="password" name="new_password" required minlength="12"></div>'
+     : ''
+   ) +
    (
         '<div class="err" id="recovery-error" role="alert"></div><button class="btn primary" t' +
         'ype="submit" style="width:100%">'
@@ -164,7 +169,10 @@ function login(){
     (registering?'Créer votre espace':'Connexion à votre espace') +
     '</h1>" +
       "p>' +
-    (registering?'Créez votre compte pour commencer à analyser et suivre vos avis.':'Connectez-vous pour retrouver vos avis, dossiers, preuves et actions.') +
+    (registering
+      ? 'Créez votre compte pour commencer à analyser et suivre vos avis.'
+      : 'Connectez-vous pour retrouver vos avis, dossiers, preuves et actions.'
+    ) +
     '</p>" +
       "div class="
     )auth-tabs"><button type="button" class="btn ' +
@@ -172,7 +180,10 @@ function login(){
     '" id="auth-login">Connexion</button><button type="button" class="btn ' +
     (registering?'primary':'') +
     '" id="auth-register">Créer un compte</button></div><form id="auth-form">' +
-    (registering?'<div class="field"><label>Nom de votre entreprise</label><input name="organization_name" required maxlength="200" autocomplete="organization"></div>':(
+    (registering
+      ? '<div class="field"><label>Nom de votre entreprise</label>' +
+        '<input name="organization_name" required maxlength="200" autocomplete="organization"></div>'
+      : (
         '<div class="field"><label>Identifiant de votre organisation</label><input name="organ' +
         'ization_id" required value="'
       ) +
@@ -207,7 +218,9 @@ function login(){
             d.organization_id);
         mode="login";
         render();
-        document.getElementById("auth-error").textContent="Un email de vérification a été demandé. Vérifiez votre boîte de réception avant de vous connecter.";
+        document.getElementById("auth-error").textContent =
+          "Un email de vérification a été demandé. " +
+          "Vérifiez votre boîte de réception avant de vous connecter.";
         return}
     if(d.organization_id)localStorage.setItem("rd_org_id",d.organization_id);
     if(!d.access_token)throw Error("Le compte a été créé, mais aucune session n'a été délivrée. Vérifiez la configuration de validation email.");
@@ -269,7 +282,13 @@ app.innerHTML='<div class="shell"><aside class="side"><a class="brand" href="/">
   x[0] +
   '"></div>').join("") +
   '</section></main></div><div id="modal-root"></div>';
-document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{S.view=b.dataset.view;document.querySelector(".side").classList.remove("open");show()});
+document.querySelectorAll("[data-view]").forEach(button=>{
+  button.onclick=()=>{
+    S.view=button.dataset.view;
+    document.querySelector(".side").classList.remove("open");
+    show();
+  };
+});
 document.getElementById("logout").onclick=async()=>{try{await post("/v1/logout")}catch{}localStorage.removeItem("rd_token");
   localStorage.removeItem("rd_role");
   S.token=null;
@@ -477,7 +496,11 @@ async function clientMonitoring(el){
       ) +
    documents.length +
    ' document(s)</span></div>' +
-   (editable?'<div class="field"><label>Ajouter des documents</label><input id="client-document-input" type="file" multiple accept="application/pdf,image/jpeg,image/png,image/webp,text/plain,text/csv"></div>':'') +
+    (editable
+      ? '<div class="field"><label>Ajouter des documents</label>' +
+        '<input id="client-document-input" type="file" multiple accept="application/pdf,image/jpeg,image/png,image/webp,text/plain,text/csv"></div>'
+      : ''
+    ) +
    (
         '<div id="client-document-status" class="muted" aria-live="polite"></div><div class="t' +
         'able"><table><thead><tr><th>Nom</th><th>Catégorie</th><th>Taille</th><th>Ajouté le</t' +
@@ -496,7 +519,11 @@ async function clientMonitoring(el){
      if(!result.authorization_url)throw Error("URL Google indisponible");
      location.href=result.authorization_url}catch(err){connect.disabled=false;
      el.querySelector("#client-document-status").textContent=err.message}};
-  el.querySelectorAll("[data-google-select]").forEach(button=>button.onclick=async()=>{button.disabled=true;try{const result=await post("/v1/integrations/google/select-location",
+   el.querySelectorAll("[data-google-select]").forEach(button=>{
+     button.onclick=async()=>{
+       button.disabled=true;
+       try{
+         const result=await post("/v1/integrations/google/select-location",
    {connection_id:button.dataset.connection,
    account_id:button.dataset.account,
    location_id:button.dataset.location});el.querySelector("#client-document-status").textContent=(result.reviews_synced||0) +
@@ -874,7 +901,14 @@ function factsMarkup(rows,
   x.fact_id):"") +
   ( !(evidence?.verified||evidence?.status==="VERIFIED")?'<small>Vérifier d’abord la preuve</small>':"") +
   '</td></tr>'}).join("") +
-    '</tbody></table></div>'}function contradictionsMarkup(rows){if(!rows.length)return '<p class="muted">Aucune contradiction enregistrée. Une analyse peut être lancée par un administrateur.</p>';
+    '</tbody></table></div>';
+}
+function contradictionsMarkup(rows){
+  if(!rows.length){
+    return '<p class="muted">Aucune contradiction enregistrée. ' +
+      'Une analyse peut être lancée par un administrateur.</p>';
+  }
+  return '<div class="table"><table><thead><tr><th>Description</th><th>Éléments</th><th>Statut</th></tr></thead><tbody>' +
     return '<div class="table"><table><thead><tr><th>Description</th><th>Éléments</th><th>Statut</th></tr></thead><tbody>' +
   rows.map(x=>'<tr><td>' +
   esc(x.description) +
@@ -1192,9 +1226,17 @@ if(op==="notify-escalation"){const [caseId,
     if(channel==="EMAIL"){if(!target.value||target.value===S.userId)target.value=S.userEmail||"";
     target.placeholder="destinataire@entreprise.fr";
     help.textContent = "Adresse email destinataire. L’envoi nécessite " +
-      "une configuration SMTP et une politique autorisant l’email."}else if(channel==="WEBHOOK"){if(target.value===S.userId||target.value===S.userEmail)target.value="";
+       "une configuration SMTP et une politique autorisant l’email."; 
+   }else if(channel==="WEBHOOK"){
+     if(target.value===S.userId||target.value===S.userEmail){
+       target.value="";
+     }
     target.placeholder="https://exemple.fr/webhook";
-    help.textContent="URL HTTPS publique. Les adresses privées et locales sont refusées par le serveur."}else{if(!target.value||target.value===S.userEmail)target.value=S.userId||"";
+     help.textContent="URL HTTPS publique. Les adresses privées et locales sont refusées par le serveur."; 
+   }else{
+     if(!target.value||target.value===S.userEmail){
+       target.value=S.userId||"";
+     }
     target.placeholder="Identifiant du membre";
     help.textContent="Identifiant du membre destinataire dans l’organisation."}};
     document.getElementById("notify-form").onsubmit=async ev=>{ev.preventDefault();
