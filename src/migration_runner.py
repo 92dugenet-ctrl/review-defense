@@ -1,60 +1,123 @@
-"""V6.22 deterministic PostgreSQL migration runner with drift protection."""
+"""PostgreSQL migration runner with filename and checksum drift protection."""
 from __future__ import annotations
+
 import hashlib
 from pathlib import Path
 from typing import Callable
 
+
 class MigrationError(RuntimeError):
-    pass
+    """Raised when a migration cannot be applied safely."""
+
 
 def migration_files(directory: str | Path) -> list[Path]:
+    """Return SQL migrations ordered by their complete filename."""
     root = Path(directory)
-    files = sorted(root.glob("*.sql"))
+    files = sorted(root.glob("*.sql"), key=lambda path: path.name)
     for path in files:
         if not path.stem.split("_", 1)[0].isdigit():
-            raise MigrationError(f"migration filename must start with a number: {path.name}")
+            raise MigrationError(
+                f"migration filename must start with a number: {path.name}"
+            )
     return files
 
+
 def migration_checksum(path: Path) -> str:
+    """Return the SHA-256 digest of a migration file."""
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
-def apply_migrations(connect_factory: Callable[[], object], directory: str | Path) -> list[str]:
+
+def apply_migrations(
+    connect_factory: Callable[[], object],
+    directory: str | Path,
+) -> list[str]:
+    """Apply missing migrations using the same identity contract as startup."""
     files = migration_files(directory)
     conn = connect_factory()
     applied: list[str] = []
+
     try:
         with conn.transaction():
             with conn.cursor() as cur:
-                # Prevent two application instances from migrating the same database concurrently.
-                cur.execute("SELECT pg_advisory_xact_lock(hashtext('review_defense:migrations'))")
-                cur.execute("CREATE TABLE IF NOT EXISTS schema_migrations (version text PRIMARY KEY, filename text NOT NULL, applied_at timestamptz NOT NULL DEFAULT now(), checksum text)")
-                cur.execute("ALTER TABLE schema_migrations ADD COLUMN IF NOT EXISTS checksum text")
-                cur.execute("SELECT version, filename, checksum FROM schema_migrations")
-                raw_done = cur.fetchall()
-                done = {}
-                for row in raw_done:
-                    # Backward-compatible with lightweight pre-V6.22 test doubles.
-                    done[row[0]] = (row[0], row[1] if len(row) > 1 else None, row[2] if len(row) > 2 else None)
+                cur.execute(
+                    "SELECT pg_advisory_xact_lock("
+                    "hashtext('review-defense:migrations'))"
+                )
+                cur.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS schema_migrations (
+                        version text PRIMARY KEY,
+                        filename text,
+                        applied_at timestamptz NOT NULL DEFAULT now(),
+                        checksum text
+                    )
+                    """
+                )
+                cur.execute(
+                    "ALTER TABLE schema_migrations "
+                    "ADD COLUMN IF NOT EXISTS filename text"
+                )
+                cur.execute(
+                    "ALTER TABLE schema_migrations "
+                    "ADD COLUMN IF NOT EXISTS checksum text"
+                )
+                cur.execute(
+                    "SELECT version, filename, checksum FROM schema_migrations"
+                )
+                done = {
+                    row[0]: (row[1], row[2])
+                    for row in cur.fetchall()
+                }
+
                 for path in files:
-                    version = path.name.split("_", 1)[0]
+                    version = path.stem
                     checksum = migration_checksum(path)
-                    if version in done:
-                        row = done[version]
-                        if row[1] is not None and row[1] != path.name:
-                            raise MigrationError(f"migration filename drift for {version}: database={row[1]} file={path.name}")
-                        if row[2] and row[2] != checksum:
-                            raise MigrationError(f"migration checksum drift for {path.name}")
-                        if row[1] is not None and not row[2]:
-                            cur.execute("UPDATE schema_migrations SET checksum=%s WHERE version=%s", (checksum, version))
+                    previous = done.get(version)
+
+                    if previous is not None:
+                        previous_filename, previous_checksum = previous
+                        if (
+                            previous_filename
+                            and previous_filename != path.name
+                        ):
+                            raise MigrationError(
+                                f"migration filename drift for {version}: "
+                                f"database={previous_filename} "
+                                f"file={path.name}"
+                            )
+                        if previous_checksum and previous_checksum != checksum:
+                            raise MigrationError(
+                                f"migration checksum drift for {path.name}"
+                            )
+                        if not previous_filename or not previous_checksum:
+                            cur.execute(
+                                """
+                                UPDATE schema_migrations
+                                SET filename=%s, checksum=%s
+                                WHERE version=%s
+                                """,
+                                (path.name, checksum, version),
+                            )
                         continue
+
                     sql = path.read_text(encoding="utf-8")
                     if not sql.strip():
                         raise MigrationError(f"empty migration: {path.name}")
                     cur.execute(sql)
-                    cur.execute("INSERT INTO schema_migrations(version, filename, checksum) VALUES (%s,%s,%s)", (version, path.name, checksum))
+                    cur.execute(
+                        """
+                        INSERT INTO schema_migrations(
+                            version, filename, checksum
+                        )
+                        VALUES (%s, %s, %s)
+                        """,
+                        (version, path.name, checksum),
+                    )
                     applied.append(path.name)
+                    done[version] = (path.name, checksum)
     except Exception as exc:
         raise MigrationError(f"migration failed: {exc}") from exc
     finally:
         conn.close()
+
     return applied

@@ -1,34 +1,63 @@
 #!/usr/bin/env python3
 """Restore a PostgreSQL custom-format backup.
 
-Destructive by design: --confirm is mandatory and the target must be explicitly
-provided. Never defaults to the application's DATABASE_URL.
+Destructive by design: --confirm and an explicit target are mandatory.
+The target never defaults to the application's DATABASE_URL.
 """
 from __future__ import annotations
 
-# Exploitation : restaure une sauvegarde custom avec pg_restore en remplaçant les objets correspondants.
-# C'est une opération destructive : --confirm et une URL cible explicite sont obligatoires.
-# Le script ne choisit jamais DATABASE_URL automatiquement afin d'éviter une restauration involontaire
-# sur la base active. Vérifier la cible et la sauvegarde avant toute utilisation opérationnelle.
+# La restauration PostgreSQL ne restaure pas le volume distinct des preuves.
+# Vérifier la sauvegarde de fichiers et la cible avant toute opération.
 
 import argparse
+import os
 import subprocess
 from pathlib import Path
+from urllib.parse import urlsplit, urlunsplit
+
+
+def _dsn_without_password(dsn: str) -> tuple[str, dict[str, str]]:
+    parsed = urlsplit(dsn)
+    if parsed.scheme not in {"postgresql", "postgres"}:
+        return dsn, {}
+    if parsed.password is None:
+        return dsn, {}
+
+    user = parsed.username or ""
+    host = parsed.hostname or ""
+    port = f":{parsed.port}" if parsed.port else ""
+    netloc = f"{user}@{host}{port}" if user else f"{host}{port}"
+    safe = urlunsplit(
+        (parsed.scheme, netloc, parsed.path, parsed.query, parsed.fragment)
+    )
+    return safe, {"PGPASSWORD": parsed.password}
 
 
 def main() -> int:
-    p = argparse.ArgumentParser()
-    p.add_argument("backup", type=Path)
-    p.add_argument("--database-url", required=True)
-    p.add_argument("--confirm", action="store_true")
-    args = p.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("backup", type=Path)
+    parser.add_argument("--database-url", required=True)
+    parser.add_argument("--confirm", action="store_true")
+    args = parser.parse_args()
+
     if not args.confirm:
-        p.error("--confirm is required because restore replaces database objects")
-    if not args.backup.is_file():
-        p.error(f"backup not found: {args.backup}")
-    result = subprocess.run([
-        "pg_restore", "--clean", "--if-exists", "--no-owner", "--dbname", args.database_url, str(args.backup)
-    ], check=False)
+        parser.error("--confirm is required because restore replaces database objects")
+    if not args.backup.is_file() or args.backup.is_symlink():
+        parser.error("backup must be an existing regular file")
+
+    safe_dsn, password_env = _dsn_without_password(args.database_url)
+    env = os.environ.copy()
+    env.update(password_env)
+    command = [
+        "pg_restore",
+        "--clean",
+        "--if-exists",
+        "--no-owner",
+        "--dbname",
+        safe_dsn,
+        str(args.backup),
+    ]
+    result = subprocess.run(command, env=env, check=False)
     return result.returncode
 
 

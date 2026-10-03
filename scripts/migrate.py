@@ -1,33 +1,31 @@
 """Applique les migrations SQL versionnées à PostgreSQL.
 
 Ce script est appelé au démarrage de production avant Gunicorn. Il lit
-migrations/*.sql, enregistre les versions exécutées dans schema_migrations
-et utilise un verrou advisory PostgreSQL pour éviter deux migrations
-simultanées lorsque plusieurs processus de déploiement démarrent.
+migrations/*.sql et enregistre les versions exécutées dans schema_migrations.
+Les noms complets des fichiers sont les identifiants stables des migrations.
 """
 from __future__ import annotations
 
+import hashlib
 import os
 from pathlib import Path
 
 import psycopg
 
-# Les chemins sont calculés depuis ce fichier, pas depuis le répertoire courant.
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATIONS = ROOT / "migrations"
 
 
 def database_url() -> str:
-    """Récupère la chaîne de connexion sans jamais fournir de secret par défaut."""
+    """Récupère la chaîne de connexion sans secret par défaut."""
     value = os.environ.get("DATABASE_URL", "").strip()
     if not value:
         raise SystemExit("DATABASE_URL is required")
-
     return value
 
 
 def migration_files() -> list[Path]:
-    """Retourne les migrations SQL dans l'ordre lexical de leur nom de fichier."""
+    """Retourne les migrations dans l'ordre lexical de leur nom complet."""
     return sorted(MIGRATIONS.glob("*.sql"), key=lambda path: path.name)
 
 
@@ -37,11 +35,10 @@ def connect():
 
 
 def main() -> None:
-    """Applique uniquement les migrations absentes du registre de schéma."""
+    """Applique les migrations absentes et refuse les dérives détectables."""
     files = migration_files()
 
     with connect() as conn:
-        # Registre durable : chaque nom de migration n'est enregistré qu'une fois.
         conn.execute(
             """
             CREATE TABLE IF NOT EXISTS schema_migrations (
@@ -50,25 +47,62 @@ def main() -> None:
             )
             """
         )
+        conn.execute(
+            "ALTER TABLE schema_migrations "
+            "ADD COLUMN IF NOT EXISTS filename TEXT"
+        )
+        conn.execute(
+            "ALTER TABLE schema_migrations "
+            "ADD COLUMN IF NOT EXISTS checksum TEXT"
+        )
 
-        # Verrou transactionnel partagé par tous les lanceurs de migration du projet.
-        conn.execute("SELECT pg_advisory_xact_lock(hashtext('review-defense:migrations'))")
+        # Même verrou que le runner historique pour sérialiser les migrations.
+        conn.execute(
+            "SELECT pg_advisory_xact_lock(hashtext('review-defense:migrations'))"
+        )
+        rows = conn.execute(
+            "SELECT version, filename, checksum FROM schema_migrations"
+        ).fetchall()
+        applied = {row[0]: (row[1], row[2]) for row in rows}
 
         for path in files:
             version = path.stem
-            applied = conn.execute(
-                "SELECT 1 FROM schema_migrations WHERE version=%s",
-                (version,),
-            ).fetchone()
+            checksum = hashlib.sha256(path.read_bytes()).hexdigest()
+            previous = applied.get(version)
 
-            if applied:
+            if previous is not None:
+                previous_filename, previous_checksum = previous
+                if previous_filename and previous_filename != path.name:
+                    raise RuntimeError(
+                        f"migration filename drift for {version}: "
+                        f"database={previous_filename} file={path.name}"
+                    )
+                if previous_checksum and previous_checksum != checksum:
+                    raise RuntimeError(f"migration checksum drift for {path.name}")
+
+                # Adoption contrôlée des entrées historiques sans empreinte.
+                if not previous_filename or not previous_checksum:
+                    conn.execute(
+                        """
+                        UPDATE schema_migrations
+                        SET filename=%s, checksum=%s
+                        WHERE version=%s
+                        """,
+                        (path.name, checksum, version),
+                    )
                 continue
 
-            # Le SQL est exécuté puis sa version est inscrite dans la même transaction.
-            conn.execute(path.read_text(encoding="utf-8"))
+            sql = path.read_text(encoding="utf-8")
+            if not sql.strip():
+                raise RuntimeError(f"empty migration: {path.name}")
+
+            conn.execute(sql)
             conn.execute(
-                "INSERT INTO schema_migrations(version) VALUES (%s)",
-                (version,),
+                """
+                INSERT INTO schema_migrations(version, filename, checksum)
+                VALUES (%s, %s, %s)
+                """,
+                (version, path.name, checksum),
             )
 
         conn.commit()

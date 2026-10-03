@@ -11,6 +11,7 @@ Cette documentation décrit le code présent et les chemins d'exécution observ�
 - [Cartographie technique exhaustive](./TECHNICAL_MAP.md) — inventaire des sources, routes, API et migrations.
 - [Traçabilité des dépendances](./DEPENDENCY_MAP.md) — relations entre pages, endpoints, services, intégrations et repositories.
 - [Audit des modules inutilisés et redondants](./UNUSED_AND_REDUNDANT_MODULES_AUDIT.md) — arborescences parallèles, duplications, candidats à arbitrage et limites des conclusions statiques.
+- [Audit du cycle de vie des données](./DATA_LIFECYCLE_AUDIT.md) — migrations, sauvegardes PostgreSQL, preuves, isolation tenant, conservation et effacement.
 
 ## Règles de maintenance
 

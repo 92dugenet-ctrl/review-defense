@@ -107,7 +107,6 @@ D'autres workflows couvrent contrats frontend, facturation, sécurité, seeds de
 
 Ce parcours relie les fichiers de déploiement au code exécuté sans confondre scripts d'administration, workflows GitHub et services métier.
 
-
 ## 9. Audit de cohérence des déploiements — lot L
 
 Consulter [UNIFIED_DEPLOYMENT_CONFIGURATION_AUDIT.md](./UNIFIED_DEPLOYMENT_CONFIGURATION_AUDIT.md) pour l'analyse des variables, manifests, proxy, lanceurs et workflows.
@@ -122,7 +121,6 @@ Points à retenir :
 - Les workflows ont des déclencheurs et effets distincts ; certains lancent des tests ou déploient sur des environnements distants.
 
 Aucune configuration ni aucun comportement applicatif n'a été modifié dans le lot L.
-
 
 ## 10. Configuration unifiée — lot M
 
@@ -149,3 +147,16 @@ Aucun service worker n'est ajouté aux stacks : `scripts/worker.py` traite
 un seul job par invocation, et les handlers ainsi que le superviseur permanent
 ne sont pas encore spécifiés. Les variables du worker figurent dans le modèle
 d'environnement à titre de configuration d'un processus séparé.
+
+## 11. Cycle de vie des données — lot N
+
+Consulter [DATA_LIFECYCLE_AUDIT.md](./DATA_LIFECYCLE_AUDIT.md) pour le détail des migrations, sauvegardes, preuves, cloisonnement tenant et règles de conservation.
+
+Repères opérationnels :
+
+- Le démarrage de production applique `migrations/*.sql` via `scripts/migrate.py`. Le nom complet du fichier est l'identifiant de migration ; les empreintes SHA-256 et le nom sont conservés dans `schema_migrations`.
+- `database/migrations/` est une arborescence historique incomplète et ne doit pas être synchronisée automatiquement.
+- Les scripts `postgres_backup.py` et `postgres_restore.py` ne couvrent que PostgreSQL. Le volume `/data/evidence` exige une sauvegarde séparée et coordonnée.
+- Les sauvegardes locales sont créées en permissions `0600`. Les mots de passe PostgreSQL sont transmis via `PGPASSWORD`, pas dans les arguments des processus.
+- Aucune rétention ou purge automatique globale n'est déclarée par ces scripts. Les délais et règles d'effacement doivent être décidés et documentés avant exploitation.
+- Les restaurations restent destructives et exigent une cible explicite ainsi que `--confirm`.
