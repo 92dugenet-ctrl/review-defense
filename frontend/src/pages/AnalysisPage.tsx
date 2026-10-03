@@ -1,6 +1,6 @@
 import{useEffect,useState}from"react";import{Link}from"react-router-dom";import{api}from"@/services/api/client";
 import { PageHeading } from "@/components/layout/PageHeading";
-import { FeedbackMessage } from "@/components/common/FeedbackMessage";
+import { FeedbackMessage } from "@/components/layout/FeedbackMessage";
 export function AnalysisPage(){const[q,setQ]=useState<any[]>([]),[w,setW]=useState<any>(null),[loading,setLoading]=useState(true),[error,setError]=useState("");
 useEffect(()=>{Promise.all([api.get<any>("/v1/review-queue"),api.get<any>("/v1/review-queue/workload")]).then(([a,b])=>{setQ(a.items??[]);setW(b)}).catch(e=>setError(e instanceof Error?e.message:"Impossible de charger la file d’analyse.")).finally(()=>setLoading(false))},[]);
 const count=(p:string)=>q.filter(x=>String(x.priority).toUpperCase()===p).length;
