@@ -71,7 +71,12 @@ class InMemoryObjectStore:
 
     def put(self, *, organization_id: str, evidence_id: str, content: bytes,
             content_type: str, filename: str) -> StoredObject:
-        validate_upload(\n            size_bytes=len(content),\n            content_type=content_type,\n            filename=filename,\n            content=content,\n        )
+        validate_upload(
+            size_bytes=len(content),
+            content_type=content_type,
+            filename=filename,
+            content=content,
+        )
         key = build_object_key(organization_id, evidence_id, filename)
         obj = StoredObject(organization_id, evidence_id, key, len(content), content_type,
                            hashlib.sha256(content).hexdigest(), utc_now())
