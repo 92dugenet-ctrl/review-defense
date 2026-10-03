@@ -41,7 +41,17 @@ const PUBLIC_META={
  pricing:['Tarifs | Review Defense','Découvrez les niveaux d’offre Review Defense et choisissez l’organisation adaptée à votre usage.'],
  resources:['Ressources | Review Defense','Guides pratiques sur les avis Google, les preuves, le signalement et la gestion de réputation.'],
  contact:['Contact | Review Defense','Demandez une démonstration ou contactez l’équipe Review Defense.'],
- legal:['Mentions légales | Review Defense','Informations légales relatives à Review Defense.'],privacy:['Politique de confidentialité | Review Defense','Comment Review Defense traite, protège et conserve les données personnelles.'],cgv:['CGV | Review Defense','Conditions générales de vente de la plateforme Review Defense.'],cgu:['CGU | Review Defense','Conditions générales d’utilisation de Review Defense.'],cookies:['Cookies | Review Defense','Politique relative aux cookies et traceurs de Review Defense.'],security:['Sécurité | Review Defense','Principes de sécurité et de protection des données de Review Defense.'],retention:['Conservation des données | Review Defense','Règles de conservation et de suppression des données Review Defense.'],rights:['Droits RGPD | Review Defense','Exercer vos droits sur vos données personnelles.'],breach:['Violation de données | Review Defense','Organisation de Review Defense en cas de violation de données.'],subprocessors:['Sous-traitants | Review Defense','Prestataires participant au traitement des données.'],compliance:['Centre conformité | Review Defense','Documents juridiques, RGPD, sécurité et contrôle humain de Review Defense.'],
+  legal:['Mentions légales | Review Defense','Informations légales relatives à Review Defense.'],
+   privacy:['Politique de confidentialité | Review Defense','Comment Review Defense traite, protège et conserve les données personnelles.'],
+   cgv:['CGV | Review Defense','Conditions générales de vente de la plateforme Review Defense.'],
+   cgu:['CGU | Review Defense','Conditions générales d’utilisation de Review Defense.'],
+   cookies:['Cookies | Review Defense','Politique relative aux cookies et traceurs de Review Defense.'],
+   security:['Sécurité | Review Defense','Principes de sécurité et de protection des données de Review Defense.'],
+   retention:['Conservation des données | Review Defense','Règles de conservation et de suppression des données Review Defense.'],
+   rights:['Droits RGPD | Review Defense','Exercer vos droits sur vos données personnelles.'],
+   breach:['Violation de données | Review Defense','Organisation de Review Defense en cas de violation de données.'],
+   subprocessors:['Sous-traitants | Review Defense','Prestataires participant au traitement des données.'],
+   compliance:['Centre conformité | Review Defense','Documents juridiques, RGPD, sécurité et contrôle humain de Review Defense.'],
  ai:['IA et contrôle humain | Review Defense','Utilisation de l’intelligence artificielle et contrôle humain dans Review Defense.']
 };
 function setPublicMeta(page){
@@ -388,7 +398,10 @@ function pricingPage(){
  (
    '<div class="reference-lower-grid"><section class="reference-journey"><div class="reference-lower-head"><div class="reference-lower-icon blue">◎</div>' +
    '<div><h3>Exemple de parcours</h3><p>Un processus transparent, du début à la fin.</p></div></div><div class="reference-journey-steps">'
- )+[['Je sélectionne<br>un avis','Depuis mon espace<br>ou via l’audit','▤'],['J’ouvre le dossier<br>49 €','Analyse et qualification','⌕'],['Je valide<br>chaque étape','et ne paie que si besoin','✓'],['Suivi du dossier','et historique complet<br>dans mon espace','▥']].map((x,i)=>(i?'<span class="journey-arrow">→</span>':'')+'<button type="button" class="journey-card" onclick="'+(i===1?"selectPricingOffer('defense_step','Analyse initiale et qualification','49 €','defense_01')":"location.href='/app'")+'"><i>'+x[2]+'</i><strong>'+x[0]+'</strong><small>'+x[1]+'</small></button>').join('')+(
+  )+[['Je sélectionne<br>un avis','Depuis mon espace<br>ou via l’audit','▤'],
+   ['J’ouvre le dossier<br>49 €','Analyse et qualification','⌕'],
+   ['Je valide<br>chaque étape','et ne paie que si besoin','✓'],
+   ['Suivi du dossier','et historique complet<br>dans mon espace','▥']].map((x,i)=>(i?'<span class="journey-arrow">→</span>':'')+'<button type="button" class="journey-card" onclick="'+(i===1?"selectPricingOffer('defense_step','Analyse initiale et qualification','49 €','defense_01')":"location.href='/app'")+'"><i>'+x[2]+'</i><strong>'+x[0]+'</strong><small>'+x[1]+'</small></button>').join('')+(
    '</div></section><section class="reference-why"><div class="reference-lower-head"><div class="reference-lower-icon crown">♛</div>' +
    '<div><h3>Pourquoi choisir Review Defense ?</h3></div></div><ul><li>Une méthodologie professionnelle</li><li>Des prix transparents et sans surprise</li>' +
    '<li>Vous gardez le contrôle à chaque étape</li><li>Aucune promesse de suppression (Google reste décisionnaire)</li><li>Un suivi complet de tous vos dossiers</li>' +
@@ -401,7 +414,35 @@ function pricingPage(){
    '</button></div>'
  )+
  '<p class="reference-legal">Les crédits et prestations sont soumis aux conditions applicables. Chaque étape de défense nécessitant une démarche externe reste soumise à validation humaine explicite. Google conserve la décision finale concernant ses contenus.</p>'+ (
-   "<section class=\"reference-monitoring-section\"><style>\n.reference-monitoring-section{padding:0 0 18px}\n.reference-monitoring-section .reference-pricing-head{margin-top:42px}\n.reference-monitoring-section .reference-monitoring-intro{margin:0 0 24px;color:#667085;font-size:15px;line-height:1.6}\n.reference-monitoring-section .reference-monitoring-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#f4f6ff;color:#566fd8;font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}\n.reference-monitoring-section .reference-monitoring-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}\n.reference-monitoring-section .reference-monitoring-panel{display:flex;flex-direction:column}\n.reference-monitoring-section .reference-monitoring-panel .reference-panel-title{min-height:104px}\n.reference-monitoring-section .reference-monitoring-panel .reference-panel-title p{max-width:240px}\n.reference-monitoring-section .reference-monitoring-price{display:flex;align-items:baseline;gap:7px;margin:0 0 18px;padding:18px 0;border-top:1px solid rgba(16,24,40,.08);border-bottom:1px solid rgba(16,24,40,.08)}\n.reference-monitoring-section .reference-monitoring-price strong{font-size:34px;letter-spacing:-.04em;color:#111827}\n.reference-monitoring-section .reference-monitoring-price span{font-size:12px;color:#7a8495}\n.reference-monitoring-section .reference-monitoring-floor{margin-top:-9px;margin-bottom:16px;font-size:11px;font-weight:800;color:#617cf5}\n.reference-monitoring-section .reference-monitoring-table{width:100%}\n.reference-monitoring-section .reference-monitoring-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid rgba(16,24,40,.065)}\n.reference-monitoring-section .reference-monitoring-row:last-child{border-bottom:0}\n.reference-monitoring-section .reference-monitoring-row span{font-size:13px;color:#687386}\n.reference-monitoring-section .reference-monitoring-row b{font-size:15px;color:#111827}\n.reference-monitoring-section .reference-monitoring-row:last-child b{color:#617cf5}\n.reference-monitoring-section .reference-monitoring-panel .reference-panel-cta{margin-top:auto}\n.reference-monitoring-section .reference-monitoring-bottom{margin-top:18px;padding:22px 24px;border-radius:18px;background:#f7f8fa;border:1px solid rgba(16,24,40,.06);display:flex;align-items:center;justify-content:space-between;gap:24px}\n.reference-monitoring-section .reference-monitoring-bottom strong{display:block;font-size:15px;color:#111827;margin-bottom:4px}\n.reference-monitoring-section .reference-monitoring-bottom p{margin:0;color:#697386;font-size:12px;line-height:1.5}\n@media(max-width:980px){.reference-monitoring-section .reference-monitoring-grid{grid-template-columns:1fr}.reference-monitoring-section .reference-monitoring-panel{min-height:0}}\n@media(max-width:680px){.reference-monitoring-section .reference-monitoring-bottom{align-items:flex-start;flex-direction:column}.reference-monitoring-section .reference-pricing-head{margin-top:28px}}\n</style>\n<div class=\"reference-pricing-head\">" +
+   (
+        "<section class=\"reference-monitoring-section\"><style>\n" +
+        ".reference-monitoring-section{padding:0 0 18px}\n" +
+        ".reference-monitoring-section .reference-pricing-head{margin-top:42px}\n" +
+        ".reference-monitoring-section .reference-monitoring-intro{margin:0 0 24px;color:#667085;font-size:15px;line-height:1.6}\n" +
+        ".reference-monitoring-section .reference-monitoring-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#f4f6ff;color:#566fd8;font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}\n" +
+        ".reference-monitoring-section .reference-monitoring-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}\n" +
+        ".reference-monitoring-section .reference-monitoring-panel{display:flex;flex-direction:column}\n" +
+        ".reference-monitoring-section .reference-monitoring-panel .reference-panel-title{min-height:104px}\n" +
+        ".reference-monitoring-section .reference-monitoring-panel .reference-panel-title p{max-width:240px}\n" +
+        ".reference-monitoring-section .reference-monitoring-price{display:flex;align-items:baseline;gap:7px;margin:0 0 18px;padding:18px 0;border-top:1px solid rgba(16,24,40,.08);border-bottom:1px solid rgba(16,24,40,.08)}\n" +
+        ".reference-monitoring-section .reference-monitoring-price strong{font-size:34px;letter-spacing:-.04em;color:#111827}\n" +
+        ".reference-monitoring-section .reference-monitoring-price span{font-size:12px;color:#7a8495}\n" +
+        ".reference-monitoring-section .reference-monitoring-floor{margin-top:-9px;margin-bottom:16px;font-size:11px;font-weight:800;color:#617cf5}\n" +
+        ".reference-monitoring-section .reference-monitoring-table{width:100%}\n" +
+        ".reference-monitoring-section .reference-monitoring-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid rgba(16,24,40,.065)}\n" +
+        ".reference-monitoring-section .reference-monitoring-row:last-child{border-bottom:0}\n" +
+        ".reference-monitoring-section .reference-monitoring-row span{font-size:13px;color:#687386}\n" +
+        ".reference-monitoring-section .reference-monitoring-row b{font-size:15px;color:#111827}\n" +
+        ".reference-monitoring-section .reference-monitoring-row:last-child b{color:#617cf5}\n" +
+        ".reference-monitoring-section .reference-monitoring-panel .reference-panel-cta{margin-top:auto}\n" +
+        ".reference-monitoring-section .reference-monitoring-bottom{margin-top:18px;padding:22px 24px;border-radius:18px;background:#f7f8fa;border:1px solid rgba(16,24,40,.06);display:flex;align-items:center;justify-content:space-between;gap:24px}\n" +
+        ".reference-monitoring-section .reference-monitoring-bottom strong{display:block;font-size:15px;color:#111827;margin-bottom:4px}\n" +
+        ".reference-monitoring-section .reference-monitoring-bottom p{margin:0;color:#697386;font-size:12px;line-height:1.5}\n" +
+        "@media(max-width:980px){.reference-monitoring-section .reference-monitoring-grid{grid-template-columns:1fr}.reference-monitoring-section .reference-monitoring-panel{min-height:0}}\n" +
+        "@media(max-width:680px){.reference-monitoring-section .reference-monitoring-bottom{align-items:flex-start;flex-direction:column}.reference-monitoring-section .reference-pricing-head{margin-top:28px}}\n" +
+        "</style>\n" +
+        "<div class=\"reference-pricing-head\">"
+      ) +
    "<div><span class=\"reference-kicker\">ABONNEMENTS · VEILLE RÉPUTATION</span><h2>Une veille continue, avec <span>un prix qui récompense la fidélité.</span>" +
    "</h2><p>Trois niveaux de surveillance Google Business, dans la même logique claire et progressive que nos offres ponctuelles.</p>" +
    "</div><div class=\"reference-head-note\"><strong>Le prix<br>baisse avec<br>l’ancienneté</strong><span>↘</span></div></div>\n<div class=\"reference-monitoring-grid\">\n<article class=\"reference-panel reference-monitoring-panel\">" +
