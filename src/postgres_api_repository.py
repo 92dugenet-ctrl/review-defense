@@ -418,7 +418,14 @@ class PostgresAPIRepository(PostgresRepository):
                 )
                 return cur.fetchall()
 
-    def create_case_persistent(self, organization_id: str, case_id: str, review_id: str, status: str, actor_user_id: str|None=None):
+    def create_case_persistent(
+        self,
+        organization_id: str,
+        case_id: str,
+        review_id: str,
+        status: str,
+        actor_user_id: str | None = None,
+    ):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
                 # The legacy cases table is the FK parent of case_events. Keep the
@@ -518,7 +525,15 @@ class PostgresAPIRepository(PostgresRepository):
                 )
                 return cur.fetchone()
 
-    def update_case(self, organization_id: str, case_id: str, *, status=None, decision_id=None, snapshot_sha256=None):
+    def update_case(
+        self,
+        organization_id: str,
+        case_id: str,
+        *,
+        status=None,
+        decision_id=None,
+        snapshot_sha256=None,
+    ):
         fields = []
         vals = []
         for name,val in [('status',status),('decision_id',decision_id),('snapshot_sha256',snapshot_sha256)]:
@@ -532,7 +547,15 @@ class PostgresAPIRepository(PostgresRepository):
             with conn.cursor() as cur:
                 cur.execute(f"UPDATE api_cases SET {', '.join(fields)},updated_at=now() WHERE organization_id=%s AND case_id=%s", tuple(vals))
 
-    def update_case_sla(self, organization_id: str, case_id: str, *, paused_at, paused_seconds: float, pause_reason):
+    def update_case_sla(
+        self,
+        organization_id: str,
+        case_id: str,
+        *,
+        paused_at,
+        paused_seconds: float,
+        pause_reason,
+    ):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
                 cur.execute(
@@ -836,7 +859,13 @@ class PostgresAPIRepository(PostgresRepository):
                 )
                 return cur.fetchone()
 
-    def update_evidence_verification(self, organization_id: str, evidence_id: str, verified_by: str, verified_at: str):
+    def update_evidence_verification(
+        self,
+        organization_id: str,
+        evidence_id: str,
+        verified_by: str,
+        verified_at: str,
+    ):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
                 cur.execute("UPDATE api_evidence SET verified=true, verified_by=%s, verified_at=%s WHERE organization_id=%s AND evidence_id=%s",
@@ -1058,7 +1087,13 @@ class PostgresAPIRepository(PostgresRepository):
                 row=cur.fetchone()
                 if not row:
                     return None
-                return {"timezone":row[0],"workdays":row[1],"start_hour":row[2],"end_hour":row[3],"holidays":row[4]}
+                return {
+                    "timezone": row[0],
+                    "workdays": row[1],
+                    "start_hour": row[2],
+                    "end_hour": row[3],
+                    "holidays": row[4],
+                }
 
     def create_notification(self, organization_id: str, n):
         with self.transaction(organization_id) as conn:
@@ -1267,9 +1302,15 @@ class PostgresAPIRepository(PostgresRepository):
                         "delivery_error","max_attempts","next_attempt_at","dead_lettered_at")
                     d=dict(zip(names,row))
                     for k in ("notification_id","organization_id","case_id","created_by","sent_by","cancelled_by"):
-                        if d.get(k) is not None: d[k]=str(d[k])
+                        if d.get(k) is not None:
+                            d[k] = str(d[k])
                     for k in ("created_at","sent_at","cancelled_at","last_attempt_at","next_attempt_at","dead_lettered_at"):
-                        if d.get(k) is not None: d[k]=d[k].isoformat() if hasattr(d[k],"isoformat") else str(d[k])
+                        if d.get(k) is not None:
+                            d[k] = (
+                                d[k].isoformat()
+                                if hasattr(d[k], "isoformat")
+                                else str(d[k])
+                            )
                     rows.append(d)
                 return rows
 
@@ -1391,7 +1432,11 @@ class PostgresAPIRepository(PostgresRepository):
                 (disposition['disposition_id'],organization_id,disposition['case_id'],disposition['contradiction_id'],disposition['status'],
                     disposition['rationale'],disposition['actor_id'],disposition['created_at'],True))
 
-    def append_contradiction_disposition_history(self, organization_id: str, history: Mapping[str,Any]):
+    def append_contradiction_disposition_history(
+        self,
+        organization_id: str,
+        history: Mapping[str, Any],
+    ):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
                 cur.execute("""INSERT INTO contradiction_disposition_history(history_id,
@@ -1564,7 +1609,13 @@ class PostgresAPIRepository(PostgresRepository):
                     (user_id,),
                 )
 
-    def create_recovery_token(self, organization_id: str, user_id: str, token_hash: str, expires_at: str):
+    def create_recovery_token(
+        self,
+        organization_id: str,
+        user_id: str,
+        token_hash: str,
+        expires_at: str,
+    ):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
                 cur.execute(
@@ -1632,7 +1683,13 @@ class PostgresAPIRepository(PostgresRepository):
                     (user_id,),
                 )
 
-    def create_email_verification_token(self, organization_id: str, user_id: str, token_hash: str, expires_at: str):
+    def create_email_verification_token(
+        self,
+        organization_id: str,
+        user_id: str,
+        token_hash: str,
+        expires_at: str,
+    ):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
                 cur.execute(
@@ -1894,7 +1951,8 @@ class PostgresAPIRepository(PostgresRepository):
                 ))
                 d["organization_id"] = str(d["organization_id"])
                 for k in ("current_period_start","current_period_end","created_at","updated_at"):
-                    if d[k] is not None and hasattr(d[k],"isoformat"): d[k]=d[k].isoformat()
+                    if d[k] is not None and hasattr(d[k], "isoformat"):
+                        d[k] = d[k].isoformat()
                 return d
     def upsert_billing_account(self, organization_id, row):
         with self.transaction(organization_id) as conn:
@@ -2129,7 +2187,14 @@ class PostgresAPIRepository(PostgresRepository):
                 )
                 return cur.fetchall()
 
-    def save_google_oauth_state(self, organization_id: str, state: str, user_id: str, code_verifier: str, expires_at: str):
+    def save_google_oauth_state(
+        self,
+        organization_id: str,
+        state: str,
+        user_id: str,
+        code_verifier: str,
+        expires_at: str,
+    ):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
                 cur.execute("DELETE FROM google_oauth_states WHERE organization_id=%s AND expires_at < now()", (organization_id,
