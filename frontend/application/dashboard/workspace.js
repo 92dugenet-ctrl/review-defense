@@ -854,33 +854,119 @@ if(op==="edit-role"){const member=(S.cache.team||[]).find(x=>x.user_id===id);if(
     document.getElementById("modal-root").innerHTML="";
     };
     return}
-if(op==="notify-escalation"){const [caseId,
-  level]=id.split("~");modal("Créer une notification d’escalade",
-  (
-        '<form id="notify-form"><div class="field"><label>Canal</label><select name="channel">' +
-        '<option value="IN_APP">Dans l’application</option><option value="EMAIL">Email</option' +
-        '><option value="WEBHOOK">Webhook</option></select></div><div class="field"><label>Des' +
-        'tinataire</label><input id="notify-target" name="target" required value="'
+if (op === "notify-escalation") {
+  const [caseId, level] = id.split("~");
+
+  const notificationForm =
+    '<form id="notify-form">' +
+      '<div class="field"><label>Canal</label>' +
+      '<select name="channel">' +
+        '<option value="IN_APP">Dans l’application</option>' +
+        '<option value="EMAIL">Email</option>' +
+        '<option value="WEBHOOK">Webhook</option>' +
+      '</select></div>' +
+      '<div class="field"><label>Destinataire</label>' +
+      '<input id="notify-target" name="target" required value="' +
+      esc(S.userId) +
+      '" placeholder="Identifiant du membre"></div>' +
+      '<small id="notify-target-help" class="muted">' +
+      'Pour IN_APP, indiquez l’identifiant du membre destinataire.' +
+      '</small>' +
+      '<div class="field"><label>Objet</label>' +
+      '<input name="subject" required value="' +
+      esc("Escalade SLA " + level + " — " + caseId) +
+      '"></div>' +
+      '<div class="field"><label>Message</label>' +
+      '<textarea name="body" required rows="5">' +
+      esc(
+        "Une escalade SLA de niveau " +
+        level +
+        " concerne le dossier " +
+        caseId +
+        "."
       ) +
-  esc(S.userId) +
-  '" placeholder="Identifiant du membre"></div><small id="notify-target-help" class="muted">Pour IN_APP,
-   indiquez l’identifiant du membre destinataire.</small><div class="field"><label>Objet</label><input name="subject" required value="'+esc("Escalade SLA "+level+" — "+caseId)+'"></div><div class="field"><label>Message</label><textarea name="body" required rows="5">'+esc("Une escalade SLA de niveau "+level+" concerne le dossier "+caseId+".") +'</textarea></div><button class="btn primary">Mettre en file d’envoi</button><p class="notice">La notification est créée selon la politique de l’organisation. Aucun envoi externe n’est déclenché par cette étape.</p></form>(
-        ');document.getElementById("notify-form").elements.channel.onchange=ev=>{const target=' +
-        'document.getElementById("notify-target"),help=document.getElementById("notify-target-' +
-        'help"),channel=ev.target.value;if(channel==="EMAIL"){if(!target.value||target.value==' +
-        '=S.userId)target.value=S.userEmail||"";target.placeholder="destinataire@entreprise.fr' +
-        '";help.textContent="Adresse email destinataire. L’envoi nécessite une configuration S' +
-        'MTP et une politique autorisant l’email."}else if(channel==="WEBHOOK"){if(target.valu' +
-        'e===S.userId||target.value===S.userEmail)target.value="";target.placeholder="https://' +
-        'exemple.fr/webhook";help.textContent="URL HTTPS publique. Les adresses privées et loc' +
-        'ales sont refusées par le serveur."}else{if(!target.value||target.value===S.userEmail' +
-        ')target.value=S.userId||"";target.placeholder="Identifiant du membre";help.textConten' +
-        't="Identifiant du membre destinataire dans l’organisation."}};document.getElementById' +
-        '("notify-form").onsubmit=async ev=>{ev.preventDefault();const payload=Object.fromEntr' +
-        'ies(new FormData(ev.currentTarget));payload.level=level;const result=await post("/v1/' +
-        'escalations/"+encodeURIComponent(decodeURIComponent(caseId))+"/notify",payload);S.cac' +
-        'he.notifications=arr(await api("/v1/notifications"));modal("Notification créée",'
-      )<p>La notification a été mise en file côté serveur.</p>'+jsonBlock(result.notification));};return}
+      '</textarea></div>' +
+      '<button class="btn primary">Mettre en file d’envoi</button>' +
+      '<p class="notice">La notification est créée selon la politique ' +
+      'de l’organisation. Aucun envoi externe n’est déclenché par ' +
+      'cette étape.</p>' +
+    '</form>';
+
+  modal("Créer une notification d’escalade", notificationForm);
+
+  const form = document.getElementById("notify-form");
+  const channelSelect = form.elements.channel;
+
+  channelSelect.onchange = (event) => {
+    const target = document.getElementById("notify-target");
+    const help = document.getElementById("notify-target-help");
+    const channel = event.target.value;
+
+    if (channel === "EMAIL") {
+      if (!target.value || target.value === S.userId) {
+        target.value = S.userEmail || "";
+      }
+
+      target.placeholder = "destinataire@entreprise.fr";
+      help.textContent =
+        "Adresse email destinataire. L’envoi nécessite une " +
+        "configuration SMTP et une politique autorisant l’email.";
+      return;
+    }
+
+    if (channel === "WEBHOOK") {
+      if (
+        target.value === S.userId ||
+        target.value === S.userEmail
+      ) {
+        target.value = "";
+      }
+
+      target.placeholder = "https://exemple.fr/webhook";
+      help.textContent =
+        "URL HTTPS publique. Les adresses privées et locales " +
+        "sont refusées par le serveur.";
+      return;
+    }
+
+    if (!target.value || target.value === S.userEmail) {
+      target.value = S.userId || "";
+    }
+
+    target.placeholder = "Identifiant du membre";
+    help.textContent =
+      "Identifiant du membre destinataire dans l’organisation.";
+  };
+
+  form.onsubmit = async (event) => {
+    event.preventDefault();
+
+    const payload = Object.fromEntries(
+      new FormData(event.currentTarget)
+    );
+
+    payload.level = level;
+
+    const result = await post(
+      "/v1/escalations/" +
+        encodeURIComponent(decodeURIComponent(caseId)) +
+        "/notify",
+      payload
+    );
+
+    S.cache.notifications = arr(
+      await api("/v1/notifications")
+    );
+
+    modal(
+      "Notification créée",
+      '<p>La notification a été mise en file côté serveur.</p>' +
+        jsonBlock(result.notification)
+    );
+  };
+
+  return;
+}
 if(op==="ack-escalation"||op==="resolve-escalation"){const parts=action.split(":");const caseId=parts[1],
   level=parts[2];await post("/v1/escalations/" +
   encodeURIComponent(caseId) +

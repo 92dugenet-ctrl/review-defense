@@ -513,16 +513,51 @@ async function clientMonitoring(el){
    content_base64:encoded,
    category:"GENERAL"});status.textContent="Document ajouté : " +
    file.name}catch(err){status.textContent=err.message;return}}await clientMonitoring(el)};
-  el.querySelectorAll("[data-document-download]").forEach(button=>button.onclick=async()=>{try{const headers={Authorization:"Bearer " +
-   S.token};const response=await fetch("/v1/client/documents/" +
-   encodeURIComponent(button.dataset.documentDownload) +
-   "/download",
-   {headers});if(!response.ok){const data=await response.json().catch(()=>({}));throw Error(data?.error?.message||"Téléchargement impossible")}const blob=await response.blob();const disposition=response.headers.get("Content-Disposition")||"";const filename=disposition.match(/filename="([^"] +
-   )"/)?.[1]||"document";const url=URL.createObjectURL(blob);const link=document.createElement("a(
-        ");link.href=url;link.download=filename;document.body.appendChild(link);link.click();l" +
-        "ink.remove();setTimeout(()=>URL.revokeObjectURL(url),30000)}catch(err){el.querySelect" +
-        "or("
-      )#client-document-status").textContent=err.message}});
+  el
+    .querySelectorAll("[data-document-download]")
+    .forEach((button) => {
+      button.onclick = async () => {
+        try {
+          const headers = {
+            Authorization: "Bearer " + S.token
+          };
+          const documentId = button.dataset.documentDownload;
+          const response = await fetch(
+            "/v1/client/documents/" +
+              encodeURIComponent(documentId) +
+              "/download",
+            { headers }
+          );
+
+          if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            throw Error(
+              data?.error?.message || "Téléchargement impossible"
+            );
+          }
+
+          const blob = await response.blob();
+          const disposition =
+            response.headers.get("Content-Disposition") || "";
+          const filename =
+            disposition.match(/filename="([^"]+)"/)?.[1] ||
+            "document";
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+
+          link.href = url;
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+
+          setTimeout(() => URL.revokeObjectURL(url), 30000);
+        } catch (error) {
+          el.querySelector("#client-document-status").textContent =
+            error.message;
+        }
+      };
+    });
 }
 function formatClientBytes(value){const n=Number(value||0);if(n<1024)return n +
   " o";if(n<1048576)return (n/1024).toFixed(1) +
