@@ -1,6 +1,6 @@
 import{useEffect,useMemo,useState}from"react";import{Link}from"react-router-dom";import{api}from"@/services/api/client";
 import { PageHeading } from "@/components/layout/PageHeading";
-import { FeedbackMessage } from "@/components/common/FeedbackMessage";
+import { FeedbackMessage } from "@/components/layout/FeedbackMessage";
 type R={review_id:string;rating:number;text:string;author_display_name?:string|null;source?:string;published_at?:string|null};
 export function ReviewsPage(){const[data,setData]=useState<R[]>([]),[query,setQuery]=useState(""),[rating,setRating]=useState("all"),[loading,setLoading]=useState(true),[error,setError]=useState("");
 useEffect(()=>{api.get<{items:R[]}>("/v1/reviews").then(x=>setData(x.items??[])).catch(e=>setError(e instanceof Error?e.message:"Impossible de charger les avis.")).finally(()=>setLoading(false))},[]);
