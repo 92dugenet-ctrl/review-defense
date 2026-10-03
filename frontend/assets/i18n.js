@@ -19,7 +19,10 @@
     'Analyse active':'ACTIVE ANALYSIS','Workspace sécurisé':'SECURE WORKSPACE','Reputation intelligence · pour les entreprises':'REPUTATION INTELLIGENCE · FOR BUSINESSES',
     'Reprenez le contrôle de':'Take back control of','votre réputation.':'your reputation.',
     'Analysez vos avis Google et identifiez rapidement les éléments à vérifier.':'Analyze your Google reviews and quickly identify what needs to be verified.',
-    'Review Defense vous aide à structurer les preuves et à préparer un dossier clair, avec une validation humaine à chaque étape.':'Review Defense helps you structure evidence and prepare a clear case file, with human approval at every step.',
+    'Review Defense vous aide à structurer les preuves et à préparer un dossier clair, avec une validation humaine à chaque étape.':(
+      'Review Defense helps you structure evidence and prepare a clear case file, with ' +
+      'human approval at every step.'
+    ),
     'Analyse structurée':'Structured analysis','Preuves documentées':'Documented evidence','Décisions humaines':'Human decisions',
     'L’INTERFACE':'THE INTERFACE','Une vue claire de':'A clear view of','votre dossier.':'your case file.',
     'Retrouvez rapidement les avis, les éléments à vérifier, les preuves et les validations en cours.':'Quickly find reviews, items to verify, evidence and pending approvals.',
@@ -130,28 +133,65 @@
     "Impossible de charger les ressources éditoriales.":"Unable to load editorial resources.",
     "Réessayer":"Retry",
     "Plateforme d’aide et de préparation — aucune suppression garantie.":"Assistance and preparation platform — no deletion is guaranteed.",
-    "Centralisez vos avis Google et transformez chaque situation en éléments lisibles : contenu, contexte, signaux, contradictions et points à vérifier.":"Centralize your Google reviews and turn each situation into clear, structured elements: content, context, signals, contradictions and points to verify.",
+    "Centralisez vos avis Google et transformez chaque situation en éléments lisibles : contenu, contexte, signaux, contradictions et points à vérifier.":(
+      "Centralize your Google reviews and turn each situation into clear, structured el" +
+      "ements: content, context, signals, contradictions and points to verify."
+    ),
     "Qualification assistée":"Assisted qualification",
-    "L’IA aide à distinguer les affirmations, les éléments factuels et les zones d’incertitude. L’utilisateur conserve la maîtrise de la qualification finale.":"AI helps distinguish claims, factual elements and areas of uncertainty. The user retains control of the final qualification.",
+    "L’IA aide à distinguer les affirmations, les éléments factuels et les zones d’incertitude. L’utilisateur conserve la maîtrise de la qualification finale.":(
+      "AI helps distinguish claims, factual elements and areas of uncertainty. The user" +
+      " retains control of the final qualification."
+    ),
     "Dossier de défense":"Defense case file",
-    "Regroupez chronologie, captures, échanges, sources publiques et autres pièces utiles dans un dossier structuré et traçable.":"Bring timelines, screenshots, exchanges, public sources and other useful evidence together in a structured, traceable case file.",
-    "La décision est explicite. Le dossier peut être gelé, relu et approuvé avant toute préparation d’une démarche externe.":"The decision is explicit. The case file can be frozen, reviewed and approved before any external action is prepared.",
+    "Regroupez chronologie, captures, échanges, sources publiques et autres pièces utiles dans un dossier structuré et traçable.":(
+      "Bring timelines, screenshots, exchanges, public sources and other useful evidenc" +
+      "e together in a structured, traceable case file."
+    ),
+    "La décision est explicite. Le dossier peut être gelé, relu et approuvé avant toute préparation d’une démarche externe.":(
+      "The decision is explicit. The case file can be frozen, reviewed and approved bef" +
+      "ore any external action is prepared."
+    ),
     "Suivi opérationnel":"Operational tracking",
     "Retrouvez les dossiers ouverts, les éléments en attente, les validations demandées et les prochaines étapes depuis une même console.":"Find open cases, pending items, requested approvals and next steps from a single workspace.",
-    "Les décisions, validations et événements importants restent documentés afin de comprendre qui a fait quoi, quand et pourquoi.":"Decisions, approvals and important events remain documented so you can understand who did what, when and why.",
+    "Les décisions, validations et événements importants restent documentés afin de comprendre qui a fait quoi, quand et pourquoi.":(
+      "Decisions, approvals and important events remain documented so you can understan" +
+      "d who did what, when and why."
+    ),
     "Collecte":"Collection",
     "L’avis et les informations disponibles sont rassemblés.":"The review and available information are collected.",
     "Les signaux, affirmations et éléments à examiner sont structurés.":"Signals, claims and items to examine are structured.",
     "Les pièces utiles sont reliées aux éléments concernés.":"Useful evidence is linked to the relevant items.",
     "L’équipe documente la décision et peut geler le dossier.":"The team documents the decision and can freeze the case file.",
     "Une validation humaine explicite autorise la préparation.":"Explicit human approval authorizes preparation.",
-    "Importez ou sélectionnez l’avis à examiner. Review Defense rassemble le contenu disponible, sa source, son contexte et les informations utiles au dossier.":"Import or select the review to examine. Review Defense gathers the available content, source, context and information relevant to the case file.",
-    "L’avis est découpé en éléments exploitables : affirmations, faits allégués, signaux, incohérences, contexte et points nécessitant une vérification.":"The review is broken down into actionable elements: claims, alleged facts, signals, inconsistencies, context and points requiring verification.",
-    "Chaque élément peut être qualifié et annoté. L’assistance IA accélère le tri et le rapprochement, mais la qualification finale reste sous contrôle de l’équipe.":"Each item can be qualified and annotated. AI assistance speeds up sorting and comparison, while final qualification remains under team control.",
-    "Ajoutez captures, échanges, documents, sources publiques et autres pièces pertinentes. Chaque preuve peut être reliée à l’élément qu’elle vient soutenir ou contredire.":"Add screenshots, exchanges, documents, public sources and other relevant evidence. Each item can be linked to the claim it supports or contradicts.",
-    "La chronologie, les faits, les preuves, les qualifications et les décisions sont réunis dans un dossier unique, lisible et traçable.":"The timeline, facts, evidence, qualifications and decisions are brought together in one readable, traceable case file.",
-    "L’équipe relit les éléments, formalise sa décision puis peut geler le dossier. Le gel crée un point de référence avant toute étape sensible.":"The team reviews the elements, records its decision and can then freeze the case file. Freezing creates a reference point before any sensitive step.",
-    "Une personne habilitée valide explicitement la suite. Review Defense prépare alors l’étape autorisée, sans exécuter automatiquement une action sensible sur Google.":"An authorized person explicitly approves the next step. Review Defense then prepares the authorized step without automatically executing a sensitive action on Google.",
+    "Importez ou sélectionnez l’avis à examiner. Review Defense rassemble le contenu disponible, sa source, son contexte et les informations utiles au dossier.":(
+      "Import or select the review to examine. Review Defense gathers the available con" +
+      "tent, source, context and information relevant to the case file."
+    ),
+    "L’avis est découpé en éléments exploitables : affirmations, faits allégués, signaux, incohérences, contexte et points nécessitant une vérification.":(
+      "The review is broken down into actionable elements: claims, alleged facts, signa" +
+      "ls, inconsistencies, context and points requiring verification."
+    ),
+    "Chaque élément peut être qualifié et annoté. L’assistance IA accélère le tri et le rapprochement, mais la qualification finale reste sous contrôle de l’équipe.":(
+      "Each item can be qualified and annotated. AI assistance speeds up sorting and co" +
+      "mparison, while final qualification remains under team control."
+    ),
+    "Ajoutez captures, échanges, documents, sources publiques et autres pièces pertinentes. Chaque preuve peut être reliée à l’élément qu’elle vient soutenir ou contredire.":(
+      "Add screenshots, exchanges, documents, public sources and other relevant evidenc" +
+      "e. Each item can be linked to the claim it supports or contradicts."
+    ),
+    "La chronologie, les faits, les preuves, les qualifications et les décisions sont réunis dans un dossier unique, lisible et traçable.":(
+      "The timeline, facts, evidence, qualifications and decisions are brought together" +
+      " in one readable, traceable case file."
+    ),
+    "L’équipe relit les éléments, formalise sa décision puis peut geler le dossier. Le gel crée un point de référence avant toute étape sensible.":(
+      "The team reviews the elements, records its decision and can then freeze the case" +
+      " file. Freezing creates a reference point before any sensitive step."
+    ),
+    "Une personne habilitée valide explicitement la suite. Review Defense prépare alors l’étape autorisée, sans exécuter automatiquement une action sensible sur Google.":(
+      "An authorized person explicitly approves the next step. Review Defense then prep" +
+      "ares the authorized step without automatically executing a sensitive action on G" +
+      "oogle."
+    ),
     "Comprendre ce qui est réellement écrit et séparer les faits des affirmations.":"Understand what is actually written and separate facts from claims.",
     "Identifier les éléments qui méritent une vérification ou une preuve complémentaire.":"Identify items that require verification or additional evidence.",
     "Relier chaque pièce au bon élément plutôt que conserver un dossier documentaire dispersé.":"Link every piece of evidence to the correct item instead of maintaining a fragmented document collection.",
@@ -162,12 +202,24 @@
     "Relit le dossier et prend les décisions qui nécessitent une autorité humaine.":"Reviews the case file and makes decisions that require human authority.",
     "Définit les rôles, permissions et règles internes applicables au traitement.":"Defines roles, permissions and internal rules applicable to the process.",
     "Audit de réputation":"Reputation audit",
-    "Obtenir une photographie structurée de votre présence Google : volume d’avis, tendances, signaux récurrents et situations qui méritent une analyse.":"Get a structured view of your Google presence: review volume, trends, recurring signals and situations that deserve analysis.",
+    "Obtenir une photographie structurée de votre présence Google : volume d’avis, tendances, signaux récurrents et situations qui méritent une analyse.":(
+      "Get a structured view of your Google presence: review volume, trends, recurring " +
+      "signals and situations that deserve analysis."
+    ),
     "Analyse d’avis":"Review analysis",
-    "Étudier un avis précis, son contexte et ses affirmations pour distinguer les éléments factuels des points qui nécessitent une vérification.":"Examine a specific review, its context and claims to distinguish factual elements from points requiring verification.",
-    "Réunir chronologie, captures, échanges, documents et sources dans un dossier organisé autour des éléments à démontrer.":"Bring timelines, screenshots, exchanges, documents and sources together in a case file organized around the points to establish.",
+    "Étudier un avis précis, son contexte et ses affirmations pour distinguer les éléments factuels des points qui nécessitent une vérification.":(
+      "Examine a specific review, its context and claims to distinguish factual element" +
+      "s from points requiring verification."
+    ),
+    "Réunir chronologie, captures, échanges, documents et sources dans un dossier organisé autour des éléments à démontrer.":(
+      "Bring timelines, screenshots, exchanges, documents and sources together in a cas" +
+      "e file organized around the points to establish."
+    ),
     "Validation & décision":"Approval & decision",
-    "Faire relire le dossier, formaliser la décision et conserver une trace claire de l’approbation avant toute démarche externe.":"Have the case file reviewed, record the decision and keep a clear approval trail before any external action.",
+    "Faire relire le dossier, formaliser la décision et conserver une trace claire de l’approbation avant toute démarche externe.":(
+      "Have the case file reviewed, record the decision and keep a clear approval trail" +
+      " before any external action."
+    ),
     "Piloter les dossiers ouverts, les étapes en attente, les responsabilités et les événements depuis un même espace.":"Manage open cases, pending steps, responsibilities and events from a single workspace.",
     "Préparation contrôlée":"Controlled preparation",
     "Préparer une démarche externe à partir d’un dossier validé, sans automatiser l’action sensible elle-même.":"Prepare an external process from an approved case file without automating the sensitive action itself.",
@@ -194,7 +246,10 @@
     "J’ouvre le dossier":"I open the case file",
     "Je valide":"I approve",
     "chaque étape":"each step",
-    "Réponse directe, méthode de vérification, éléments à conserver, démarches possibles et conduite à tenir en cas de refus.":"Direct response, verification method, items to preserve, possible actions and what to do if the request is refused.",
+    "Réponse directe, méthode de vérification, éléments à conserver, démarches possibles et conduite à tenir en cas de refus.":(
+      "Direct response, verification method, items to preserve, possible actions and wh" +
+      "at to do if the request is refused."
+    ),
     "Lire l’article complet":"Read the full article",
     "IA et contrôle humain":"AI & human oversight",
     "Rôle de l’IA":"Role of AI",
@@ -302,11 +357,24 @@
     'INFORMATION RGPD':'GDPR INFORMATION',
     'MISE À JOUR · 24 SEPTEMBRE 2026':'UPDATED · SEPTEMBER 24, 2026',
     'Information données personnelles':'Personal data information',
-    'Les données saisies (nom, e-mail, entreprise et message) servent à répondre à votre demande. Elles sont limitées à ce qui est nécessaire à cette finalité et ne sont pas utilisées pour une prospection commerciale sans le cadre juridique applicable. Pour exercer vos droits :':'The data you provide (name, email, company and message) is used to respond to your request. It is limited to what is necessary for this purpose and is not used for commercial prospecting outside the applicable legal framework. To exercise your rights:',
+    'Les données saisies (nom, e-mail, entreprise et message) servent à répondre à votre demande. Elles sont limitées à ce qui est nécessaire à cette finalité et ne sont pas utilisées pour une prospection commerciale sans le cadre juridique applicable. Pour exercer vos droits :':(
+      'The data you provide (name, email, company and message) is used to respond to yo' +
+      'ur request. It is limited to what is necessary for this purpose and is not used ' +
+      'for commercial prospecting outside the applicable legal framework. To exercise y' +
+      'our rights:'
+    ),
     'Exercice des droits':'Exercising your rights',
-    'Les demandes sont traitées dans les délais prévus par le RGPD. Une demande complexe ou comportant plusieurs traitements peut nécessiter un délai supplémentaire lorsque la réglementation le permet ; la personne en est informée. La CNIL peut être saisie après une démarche préalable auprès du responsable du traitement.':'Requests are handled within the time limits provided by GDPR. A complex request or one involving multiple processing activities may require additional time where permitted by law; the requester will be informed. The French data protection authority (CNIL) may be contacted after first approaching the data controller.',
+    'Les demandes sont traitées dans les délais prévus par le RGPD. Une demande complexe ou comportant plusieurs traitements peut nécessiter un délai supplémentaire lorsque la réglementation le permet ; la personne en est informée. La CNIL peut être saisie après une démarche préalable auprès du responsable du traitement.':(
+      'Requests are handled within the time limits provided by GDPR. A complex request ' +
+      'or one involving multiple processing activities may require additional time wher' +
+      'e permitted by law; the requester will be informed. The French data protection a' +
+      'uthority (CNIL) may be contacted after first approaching the data controller.'
+    ),
     'Préférences cookies':'Cookie preferences',
-    'Les traceurs qui ne sont pas strictement nécessaires doivent faire l’objet d’un consentement préalable. À ce stade, aucun outil publicitaire ou analytique optionnel n’est activé par cette couche front-end.':'Trackers that are not strictly necessary require prior consent. At this stage, no optional advertising or analytics tools are enabled by this front-end layer.',
+    'Les traceurs qui ne sont pas strictement nécessaires doivent faire l’objet d’un consentement préalable. À ce stade, aucun outil publicitaire ou analytique optionnel n’est activé par cette couche front-end.':(
+      'Trackers that are not strictly necessary require prior consent. At this stage, n' +
+      'o optional advertising or analytics tools are enabled by this front-end layer.'
+    ),
     'Strictement nécessaires':'Strictly necessary',
     'Session, sécurité et préférences indispensables.':'Session, security and essential preferences.',
     'TOUJOURS ACTIFS':'ALWAYS ACTIVE',
@@ -316,7 +384,11 @@
     'Fermer':'Close',
     'Enregistrer':'Save',
     'Cookies et traceurs':'Cookies and trackers',
-    'Review Defense utilise les traceurs strictement nécessaires au fonctionnement et à la sécurité. Aucun traceur optionnel n’est activé par cette couche front-end. Vous pouvez consulter ou modifier vos préférences à tout moment.':'Review Defense uses trackers that are strictly necessary for operation and security. No optional trackers are enabled by this front-end layer. You can review or change your preferences at any time.',
+    'Review Defense utilise les traceurs strictement nécessaires au fonctionnement et à la sécurité. Aucun traceur optionnel n’est activé par cette couche front-end. Vous pouvez consulter ou modifier vos préférences à tout moment.':(
+      'Review Defense uses trackers that are strictly necessary for operation and secur' +
+      'ity. No optional trackers are enabled by this front-end layer. You can review or' +
+      ' change your preferences at any time.'
+    ),
     'Refuser les optionnels':'Reject optional trackers',
     'Gérer':'Manage',
     'Autoriser les optionnels':'Allow optional trackers'
@@ -614,7 +686,10 @@ Object.assign(extraTranslations,{
     'Configurer MFA':'Set up MFA',
     'Créer mon espace':'Create my workspace',
     'Compte entreprise':'Business account',
-    'Le premier compte créé devient OWNER de l’organisation. Les membres CLIENT peuvent ensuite être invités depuis l’espace organisationnel.':'The first account created becomes the organization OWNER. CLIENT members can then be invited from the organization workspace.',
+    'Le premier compte créé devient OWNER de l’organisation. Les membres CLIENT peuvent ensuite être invités depuis l’espace organisationnel.':(
+      'The first account created becomes the organization OWNER. CLIENT members can the' +
+      'n be invited from the organization workspace.'
+    ),
     'Ajouter cette entrée dans votre application d’authentification.':'Add this entry to your authenticator app.',
     'Code de confirmation':'Confirmation code',
     'Activer MFA':'Enable MFA',
