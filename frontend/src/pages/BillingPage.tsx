@@ -1,6 +1,6 @@
 import{useEffect,useRef,useState}from"react";import{api}from"@/services/api/client";import{authToken}from"@/auth/AuthContext";
 import { PageHeading } from "@/components/layout/PageHeading";
-import { FeedbackMessage } from "@/components/common/FeedbackMessage";
+import { FeedbackMessage } from "@/components/layout/FeedbackMessage";
 declare global{interface Window{paypal?:{Buttons:(options:any)=>{render:(selector:string)=>Promise<void>|void}}}}
 let sdkPromise:Promise<void>|null=null;
 async function loadPayPal(clientId:string){if(window.paypal)return;if(!sdkPromise){sdkPromise=new Promise((resolve,reject)=>{const s=document.createElement("script");s.src="https://www.paypal.com/sdk/js?client-id="+encodeURIComponent(clientId)+"&components=buttons&vault=true&intent=subscription";s.onload=()=>resolve();s.onerror=()=>reject(new Error("Impossible de charger PayPal"));document.head.appendChild(s)})}return sdkPromise}
