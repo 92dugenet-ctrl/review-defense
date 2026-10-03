@@ -1893,8 +1893,7 @@ async function downloadClientDocument(documentId){try{const headers={Accept:'app
   if(!response.ok){const error=await response.json().catch(()=>({}));
   throw new Error(error?.error?.message||'Téléchargement impossible')}const blob=await response.blob();
   const disposition=response.headers.get('Content-Disposition')||'';
-    const match=disposition.match(/filename="([^"] +
-     )"/);
+    const match=disposition.match(/filename="([^"]+)"/);
    const link=document.createElement('a');
    const url=URL.createObjectURL(blob);
    link.href=url;
