@@ -202,7 +202,9 @@ function renderSignup(error=''){
    (selected.price?' — ' +
    esc(selected.price):'') +
    '</span><button type="button" class="link-btn" id="clear-pricing-selection">Modifier</button></div>':'';
- document.body.innerHTML=authShell(`<div class="auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Création de votre espace</small></div></div><div class="auth-trust-row"><span>Inscription sécurisée</span><span>Votre organisation</span><span>MFA disponible</span></div>${selectedMarkup}<form id="signup" class="stack auth-form"><div><div class="eyebrow">GET STARTED</div><h1>Créer mon compte</h1><p>Créez directement votre espace Review Defense. Vous pourrez ensuite inviter les membres de votre équipe.</p></div><label>Nom de l’entreprise<input name="organization_name" autocomplete="organization" required maxlength="200" placeholder="Mon entreprise"></label><label>Email professionnel<input name="email" type="email" autocomplete="email" required></label><label>Mot de passe<input name="password" type="password" autocomplete="new-password" minlength="12" required></label><label>Confirmer le mot de passe<input name="password_confirmation" type="password" autocomplete="new-password" minlength="12" required></label><button class="primary auth-submit" type="submit">Créer mon espace gratuitement</button><div id="signup-error" class="error">${error?esc(error):''}</div><button type="button" class="link-btn" id="signup-back">J’ai déjà un compte</button></form><div class="auth-boundary"><strong>Compte entreprise</strong><span>Le premier compte créé devient OWNER de l’organisation. Les membres CLIENT peuvent ensuite être invités depuis l’espace organisationnel.</span></div></div>`);
+ document.body.innerHTML=authShell(`<div class="auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Création de votre espace</small></div></div><div class="auth-trust-row"><span>Inscription sécurisée</span><span>Votre organisation</span><span>MFA disponible</span></div>${selectedMarkup}<form id="signup" class="stack auth-form"><div><div class="eyebrow">GET STARTED</div><h1>Créer mon compte</h1><p>Créez directement votre espace Review Defense. Vous pourrez ensuite inviter les membres de votre équipe.</p></div><label>Nom de l’entreprise<input name="organization_name" autocomplete="organization" required maxlength="200" placeholder="Mon entreprise"></label><label>Email professionnel<input name="email" type="email" autocomplete="email" required></label><label>Mot de passe<input name="password" type="password" autocomplete="new-password" minlength="12" required></label><label>Confirmer le mot de passe<input name="password_confirmation" type="password" autocomplete="new-password" minlength="12" required></label><button class="primary auth-submit" type="submit">Créer mon espace gratuitement</button><div id="signup-error" class="error">${error?esc(error):''}</div><button type="button" class="link-btn" id="signup-back">J’ai déjà un compte</button></form><div class="auth-boundary(
+   "><strong>Compte entreprise</strong><span>Le premier compte créé devient OWNER de l’organisation. Les membres CLIENT peuvent ensuite être invités depuis l’espace organisationnel.</span>" +
+   "</div></div>`);
  document.getElementById('signup').onsubmit=async e=>{
    e.preventDefault();
    const f=new FormData(e.currentTarget), err=document.getElementById('signup-error');
@@ -223,8 +225,11 @@ function renderSignup(error=''){
 }
 function renderLogin(error=''){document.body.classList.remove('console-mode');
   state.login.mfaRequired=false;
-  document.body.innerHTML=authShell(`<div class="auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Console sécurisée</small></div></div><div class="auth-trust-row"><span>Connexion sécurisée</span><span>Compte protégé</span><span>Vérification renforcée</span></div><form id="login" class="stack auth-form"><div><div class="eyebrow">IDENTITY & ACCESS</div><h1>Connexion</h1><p>Accédez à votre espace organisationnel sécurisé.</p></div><label>Email<input name="email" type="email" autocomplete="username" required value="${esc(state.login.email)}"></label><label>Organisation<input name="organization_id" autocomplete="organization" required value="${esc(state.login.organization_id)}"></label><label>Mot de passe<div class="password-field"><input id="login-password" name="password" type="password" autocomplete="current-password" required><button type="button" class="ghost" onclick="togglePasswordVisibility('login-password',
-  this)" aria-label="Afficher le mot de passe">Afficher</button></div></label><div id="mfa-slot" hidden></div><button class="primary auth-submit" type="submit">Se connecter</button>${error?`<div class="error">${esc(error)}</div>`:''}<button type="button" class="link-btn" id="forgot">Mot de passe oublié ?</button><button type="button" class="link-btn" id="create-account">Créer un compte</button><button type="button" class="link-btn" id="invite-account">J’ai une invitation</button></form><div class="auth-boundary"><strong>Contrôle humain & serveur</strong><span>Aucune action Google externe n'est exécutée pendant l'authentification.</span></div></div>`);document.getElementById('login').onsubmit=loginSubmit;document.getElementById('forgot').onclick=renderRecovery;document.getElementById('create-account').onclick=()=>renderSignup();document.getElementById('invite-account').onclick=()=>{location.href='/?page=accept-invitation'}}
+  document.body.innerHTML=authShell(`<div class="
+ )auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Console sécurisée</small></div></div><div class="auth-trust-row"><span>Connexion sécurisée</span><span>Compte protégé</span><span>Vérification renforcée</span></div><form id="login" class="stack auth-form"><div><div class="eyebrow">IDENTITY & ACCESS</div><h1>Connexion</h1><p>Accédez à votre espace organisationnel sécurisé.</p></div><label>Email<input name="email" type="email" autocomplete="username" required value="${esc(state.login.email)}"></label><label>Organisation<input name="organization_id" autocomplete="organization" required value="${esc(state.login.organization_id)}"></label><label>Mot de passe<div class="password-field"><input id="login-password" name="password" type="password" autocomplete="current-password" required><button type="button" class="ghost" onclick="togglePasswordVisibility('login-password',
+  this)" aria-label="Afficher le mot de passe">Afficher</button></div></label><div id="mfa-slot" hidden></div><button class="primary auth-submit" type="submit">Se connecter</button>${error?`<div class="error">${esc(error)}</div>`:''}<button type="button" class="link-btn" id="forgot">Mot de passe oublié ?</button><button type="button" class="link-btn" id="create-account">Créer un compte</button><button type="button" class="link-btn" id="invite-account">J’ai une invitation</button></form><div class="auth-boundary(
+    "><strong>Contrôle humain & serveur</strong><span>Aucune action Google externe n'est exécutée pendant l'authentification.</span>" +
+    "</div></div>`);document.getElementById('login').onsubmit=loginSubmit;document.getElementById('forgot').onclick=renderRecovery;document.getElementById('create-account').onclick=()=>renderSignup();document.getElementById('invite-account').onclick=()=>{location.href='/?page=accept-invitation'}}
 function togglePasswordVisibility(id,
     button){const input=document.getElementById(id);
     if(!input)return;
@@ -247,7 +252,8 @@ async function loginSubmit(e){e.preventDefault();
     const slot=document.getElementById('mfa-slot');
     if(slot){slot.hidden=false;
     slot.innerHTML=(
-        '<label>Code MFA<input id="login-mfa" name="mfa_code" inputmode="numeric" autocomplete' +
+        '<label>Code MFA<input id="
+  )login-mfa" name="mfa_code" inputmode="numeric" autocomplete' +
         '="one-time-code" pattern="\\d{6}" maxlength="6" placeholder="000000" required></label' +
         '><p class="hint">Entrez le code de votre application d’authentification.</p>'
             );
@@ -255,7 +261,9 @@ async function loginSubmit(e){e.preventDefault();
         if(err)err.textContent=x.message;
         else document.querySelector('#login').insertAdjacentHTML('beforeend',
   `<div class="error">${esc(x.message)}</div>`)}}
-function renderRecovery(){document.body.innerHTML=authShell(`<div class="auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Récupération sécurisée</small></div></div><form id="recovery" class="stack auth-form"><div><div class="eyebrow">ACCOUNT RECOVERY</div><h1>Récupérer l’accès</h1><p>La réponse reste générique afin de ne pas révéler l’existence d’un compte.</p></div><label>Email<input name="email" type="email" autocomplete="username" required></label><label>Organisation<input name="organization_id" autocomplete="organization" required></label><button class="primary auth-submit">Envoyer le lien</button><div id="recovery-msg" class="hint"></div><button type="button" class="link-btn" id="back">Retour à la connexion</button></form><div class="auth-boundary"><strong>Jeton à usage contrôlé</strong><span>Le lien de récupération est limité dans le temps et à usage unique.</span></div></div>`);
+function renderRecovery(){document.body.innerHTML=authShell(`<div class="auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Récupération sécurisée</small></div></div><form id="recovery" class="stack auth-form"><div><div class="eyebrow">ACCOUNT RECOVERY</div><h1>Récupérer l’accès</h1><p>La réponse reste générique afin de ne pas révéler l’existence d’un compte.</p></div><label>Email<input name="email" type="email" autocomplete="username" required></label><label>Organisation<input name="organization_id" autocomplete="organization" required></label><button class="primary auth-submit">Envoyer le lien</button><div id="recovery-msg" class="hint"></div><button type="button" class="link-btn" id="back">Retour à la connexion</button></form><div class="auth-boundary(
+  "><strong>Jeton à usage contrôlé</strong><span>Le lien de récupération est limité dans le temps et à usage unique.</span></div>" +
+  "</div>`);
   document.getElementById('recovery').onsubmit=async e=>{e.preventDefault();
   const f=new FormData(e.currentTarget);
   try{await api('/v1/auth/recovery/request',
@@ -267,7 +275,8 @@ function renderRecovery(){document.body.innerHTML=authShell(`<div class="auth-sh
 function renderReset(){const p=new URLSearchParams(location.search);
   const token=p.get('token')||p.get('recovery_token');
   const org=p.get('organization_id')||'';
-  document.body.innerHTML=authShell(`<form id="reset" class="stack"><h1>Nouveau mot de passe</h1><p>Le lien est à usage unique et limité dans le temps.</p><label>Organisation<input name="organization_id" required value="${esc(org)}"></label><label>Token de récupération<input name="recovery_token" required value="${esc(token)}"></label><label>Nouveau mot de passe<input name="new_password" type="password" autocomplete="new-password" required minlength="12"></label><button class="primary">Changer le mot de passe</button><div id="reset-msg" class="hint"></div></form>`);
+  document.body.innerHTML=authShell(`<form id="
+)reset" class="stack"><h1>Nouveau mot de passe</h1><p>Le lien est à usage unique et limité dans le temps.</p><label>Organisation<input name="organization_id" required value="${esc(org)}"></label><label>Token de récupération<input name="recovery_token" required value="${esc(token)}"></label><label>Nouveau mot de passe<input name="new_password" type="password" autocomplete="new-password" required minlength="12"></label><button class="primary">Changer le mot de passe</button><div id="reset-msg" class="hint"></div></form>`);
   document.getElementById('reset').onsubmit=async e=>{e.preventDefault();
   const f=new FormData(e.currentTarget);
   try{await api('/v1/auth/recovery/reset',
@@ -527,17 +536,35 @@ const views={
   api('/v1/notifications/metrics').catch(()=>({}))]);
   return pageHead('dashboard',
     'Pilotage') +
-    `<div class="hero-grid"><div class="hero-card"><div class="eyebrow">REVIEW DEFENSE</div><h2>Décider avec des preuves. Soumettre avec contrôle humain.</h2><p>Chaque dossier reste suivi et protégé par des étapes explicites.</p><div class="hero-actions">${state.me?.role==='CLIENT'?'<button class="primary" onclick="showNewClientCase()">+ Nouveau dossier</button><button class="ghost" onclick="state.view=\'cases\';reviewDefenseRender()">Suivre mes dossiers</button>':(
+    (
+      `<div class="hero-grid"><div class="hero-card"><div class="eyebrow">REVIEW DEFENSE</div><h2>Décider avec des preuves. Soumettre avec contrôle humain.</h2>` +
+      `<p>Chaque dossier reste suivi et protégé par des étapes explicites.</p><div class="hero-actions">${state.me?.role==='CLIENT'?'<button class="primary" onclick="showNewClientCase()">+ Nouveau dossier</button><button class="ghost" onclick="state.view=\'cases\';reviewDefenseRender()">Suivre mes dossiers</button>':(
         '<button class="primary" onclick="state.view=\'cases\';reviewDefenseRender()">Ouvrir l' +
         'es dossiers</button><button class="ghost" onclick="state.view=\'approvals\';reviewDef' +
         'enseRender()">Voir les validations</button>'
-      )}</div></div><div class="card"><div class="label">Reviews</div><div class="metric">${r.items?.length??0}</div><span class="metric-caption">Avis ingérés</span></div><div class="card"><div class="label">Dossiers</div><div class="metric">${c.items?.length??0}</div><span class="metric-caption">Dossiers suivis</span></div><div class="card"><div class="label">Approvals</div><div class="metric">${a.items?.length??0}</div><span class="metric-caption">Contrôles humains</span></div></div><div class="panel client-focus-panel"><div class="section-toolbar"><div><div class="eyebrow">À TRAITER MAINTENANT</div><h3>Votre prochaine action</h3><p>Le tableau de bord met en avant ce qui mérite votre attention avant le reste.</p></div><span class="pill warning">${a.items?.filter(x=>String(x.status||'').toUpperCase()==='PENDING').length||0} validation(s)</span></div><div class="client-focus-grid"><button class="client-focus-item" type="button" onclick="state.view='cases';reviewDefenseRender()"><span class="item-index">01</span><span><strong>Suivre les dossiers actifs</strong><small>${c.items?.filter(x=>['OPEN','IN_REVIEW','PENDING'].includes(String(x.status||'').toUpperCase())).length||0} dossier(s) en cours</small></span><b>→</b></button>${state.me?.role==='CLIENT'?'<button class="client-focus-item" type="button" onclick="state.view=\'cases\';reviewDefenseRender()"><span class="item-index">02</span><span><strong>Compléter un dossier</strong><small>Ajouter les justificatifs manquants</small></span><b>→</b></button>':(
+      )}</div>` +
+      `</div><div class="card"><div class="label">Reviews</div><div class="metric">${r.items?.length??0}</div><span class="metric-caption">Avis ingérés</span>` +
+      `</div><div class="card"><div class="label">Dossiers</div><div class="metric">${c.items?.length??0}</div><span class="metric-caption">Dossiers suivis</span>` +
+      `</div><div class="card"><div class="label">Approvals</div><div class="metric">${a.items?.length??0}</div><span class="metric-caption">Contrôles humains</span>` +
+      `</div></div><div class="panel client-focus-panel"><div class="section-toolbar"><div><div class="eyebrow">À TRAITER MAINTENANT</div>` +
+      `<h3>Votre prochaine action</h3><p>Le tableau de bord met en avant ce qui mérite votre attention avant le reste.</p></div><span class="pill warning">${a.items?.filter(x=>String(x.status||'').toUpperCase()==='PENDING').length||0} validation(s)</span>` +
+      `</div><div class="client-focus-grid"><button class="client-focus-item" type="button" onclick="state.view='cases';reviewDefenseRender()">` +
+      `<span class="item-index">01</span><span><strong>Suivre les dossiers actifs</strong><small>${c.items?.filter(x=>['OPEN','IN_REVIEW','PENDING'].includes(String(x.status||'').toUpperCase())).length||0} dossier(s) en cours</small>` +
+      `</span><b>→</b></button>${state.me?.role==='CLIENT'?'<button class="client-focus-item" type="button" onclick="state.view=\'cases\';reviewDefenseRender()"><span class="item-index">02</span><span><strong>Compléter un dossier</strong><small>Ajouter les justificatifs manquants</small></span><b>→</b></button>':(
         "<button class=\"client-focus-item\" type=\"button\" onclick=\"state.view='approvals';" +
         "reviewDefenseRender()\"><span class=\"item-index\">02</span><span><strong>Vérifier le" +
         "s validations</strong><small>${a.items?.filter(x=>String(x.status||'').toUpperCase()=" +
         "=='PENDING').length||0} décision(s) humaine(s) en attente</small></span><b>→</b></but" +
         "ton>"
-      )}<button class="client-focus-item" type="button" onclick="state.view='evidence';reviewDefenseRender()"><span class="item-index">03</span><span><strong>Contrôler les preuves</strong><small>Accéder au registre d’intégrité documentaire</small></span><b>→</b></button></div></div><div class="card-grid three"><div class="panel"><h3>Pipeline</h3><p>Analyse → preuves → validation humaine → préparation.</p><div class="pipeline"><span>Analyse</span><i>→</i><span>Preuves</span><i>→</i><span>Humain</span><i>→</i><span>Gel</span></div></div><div class="panel"><h3>Garde-fous</h3><p>Des contrôles de sécurité et une validation humaine encadrent les étapes sensibles.</p><div class="guardrail">Revue humaine requise avant toute action externe.</div></div><div class="panel"><h3>Notifications</h3><p class="metric-inline">${n.total!==undefined?esc(n.total):'—'} <small>événements</small></p><span class="metric-caption">${n.unread!==undefined?esc(n.unread):'—'} non lus</span></div></div>`},
+      )}<button class="client-focus-item" type="button" onclick="state.view='evidence';reviewDefenseRender()">` +
+      `<span class="item-index">03</span><span><strong>Contrôler les preuves</strong><small>Accéder au registre d’intégrité documentaire</small>` +
+      `</span><b>→</b></button></div></div><div class="card-grid three"><div class="panel"><h3>Pipeline</h3><p>Analyse → preuves → validation humaine → préparation.</p>` +
+      `<div class="pipeline"><span>Analyse</span><i>→</i><span>Preuves</span><i>→</i><span>Humain</span><i>→</i><span>Gel</span></div>` +
+      `</div><div class="panel"><h3>Garde-fous</h3><p>Des contrôles de sécurité et une validation humaine encadrent les étapes sensibles.</p>` +
+      `<div class="guardrail">Revue humaine requise avant toute action externe.</div></div><div class="panel"><h3>Notifications</h3>` +
+      `<p class="metric-inline">${n.total!==undefined?esc(n.total):'—'} <small>événements</small></p><span class="metric-caption">${n.unread!==undefined?esc(n.unread):'—'} non lus</span>` +
+      `</div></div>`
+    )},
  reviews:async()=>{const d=await api('/v1/reviews');
   const items=d.items||[];
   const avg=items.length?(items.reduce((sum,
@@ -776,7 +803,10 @@ const views={
  escalations:async()=>{const d=await api('/v1/escalations');
   return pageHead('escalations',
     `${d.items?.length||0} signaux`) +
-    `<div class="panel"><div class="section-toolbar"><div><h3>Signaux actifs</h3><p>Prioriser les écarts SLA et contradictions à traiter.</p></div><span class="pill warning">${(d.items||[]).filter(x=>x.status==='OPEN').length} ouverts</span></div>${(d.items||[]).length?`<table class="table"><thead><tr><th>Case</th><th>Niveau</th><th>Statut</th><th>Motif</th></tr></thead><tbody>${d.items.map(x=>`<tr><td>${esc(x.case_id)}</td><td>${esc(x.level)}</td><td>${esc(x.status)}</td><td>${esc(x.reason)}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">Aucune escalation active.<small>Le centre reste surveillé par les règles SLA.</small></div>'}</div>`},
+    (
+      `<div class="panel"><div class="section-toolbar"><div><h3>Signaux actifs</h3><p>Prioriser les écarts SLA et contradictions à traiter.</p>` +
+      `</div><span class="pill warning">${(d.items||[]).filter(x=>x.status==='OPEN').length} ouverts</span></div>${(d.items||[]).length?`<table class="table"><thead><tr><th>Case</th><th>Niveau</th><th>Statut</th><th>Motif</th></tr></thead><tbody>${d.items.map(x=>`<tr><td>${esc(x.case_id)}</td><td>${esc(x.level)}</td><td>${esc(x.status)}</td><td>${esc(x.reason)}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">Aucune escalation active.<small>Le centre reste surveillé par les règles SLA.</small></div>'}</div>`
+    )},
  evidence:async()=>{const d=await api('/v1/evidence');
   const items=d.items||[];
   const verified=items.filter(x=>String(x.status||'').toUpperCase()==='VERIFIED').length;
@@ -1089,7 +1119,11 @@ const views={
   result:'Empreinte documentaire vérifié'}];
   return pageHead('audit',
     '3 événements') +
-    `<div class="panel"><div class="section-toolbar"><div><h3>Journal d’audit</h3><p>TRACEABILITY · lecture seule · les événements sont enregistrés côté serveur.</p></div><span class="pill">Lecture seule</span></div><div class="audit-list">${events.map(e=>`<article class="audit-item"><div class="audit-dot"></div><div class="audit-main"><div class="audit-top"><strong>${esc(e.type)}</strong><span>${esc(e.time)}</span></div><div class="audit-meta">${esc(e.actor)} · ${esc(e.target)}</div><p>${esc(e.result)}</p></div></article>`).join('')}</div></div>`},
+    (
+      `<div class="panel"><div class="section-toolbar"><div><h3>Journal d’audit</h3><p>TRACEABILITY · lecture seule · les événements sont enregistrés côté serveur.</p>` +
+      `</div><span class="pill">Lecture seule</span></div><div class="audit-list">${events.map(e=>`<article class="audit-item"><div class="audit-dot"></div><div class="audit-main"><div class="audit-top"><strong>${esc(e.type)}</strong><span>${esc(e.time)}</span></div><div class="audit-meta">${esc(e.actor)} · ${esc(e.target)}</div><p>${esc(e.result)}</p></div></article>`).join('')}</div>` +
+      `</div>`
+    )},
  billing:async()=>{
  const en=window.ReviewDefenseI18n?.getLanguage?.()==='en';
   let b={items:[]};
@@ -1293,7 +1327,11 @@ const views={
    esc(x.policy_version||'—') +
    '</small></div>').join(''):'<div class="empty">Aucun consentement optionnel enregistré.</div>') +
    '</div></div></div>'+
- (canManage?'<div class="privacy-admin"><div class="section-toolbar"><div><h4>Traitement organisationnel</h4><p>Réservé aux OWNER / ADMIN. Les changements d’état sont audités.</p></div><button class="ghost" onclick="loadPrivacyAdmin()">Voir les demandes de l’organisation</button></div><div id="privacy-admin-results"></div></div>':'')+
+ (canManage?(
+   '<div class="privacy-admin"><div class="section-toolbar"><div><h4>Traitement organisationnel</h4><p>Réservé aux OWNER / ADMIN. Les changements d’état sont audités.</p>' +
+   '</div><button class="ghost" onclick="loadPrivacyAdmin()">Voir les demandes de l’organisation</button></div><div id="privacy-admin-results">' +
+   '</div></div>'
+ ):'')+
  '</div>'+
   (
         '<div class="panel org-members"><div class="section-toolbar"><div><h3>Membres & rôles<' +
@@ -1486,7 +1524,12 @@ function panel(t,
 function openCommandPalette(){const old=document.getElementById('command-palette');
   if(old){old.remove();
   return}document.body.insertAdjacentHTML('beforeend',
-  `<div id="command-palette" class="modal-backdrop"><div class="command-palette"><div class="command-head"><strong>Navigation rapide</strong><button class="modal-close" onclick="openCommandPalette()">×</button></div><input id="command-input" placeholder="Rechercher une section…" autocomplete="off"><div class="command-list">${visibleNavItems().map(([id,label])=>`<button onclick="navigateTo('${id}');document.getElementById('command-palette')?.remove()"><span>${label}</span><small>/${id}</small></button>`).join('')}</div></div></div>`);
+  (
+    `<div id="command-palette" class="modal-backdrop"><div class="command-palette"><div class="command-head"><strong>Navigation rapide</strong>` +
+    `<button class="modal-close" onclick="openCommandPalette()">×</button></div><input id="command-input" placeholder="Rechercher une section…" autocomplete="off">` +
+    `<div class="command-list">${visibleNavItems().map(([id,label])=>`<button onclick="navigateTo('${id}');document.getElementById('command-palette')?.remove()"><span>${label}</span><small>/${id}</small></button>`).join('')}</div>` +
+    `</div></div>`
+  ));
   const input=document.getElementById('command-input');
   input?.focus();
   input?.addEventListener('input',
@@ -1892,7 +1935,11 @@ async function showMfa(){try{const d=await api('/v1/auth/mfa/enroll',
   {method:'POST',
   body:'{}'});
   modal('Configurer MFA',
-  `<div class="stack"><p>Ajoutez cette entrée dans votre application d’authentification.</p><code class="secret">${esc(d.secret)}</code><label>Code de confirmation<input id="mfa-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></label><button class="primary" onclick="confirmMfa()">Activer MFA</button></div>`)}catch(e){toast(e.message,
+  (
+    `<div class="stack"><p>Ajoutez cette entrée dans votre application d’authentification.</p><code class="secret">${esc(d.secret)}</code>` +
+    `<label>Code de confirmation<input id="mfa-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></label><button class="primary" onclick="confirmMfa()">Activer MFA</button>` +
+    `</div>`
+  ))}catch(e){toast(e.message,
   'error')}}
 async function confirmMfa(){try{await api('/v1/auth/mfa/confirm',
   {method:'POST',
