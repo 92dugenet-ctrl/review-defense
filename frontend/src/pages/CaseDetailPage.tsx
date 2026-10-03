@@ -1,8 +1,8 @@
 import{useEffect,useState}from"react";import{Link,useParams}from"react-router-dom";import{api}from"@/services/api/client";
 import { PageHeading } from "@/components/layout/PageHeading";
-import { FeedbackMessage } from "@/components/common/FeedbackMessage";
-import { DetailMeta } from "@/components/common/DetailMeta";
-import { SignalRow } from "@/components/common/SignalRow";
+import { FeedbackMessage } from "@/components/layout/FeedbackMessage";
+import { DetailMeta } from "@/components/layout/DetailMeta";
+import { SignalRow } from "@/components/layout/SignalRow";
 type Evidence={evidence_id:string;filename:string;evidence_type:string;status:string};
 type Workspace={state:string;priority:string;review:{author_display_name?:string|null;text?:string;rating?:number;source?:string};evidence:Evidence[];evidence_coverage?:number;claims?:{claim_id:string;text:string;claim_type:string;status:string}[];policies?:{code:string;status:string;justification?:string}[];contradictions?:{contradiction_id:string;description:string;requires_human_review:boolean}[]};
 type WorkspaceResponse={workspace:Workspace;evidence_tasks:{task_id:string;evidence_requirement:string;priority:string;status:string}[];requires_human_review:boolean};
