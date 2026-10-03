@@ -428,21 +428,7 @@ class ReviewDefenseAPI:
             "Content-Type": "application/json; charset=utf-8",
             **(headers or {}),
         }
-        response_payload = dict(payload)
-        if self.config.cookie_auth_enabled and response_payload.get("access_token"):
-            raw_token = str(response_payload.pop("access_token"))
-            cookie_parts = [
-                f"{self._session_cookie_name()}={raw_token}",
-                "Path=/",
-                f"Max-Age={self.session_ttl}",
-                "HttpOnly",
-                "SameSite=Lax",
-            ]
-            if self.config.production:
-                cookie_parts.append("Secure")
-            response_headers["Set-Cookie"] = "; ".join(cookie_parts)
-            response_payload["csrf_token"] = self._csrf_token(raw_token)
-        body = json.dumps(response_payload, ensure_ascii=False).encode()
+        body = json.dumps(payload, ensure_ascii=False).encode()
         return status, response_headers, body
 
     def _privacy_request_payload(self, row: Any) -> dict[str, Any]:
@@ -3946,6 +3932,32 @@ class ReviewDefenseAPI:
         self.telemetry.observe_ms("http_request_duration_ms", elapsed, labels={"method": environ.get("REQUEST_METHOD", "GET"), "path": path})
         if status >= 500:
             self.telemetry.increment("http_errors_total", labels={"path": path, "status": str(status)})
+        cookie_session_requested = self.config.cookie_auth_enabled and (
+            environ.get("HTTP_X_SESSION_MODE") == "cookie"
+            or (
+                self._cookie_session_token(environ)
+                and not str(environ.get("HTTP_AUTHORIZATION", "")).startswith("Bearer ")
+            )
+        )
+        if cookie_session_requested and status in {200, 201}:
+            try:
+                response_payload = json.loads(body.decode("utf-8"))
+            except (UnicodeDecodeError, json.JSONDecodeError):
+                response_payload = None
+            if isinstance(response_payload, dict) and response_payload.get("access_token"):
+                raw_token = str(response_payload.pop("access_token"))
+                cookie_parts = [
+                    f"{self._session_cookie_name()}={raw_token}",
+                    "Path=/",
+                    f"Max-Age={self.session_ttl}",
+                    "HttpOnly",
+                    "SameSite=Lax",
+                ]
+                if self.config.production:
+                    cookie_parts.append("Secure")
+                headers["Set-Cookie"] = "; ".join(cookie_parts)
+                response_payload["csrf_token"] = self._csrf_token(raw_token)
+                body = json.dumps(response_payload, ensure_ascii=False).encode()
         response_headers = [(k,v) for k,v in headers.items()] + [("Content-Length", str(len(body))), ("X-Request-ID", trace_id)]
         if self.config.secure_headers:
             response_headers.extend(list(security_headers(production=self.config.production).items()))
