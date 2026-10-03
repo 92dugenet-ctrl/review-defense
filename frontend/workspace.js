@@ -178,79 +178,91 @@ function acceptInvitation(){
  catch(error){err.textContent=error.message}finally{if(button.isConnected)button.disabled=false}};
 }
 function login(){
- const params=new URLSearchParams(location.search);
- let mode=params.get("auth")==="register"||location.pathname==="/inscription"?"register":"login";
- const render=()=>{
-  const registering=mode==="register";
-    app.innerHTML='<main class="login"><section class="loginbox"><div><b style="color:#0878ee(
-      ">◆</b> Review Defense</div>" +
-      "h1>' +
-    (registering?'Créer votre espace':'Connexion à votre espace') +
-    '</h1>" +
-      "p>' +
-    (registering
-      ? 'Créez votre compte pour commencer à analyser et suivre vos avis.'
-      : 'Connectez-vous pour retrouver vos avis, dossiers, preuves et actions.'
-    ) +
-    '</p>" +
-      "div class="
-    )auth-tabs"><button type="button" class="btn ' +
-    (!registering?'primary':'') +
-    '" id="auth-login">Connexion</button><button type="button" class="btn ' +
-    (registering?'primary':'') +
-    '" id="auth-register">Créer un compte</button></div><form id="auth-form">' +
-    (registering
-      ? '<div class="field"><label>Nom de votre entreprise</label>' +
-        '<input name="organization_name" required maxlength="200" autocomplete="organization"></div>'
-      : (
-        '<div class="field"><label>Identifiant de votre organisation</label><input name="organ' +
-        'ization_id" required value="'
-      ) +
-    esc(localStorage.getItem("rd_org_id")||"") +
-    '"></div>') +
-    (
-        '<div class="field"><label>Email</label><input name="email" type="email" required auto' +
-        'complete="email"></div><div class="field"><label>Mot de passe</label><input name="pas' +
-        'sword" type="password" required autocomplete="'
-      ) +
-    (registering?'new-password':'current-password') +
-    '"></div>' +
-    (registering?'':'<div class="field"><label>Code MFA si demandé</label><input name="mfa_code" inputmode="numeric"></div>') +
-    (
-        '<div class="err" id="auth-error" role="alert"></div><button class="btn primary" style' +
-        '="width:100%;text-align:center" type="submit">'
-      ) +
-    (registering?'Créer mon compte':'Se connecter') +
-    '</button></form></section></main>';
-    if(!registering)app.querySelector(".loginbox").insertAdjacentHTML("beforeend",
-    '<p><a href="/reset-password">Mot de passe oublié ?</a></p>');
-  document.getElementById("auth-login").onclick=()=>{mode="login";render()};
-  document.getElementById("auth-register").onclick=()=>{mode="register";render()};
-  document.getElementById("auth-form").onsubmit=async e=>{
-      e.preventDefault();const form=e.currentTarget,
-     err=document.getElementById("auth-error"),
-     submit=form.querySelector('button[type="submit"]');err.textContent="";submit.disabled=true;
-   try{
-    const payload=Object.fromEntries(new FormData(form));
-    const d=registering?await post("/v1/auth/register",payload):await post("/v1/auth/login",payload);
-        if(d.status==="verification_required"){localStorage.setItem("rd_org_id",
-            d.organization_id);
-        mode="login";
-        render();
-        document.getElementById("auth-error").textContent =
-          "Un email de vérification a été demandé. " +
-          "Vérifiez votre boîte de réception avant de vous connecter.";
-        return}
-    if(d.organization_id)localStorage.setItem("rd_org_id",d.organization_id);
-    if(!d.access_token)throw Error("Le compte a été créé, mais aucune session n'a été délivrée. Vérifiez la configuration de validation email.");
-        S.token=d.access_token;S.role=d.role;localStorage.setItem("rd_token",
-      S.token);localStorage.setItem("rd_role",
-      S.role);location.replace(can("manager")?"/admin":"/client");
-   }catch(x){err.textContent=x.message}
-   finally{const button=form.querySelector('button[type="submit"]');if(button)button.disabled=false}
+  const params=new URLSearchParams(location.search);
+  let mode=params.get("auth")==="register"||location.pathname==="/inscription"?"register":"login";
+  const render=()=>{
+    const registering=mode==="register";
+    const organizationField=registering
+      ? ""
+      : '<div class="field"><label for="auth-organization">Identifiant de votre organisation</label><input id="auth-organization" name="organization_id" required value="' + esc(localStorage.getItem("rd_org_id")||"") + '"></div>';
+    const mfaField=registering
+      ? ""
+      : '<div class="field"><label for="auth-mfa">Code MFA si demandé</label><input id="auth-mfa" name="mfa_code" inputmode="numeric" autocomplete="one-time-code"></div>';
+    const passwordAutocomplete=registering?"new-password":"current-password";
+    app.innerHTML=(
+      '<main class="login"><section class="loginbox"><div><b style="color:#0878ee">◆</b> Review Defense</div><h1>' +
+      (registering?"Créer votre espace":"Connexion à votre espace") +
+      '</h1><p>' +
+      (registering
+        ?"Créez votre compte pour commencer à analyser et suivre vos avis."
+        :"Connectez-vous pour retrouver vos avis, dossiers, preuves et actions.") +
+      '</p><div class="auth-tabs"><button type="button" class="btn ' +
+      (!registering?"primary":"") +
+      '" id="auth-login">Connexion</button><button type="button" class="btn ' +
+      (registering?"primary":"") +
+      '" id="auth-register">Créer un compte</button></div><form id="auth-form">' +
+      (registering
+        ? '<div class="field"><label for="auth-organization-name">Nom de votre entreprise</label><input id="auth-organization-name" name="organization_name" required maxlength="200" autocomplete="organization"></div>'
+        : organizationField) +
+      '<div class="field"><label for="auth-email">Email</label><input id="auth-email" name="email" type="email" required autocomplete="email"></div>' +
+      '<div class="field"><label for="auth-password">Mot de passe</label><input id="auth-password" name="password" type="password" required minlength="12" maxlength="256" autocomplete="' +
+      passwordAutocomplete +
+      '"></div>' +
+      mfaField +
+      '<div class="err" id="auth-error" role="alert" aria-live="polite"></div><button class="btn primary" style="width:100%;text-align:center" type="submit">' +
+      (registering?"Créer mon compte":"Se connecter") +
+      '</button></form></section></main>'
+    );
+    if(!registering){
+      app.querySelector(".loginbox").insertAdjacentHTML(
+        "beforeend",
+        '<p><a href="/reset-password">Mot de passe oublié ?</a></p>'
+      );
+    }
+    document.getElementById("auth-login").onclick=()=>{mode="login";render()};
+    document.getElementById("auth-register").onclick=()=>{mode="register";render()};
+    document.getElementById("auth-form").onsubmit=async event=>{
+      event.preventDefault();
+      const form=event.currentTarget;
+      const errorBox=document.getElementById("auth-error");
+      const submitButton=form.querySelector('button[type="submit"]');
+      if(!form.reportValidity())return;
+      errorBox.textContent="";
+      submitButton.disabled=true;
+      try{
+        const payload=Object.fromEntries(new FormData(form));
+        const result=registering
+          ? await post("/v1/auth/register",payload)
+          : await post("/v1/auth/login",payload);
+        if(result.status==="verification_required"){
+          localStorage.setItem("rd_org_id",result.organization_id);
+          mode="login";
+          render();
+          document.getElementById("auth-error").textContent=(
+            "Un email de vérification a été demandé. " +
+            "Vérifiez votre boîte de réception avant de vous connecter."
+          );
+          return;
+        }
+        if(result.organization_id){
+          localStorage.setItem("rd_org_id",result.organization_id);
+        }
+        if(!result.access_token){
+          throw Error("Le compte a été créé, mais aucune session n’a été délivrée. Vérifiez la configuration de validation email.");
+        }
+        S.token=result.access_token;
+        S.role=result.role;
+        localStorage.setItem("rd_token",S.token);
+        localStorage.setItem("rd_role",S.role);
+        location.replace(can("manager")?"/admin":"/client");
+      }catch(error){
+        errorBox.textContent=error.message||"Une erreur est survenue. Réessayez.";
+      }finally{
+        if(submitButton.isConnected)submitButton.disabled=false;
+      }
+    };
   };
- };
- render();
+  render();
 }
 const client=[["dashboard",
   "Vue d’ensemble"],
