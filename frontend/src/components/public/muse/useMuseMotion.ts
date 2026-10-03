@@ -1,1 +1,113 @@
-import{useEffect}from"react";export function useMuseMotion(){useEffect(()=>{const h=document.querySelector<HTMLElement>("#header"),p=document.querySelector<HTMLElement>(".progress i"),s=[...document.querySelectorAll<HTMLElement>(".scene")],t=[...document.querySelectorAll<HTMLElement>(".scene h1,.scene h2,.scene p,.scene .eyebrow,.product-card,.papers article,.chat-window,.phone,.social-main,.responsibility-image,.principles>div,.reveal")];t.forEach((e,i)=>{e.classList.add("reveal");e.style.transitionDelay=Math.min(i%5*70,280)+"ms"});const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add("is-visible")),{threshold:.14});t.forEach(e=>io.observe(e));const so=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("active");(e.target as HTMLElement).style.setProperty("--scene-progress","1")}}),{threshold:.45});s.forEach(e=>so.observe(e));const u=()=>{const y=scrollY;if(h)h.classList.toggle("scrolled",y>30);if(p){const x=document.documentElement.scrollHeight-innerHeight;p.style.width=(x?y/x*100:0)+"%"}s.forEach(e=>{const r=e.getBoundingClientRect(),v=Math.max(0,Math.min(1,(innerHeight-r.top)/(innerHeight+r.height)));if(e.classList.contains("active"))e.style.setProperty("--p",v.toFixed(3))})};addEventListener("scroll",u,{passive:true});u();return()=>{io.disconnect();so.disconnect();removeEventListener("scroll",u)}},[])}
+import { useEffect } from "react";
+
+export function useMuseMotion() {
+  useEffect(() => {
+    const header = document.querySelector<HTMLElement>("#header");
+    const progress = document.querySelector<HTMLElement>(".progress i");
+    const scenes = Array.from(document.querySelectorAll<HTMLElement>(".scene"));
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const supportsIntersectionObserver = "IntersectionObserver" in window;
+
+    let revealObserver: IntersectionObserver | undefined;
+    let sceneObserver: IntersectionObserver | undefined;
+
+    if (!prefersReducedMotion && supportsIntersectionObserver) {
+      const revealTargets = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          ".scene h1, .scene h2, .scene p, .scene .eyebrow, .product-card, .papers article, .chat-window, .phone, .social-main, .responsibility-image, .principles > div, .reveal",
+        ),
+      );
+
+      revealTargets.forEach((element, index) => {
+        element.classList.add("reveal");
+        element.style.transitionDelay = `${Math.min((index % 5) * 70, 280)}ms`;
+      });
+
+      revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              revealObserver?.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.14 },
+      );
+
+      revealTargets.forEach((element) => revealObserver?.observe(element));
+
+      sceneObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const scene = entry.target as HTMLElement;
+              scene.classList.add("active");
+              scene.style.setProperty("--scene-progress", "1");
+              sceneObserver?.unobserve(scene);
+            }
+          });
+        },
+        { threshold: 0.45 },
+      );
+
+      scenes.forEach((scene) => sceneObserver?.observe(scene));
+    } else {
+      scenes.forEach((scene) => scene.classList.add("active"));
+    }
+
+    const updateScrollState = () => {
+      const scrollY = window.scrollY;
+      const scrollableHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+
+      header?.classList.toggle("scrolled", scrollY > 30);
+
+      if (progress) {
+        const percentage =
+          scrollableHeight > 0 ? (scrollY / scrollableHeight) * 100 : 0;
+        progress.style.width = `${Math.min(100, Math.max(0, percentage))}%`;
+      }
+
+      if (!prefersReducedMotion) {
+        scenes.forEach((scene) => {
+          const bounds = scene.getBoundingClientRect();
+          const visibility = Math.max(
+            0,
+            Math.min(
+              1,
+              (window.innerHeight - bounds.top) /
+                (window.innerHeight + bounds.height),
+            ),
+          );
+
+          if (scene.classList.contains("active")) {
+            scene.style.setProperty("--p", visibility.toFixed(3));
+          }
+        });
+      }
+    };
+
+    window.addEventListener("scroll", updateScrollState, { passive: true });
+    window.addEventListener("resize", updateScrollState);
+    updateScrollState();
+
+    return () => {
+      revealObserver?.disconnect();
+      sceneObserver?.disconnect();
+      window.removeEventListener("scroll", updateScrollState);
+      window.removeEventListener("resize", updateScrollState);
+      document
+        .querySelectorAll<HTMLElement>(".reveal")
+        .forEach((element) => {
+          element.style.removeProperty("transition-delay");
+          element.classList.remove("reveal", "is-visible");
+        });
+      document
+        .querySelectorAll<HTMLElement>(".scene")
+        .forEach((scene) => scene.style.removeProperty("--p"));
+    };
+  }, []);
+}
