@@ -406,7 +406,13 @@ async function clientMonitoring(el){
    '>' +
    esc(profile.description||"") +
    '</textarea></div>';
- const notice=new URLSearchParams(location.search).get("google")==="connected"?'<div class="notice">Compte Google connecté. Sélectionnez une fiche pour synchroniser ses avis.</div>':new URLSearchParams(location.search).get("google")==="denied"?'<div class="notice">La connexion Google a été annulée.</div>':'';
+ const googleStatus = new URLSearchParams(location.search).get("google");
+ const notice =
+   googleStatus === "connected"
+     ? '<div class="notice">Compte Google connecté. Sélectionnez une fiche pour synchroniser ses avis.</div>'
+     : googleStatus === "denied"
+       ? '<div class="notice">La connexion Google a été annulée.</div>'
+       : '';
   const googleErrors=(googleResult.errors||[]).map(x=>'<div class="notice">' +
    esc(x.message||"Connexion Google indisponible") +
    '</div>').join("");
@@ -1185,7 +1191,8 @@ if(op==="notify-escalation"){const [caseId,
     channel=ev.target.value;
     if(channel==="EMAIL"){if(!target.value||target.value===S.userId)target.value=S.userEmail||"";
     target.placeholder="destinataire@entreprise.fr";
-    help.textContent="Adresse email destinataire. L’envoi nécessite une configuration SMTP et une politique autorisant l’email."}else if(channel==="WEBHOOK"){if(target.value===S.userId||target.value===S.userEmail)target.value="";
+    help.textContent = "Adresse email destinataire. L’envoi nécessite " +
+      "une configuration SMTP et une politique autorisant l’email."}else if(channel==="WEBHOOK"){if(target.value===S.userId||target.value===S.userEmail)target.value="";
     target.placeholder="https://exemple.fr/webhook";
     help.textContent="URL HTTPS publique. Les adresses privées et locales sont refusées par le serveur."}else{if(!target.value||target.value===S.userEmail)target.value=S.userId||"";
     target.placeholder="Identifiant du membre";

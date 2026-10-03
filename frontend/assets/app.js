@@ -641,10 +641,62 @@ function visibleNavItems(){
  const items=allowed[role]?navItems.filter(([id])=>allowed[role].has(id)):navItems.filter(([id])=>id==='dashboard');
  return items.map(([id,label])=>[id,role==='CLIENT'&&id==='activity'?'Suivi':label]);
 }
-function shell(){
- const visible=visibleNavItems();
+function shell() {
+  const visible = visibleNavItems();
+
+  const navigation = visible
+    .map(([id, label]) =>
+      '<button type="button" data-view="' +
+      id +
+      '" data-nav="' +
+      id +
+      '" aria-label="Ouvrir ' +
+      label +
+      '">' +
+      label +
+      '</button>'
+    )
+    .join('');
+
+  const shellMarkup =
+    '<div id="app">' +
+      '<aside class="sidebar" id="console-sidebar" ' +
+        'aria-label="Navigation principale">' +
+        '<div class="brand">REVIEW<span>DEFENSE</span></div>' +
+        '<button class="workspace-switcher" type="button" ' +
+          'data-action="command-palette" ' +
+          'aria-label="Ouvrir le sélecteur d’espace de travail">' +
+          '<span>⌘</span> Workspace <small>⌘K</small>' +
+        '</button>' +
+        '<nav id="nav">' + navigation + '</nav>' +
+      '</aside>' +
+      '<main>' +
+        '<header>' +
+          '<div>' +
+            '<div class="eyebrow">REVIEW DEFENSE</div>' +
+            '<h1 id="title">Dashboard</h1>' +
+            '<p id="subtitle">Vue opérationnelle</p>' +
+          '</div>' +
+          '<div class="header-actions">' +
+            '<button class="icon-btn mobile-nav-toggle" type="button" ' +
+              'data-action="mobile-nav" aria-label="Ouvrir le menu" ' +
+              'aria-expanded="false" aria-controls="console-sidebar">☰</button>' +
+            '<button class="command-btn" type="button" ' +
+              'onclick="openCommandPalette()">' +
+              'Rechercher <kbd>⌘ K</kbd>' +
+            '</button>' +
+            '<button id="logout" class="ghost">Déconnexion</button>' +
+          '</div>' +
+        '</header>' +
+        '<section id="content"></section>' +
+      '</main>' +
+    '</div>' +
+    '<div id="toast" role="status" aria-live="polite"></div>';
+
   document.body.classList.add('console-mode');
-   document.body.innerHTML=`<div id="app"><aside class="sidebar" id="console-sidebar" aria-label="Navigation principale"><div class="brand">REVIEW<span>DEFENSE</span></div><button class="workspace-switcher" type="button" data-action="command-palette" aria-label="Ouvrir le sélecteur d’espace de travail"><span>⌘</span> Workspace <small>⌘K</small></button><nav id="nav">${visible.map(([id,label])=>`<button type="button" data-view="${id}" data-nav="${id}" aria-label="Ouvrir ${label}">${label}</button>`).join('')}</nav></aside><main><header><div><div class="eyebrow">REVIEW DEFENSE</div><h1 id="title">Dashboard</h1><p id="subtitle">Vue opérationnelle</p></div><div class="header-actions"><button class="icon-btn mobile-nav-toggle" type="button" data-action="mobile-nav" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="console-sidebar">☰</button><button class="command-btn" type="button" onclick="openCommandPalette()">Rechercher <kbd>⌘ K</kbd></button><button id="logout" class="ghost">Déconnexion</button></div></header><section id="content"></section></main></div><div id="toast" role="status" aria-live="polite"></div>`}
+  document.body.innerHTML = shellMarkup;
+}
+
 const views={
  'client-monitoring':async()=>{
       const [profileData,
