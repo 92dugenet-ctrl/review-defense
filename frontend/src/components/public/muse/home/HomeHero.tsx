@@ -22,7 +22,7 @@ export function HomeHero() {
   }, []);
 
   return (
-    <section className="scene hero" id="hero">
+    <section className="scene hero" id="hero" aria-labelledby="home-hero-title">
       <div className="hero-video-bg" aria-hidden="true">
         <video
           ref={videoRef}
@@ -38,30 +38,36 @@ export function HomeHero() {
           />
         </video>
       </div>
-
       <div className="hero-scrim" />
 
       <div className="scene-inner hero-inner">
-        <div className="eyebrow">REVIEW DEFENSE · EN ACTION</div>
-        <h1>
-          Voyez comment Review Defense
-          <br />
-          travaille pour vous
-        </h1>
-        <p>
-          De l'avis reçu au dossier documenté, structurez chaque situation
-          avec plus de contexte et de contrôle.
-        </p>
+        <div className="hero-copy">
+          <div className="eyebrow">LA GESTION DES AVIS, ENFIN STRUCTURÉE</div>
+          <h1 id="home-hero-title">
+            Voyez plus clair.
+            <br />
+            Agissez avec méthode.
+          </h1>
+          <p>
+            Review Defense vous aide à analyser les avis, réunir les éléments
+            utiles et suivre chaque dossier en gardant la maîtrise des décisions.
+          </p>
+          <div className="hero-actions">
+            <PublicActionLink to="/register">Créer mon espace</PublicActionLink>
+            <a className="hero-secondary-link" href="#products">
+              Découvrir la solution <span aria-hidden="true">↓</span>
+            </a>
+          </div>
+        </div>
 
-        <PublicActionLink to="/register">Créer mon espace</PublicActionLink>
-
-        <div className="muse-word" aria-hidden="true">
-          <span>Review</span>
-          <b>◌</b>
-          <span>Defense</span>
-          <em>est</em>
-          <strong>votre</strong>
-          <em>poste de travail</em>
+        <div className="hero-bottom-line" aria-hidden="true">
+          <span>ANALYSE</span>
+          <i />
+          <span>DOCUMENTATION</span>
+          <i />
+          <span>VALIDATION</span>
+          <i />
+          <span>SUIVI</span>
         </div>
       </div>
     </section>

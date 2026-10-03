@@ -1,8 +1,8 @@
 import { Link, NavLink } from "react-router-dom";
 
 const navigation = [
-  ["/produit", "Produit"],
-  ["/fonctionnement", "Fonctionnement"],
+  ["/produit", "La solution"],
+  ["/fonctionnement", "Comment ça marche"],
   ["/securite", "Sécurité"],
   ["/tarifs", "Tarifs"],
   ["/contact", "Contact"],
@@ -18,10 +18,11 @@ export function MuseHeader({ menuOpen, onMenuToggle }: MuseHeaderProps) {
     <>
       <header className="site-header" id="header">
         <Link className="brand" to="/" aria-label="Review Defense, accueil">
-          ◉ Review Defense
+          <span className="brand-mark" aria-hidden="true">R</span>
+          <span>review<span className="brand-light">defense</span></span>
         </Link>
 
-        <nav aria-label="Navigation principale">
+        <nav className="desktop-navigation" aria-label="Navigation principale">
           {navigation.map(([path, label]) => (
             <NavLink key={path} to={path}>
               {label}
@@ -30,8 +31,9 @@ export function MuseHeader({ menuOpen, onMenuToggle }: MuseHeaderProps) {
         </nav>
 
         <div className="actions">
+          <Link className="header-login" to="/login">Connexion</Link>
           <Link className="pill blue" to="/register">
-            Créer mon espace
+            Créer mon espace <span aria-hidden="true">↗</span>
           </Link>
         </div>
 
@@ -43,7 +45,8 @@ export function MuseHeader({ menuOpen, onMenuToggle }: MuseHeaderProps) {
           aria-controls="mobile-menu"
           onClick={onMenuToggle}
         >
-          {menuOpen ? "×" : "☰"}
+          <span />
+          <span />
         </button>
       </header>
 
@@ -63,6 +66,14 @@ export function MuseHeader({ menuOpen, onMenuToggle }: MuseHeaderProps) {
             {label}
           </NavLink>
         ))}
+        <Link
+          className="header-login"
+          to="/login"
+          tabIndex={menuOpen ? 0 : -1}
+          onClick={() => { if (menuOpen) onMenuToggle(); }}
+        >
+          Connexion
+        </Link>
         <Link
           className="pill blue"
           to="/register"

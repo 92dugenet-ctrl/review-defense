@@ -2,23 +2,22 @@ import { Link } from "react-router-dom";
 
 const footerGroups = [
   {
-    title: "Produit",
+    title: "Solution",
     links: [
-      ["/produit", "Produit"],
-      ["/fonctionnement", "Fonctionnement"],
+      ["/produit", "La solution"],
+      ["/fonctionnement", "Comment ça marche"],
       ["/securite", "Sécurité"],
       ["/tarifs", "Tarifs"],
     ],
   },
   {
-    title: "Ressources",
+    title: "Accompagnement",
     links: [
-      ["/contact", "Contact"],
-      ["/accessibilite", "Accessibilité"],
+      ["/contact", "Nous contacter"],
     ],
   },
   {
-    title: "Compte",
+    title: "Votre espace",
     links: [
       ["/login", "Connexion"],
       ["/register", "Créer un espace"],
@@ -40,21 +39,26 @@ export function MuseFooter() {
   return (
     <footer id="footer">
       <div className="footer-top">
-        <Link className="footer-brand" to="/" aria-label="Review Defense, accueil">
-          ◉ Review Defense
-        </Link>
+        <div className="footer-intro">
+          <Link className="footer-brand" to="/" aria-label="Review Defense, accueil">
+            <span className="brand-mark" aria-hidden="true">R</span>
+            <span>review<span className="brand-light">defense</span></span>
+          </Link>
+          <p>Des avis mieux compris. Des dossiers mieux suivis. Des décisions qui restent les vôtres.</p>
+        </div>
         {footerGroups.map((group) => (
           <div key={group.title}>
             <h4>{group.title}</h4>
             {group.links.map(([path, label]) => (
-              <Link key={path} to={path}>
-                {label}
-              </Link>
+              <Link key={path} to={path}>{label}</Link>
             ))}
           </div>
         ))}
       </div>
-      <small>© {new Date().getFullYear()} Review Defense — Analyse, dossiers, validation.</small>
+      <div className="footer-bottom">
+        <small>© {new Date().getFullYear()} Review Defense. Tous droits réservés.</small>
+        <small>Conçu pour garder l'humain aux commandes.</small>
+      </div>
     </footer>
   );
 }
