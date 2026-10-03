@@ -1,26 +1,26 @@
-# Public — site vitrine React cible
+# Public — site vitrine et ressources historiques
 
-## Responsabilité
+## Source React active
 
-Ce dossier regroupe les composants et pages React destinés au site public : accueil, produit, méthode, sécurité, tarifs et contact. Il sépare la présentation publique de l'espace authentifié.
+Le code React utilisé par le build et le routeur est centralisé dans :
+- `src/main.tsx` : point d'entrée React ;
+- `src/app/router.tsx` : routes React ;
+- `src/pages/` : pages ;
+- `src/components/public/` : composants publics ;
+- `src/styles/` : styles importés par l'application.
 
-## Organisation
+Les copies React strictement identiques qui se trouvaient dans `public/components/` et `public/pages/` ont été retirées. Ne recréez pas de seconde source React dans ce dossier.
 
-- `components/` : en-tête, pied de page, animations et composants de sections.
-- `components/muse/` : composition des pages publiques par univers fonctionnel (home, product, method, pricing, security, contact).
-- `pages/` : composants de pages publiques, selon les fichiers présents.
-- `styles/` : styles du site public.
-- `assets/` : médias, illustrations et scripts/assets publics copiés depuis les chemins historiques.
+## Contenu conservé ici
 
-## État de migration
+- `assets/` : médias, illustrations et scripts statiques historiques ;
+- `pages/*.html` : pages HTML historiques ;
+- `styles/` : feuilles de style de transition ;
+- les composants React spécifiques qui ne sont pas des doublons exacts (notamment certains composants d'habillage et le catalogue de tarifs) restent à examiner avant toute migration.
 
-Ce dossier est une structure cible et contient des copies de transition. `MIGRATION.md` précise que les pages et assets ont été copiés depuis les emplacements historiques; les URL relatives et le routage doivent être vérifiés avant tout changement de serveur statique.
+## Règles de migration
 
-Le code public React existe aussi sous `src/components/public/` et `src/pages/`. Le point d'entrée Vite actuellement configuré est `src/main.tsx`; ne pas supposer que `public/` est le point d'entrée de production.
-
-## Règles
-
-- Garder les pages publiques indépendantes des composants nécessitant une session.
-- Ne pas embarquer de secret ni de contrôle d'accès côté client.
-- Préserver les métadonnées SEO, liens canoniques, chemins des médias et navigation.
-- Avant convergence avec `src/components/public/`, comparer les composants et vérifier le rendu de chaque route publique.
+- Ne pas déplacer ni renommer les médias sans vérifier leurs URL et les routes du serveur.
+- Ne pas supprimer les pages HTML historiques avant validation de la parité navigateur et de leur remplacement côté serveur.
+- Toute nouvelle page React publique doit être développée dans `src/pages/` et utiliser les composants de `src/components/public/`.
+- Les éléments conservés ici ne deviennent pas automatiquement des points d'entrée de production.

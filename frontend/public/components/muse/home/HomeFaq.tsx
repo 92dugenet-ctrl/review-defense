@@ -1,1 +1,0 @@
-import{MuseScene}from"../MuseScene";import{homeFaqs}from"./HomeData";export function HomeFaq(){return <MuseScene id="faq"><div className="narrow"><div className="eyebrow">FAQ</div><h2>Comment Review Defense fonctionne ?</h2><div className="faq">{homeFaqs.map(([q,a],i)=><details key={q} open={i===0}><summary>{q}</summary><p>{a}</p></details>)}</div></div></MuseScene>}
