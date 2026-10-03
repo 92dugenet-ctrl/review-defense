@@ -16,7 +16,8 @@ class PostgresAPIRepository(PostgresRepository):
     uses_uuid_ids = True
 
     def _row(self, cur, sql, params=()):
-        cur.execute(sql, params); return cur.fetchone()
+        cur.execute(sql, params)
+        return cur.fetchone()
 
     def create_organization_and_owner(self, organization_name: str, email: str, password_hash: str):
         """Create a new tenant and its first OWNER atomically."""
@@ -206,7 +207,8 @@ class PostgresAPIRepository(PostgresRepository):
                 cur.execute((
             "SELECT review_id,organization_id,location_id,author_display_name,rating,review_text,published_at,upd" +
             "ated_at,language,source,review_url FROM api_reviews WHERE organization_id=%s AND review_id=%s"
-        ), (organization_id,review_id),); return cur.fetchone()
+        ), (organization_id, review_id))
+                return cur.fetchone()
 
     def list_reviews(self, organization_id: str):
         with self.transaction(organization_id) as conn:
@@ -215,7 +217,8 @@ class PostgresAPIRepository(PostgresRepository):
             "SELECT review_id,organization_id,location_id,author_display_name,rating,review_text,published_at,upd" +
             "ated_at,language,source,review_url FROM api_reviews WHERE organization_id=%s ORDER BY published_at D" +
             "ESC NULLS LAST"
-        ), (organization_id,)); return cur.fetchall()
+        ), (organization_id,))
+                return cur.fetchall()
 
     def create_case_persistent(self, organization_id: str, case_id: str, review_id: str, status: str, actor_user_id: str|None=None):
         with self.transaction(organization_id) as conn:
@@ -230,7 +233,8 @@ class PostgresAPIRepository(PostgresRepository):
                 cur.execute((
             "INSERT INTO api_cases(organization_id,case_id,review_id,status) VALUES(%s,%s,%s,%s) RETURNING case_i" +
             "d,organization_id,review_id,status,decision_id,snapshot_sha256,created_at,updated_at"
-        ), (organization_id,case_id,review_id,status)); row=cur.fetchone()
+        ), (organization_id, case_id, review_id, status))
+                row = cur.fetchone()
                 cur.execute("INSERT INTO case_events(organization_id,case_id,event_type,actor_user_id,payload) VALUES(%s,%s,%s,%s,%s::jsonb)",
                     (organization_id,case_id,'CASE_CREATED',actor_user_id,'{}'))
                 return row
@@ -285,13 +289,18 @@ class PostgresAPIRepository(PostgresRepository):
                 cur.execute((
             "SELECT case_id,organization_id,review_id,status,decision_id,snapshot_sha256,created_at,updated_at FR" +
             "OM api_cases WHERE organization_id=%s AND case_id=%s"
-        ), (organization_id,case_id)); return cur.fetchone()
+        ), (organization_id, case_id))
+                return cur.fetchone()
 
     def update_case(self, organization_id: str, case_id: str, *, status=None, decision_id=None, snapshot_sha256=None):
-        fields=[]; vals=[]
+        fields = []
+        vals = []
         for name,val in [('status',status),('decision_id',decision_id),('snapshot_sha256',snapshot_sha256)]:
-            if val is not None: fields.append(f'{name}=%s'); vals.append(val)
-        if not fields: return
+            if val is not None:
+                fields.append(f'{name}=%s')
+                vals.append(val)
+        if not fields:
+            return
         vals.extend([organization_id,case_id])
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
@@ -971,7 +980,12 @@ class PostgresAPIRepository(PostgresRepository):
     def get_mfa_state(self, organization_id: str, user_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT mfa_enabled,mfa_secret_enc,mfa_last_counter FROM users WHERE id=%s", (user_id,)); return cur.fetchone()
+                cur.execute(
+                    "SELECT mfa_enabled,mfa_secret_enc,mfa_last_counter "
+                    "FROM users WHERE id=%s",
+                    (user_id,),
+                )
+                return cur.fetchone()
 
     def set_mfa_secret(self, organization_id: str, user_id: str, secret_enc: str, enabled: bool):
         with self.transaction(organization_id) as conn:
@@ -998,12 +1012,23 @@ class PostgresAPIRepository(PostgresRepository):
     def get_recovery_token(self, organization_id: str, token_hash: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT recovery_id,organization_id,user_id,expires_at,used_at FROM password_recovery_tokens WHERE organization_id=%s AND token_hash=%s", (organization_id,token_hash)); return cur.fetchone()
+                cur.execute(
+                    "SELECT recovery_id, organization_id, user_id, expires_at, used_at "
+                    "FROM password_recovery_tokens "
+                    "WHERE organization_id=%s AND token_hash=%s",
+                    (organization_id, token_hash),
+                )
+                return cur.fetchone()
 
     def consume_recovery_token(self, organization_id: str, token_hash: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("UPDATE password_recovery_tokens SET used_at=now() WHERE organization_id=%s AND token_hash=%s AND used_at IS NULL", (organization_id,token_hash)); return cur.rowcount == 1
+                cur.execute(
+                    "UPDATE password_recovery_tokens SET used_at=now() "
+                    "WHERE organization_id=%s AND token_hash=%s AND used_at IS NULL",
+                    (organization_id, token_hash),
+                )
+                return cur.rowcount == 1
 
 
     def get_email_verified(self, organization_id: str, user_id: str):
@@ -1033,13 +1058,17 @@ class PostgresAPIRepository(PostgresRepository):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
                 cur.execute("SELECT verification_id,organization_id,user_id,expires_at,used_at FROM email_verification_tokens WHERE organization_id=%s AND token_hash=%s",
-                    (organization_id,token_hash)); return cur.fetchone()
+                    (organization_id, token_hash),
+                )
+                return cur.fetchone()
 
     def consume_email_verification_token(self, organization_id: str, token_hash: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
                 cur.execute("UPDATE email_verification_tokens SET used_at=now() WHERE organization_id=%s AND token_hash=%s AND used_at IS NULL",
-                    (organization_id,token_hash)); return cur.rowcount == 1
+                    (organization_id, token_hash),
+                )
+                return cur.rowcount == 1
 
     def create_billing_transaction(self, organization_id: str, row):
         with self.transaction(organization_id) as conn:
@@ -1195,7 +1224,13 @@ class PostgresAPIRepository(PostgresRepository):
     def get_user_by_id(self, organization_id: str, user_id: str):
         with self.transaction(organization_id) as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT u.id,u.email,u.password_hash,m.role FROM users u JOIN memberships m ON m.user_id=u.id WHERE m.organization_id=%s AND u.id=%s", (organization_id,user_id)); return cur.fetchone()
+                cur.execute(
+                    "SELECT u.id, u.email, u.password_hash, m.role "
+                    "FROM users u JOIN memberships m ON m.user_id=u.id "
+                    "WHERE m.organization_id=%s AND u.id=%s",
+                    (organization_id, user_id),
+                )
+                return cur.fetchone()
 
     def get_billing_account(self, organization_id):
         with self.transaction(organization_id) as conn:
@@ -1204,7 +1239,8 @@ class PostgresAPIRepository(PostgresRepository):
             "SELECT organization_id,plan_code,status,paypal_subscription_id,offer_id,current_period_start,current" +
             "_period_end,cancel_at_period_end,created_at,updated_at FROM billing_accounts WHERE organization_id=%" +
             "s"
-        ),(organization_id,)); row=cur.fetchone()
+        ), (organization_id,))
+                row = cur.fetchone()
                 if not row:return None
                 d=dict(zip(("organization_id","plan_code","status","paypal_subscription_id","offer_id","current_period_start",
                             "current_period_end","cancel_at_period_end","created_at","updated_at"),row)); d["organization_id"]=str(d["organization_id"])
@@ -1234,7 +1270,18 @@ class PostgresAPIRepository(PostgresRepository):
                 cur.execute((
             "SELECT event_id,paypal_event_id,paypal_subscription_id,event_type,status,offer_id,payload,created_at" +
             " FROM billing_events WHERE organization_id=%s ORDER BY created_at DESC LIMIT 200"
-        ),(organization_id,)); names=("event_id","paypal_event_id","paypal_subscription_id","event_type","status","offer_id","payload","created_at"); out=[]
+        ), (organization_id,))
+                names = (
+                    "event_id",
+                    "paypal_event_id",
+                    "paypal_subscription_id",
+                    "event_type",
+                    "status",
+                    "offer_id",
+                    "payload",
+                    "created_at",
+                )
+                out = []
                 for x in cur.fetchall():
                     d=dict(zip(names,x)); d["event_id"]=str(d["event_id"]); d["created_at"]=d["created_at"].isoformat() if hasattr(d["created_at"],
                         "isoformat") else str(d["created_at"]); out.append(d)
