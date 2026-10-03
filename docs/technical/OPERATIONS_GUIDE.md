@@ -50,8 +50,8 @@ Le serveur HTTP et les workers sont deux processus distincts.
 
 - **Gunicorn / WSGI** reçoit les requêtes web et les transmet à l'application API.
 - **scripts/worker.py** démarre le consommateur de travaux persistés dans PostgreSQL. Il exige DATABASE_URL et REVIEW_DEFENSE_WORKER_ORGANIZATION_ID ; le périmètre tenant est explicite. REVIEW_DEFENSE_WORKER_ID identifie le processus et REVIEW_DEFENSE_JOB_HANDLERS associe les handlers importables aux types de travaux.
-- **PostgresProcessingQueue** réserve les travaux et gère leur cycle de traitement.
-- **PostgresNotificationWorker** consomme les notifications persistées et délègue leur livraison.
+- **PostgresProcessingQueue** réserve les travaux et gère leur cycle de traitement. Le script `scripts/worker.py` ne traite qu'un seul job par invocation.
+- **PostgresNotificationWorker** est un worker distinct de l'outbox ; son import dans `scripts/worker.py` ne signifie pas qu'il y est lancé. Son processus de supervision doit être identifié séparément.
 
 Le worker n'est pas un second serveur HTTP. Il doit être déployé et supervisé comme un processus de fond distinct, avec les variables et permissions adaptées à son organisation.
 
@@ -106,3 +106,19 @@ D'autres workflows couvrent contrats frontend, facturation, sécurité, seeds de
 7. `scripts/worker.py` et les modules `src/postgres_*` : traitement hors requête.
 
 Ce parcours relie les fichiers de déploiement au code exécuté sans confondre scripts d'administration, workflows GitHub et services métier.
+
+
+## 9. Audit de cohérence des déploiements — lot L
+
+Consulter [UNIFIED_DEPLOYMENT_CONFIGURATION_AUDIT.md](./UNIFIED_DEPLOYMENT_CONFIGURATION_AUDIT.md) pour l'analyse des variables, manifests, proxy, lanceurs et workflows.
+
+Points à retenir :
+
+- `.env.example` est un inventaire, pas un fichier de production prêt à l'emploi : ses valeurs HTTP locales sont incompatibles avec `REVIEW_DEFENSE_ENV=production`.
+- Docker Compose n'injecte que les variables déclarées dans `environment` ou `env_file`. Une variable disponible pour l'interpolation n'est pas automatiquement présente dans le processus applicatif.
+- Les manifests production/staging ne transmettent pas toutes les variables SMTP, Google et PayPal consommées par l'application.
+- Aucun service worker n'est déclaré dans les Compose ; `scripts/worker.py` traite un job par invocation et doit être supervisé séparément.
+- Le script de certification staging vérifie certaines chaînes dans Compose alors que les commandes et valeurs sont définies dans le Dockerfile, le script de démarrage ou les valeurs par défaut applicatives.
+- Les workflows ont des déclencheurs et effets distincts ; certains lancent des tests ou déploient sur des environnements distants.
+
+Aucune configuration ni aucun comportement applicatif n'a été modifié dans le lot L.

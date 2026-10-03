@@ -7,6 +7,7 @@ Cette documentation décrit le code présent et les chemins d'exécution observ�
 - [Guide de lecture du code](./CODEBASE_GUIDE.md) — points d'entrée, structure et conventions.
 - [Architecture métier transversale](./BUSINESS_ARCHITECTURE.md) — flux entre frontend, API, services, intégrations et persistance.
 - [Guide d'exploitation](./OPERATIONS_GUIDE.md) — configuration, démarrage, migrations et workers.
+- [Audit de cohérence configuration/déploiement](./UNIFIED_DEPLOYMENT_CONFIGURATION_AUDIT.md) — variables, injection Compose, proxy, workers, certification et workflows.
 - [Cartographie technique exhaustive](./TECHNICAL_MAP.md) — inventaire des sources, routes, API et migrations.
 - [Traçabilité des dépendances](./DEPENDENCY_MAP.md) — relations entre pages, endpoints, services, intégrations et repositories.
 - [Audit des modules inutilisés et redondants](./UNUSED_AND_REDUNDANT_MODULES_AUDIT.md) — arborescences parallèles, duplications, candidats à arbitrage et limites des conclusions statiques.
