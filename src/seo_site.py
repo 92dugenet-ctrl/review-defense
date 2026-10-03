@@ -1688,86 +1688,313 @@ def _services_html():
     )
 
 def _commercial_html(path):
-    if path=="/services/":
+    if path == "/services/":
         return _services_html()
-    d=COMMERCIAL[path]
-    cards="".join(f'<article class="rd-value-card"><span>{i:02d}</span><h2>{_e(h)}</h2><p>{_e(t)}</p></article>' for i,(h,t) in enumerate(d["sections"],1))
-    nav='<a href="/produit/">Produit</a><a href="/comment-ca-marche/">Comment ça fonctionne</a><a href="/services/">Services</a><a href="/tarifs/">Tarifs</a><a href="/ressources/">Ressources</a><a href="/contact/">Contact</a>'
-    schema=json.dumps({"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":_url("/#organization"),"name":"Review Defense","url":_url("/")},{"@type":"WebSite","@id":_url("/#website"),"name":"Review Defense",
-        "url":_url("/"),"publisher":{"@id":_url("/#organization")}},{"@type":"WebPage","name":d["title"],"description":d["description"],"url":_url(path),"isPartOf":{"@id":_url("/#website")}}]},ensure_ascii=False,separators=(",",":"))
-    extra=""
-    if path=="/ressources/":
-        links=_related({"path":path,"cluster":"Faux avis"},_pages())[:5]
-        extra=(
-            '<section class="rd-section rd-light"><div class="rd-container"><span class="rd-eyebrow">GUIDES SEO</span><h2>Explorer les guides par situation.</h2>'
-            '<div class="rd-value-grid">'
-        )+''.join(f'<article class="rd-value-card"><h2>{_e(p["h1"])}</h2><a href="{_e(p["path"])}">Lire le guide →</a></article>' for p in links)+'</div></div></section>'
-    if path=="/contact/":
-        extra=(
-            '<section class="rd-section rd-light"><div class="rd-container rd-contact-grid"><div><span class="rd-eyebrow">CONTACT</span><h2>Une question ?<br>'
-            '<span>Une démo ?</span></h2><p>Présentez votre besoin. Les demandes commerciales restent séparées des dossiers d’avis.</p></div>'
-            '<form class="rd-contact-form" id="rd-contact-form"><label>Nom complet<input name="name" required></label>'
-            '<label>E-mail professionnel<input name="email" type="email" required></label><label>Entreprise<input name="company"></label>'
-            '<label>Message<textarea name="message" rows="5" required></textarea><button class="btn-primary" type="submit">Envoyer le message →</button></form></div>'
-            '</section>'
+
+    page = COMMERCIAL[path]
+    cards = "".join(
+        (
+            f'<article class="rd-value-card"><span>{index:02d}</span>'
+            f'<h2>{_e(heading)}</h2><p>{_e(text)}</p></article>'
         )
-    return (
-        f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'''
-        f'''<title>{_e(d["title"])}</title><meta name="description" content="{_e(d["description"])}"><meta name="robots" content="index,follow">'''
-        f'''<link rel="canonical" href="{_e(_url(path))}"><meta property="og:type" content="website"><meta property="og:title" content="{_e(d["title"])}">'''
-        f'''<meta property="og:description" content="{_e(d["description"])}"><meta property="og:url" content="{_e(_url(path))}">'''
-        f'''<link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css"><link rel="stylesheet" href="/assets/seo.css">'''
-        f'''<script type="application/ld+json">{schema}</script></head><body><div class="marketing"><header class="public-header"><a class="public-brand" href="/">'''
-        f'''<b class="brand-mark">◆</b> Review Defense</a><nav class="public-nav">{nav}</nav><div class="public-actions">'''
-        f'''<a class="btn-secondary" href="/app">Connexion</a><a class="btn-primary" href="/analyse-avis-google/">Analyser un avis →</a></div></header>'''
-        f'''<main class="rd-commercial-main"><section class="rd-home-hero"><div class="rd-container rd-hero-grid"><div class="rd-hero-copy">'''
-        f'''<span class="rd-eyebrow-pill">{_e(d["eyebrow"])}</span><h1>{d["h1"]}</h1><p class="rd-hero-lead">{_e(d["lead"])}</p><div class="rd-hero-actions">'''
-        f'''<a class="btn-primary rd-btn-lg" href="/analyse-avis-google/">Analyser un avis →</a>'''
-        f'''<a class="btn-secondary rd-btn-lg" href="/comment-ca-marche/">Voir comment ça fonctionne</a></div><div class="rd-trust-line">'''
-        f'''<span>✓ Analyse structurée</span><span>✓ Preuves documentées</span><span>✓ Validation humaine</span></div></div><div class="rd-product-stage">'''
-        f'''<div class="rd-product-window"><div class="rd-window-top"><b>Review Defense · Control Center</b></div><div class="rd-window-body"><aside>'''
-        f'''<strong>REVIEW DEFENSE</strong><span class="active">Dashboard</span><span>Avis</span><span>Analyse</span><span>Dossiers</span><span>Preuves</span>'''
-        f'''<span>Audit</span></aside><div class="rd-preview-main"><div class="rd-preview-head"><div><small>CONTROL WORKSPACE</small><h3>Dossier #REV-88421</h3></div>'''
-        f'''<span class="rd-mini-badge">APPROVAL REQUIRED</span></div><div class="rd-review-preview"><b>Analyse, preuves et prochaine étape</b>'''
-        f'''<span>Décision humaine requise avant toute étape contrôlée</span></div><div class="rd-analysis-columns"><div><small>SIGNAUX</small><strong>03</strong>'''
-        f'''<span>à examiner</span></div><div><small>PREUVES</small><strong>07</strong><span>associées</span></div><div><small>STATUT</small><strong>Gel</strong>'''
-        f'''<span>validation requise</span></div></div><div class="rd-preview-chain"><span class="done">01 Analyse</span><span class="done">02 Décision</span>'''
-        f'''<span class="current">03 Gel</span><span>04 Approbation</span></div></div></div></div></div></div></section><section class="rd-section rd-light">'''
-        f'''<div class="rd-container"><div class="rd-section-heading"><span class="rd-eyebrow">VALEUR</span><h2>Une information claire avant<br>'''
-        f'''<span>une décision importante.</span></h2><p>{_e(d["lead"])}</p></div><div class="rd-value-grid">{cards}</div></div></section><section class="rd-section">'''
-        f'''<div class="rd-container rd-split"><div class="rd-section-heading"><span class="rd-eyebrow">CONTRÔLE</span><h2>Analyse → Décision → Gel<br>'''
-        f'''<span>→ Human Approval.</span></h2><p>L’automatisation prépare. L’humain décide. Les étapes importantes restent visibles et traçables.</p>'''
-        f'''<a class="btn-secondary" href="/comment-ca-marche/">Découvrir le workflow →</a></div><div class="rd-workflow"><div class="rd-workflow-item done"><b>01</b>'''
-        f'''<div><strong>Analyse</strong><span>Identifier les éléments à examiner.</span></div></div><div class="rd-workflow-item done"><b>02</b><div>'''
-        f'''<strong>Décision</strong><span>Documenter le raisonnement.</span></div></div><div class="rd-workflow-item current"><b>03</b><div><strong>Gel</strong>'''
-        f'''<span>Fixer le dossier avant approbation.</span></div></div><div class="rd-workflow-item"><b>04</b><div><strong>Human Approval</strong>'''
-        f'''<span>Valider explicitement la suite.</span></div></div><div class="rd-workflow-item"><b>05</b><div><strong>Préparation contrôlée</strong>'''
-        f'''<span>Préparer sans exécution automatique.</span></div></div></div></div></section>{extra}<section class="rd-final-cta"><div class="rd-container">'''
-        f'''<span class="rd-eyebrow">REVIEW DEFENSE</span><h2>Gardez le contrôle<br><span>de votre dossier.</span></h2>'''
-        f'''<p>Commencez par une analyse structurée et préparez la suite avec des éléments vérifiables.</p>'''
-        f'''<a class="btn-primary rd-btn-lg" href="/analyse-avis-google/">Analyser un avis →</a>'''
-        f'''<small>La décision finale appartient toujours à la plateforme concernée.</small></div></section></main><footer class="public-footer"><div>'''
-        f'''<a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><p>Analyse, qualification et suivi des dossiers liés aux avis en ligne.</p>'''
-        f'''</div><div><b>Produit</b><a href="/produit/">Fonctionnalités</a><a href="/tarifs/">Tarifs</a></div><div><b>Ressources</b><a href="/ressources/">Guides</a>'''
-        f'''<a href="/analyse-avis-google/">Analyser un avis</a></div><div><b>Sécurité</b><span>Validation humaine</span><span>Traçabilité complète</span></div>'''
-        f'''</footer></div></body></html>'''
+        for index, (heading, text) in enumerate(page["sections"], 1)
+    )
+    navigation = (
+        '<a href="/produit/">Produit</a>'
+        '<a href="/comment-ca-marche/">Comment ça fonctionne</a>'
+        '<a href="/services/">Services</a>'
+        '<a href="/tarifs/">Tarifs</a>'
+        '<a href="/ressources/">Ressources</a>'
+        '<a href="/contact/">Contact</a>'
+    )
+    schema_data = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Organization",
+                "@id": _url("/#organization"),
+                "name": "Review Defense",
+                "url": _url("/"),
+            },
+            {
+                "@type": "WebSite",
+                "@id": _url("/#website"),
+                "name": "Review Defense",
+                "url": _url("/"),
+                "publisher": {"@id": _url("/#organization")},
+            },
+            {
+                "@type": "WebPage",
+                "name": page["title"],
+                "description": page["description"],
+                "url": _url(path),
+                "isPartOf": {"@id": _url("/#website")},
+            },
+        ],
+    }
+    schema = json.dumps(
+        schema_data,
+        ensure_ascii=False,
+        separators=(",", ":"),
     )
 
+    extra = ""
+    if path == "/ressources/":
+        related_guides = _related(
+            {"path": path, "cluster": "Faux avis"},
+            _pages(),
+        )[:5]
+        guide_cards = "".join(
+            (
+                f'<article class="rd-value-card"><h2>{_e(item["h1"])}</h2>'
+                f'<a href="{_e(item["path"])}">Lire le guide →</a></article>'
+            )
+            for item in related_guides
+        )
+        extra = (
+            '<section class="rd-section rd-light">'
+            '<div class="rd-container">'
+            '<span class="rd-eyebrow">GUIDES SEO</span>'
+            '<h2>Explorer les guides par situation.</h2>'
+            '<div class="rd-value-grid">'
+            f'{guide_cards}'
+            '</div></div></section>'
+        )
+
+    if path == "/contact/":
+        extra = (
+            '<section class="rd-section rd-light">'
+            '<div class="rd-container rd-contact-grid">'
+            '<div><span class="rd-eyebrow">CONTACT</span>'
+            '<h2>Une question ?<br><span>Une démo ?</span></h2>'
+            '<p>Présentez votre besoin. Les demandes commerciales restent '
+            'séparées des dossiers d’avis.</p></div>'
+            '<form class="rd-contact-form" id="rd-contact-form">'
+            '<label>Nom complet<input name="name" required></label>'
+            '<label>E-mail professionnel<input name="email" type="email" '
+            'required></label>'
+            '<label>Entreprise<input name="company"></label>'
+            '<label>Message<textarea name="message" rows="5" required>'
+            '</textarea></label>'
+            '<button class="btn-primary" type="submit">'
+            'Envoyer le message →</button></form></div></section>'
+        )
+
+    return "".join(
+        (
+            '<!doctype html><html lang="fr"><head>'
+            '<meta charset="utf-8">'
+            '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            f'<title>{_e(page["title"])}</title>'
+            f'<meta name="description" content="{_e(page["description"])}">'
+            '<meta name="robots" content="index,follow">'
+            f'<link rel="canonical" href="{_e(_url(path))}">'
+            '<meta property="og:type" content="website">'
+            f'<meta property="og:title" content="{_e(page["title"])}">'
+            f'<meta property="og:description" content="{_e(page["description"])}">'
+            f'<meta property="og:url" content="{_e(_url(path))}">'
+            '<link rel="stylesheet" href="/assets/app.css">'
+            '<link rel="stylesheet" href="/assets/public.css">'
+            '<link rel="stylesheet" href="/assets/seo.css">'
+            f'<script type="application/ld+json">{schema}</script></head>'
+            '<body><div class="marketing">'
+            '<header class="public-header">'
+            '<a class="public-brand" href="/">'
+            '<b class="brand-mark">◆</b> Review Defense</a>'
+            f'<nav class="public-nav">{navigation}</nav>'
+            '<div class="public-actions">'
+            '<a class="btn-secondary" href="/app">Connexion</a>'
+            '<a class="btn-primary" href="/analyse-avis-google/">'
+            'Analyser un avis →</a></div></header>'
+            '<main class="rd-commercial-main">'
+            '<section class="rd-home-hero">'
+            '<div class="rd-container rd-hero-grid">'
+            '<div class="rd-hero-copy">'
+            f'<span class="rd-eyebrow-pill">{_e(page["eyebrow"])}</span>'
+            f'<h1>{page["h1"]}</h1>'
+            f'<p class="rd-hero-lead">{_e(page["lead"])}</p>'
+            '<div class="rd-hero-actions">'
+            '<a class="btn-primary rd-btn-lg" '
+            'href="/analyse-avis-google/">Analyser un avis →</a>'
+            '<a class="btn-secondary rd-btn-lg" '
+            'href="/comment-ca-marche/">'
+            'Voir comment ça fonctionne</a></div>'
+            '<div class="rd-trust-line">'
+            '<span>✓ Analyse structurée</span>'
+            '<span>✓ Preuves documentées</span>'
+            '<span>✓ Validation humaine</span>'
+            '</div></div><div class="rd-product-stage">'
+            '<div class="rd-product-window">'
+            '<div class="rd-window-top">'
+            '<b>Review Defense · Control Center</b></div>'
+            '<div class="rd-window-body"><aside>'
+            '<strong>REVIEW DEFENSE</strong>'
+            '<span class="active">Dashboard</span><span>Avis</span>'
+            '<span>Analyse</span><span>Dossiers</span><span>Preuves</span>'
+            '<span>Audit</span></aside>'
+            '<div class="rd-preview-main">'
+            '<div class="rd-preview-head"><div>'
+            '<small>CONTROL WORKSPACE</small>'
+            '<h3>Dossier #REV-88421</h3></div>'
+            '<span class="rd-mini-badge">APPROVAL REQUIRED</span></div>'
+            '<div class="rd-review-preview">'
+            '<b>Analyse, preuves et prochaine étape</b>'
+            '<span>Décision humaine requise avant toute étape contrôlée</span>'
+            '</div><div class="rd-analysis-columns">'
+            '<div><small>SIGNAUX</small><strong>03</strong>'
+            '<span>à examiner</span></div>'
+            '<div><small>PREUVES</small><strong>07</strong>'
+            '<span>associées</span></div>'
+            '<div><small>STATUT</small><strong>Gel</strong>'
+            '<span>validation requise</span></div></div>'
+            '<div class="rd-preview-chain">'
+            '<span class="done">01 Analyse</span>'
+            '<span class="done">02 Décision</span>'
+            '<span class="current">03 Gel</span>'
+            '<span>04 Approbation</span>'
+            '</div></div></div></div></div></div></section>'
+            '<section class="rd-section rd-light"><div class="rd-container">'
+            '<div class="rd-section-heading">'
+            '<span class="rd-eyebrow">VALEUR</span>'
+            '<h2>Une information claire avant<br>'
+            '<span>une décision importante.</span></h2>'
+            f'<p>{_e(page["lead"])}</p>'
+            f'</div><div class="rd-value-grid">{cards}</div>'
+            '</div></section><section class="rd-section">'
+            '<div class="rd-container rd-split">'
+            '<div class="rd-section-heading">'
+            '<span class="rd-eyebrow">CONTRÔLE</span>'
+            '<h2>Analyse → Décision → Gel<br>'
+            '<span>→ Human Approval.</span></h2>'
+            '<p>L’automatisation prépare. L’humain décide. Les étapes '
+            'importantes restent visibles et traçables.</p>'
+            '<a class="btn-secondary" href="/comment-ca-marche/">'
+            'Découvrir le workflow →</a></div>'
+            '<div class="rd-workflow">'
+            '<div class="rd-workflow-item done"><b>01</b><div>'
+            '<strong>Analyse</strong>'
+            '<span>Identifier les éléments à examiner.</span>'
+            '</div></div><div class="rd-workflow-item done"><b>02</b><div>'
+            '<strong>Décision</strong>'
+            '<span>Documenter le raisonnement.</span>'
+            '</div></div><div class="rd-workflow-item current"><b>03</b><div>'
+            '<strong>Gel</strong>'
+            '<span>Fixer le dossier avant approbation.</span>'
+            '</div></div><div class="rd-workflow-item"><b>04</b><div>'
+            '<strong>Human Approval</strong>'
+            '<span>Valider explicitement la suite.</span>'
+            '</div></div><div class="rd-workflow-item"><b>05</b><div>'
+            '<strong>Préparation contrôlée</strong>'
+            '<span>Préparer sans exécution automatique.</span>'
+            '</div></div></div></div></section>'
+            f'{extra}'
+            '<section class="rd-final-cta"><div class="rd-container">'
+            '<span class="rd-eyebrow">REVIEW DEFENSE</span>'
+            '<h2>Gardez le contrôle<br><span>de votre dossier.</span></h2>'
+            '<p>Commencez par une analyse structurée et préparez la suite '
+            'avec des éléments vérifiables.</p>'
+            '<a class="btn-primary rd-btn-lg" '
+            'href="/analyse-avis-google/">Analyser un avis →</a>'
+            '<small>La décision finale appartient toujours à la plateforme '
+            'concernée.</small></div></section></main>'
+            '<footer class="public-footer"><div>'
+            '<a class="public-brand" href="/">'
+            '<b class="brand-mark">◆</b> Review Defense</a>'
+            '<p>Analyse, qualification et suivi des dossiers liés aux avis '
+            'en ligne.</p></div>'
+            '<div><b>Produit</b><a href="/produit/">Fonctionnalités</a>'
+            '<a href="/tarifs/">Tarifs</a></div>'
+            '<div><b>Ressources</b><a href="/ressources/">Guides</a>'
+            '<a href="/analyse-avis-google/">Analyser un avis</a></div>'
+            '<div><b>Sécurité</b><span>Validation humaine</span>'
+            '<span>Traçabilité complète</span></div>'
+            '</footer></div></body></html>'
+        )
+    )
+
+
 def render(path):
-    if path=="/analyse-avis-google/":
-        return 200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"public, max-age=300"},_analysis_html().encode()
+    if path == "/analyse-avis-google/":
+        return (
+            200,
+            {
+                "Content-Type": "text/html; charset=utf-8",
+                "Cache-Control": "public, max-age=300",
+            },
+            _analysis_html().encode(),
+        )
+
     if path in COMMERCIAL:
-        return 200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"public, max-age=300"},_commercial_html(path).encode()
-    pages=_pages()
-    if path=="/robots.txt":
-        return 200,{"Content-Type":"text/plain; charset=utf-8","Cache-Control":"public, max-age=3600"},f"User-agent: *\nAllow: /\nDisallow: /app\nDisallow: /v1/\nDisallow: /reset-password\nDisallow: /verify-email\nDisallow: /accept-invitation\nSitemap: {_url('/sitemap.xml')}\n".encode()
-    if path=="/sitemap.xml":
-        paths=list(dict.fromkeys(["/"]+[x for x in COMMERCIAL if x!="/"]+[p["path"] for p in pages]))
-        body='<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(f"<url><loc>{_e(_url(path))}</loc><lastmod>{SITE_MODIFIED}</lastmod></url>" for path in paths)+"</urlset>"
-        return 200,{"Content-Type":"application/xml; charset=utf-8","Cache-Control":"public, max-age=3600"},body.encode()
-    page=next((p for p in pages if p["path"]==path),None)
+        return (
+            200,
+            {
+                "Content-Type": "text/html; charset=utf-8",
+                "Cache-Control": "public, max-age=300",
+            },
+            _commercial_html(path).encode(),
+        )
+
+    pages = _pages()
+    if path == "/robots.txt":
+        robots_content = (
+            "User-agent: *\n"
+            "Allow: /\n"
+            "Disallow: /app\n"
+            "Disallow: /v1/\n"
+            "Disallow: /reset-password\n"
+            "Disallow: /verify-email\n"
+            "Disallow: /accept-invitation\n"
+            f"Sitemap: {_url('/sitemap.xml')}\n"
+        )
+        return (
+            200,
+            {
+                "Content-Type": "text/plain; charset=utf-8",
+                "Cache-Control": "public, max-age=3600",
+            },
+            robots_content.encode(),
+        )
+
+    if path == "/sitemap.xml":
+        sitemap_paths = list(
+            dict.fromkeys(
+                ["/"]
+                + [
+                    route
+                    for route in COMMERCIAL
+                    if route != "/"
+                ]
+                + [page["path"] for page in pages]
+            )
+        )
+        sitemap_entries = "".join(
+            (
+                f"<url><loc>{_e(_url(route))}</loc>"
+                f"<lastmod>{SITE_MODIFIED}</lastmod></url>"
+            )
+            for route in sitemap_paths
+        )
+        sitemap_body = (
+            '<?xml version="1.0" encoding="UTF-8"?>'
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+            f"{sitemap_entries}</urlset>"
+        )
+        return (
+            200,
+            {
+                "Content-Type": "application/xml; charset=utf-8",
+                "Cache-Control": "public, max-age=3600",
+            },
+            sitemap_body.encode(),
+        )
+
+    page = next(
+        (item for item in pages if item["path"] == path),
+        None,
+    )
     if not page:
         return None
+
     sections = "".join(
         f'<section><h2>{_e(heading)}</h2><p>{_e(text)}</p></section>'
         for heading, text in _sections(page)
@@ -1780,52 +2007,126 @@ def render(path):
         f'<li><a href="{_e(item["path"])}">{_e(item["h1"])}</a></li>'
         for item in _related(page, pages)
     )
-    c=_url(page["path"])
+    canonical_url = _url(page["path"])
     schema = json.dumps(
         _schema(page),
         ensure_ascii=False,
         separators=(",", ":"),
     )
-    title_counts={}
+
+    title_counts = {}
     for item in pages:
         title_counts[item["title"]] = (
             title_counts.get(item["title"], 0) + 1
         )
-    display_title=page["title"] if title_counts.get(page["title"],0)==1 else page["title"]+" — "+page["cluster"]+" | Review Defense"
-    cta_label="Demander l'analyse" if page["service"] else "Analyser mon avis"
+    display_title = (
+        page["title"]
+        if title_counts.get(page["title"], 0) == 1
+        else (
+            page["title"]
+            + " — "
+            + page["cluster"]
+            + " | Review Defense"
+        )
+    )
+    cta_label = (
+        "Demander l'analyse"
+        if page["service"]
+        else "Analyser mon avis"
+    )
     script = (
         """<script>(function(){window.dataLayer=window.dataLayer||[];"""
-        """document.addEventListener("click",function(e){var x=e.target.closest("[data-rd-track]");"""
-        """if(x){window.dataLayer.push(["click",x.getAttribute("data-rd-track"),location.pathname]);}});})();</script>"""
+        """document.addEventListener("click",function(e){"""
+        """var x=e.target.closest("[data-rd-track]");"""
+        """if(x){window.dataLayer.push(["click",x.getAttribute("data-rd-track"),"""
+        """location.pathname]);}});})();</script>"""
     )
-    body=(
-        f"""<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">"""
-        f"""<title>{_e(display_title)}</title><meta name="description" content="{_e(page["description"])}"><meta name="robots" content="index,follow">"""
-        f"""<link rel="canonical" href="{_e(c)}"><meta property="og:type" content="article"><meta property="og:title" content="{_e(display_title)}">"""
-        f"""<meta property="og:description" content="{_e(page["description"])}"><meta property="og:url" content="{_e(c)}">"""
-        f"""<link rel="stylesheet" href="/assets/app.css">"""
-        f"""<link rel="stylesheet" href="/assets/public.css"><script type="application/ld+json">{schema}</script></head><body><div class="marketing">"""
-        f"""<header class="public-header"><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><nav class="public-nav">"""
-        f"""<a href="/produit/">Produit</a><a href="/comment-ca-marche/">Comment ça fonctionne</a><a href="/services/">Services</a><a href="/tarifs/">Tarifs</a>"""
-        f"""<a href="/ressources/">Ressources</a><a href="/contact/">Contact</a></nav><div class="public-actions"><a class="btn-secondary" href="/app">Connexion</a>"""
-        f"""<a class="btn-primary" href="/analyse-avis-google/">Analyser un avis →</a></div></header><main class="seo-main"><div class="seo-breadcrumb">"""
-        f"""<a href="/">Accueil</a> <span>›</span> <span>{_e(page["cluster"])}</span> <span>›</span> <span>{_e(page["h1"])}</span></div><article class="seo-article">"""
-        f"""<span class="eyebrow">{_e(page["cluster"]).upper()}</span><h1>{_e(page["h1"])}</h1>"""
-        f"""<p class="seo-lead">Guide pratique sur <strong>{_e(page["keyword"])}</strong> : vérification des faits, qualification du problème, éléments à conserver et """
-        f"""prochaines étapes.</p><div class="seo-content">{sections}</div><section class="seo-disclaimer">"""
-        f"""<strong>À retenir :</strong> un avis négatif ou contesté n’est pas automatiquement supprimable. Le signalement doit correspondre aux faits observables ; """
-        f"""aucune suppression n’est garantie et la décision finale appartient à la plateforme.</section><section class="seo-faq">"""
-        f"""<h2>Questions fréquentes</h2>{faq}</section><section class="seo-related"><h2>À lire également</h2><ul>{related}</ul><p>"""
-        f"""<a href="/signaler-un-avis-google/">Comment signaler un avis Google</a> · <a href="/analyse-avis-google/">Analyser votre avis Google</a></p></section>"""
-        f"""<section class="seo-cta"><h2>Besoin d’analyser votre avis ?</h2>"""
-        f"""<p>Structurez votre dossier avec Review Defense et gardez une validation humaine sur les étapes importantes.</p>"""
-        f"""<a class="btn-primary" href="/analyse-avis-google/">{cta_label} →</a></section></article></main><footer class="public-footer"><div>"""
-        f"""<a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><p>Analyse, qualification et suivi des dossiers liés aux avis en ligne.</p>"""
-        f"""</div><div><b>Produit</b><a href="/produit/">Fonctionnalités</a><a href="/tarifs/">Tarifs</a></div><div><b>Ressources</b><a href="/ressources/">Guides</a>"""
-        f"""<a href="/analyse-avis-google/">Analyser un avis</a></div><div><b>Sécurité</b><span>Validation humaine</span><span>Traçabilité complète</span></div>"""
-        f"""</footer></div>{script}</body></html>"""
+
+    body = "".join(
+        (
+            '<!doctype html><html lang="fr"><head>'
+            '<meta charset="utf-8">'
+            '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            f'<title>{_e(display_title)}</title>'
+            f'<meta name="description" content="{_e(page["description"])}">'
+            '<meta name="robots" content="index,follow">'
+            f'<link rel="canonical" href="{_e(canonical_url)}">'
+            '<meta property="og:type" content="article">'
+            f'<meta property="og:title" content="{_e(display_title)}">'
+            f'<meta property="og:description" content="{_e(page["description"])}">'
+            f'<meta property="og:url" content="{_e(canonical_url)}">'
+            '<link rel="stylesheet" href="/assets/app.css">'
+            '<link rel="stylesheet" href="/assets/public.css">'
+            f'<script type="application/ld+json">{schema}</script></head>'
+            '<body><div class="marketing">'
+            '<header class="public-header">'
+            '<a class="public-brand" href="/">'
+            '<b class="brand-mark">◆</b> Review Defense</a>'
+            '<nav class="public-nav">'
+            '<a href="/produit/">Produit</a>'
+            '<a href="/comment-ca-marche/">Comment ça fonctionne</a>'
+            '<a href="/services/">Services</a>'
+            '<a href="/tarifs/">Tarifs</a>'
+            '<a href="/ressources/">Ressources</a>'
+            '<a href="/contact/">Contact</a></nav>'
+            '<div class="public-actions">'
+            '<a class="btn-secondary" href="/app">Connexion</a>'
+            '<a class="btn-primary" href="/analyse-avis-google/">'
+            'Analyser un avis →</a></div></header>'
+            '<main class="seo-main"><div class="seo-breadcrumb">'
+            '<a href="/">Accueil</a> <span>›</span> '
+            f'<span>{_e(page["cluster"])}</span> <span>›</span> '
+            f'<span>{_e(page["h1"])}</span></div>'
+            '<article class="seo-article">'
+            f'<span class="eyebrow">{_e(page["cluster"]).upper()}</span>'
+            f'<h1>{_e(page["h1"])}</h1>'
+            f'<p class="seo-lead">Guide pratique sur '
+            f'<strong>{_e(page["keyword"])}</strong> : vérification des faits, '
+            'qualification du problème, éléments à conserver et prochaines '
+            'étapes.</p>'
+            f'<div class="seo-content">{sections}</div>'
+            '<section class="seo-disclaimer">'
+            '<strong>À retenir :</strong> un avis négatif ou contesté n’est '
+            'pas automatiquement supprimable. Le signalement doit '
+            'correspondre aux faits observables ; aucune suppression n’est '
+            'garantie et la décision finale appartient à la plateforme.'
+            '</section><section class="seo-faq">'
+            f'<h2>Questions fréquentes</h2>{faq}</section>'
+            '<section class="seo-related"><h2>À lire également</h2>'
+            f'<ul>{related}</ul><p>'
+            '<a href="/signaler-un-avis-google/">'
+            'Comment signaler un avis Google</a> · '
+            '<a href="/analyse-avis-google/">'
+            'Analyser votre avis Google</a></p></section>'
+            '<section class="seo-cta">'
+            '<h2>Besoin d’analyser votre avis ?</h2>'
+            '<p>Structurez votre dossier avec Review Defense et gardez une '
+            'validation humaine sur les étapes importantes.</p>'
+            f'<a class="btn-primary" href="/analyse-avis-google/">'
+            f'{cta_label} →</a></section></article></main>'
+            '<footer class="public-footer"><div>'
+            '<a class="public-brand" href="/">'
+            '<b class="brand-mark">◆</b> Review Defense</a>'
+            '<p>Analyse, qualification et suivi des dossiers liés aux avis '
+            'en ligne.</p></div>'
+            '<div><b>Produit</b><a href="/produit/">Fonctionnalités</a>'
+            '<a href="/tarifs/">Tarifs</a></div>'
+            '<div><b>Ressources</b><a href="/ressources/">Guides</a>'
+            '<a href="/analyse-avis-google/">Analyser un avis</a></div>'
+            '<div><b>Sécurité</b><span>Validation humaine</span>'
+            '<span>Traçabilité complète</span></div>'
+            f'</footer></div>{script}</body></html>'
+        )
     )
-    return 200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"public, max-age=300"},body.encode()
+    return (
+        200,
+        {
+            "Content-Type": "text/html; charset=utf-8",
+            "Cache-Control": "public, max-age=300",
+        },
+        body.encode(),
+    )
+
 
 def is_seo_path(path):
     return (
