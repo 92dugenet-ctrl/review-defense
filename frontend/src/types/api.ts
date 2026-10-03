@@ -1,3 +1,8 @@
+// Contrats TypeScript partagés entre les pages et le client HTTP.
+// Ces types décrivent la forme attendue des réponses et objets transmis par l'API ; ils aident
+// l'éditeur à repérer les incohérences mais ne valident pas les données reçues à l'exécution.
+// La validation et les règles métier autoritatives restent côté serveur.
+
 export type ApiEnvelope<T> = {
   data: T;
 };

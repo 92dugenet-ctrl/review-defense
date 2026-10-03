@@ -1,3 +1,8 @@
+// Centre de notifications : affiche les messages en attente et propose des actions explicites.
+// La liste provient de /v1/notifications ; livrer ou annuler déclenche une commande API dédiée.
+// Le navigateur ne transmet qu'une intention : l'état réel, les autorisations et la livraison
+// asynchrone restent gérés par le backend et ses workers.
+
 import { useEffect, useState } from "react";
 
 import { FeedbackMessage } from "@/components/layout/FeedbackMessage";

@@ -1,3 +1,8 @@
+// Cadre commun du site public : enveloppe les pages marketing avec l'en-tête, le pied de page,
+// les styles Muse et les comportements de navigation mobile/animation.
+// Les pages filles fournissent uniquement leur contenu ; ce shell gère le cycle de vie du menu,
+// le verrouillage du scroll et les comportements transversaux liés au changement de route.
+
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { useLocation } from "react-router-dom";

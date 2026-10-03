@@ -1,3 +1,8 @@
+// Coquille de l'espace authentifié : navigation latérale, compte courant et zone Outlet.
+// Les pages enfants sont rendues dans app-main selon la route active ; AuthContext fournit
+// l'identité affichée et l'action de déconnexion. Le filtrage visuel du lien Administration
+// améliore la navigation mais ne constitue pas un contrôle d'autorisation serveur.
+
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 
 import { useAuth } from "@/auth/AuthContext";

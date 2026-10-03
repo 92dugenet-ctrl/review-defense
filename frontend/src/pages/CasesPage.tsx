@@ -1,3 +1,8 @@
+// Liste des dossiers visibles pour l'organisation de la session courante.
+// Le chargement lit /v1/cases puis transforme la réponse en lignes de navigation vers le détail.
+// La page ne calcule pas elle-même les droits ni le périmètre tenant : l'API filtre et autorise
+// les données avant de les retourner au navigateur.
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 

@@ -1,3 +1,8 @@
+// Hook transversal pour les appels API déclenchés par les composants React.
+// Il conserve le résultat, l'état de chargement et l'erreur normalisée, puis expose execute()
+// pour encapsuler une promesse métier. Les pages gardent la responsabilité du choix de l'endpoint
+// et de la présentation ; le transport HTTP commun reste centralisé dans services/api/client.ts.
+
 import { useCallback, useState } from "react";
 import { ApiError, api } from "@/services/api/client";
 

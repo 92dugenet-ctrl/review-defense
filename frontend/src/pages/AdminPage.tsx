@@ -1,3 +1,8 @@
+// Administration de l'organisation : liste les membres et gère les invitations via l'API /v1.
+// Les contrôles de rôle affichés dans l'écran servent à guider l'interface ; les opérations
+// de lecture, d'invitation et de changement de rôle doivent être autorisées à nouveau côté serveur.
+// AuthContext fournit le rôle courant, tandis que les données membres restent chargées depuis l'API.
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 

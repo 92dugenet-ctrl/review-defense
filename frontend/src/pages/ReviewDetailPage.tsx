@@ -1,3 +1,8 @@
+// Détail d'un avis importé : charge /v1/reviews/{id} à partir du paramètre de route.
+// L'écran expose les informations et signaux associés, puis peut demander la création d'un dossier
+// via /v1/cases. La création effective, les contrôles de doublon et l'association à l'organisation
+// sont décidés par l'API ; la navigation ne fait qu'ouvrir le dossier retourné.
+
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 

@@ -1,3 +1,8 @@
+// Architecture des routes : les pages publiques, légales et d'authentification sont accessibles
+// sans session ; le groupe /app passe d'abord par RequireAuth puis partage AppShell.
+// Chaque route associe une URL à un écran. Cette garde contrôle la navigation uniquement :
+// les droits d'accès aux données et actions restent vérifiés par les endpoints du backend.
+
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import { RequireAuth } from "@/auth/RequireAuth";

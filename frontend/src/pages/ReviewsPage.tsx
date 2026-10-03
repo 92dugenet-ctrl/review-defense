@@ -1,3 +1,8 @@
+// Catalogue des avis importés dans l'espace de travail, avec recherche et filtres locaux.
+// La source des données est /v1/reviews ; le filtrage de texte et de note ne modifie que l'affichage
+// dans le navigateur. L'import, le périmètre d'organisation et la persistance des avis sont gérés
+// par les services backend et les intégrations externes.
+
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 

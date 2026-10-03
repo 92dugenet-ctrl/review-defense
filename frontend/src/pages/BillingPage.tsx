@@ -1,3 +1,8 @@
+// Interface de facturation et d'abonnement : lit l'état de facturation et le catalogue depuis l'API.
+// Le backend fournit la configuration publique PayPal et les identifiants d'offres ; le navigateur
+// charge ensuite le SDK PayPal pour afficher les boutons. Après approbation, l'identifiant
+// d'abonnement est transmis au backend, qui reste responsable de la confirmation et de l'état payé.
+
 import { useEffect, useRef, useState } from "react";
 
 import { authToken } from "@/auth/AuthContext";

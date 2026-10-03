@@ -1,3 +1,7 @@
+// Paramètres du compte connecté : assemble les informations issues d'AuthContext et les liens
+// vers les fonctions de confidentialité et de gestion de session. Cette page n'est pas un dépôt
+// autonome de profil : les changements sensibles sont réalisés par les écrans/API spécialisés.
+
 import { Link } from "react-router-dom";
 
 import { useAuth } from "@/auth/AuthContext";

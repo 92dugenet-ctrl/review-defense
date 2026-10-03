@@ -1,3 +1,8 @@
+// Vue de pilotage de la file : combine les éléments /v1/review-queue et les agrégats workload.
+// Le serveur calcule les priorités, statuts et données de charge ; le frontend les présente
+// et fournit des liens vers les dossiers concernés. Les indicateurs affichés ne remplacent pas
+// les décisions métier et contrôles de traitement exécutés par les services backend.
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 

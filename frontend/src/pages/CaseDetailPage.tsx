@@ -1,3 +1,8 @@
+// Vue de travail d'un dossier, chargée à partir de son identifiant de route.
+// L'endpoint /v1/cases/{id}/workspace rassemble les informations nécessaires à l'écran
+// (avis associé, état, preuves et éléments d'analyse) pour éviter de reconstruire le dossier
+// avec plusieurs appels indépendants. Les actions disponibles renvoient ensuite au backend.
+
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 

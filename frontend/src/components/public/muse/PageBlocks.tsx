@@ -1,3 +1,7 @@
+// Sections de mise en page réutilisables pour les pages marketing publiques.
+// Ces composants standardisent les transitions entre sections et les appels à l'action ; ils
+// ne contiennent pas de logique métier ou d'accès API. Les destinations restent des routes React.
+
 import { MuseScene, Reveal } from "./MuseScene";
 import { PublicActionLink } from "./PublicActionLink";
 

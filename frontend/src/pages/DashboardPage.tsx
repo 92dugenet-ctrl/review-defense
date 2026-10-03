@@ -1,3 +1,8 @@
+// Tableau de bord de l'organisation : agrège les avis récents, les dossiers et la file de revue.
+// Les trois lectures API sont indépendantes et alimentent les blocs de synthèse de l'écran.
+// Cette page présente une vue d'ensemble ; les opérations détaillées sont déléguées aux pages
+// Avis, Dossiers et Analyse afin de garder les règles d'action près de leur contexte métier.
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
