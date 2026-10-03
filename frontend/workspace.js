@@ -47,8 +47,12 @@ function verifyEmail(){
       );
  const submit=document.getElementById("verify-submit");
  submit.disabled=!organizationId||!token;
- if(!organizationId||!token){document.getElementById("verify-error").textContent="Lien incomplet. Ouvrez le lien de vérification reçu par email.";return}
-  submit.onclick=async()=>{submit.disabled=true;const err=document.getElementById("verify-error");err.textContent="";try{await post("/v1/auth/email-verification/verify",
+  if(!organizationId||!token){document.getElementById("verify-error").textContent="Lien incomplet. Ouvrez le lien de vérification reçu par email.";
+   return}
+    submit.onclick=async()=>{submit.disabled=true;
+    const err=document.getElementById("verify-error");
+    err.textContent="";
+    try{await post("/v1/auth/email-verification/verify",
    {organization_id:organizationId,
    verification_token:token});localStorage.setItem("rd_org_id",
    organizationId);app.querySelector(".loginbox").innerHTML=(
@@ -190,7 +194,11 @@ function login(){
     const payload=Object.fromEntries(new FormData(form));
     const d=registering?await post("/v1/auth/register",payload):await post("/v1/auth/login",payload);
         if(d.status==="verification_required"){localStorage.setItem("rd_org_id",
-      d.organization_id);mode="login";render();document.getElementById("auth-error").textContent="Un email de vérification a été demandé. Vérifiez votre boîte de réception avant de vous connecter.";return}
+            d.organization_id);
+        mode="login";
+        render();
+        document.getElementById("auth-error").textContent="Un email de vérification a été demandé. Vérifiez votre boîte de réception avant de vous connecter.";
+        return}
     if(d.organization_id)localStorage.setItem("rd_org_id",d.organization_id);
     if(!d.access_token)throw Error("Le compte a été créé, mais aucune session n'a été délivrée. Vérifiez la configuration de validation email.");
         S.token=d.access_token;S.role=d.role;localStorage.setItem("rd_token",
@@ -252,7 +260,10 @@ app.innerHTML='<div class="shell"><aside class="side"><a class="brand" href="/">
   '"></div>').join("") +
   '</section></main></div><div id="modal-root"></div>';
 document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{S.view=b.dataset.view;document.querySelector(".side").classList.remove("open");show()});
-document.getElementById("logout").onclick=async()=>{try{await post("/v1/logout")}catch{}localStorage.removeItem("rd_token");localStorage.removeItem("rd_role");S.token=null;login()};
+document.getElementById("logout").onclick=async()=>{try{await post("/v1/logout")}catch{}localStorage.removeItem("rd_token");
+  localStorage.removeItem("rd_role");
+  S.token=null;
+  login()};
 document.getElementById("refresh").onclick=()=>load(S.view);
 document.getElementById("menu").onclick=()=>document.querySelector(".side").classList.toggle("open");
 app.addEventListener("click",onAction);
@@ -300,7 +311,11 @@ function bindList(el,
   kind),
   '<span>' +
   items.length +
-  ' élément(s)</span>');const input=el.querySelector("#list-search");input.oninput=()=>{const q=input.value.toLowerCase();el.querySelectorAll("tbody tr").forEach(r=>r.hidden=!r.textContent.toLowerCase().includes(q))};el.querySelectorAll("[data-open]").forEach(r=>r.onclick=()=>openDetail(r.dataset.open,
+    ' élément(s)</span>');
+    const input=el.querySelector("#list-search");
+    input.oninput=()=>{const q=input.value.toLowerCase();
+    el.querySelectorAll("tbody tr").forEach(r=>r.hidden=!r.textContent.toLowerCase().includes(q))};
+    el.querySelectorAll("[data-open]").forEach(r=>r.onclick=()=>openDetail(r.dataset.open,
   r.dataset.id))}
 
 function renderTeam(el,items){
@@ -456,20 +471,33 @@ async function clientMonitoring(el){
    '</tbody></table></div></section></div>';
  const form=el.querySelector("#client-profile-form");
   if(form)form.onsubmit=async ev=>{ev.preventDefault();try{await post("/v1/client/profile",
-   Object.fromEntries(new FormData(form)));el.querySelector("#client-document-status").textContent="Profil enregistré.";await clientMonitoring(el)}catch(err){el.querySelector("#client-document-status").textContent=err.message}};
+      Object.fromEntries(new FormData(form)));
+     el.querySelector("#client-document-status").textContent="Profil enregistré.";
+     await clientMonitoring(el)}catch(err){el.querySelector("#client-document-status").textContent=err.message}};
  const connect=el.querySelector("#client-google-connect");
   if(connect)connect.onclick=async()=>{connect.disabled=true;try{const result=await post("/v1/integrations/google/start",
-   {});if(!result.authorization_url)throw Error("URL Google indisponible");location.href=result.authorization_url}catch(err){connect.disabled=false;el.querySelector("#client-document-status").textContent=err.message}};
+      {});
+     if(!result.authorization_url)throw Error("URL Google indisponible");
+     location.href=result.authorization_url}catch(err){connect.disabled=false;
+     el.querySelector("#client-document-status").textContent=err.message}};
   el.querySelectorAll("[data-google-select]").forEach(button=>button.onclick=async()=>{button.disabled=true;try{const result=await post("/v1/integrations/google/select-location",
    {connection_id:button.dataset.connection,
    account_id:button.dataset.account,
    location_id:button.dataset.location});el.querySelector("#client-document-status").textContent=(result.reviews_synced||0) +
-   " avis synchronisés.";await clientMonitoring(el)}catch(err){button.disabled=false;el.querySelector("#client-document-status").textContent=err.message}});
+      " avis synchronisés.";
+     await clientMonitoring(el)}catch(err){button.disabled=false;
+     el.querySelector("#client-document-status").textContent=err.message}});
  const upload=el.querySelector("#client-document-input");
-  if(upload)upload.onchange=async()=>{const status=el.querySelector("#client-document-status");for(const file of upload.files||[]){try{if(file.size>25*1024*1024)throw Error("Chaque document doit faire 25 Mo maximum.");status.textContent="Téléversement de " +
+    if(upload)upload.onchange=async()=>{const status=el.querySelector("#client-document-status");
+    for(const file of upload.files||[]){try{if(file.size>25*1024*1024)throw Error("Chaque document doit faire 25 Mo maximum.");
+    status.textContent="Téléversement de " +
    file.name +
    "…";const encoded=await new Promise((resolve,
-   reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(",")[1]||"");reader.onerror=()=>reject(Error("Lecture du fichier impossible"));reader.readAsDataURL(file)});await post("/v1/client/documents",
+      reject)=>{const reader=new FileReader();
+     reader.onload=()=>resolve(String(reader.result).split(",")[1]||"");
+     reader.onerror=()=>reject(Error("Lecture du fichier impossible"));
+     reader.readAsDataURL(file)});
+     await post("/v1/client/documents",
    {filename:file.name,
    content_type:file.type||"application/octet-stream",
    content_base64:encoded,
@@ -672,7 +700,10 @@ async function billing(el){const items=arr(await api("/v1/billing/catalog"));el.
   (x.currency||"EUR"):"Sur devis")}],
   "billing"))}
 async function openDetail(kind,
-  id){if(!id)return;const root=document.getElementById("modal-root");root.innerHTML='<div class="overlay"><section class="card drawer">Chargement de la fiche…</section></div>';try{let data={},
+    id){if(!id)return;
+    const root=document.getElementById("modal-root");
+    root.innerHTML='<div class="overlay"><section class="card drawer">Chargement de la fiche…</section></div>';
+    try{let data={},
   title=kind; if(kind==="reviews"){data=await api("/v1/reviews/" +
   encodeURIComponent(id));title="Fiche avis"}
 if(kind==="cases"){const base="/v1/cases/" +
@@ -703,7 +734,9 @@ if(kind==="queue"){const q=(S.cache.queue||[]).find(x=>x.case_id===id);data={que
 if(kind==="approvals"){data=(S.cache.approvals||[]).find(x=>(x.approval_id||x.decision_id)===id)||{};title="Approbation"}
 if(kind==="notifications"){data=(S.cache.notifications||[]).find(x=>(x.notification_id||x.id)===id)||{};title="Notification"}
 if(kind==="team"){data=(S.cache.team||[]).find(x=>(x.member_id||x.user_id)===id)||{};title="Membre"}
-if(kind==="escalations"){const parts=id.split("::");data=(S.cache.escalations||[]).find(x=>x.case_id===parts[0]&&(!parts[1]||x.level===parts[1]))||{};title="Escalade SLA"}
+if(kind==="escalations"){const parts=id.split("::");
+  data=(S.cache.escalations||[]).find(x=>x.case_id===parts[0]&&(!parts[1]||x.level===parts[1]))||{};
+  title="Escalade SLA"}
 renderDetail(root,kind,id,title,data)
 }catch(e){root.innerHTML=(
         '<div class="overlay"><section class="card drawer"><button class="btn close" data-acti' +
@@ -734,7 +767,8 @@ function recordList(rows,
   esc(x.status||x.state||x.category||x.source||"") +
   '</small></div></article>').join("") +
   '</div>'}
-function evidenceList(rows){if(!Array.isArray(rows)||!rows.length)return '<div class="empty-inline">Aucune preuve ajoutée à ce dossier.</div>';return '<div class="evidence-list">' +
+function evidenceList(rows){if(!Array.isArray(rows)||!rows.length)return '<div class="empty-inline">Aucune preuve ajoutée à ce dossier.</div>';
+  return '<div class="evidence-list">' +
   rows.map(x=>'<article class="evidence-item"><div><b>' +
   esc(x.filename||x.name||x.evidence_id||"Pièce") +
   '</b><small>' +
@@ -746,7 +780,8 @@ function evidenceList(rows){if(!Array.isArray(rows)||!rows.length)return '<div c
   esc(x.status||(x.verified?"Vérifiée":"À vérifier")) +
   '</span></article>').join("") +
   '</div>'}
-function historyList(rows){if(!Array.isArray(rows)||!rows.length)return '<div class="empty-inline">Aucun événement d’historique disponible.</div>';return '<div class="history-list">' +
+function historyList(rows){if(!Array.isArray(rows)||!rows.length)return '<div class="empty-inline">Aucun événement d’historique disponible.</div>';
+  return '<div class="history-list">' +
   rows.map(x=>'<article class="history-item"><span class="history-dot"></span><div><b>' +
   esc(x.title||x.action||x.event_type||x.event||"Événement") +
   '</b><p>' +
@@ -755,7 +790,9 @@ function historyList(rows){if(!Array.isArray(rows)||!rows.length)return '<div cl
   esc(fmt(x.created_at||x.timestamp||x.occurred_at)) +
   '</small></div></article>').join("") +
   '</div>'}
-function keyValueList(x){const rows=objectRows(x);if(!rows.length)return '<div class="empty-inline">Aucune donnée disponible.</div>';return '<div class="key-value-list">' +
+function keyValueList(x){const rows=objectRows(x);
+  if(!rows.length)return '<div class="empty-inline">Aucune donnée disponible.</div>';
+  return '<div class="key-value-list">' +
   rows.map(r=>'<div><span>' +
   esc(r.key||r.label) +
   '</span><b>' +
@@ -786,7 +823,8 @@ function factsMarkup(rows,
   x.fact_id):"") +
   ( !(evidence?.verified||evidence?.status==="VERIFIED")?'<small>Vérifier d’abord la preuve</small>':"") +
   '</td></tr>'}).join("") +
-  '</tbody></table></div>'}function contradictionsMarkup(rows){if(!rows.length)return '<p class="muted">Aucune contradiction enregistrée. Une analyse peut être lancée par un administrateur.</p>';return '<div class="table"><table><thead><tr><th>Description</th><th>Éléments</th><th>Statut</th></tr></thead><tbody>' +
+    '</tbody></table></div>'}function contradictionsMarkup(rows){if(!rows.length)return '<p class="muted">Aucune contradiction enregistrée. Une analyse peut être lancée par un administrateur.</p>';
+    return '<div class="table"><table><thead><tr><th>Description</th><th>Éléments</th><th>Statut</th></tr></thead><tbody>' +
   rows.map(x=>'<tr><td>' +
   esc(x.description) +
   '</td><td>' +
@@ -895,7 +933,8 @@ else if(kind==="cases"){const c=d.detail?.case||{},w=d.workspace?.workspace||{};
 if(can("operator")){actions+=button("Ajouter une preuve",
   "upload-evidence:" +
   id,
-  "btn primary");if(!c.assigned_to||c.assigned_to===S.userId||can("manager"))actions+=button(c.assigned_to?"Libérer l’affectation":"Prendre en charge",
+    "btn primary");
+    if(!c.assigned_to||c.assigned_to===S.userId||can("manager"))actions+=button(c.assigned_to?"Libérer l’affectation":"Prendre en charge",
   "claim-case:" +
   id);actions+=button("Vérifier checklist",
   "checklist:" +
@@ -924,7 +963,8 @@ else if(kind==="team"){const m=d||{};body='<div class="detail-grid">' +
   m.email) +
   field("Rôle",
   m.role) +
-  '</div><p>Un changement de rôle invalide les sessions existantes du membre.</p>';if(can("manager")&&m.user_id!==undefined)actions+=button("Modifier le rôle",
+    '</div><p>Un changement de rôle invalide les sessions existantes du membre.</p>';
+    if(can("manager")&&m.user_id!==undefined)actions+=button("Modifier le rôle",
   "edit-role:" +
   m.user_id,
   "btn primary")}
@@ -1010,12 +1050,17 @@ root.innerHTML='<div class="overlay"><section class="card drawer"><button class=
   body +
   '</section></div>'}
 function modal(title,
-  form){const root=document.getElementById("modal-root");root.innerHTML='<div class="overlay"><section class="card drawer"><button class="btn close" data-action="close">×</button><h2>' +
+    form){const root=document.getElementById("modal-root");
+    root.innerHTML='<div class="overlay"><section class="card drawer"><button class="btn close" data-action="close">×</button><h2>' +
   esc(title) +
   '</h2>' +
   form +
   '</section></div>'}
-async function onAction(e){const b=e.target.closest("[data-action]");if(!b)return;const action=b.dataset.action;if(action==="close"){document.getElementById("modal-root").innerHTML="";return}
+async function onAction(e){const b=e.target.closest("[data-action]");
+  if(!b)return;
+  const action=b.dataset.action;
+  if(action==="close"){document.getElementById("modal-root").innerHTML="";
+  return}
 const [op,id]=action.split(":");try{
 if(op==="invite-member"){modal("Inviter un membre",
   (
@@ -1035,7 +1080,10 @@ if(op==="invite-member"){modal("Inviter un membre",
   esc(result.invitation_token) +
   '</pre><p class="muted">Expiration : ' +
   esc(fmt(result.expires_at)) +
-  '</p><button class="btn primary" data-action="copy-token">Copier le jeton</button>');S.cache.team=arr(await api("/v1/organization/members"));};return}
+    '</p><button class="btn primary" data-action="copy-token">Copier le jeton</button>');
+    S.cache.team=arr(await api("/v1/organization/members"));
+    };
+    return}
 if(op==="copy-token"){await navigator.clipboard.writeText(S.lastInvitationToken||"");b.textContent="Copié";return}
 if(op==="edit-role"){const member=(S.cache.team||[]).find(x=>x.user_id===id);if(!member)return;modal("Modifier le rôle",
   '<form id="role-form"><div class="field"><label>Membre</label><input value="' +
@@ -1046,10 +1094,19 @@ if(op==="edit-role"){const member=(S.cache.team||[]).find(x=>x.user_id===id);if(
         'value="VIEWER">Lecture seule</option><option value="ADMIN">Administrateur</option><op' +
         'tion value="OWNER">Propriétaire</option></select></div><button class="btn primary">En' +
         'registrer</button></form>'
-      ));if(S.role!=="OWNER")document.querySelector("#role-form [value=OWNER]")?.remove();document.querySelector("#role-form [name=role]").value=member.role;document.getElementById("role-form").onsubmit=async ev=>{ev.preventDefault();await post("/v1/organization/members/" +
+            ));
+        if(S.role!=="OWNER")document.querySelector("#role-form [value=OWNER]")?.remove();
+        document.querySelector("#role-form [name=role]").value=member.role;
+        document.getElementById("role-form").onsubmit=async ev=>{ev.preventDefault();
+        await post("/v1/organization/members/" +
   encodeURIComponent(id) +
   "/role",
-  Object.fromEntries(new FormData(ev.currentTarget)));S.cache.team=arr(await api("/v1/organization/members"));await load("team");document.getElementById("modal-root").innerHTML="";};return}
+    Object.fromEntries(new FormData(ev.currentTarget)));
+    S.cache.team=arr(await api("/v1/organization/members"));
+    await load("team");
+    document.getElementById("modal-root").innerHTML="";
+    };
+    return}
 if(op==="notify-escalation"){const [caseId,
   level]=id.split("~");modal("Créer une notification d’escalade",
   (
@@ -1080,7 +1137,18 @@ if(op==="notify-escalation"){const [caseId,
         'externe n’est déclenché par cette étape.</p></form>'
       ));document.getElementById("notify-form").elements.channel.onchange=ev=>{const target=document.getElementById("notify-target"),
   help=document.getElementById("notify-target-help"),
-  channel=ev.target.value;if(channel==="EMAIL"){if(!target.value||target.value===S.userId)target.value=S.userEmail||"";target.placeholder="destinataire@entreprise.fr";help.textContent="Adresse email destinataire. L’envoi nécessite une configuration SMTP et une politique autorisant l’email."}else if(channel==="WEBHOOK"){if(target.value===S.userId||target.value===S.userEmail)target.value="";target.placeholder="https://exemple.fr/webhook";help.textContent="URL HTTPS publique. Les adresses privées et locales sont refusées par le serveur."}else{if(!target.value||target.value===S.userEmail)target.value=S.userId||"";target.placeholder="Identifiant du membre";help.textContent="Identifiant du membre destinataire dans l’organisation."}};document.getElementById("notify-form").onsubmit=async ev=>{ev.preventDefault();const payload=Object.fromEntries(new FormData(ev.currentTarget));payload.level=level;const result=await post("/v1/escalations/" +
+    channel=ev.target.value;
+    if(channel==="EMAIL"){if(!target.value||target.value===S.userId)target.value=S.userEmail||"";
+    target.placeholder="destinataire@entreprise.fr";
+    help.textContent="Adresse email destinataire. L’envoi nécessite une configuration SMTP et une politique autorisant l’email."}else if(channel==="WEBHOOK"){if(target.value===S.userId||target.value===S.userEmail)target.value="";
+    target.placeholder="https://exemple.fr/webhook";
+    help.textContent="URL HTTPS publique. Les adresses privées et locales sont refusées par le serveur."}else{if(!target.value||target.value===S.userEmail)target.value=S.userId||"";
+    target.placeholder="Identifiant du membre";
+    help.textContent="Identifiant du membre destinataire dans l’organisation."}};
+    document.getElementById("notify-form").onsubmit=async ev=>{ev.preventDefault();
+    const payload=Object.fromEntries(new FormData(ev.currentTarget));
+    payload.level=level;
+    const result=await post("/v1/escalations/" +
   encodeURIComponent(decodeURIComponent(caseId)) +
   "/notify",
   payload);S.cache.notifications=arr(await api("/v1/notifications"));modal("Notification créée",
@@ -1104,8 +1172,21 @@ if(op==="create-case"){await post("/v1/cases",
   {review_id:id});document.getElementById("modal-root").innerHTML="";S.view="cases";show();return}
 if(op==="download-evidence"){const file=await api("/v1/evidence/" +
   encodeURIComponent(id) +
-  "/content");const binary=atob(file.content_base64);const bytes=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);const blob=new Blob([bytes],
-  {type:file.content_type||"application/octet-stream"});const url=URL.createObjectURL(blob);const link=document.createElement("a");link.href=url;link.download=file.filename||"preuve";document.body.appendChild(link);link.click();link.remove();URL.revokeObjectURL(url);return}
+    "/content");
+    const binary=atob(file.content_base64);
+    const bytes=new Uint8Array(binary.length);
+    for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+    const blob=new Blob([bytes],
+    {type:file.content_type||"application/octet-stream"});
+    const url=URL.createObjectURL(blob);
+    const link=document.createElement("a");
+    link.href=url;
+    link.download=file.filename||"preuve";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    return}
 if(op==="verify-evidence"){await post("/v1/evidence/" +
   encodeURIComponent(id) +
   "/verify");return openDetail("evidence",
@@ -1134,7 +1215,10 @@ if(op==="disposition"){const parts=action.split(":");const caseId=parts[1],
   "/disposition",
   Object.fromEntries(new FormData(ev.currentTarget)));await openDetail("cases",
   caseId)};return}
-if(op==="claim-case"){const row=(S.cache.queue||[]).find(x=>x.case_id===id);const assignedTo=S.cache.caseDetails?.[id]?.assigned_to??row?.assigned_to;if(assignedTo&&assignedTo!==S.userId&&!can("manager"))throw Error("Ce dossier est attribué à un autre membre.");await post("/v1/review-queue/" +
+if(op==="claim-case"){const row=(S.cache.queue||[]).find(x=>x.case_id===id);
+  const assignedTo=S.cache.caseDetails?.[id]?.assigned_to??row?.assigned_to;
+  if(assignedTo&&assignedTo!==S.userId&&!can("manager"))throw Error("Ce dossier est attribué à un autre membre.");
+  await post("/v1/review-queue/" +
   encodeURIComponent(id) +
   (assignedTo?"/unclaim":"/claim"));return openDetail("cases",
   id)}
@@ -1144,8 +1228,15 @@ if(op==="upload-evidence"){modal("Ajouter une preuve",
         'name="file" required></div><button class="btn primary">Envoyer la preuve</button><p c' +
         'lass="notice">Le fichier est transmis au serveur via le endpoint sécurisé de dépôt.</' +
         'p></form>'
-      ));document.getElementById("evidence-form").onsubmit=async ev=>{ev.preventDefault();const file=ev.currentTarget.elements.file.files[0];const b64=await new Promise((resolve,
-  reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(",")[1]);reader.onerror=reject;reader.readAsDataURL(file)});await post("/v1/evidence",
+            ));
+        document.getElementById("evidence-form").onsubmit=async ev=>{ev.preventDefault();
+        const file=ev.currentTarget.elements.file.files[0];
+        const b64=await new Promise((resolve,
+    reject)=>{const reader=new FileReader();
+    reader.onload=()=>resolve(String(reader.result).split(",")[1]);
+    reader.onerror=reject;
+    reader.readAsDataURL(file)});
+    await post("/v1/evidence",
   {case_id:id,
   filename:file.name,
   content_type:file.type||"application/octet-stream",
@@ -1200,20 +1291,34 @@ if(op==="checklist"){const d=await api("/v1/cases/" +
   '> ' +
   esc(x.label||x.code) +
   '</label>').join("") +
-  '<button class="btn primary">Enregistrer les éléments cochés</button></form>');document.getElementById("checklist-form").onsubmit=async ev=>{ev.preventDefault();for(const input of ev.currentTarget.querySelectorAll("[data-code]"))await post("/v1/cases/" +
+    '<button class="btn primary">Enregistrer les éléments cochés</button></form>');
+    document.getElementById("checklist-form").onsubmit=async ev=>{ev.preventDefault();
+    for(const input of ev.currentTarget.querySelectorAll("[data-code]"))await post("/v1/cases/" +
   id +
   "/review-checklist",
   {code:input.dataset.code,
   completed:input.checked});await openDetail("cases",
   id)};return}
 }catch(err){modal("Action non effectuée",'<div class="notice">'+esc(err.message)+'</div>')}}
-async function start(){if(location.pathname==="/verify-email")return verifyEmail();if(location.pathname==="/reset-password")return recovery();if(location.pathname==="/accept-invitation")return acceptInvitation();if(!S.token){if(["/client",
+async function start(){if(location.pathname==="/verify-email")return verifyEmail();
+  if(location.pathname==="/reset-password")return recovery();
+  if(location.pathname==="/accept-invitation")return acceptInvitation();
+  if(!S.token){if(["/client",
   "/client/",
   "/admin",
   "/admin/"].includes(location.pathname)){location.replace("/connexion?next=" +
   encodeURIComponent(location.pathname +
-  location.search));return}return login()}try{const me=await api("/v1/me");S.userId=me.user_id||null;S.userEmail=me.email||null;S.role=me.role||S.role;localStorage.setItem("rd_role",
-  S.role);const requestedView=new URLSearchParams(location.search).get("page");if(requestedView&&allLabels[requestedView])S.view=requestedView;const query=location.search||"";if(adminPath()&&!can("manager")){location.replace("/client" +
+    location.search));
+    return}return login()}try{const me=await api("/v1/me");
+    S.userId=me.user_id||null;
+    S.userEmail=me.email||null;
+    S.role=me.role||S.role;
+    localStorage.setItem("rd_role",
+    S.role);
+    const requestedView=new URLSearchParams(location.search).get("page");
+    if(requestedView&&allLabels[requestedView])S.view=requestedView;
+    const query=location.search||"";
+    if(adminPath()&&!can("manager")){location.replace("/client" +
   query);return}if(!adminPath()&&can("manager")){location.replace("/admin" +
   query);return}shell()}catch(e){localStorage.removeItem("rd_token");localStorage.removeItem("rd_role");S.token=null;login()}}
 start();

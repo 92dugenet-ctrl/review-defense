@@ -73,7 +73,12 @@ const state={token:localStorage.getItem('rd_token'),
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const toast=(msg,
-  kind='info')=>{const el=document.getElementById('toast');if(!el)return;el.className=kind;el.textContent=msg;clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.textContent='',
+    kind='info')=>{const el=document.getElementById('toast');
+    if(!el)return;
+    el.className=kind;
+    el.textContent=msg;
+    clearTimeout(window.__toast);
+    window.__toast=setTimeout(()=>el.textContent='',
   3500)};
 function demoData(path,opts={}){
   if(path==='/v1/me') return {user_id:'demo-user',
@@ -180,7 +185,10 @@ async function api(path,
   {...opts,
   headers});if(r.status===401){state.token=null;localStorage.removeItem('rd_token');if(!['/v1/auth/login',
   '/v1/auth/recovery/request',
-  '/v1/auth/recovery/reset'].includes(path)){renderLogin();} }const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data?.error?.message||data?.message||data?.error||`HTTP ${r.status}`);return data}
+    '/v1/auth/recovery/reset'].includes(path)){renderLogin();
+    } }const data=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(data?.error?.message||data?.message||data?.error||`HTTP ${r.status}`);
+    return data}
 const rdT=(s)=>window.ReviewDefenseI18n?.t?.(s)||s;
 function setToken(t){state.token=t;localStorage.setItem('rd_token',t)}
 function authShell(inner){return `<main class="auth-page"><div class="auth-card"><div class="brand large">REVIEW<span>DEFENSE</span></div>${inner}<div class="auth-foot">Les actions externes restent soumises à approbation humaine.</div></div></main>`}
@@ -213,33 +221,68 @@ function renderSignup(error=''){
   document.getElementById('signup-back').onclick=()=>renderLogin();document.getElementById('clear-pricing-selection')?.addEventListener('click',
    ()=>{clearSelectedPricingOffer();renderSignup()});
 }
-function renderLogin(error=''){document.body.classList.remove('console-mode');state.login.mfaRequired=false;document.body.innerHTML=authShell(`<div class="auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Console sécurisée</small></div></div><div class="auth-trust-row"><span>Connexion sécurisée</span><span>Compte protégé</span><span>Vérification renforcée</span></div><form id="login" class="stack auth-form"><div><div class="eyebrow">IDENTITY & ACCESS</div><h1>Connexion</h1><p>Accédez à votre espace organisationnel sécurisé.</p></div><label>Email<input name="email" type="email" autocomplete="username" required value="${esc(state.login.email)}"></label><label>Organisation<input name="organization_id" autocomplete="organization" required value="${esc(state.login.organization_id)}"></label><label>Mot de passe<div class="password-field"><input id="login-password" name="password" type="password" autocomplete="current-password" required><button type="button" class="ghost" onclick="togglePasswordVisibility('login-password',
+function renderLogin(error=''){document.body.classList.remove('console-mode');
+  state.login.mfaRequired=false;
+  document.body.innerHTML=authShell(`<div class="auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Console sécurisée</small></div></div><div class="auth-trust-row"><span>Connexion sécurisée</span><span>Compte protégé</span><span>Vérification renforcée</span></div><form id="login" class="stack auth-form"><div><div class="eyebrow">IDENTITY & ACCESS</div><h1>Connexion</h1><p>Accédez à votre espace organisationnel sécurisé.</p></div><label>Email<input name="email" type="email" autocomplete="username" required value="${esc(state.login.email)}"></label><label>Organisation<input name="organization_id" autocomplete="organization" required value="${esc(state.login.organization_id)}"></label><label>Mot de passe<div class="password-field"><input id="login-password" name="password" type="password" autocomplete="current-password" required><button type="button" class="ghost" onclick="togglePasswordVisibility('login-password',
   this)" aria-label="Afficher le mot de passe">Afficher</button></div></label><div id="mfa-slot" hidden></div><button class="primary auth-submit" type="submit">Se connecter</button>${error?`<div class="error">${esc(error)}</div>`:''}<button type="button" class="link-btn" id="forgot">Mot de passe oublié ?</button><button type="button" class="link-btn" id="create-account">Créer un compte</button><button type="button" class="link-btn" id="invite-account">J’ai une invitation</button></form><div class="auth-boundary"><strong>Contrôle humain & serveur</strong><span>Aucune action Google externe n'est exécutée pendant l'authentification.</span></div></div>`);document.getElementById('login').onsubmit=loginSubmit;document.getElementById('forgot').onclick=renderRecovery;document.getElementById('create-account').onclick=()=>renderSignup();document.getElementById('invite-account').onclick=()=>{location.href='/?page=accept-invitation'}}
 function togglePasswordVisibility(id,
-  button){const input=document.getElementById(id);if(!input)return;const visible=input.type==='text';input.type=visible?'password':'text';button.textContent=visible?'Afficher':'Masquer';button.setAttribute('aria-label',
+    button){const input=document.getElementById(id);
+    if(!input)return;
+    const visible=input.type==='text';
+    input.type=visible?'password':'text';
+    button.textContent=visible?'Afficher':'Masquer';
+    button.setAttribute('aria-label',
   visible?'Afficher le mot de passe':'Masquer le mot de passe')}
-async function loginSubmit(e){e.preventDefault();const f=new FormData(e.currentTarget);state.login.email=String(f.get('email'));state.login.organization_id=String(f.get('organization_id'));const body={email:state.login.email,
+async function loginSubmit(e){e.preventDefault();
+  const f=new FormData(e.currentTarget);
+  state.login.email=String(f.get('email'));
+  state.login.organization_id=String(f.get('organization_id'));
+  const body={email:state.login.email,
   organization_id:state.login.organization_id,
   password:String(f.get('password'))};const code=f.get('mfa_code');if(code)body.mfa_code=String(code);try{const d=await api('/v1/auth/login',
   {method:'POST',
-  body:JSON.stringify(body)});setToken(d.access_token);location.href='/app'}catch(x){if(String(x.message).toLowerCase().includes('mfa')){state.login.mfaRequired=true;const slot=document.getElementById('mfa-slot');if(slot){slot.hidden=false;slot.innerHTML=(
+    body:JSON.stringify(body)});
+    setToken(d.access_token);
+    location.href='/app'}catch(x){if(String(x.message).toLowerCase().includes('mfa')){state.login.mfaRequired=true;
+    const slot=document.getElementById('mfa-slot');
+    if(slot){slot.hidden=false;
+    slot.innerHTML=(
         '<label>Code MFA<input id="login-mfa" name="mfa_code" inputmode="numeric" autocomplete' +
         '="one-time-code" pattern="\\d{6}" maxlength="6" placeholder="000000" required></label' +
         '><p class="hint">Entrez le code de votre application d’authentification.</p>'
-      );slot.querySelector('input')?.focus()}}const err=document.querySelector('#login .error');if(err)err.textContent=x.message;else document.querySelector('#login').insertAdjacentHTML('beforeend',
+            );
+        slot.querySelector('input')?.focus()}}const err=document.querySelector('#login .error');
+        if(err)err.textContent=x.message;
+        else document.querySelector('#login').insertAdjacentHTML('beforeend',
   `<div class="error">${esc(x.message)}</div>`)}}
-function renderRecovery(){document.body.innerHTML=authShell(`<div class="auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Récupération sécurisée</small></div></div><form id="recovery" class="stack auth-form"><div><div class="eyebrow">ACCOUNT RECOVERY</div><h1>Récupérer l’accès</h1><p>La réponse reste générique afin de ne pas révéler l’existence d’un compte.</p></div><label>Email<input name="email" type="email" autocomplete="username" required></label><label>Organisation<input name="organization_id" autocomplete="organization" required></label><button class="primary auth-submit">Envoyer le lien</button><div id="recovery-msg" class="hint"></div><button type="button" class="link-btn" id="back">Retour à la connexion</button></form><div class="auth-boundary"><strong>Jeton à usage contrôlé</strong><span>Le lien de récupération est limité dans le temps et à usage unique.</span></div></div>`);document.getElementById('recovery').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget);try{await api('/v1/auth/recovery/request',
+function renderRecovery(){document.body.innerHTML=authShell(`<div class="auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Récupération sécurisée</small></div></div><form id="recovery" class="stack auth-form"><div><div class="eyebrow">ACCOUNT RECOVERY</div><h1>Récupérer l’accès</h1><p>La réponse reste générique afin de ne pas révéler l’existence d’un compte.</p></div><label>Email<input name="email" type="email" autocomplete="username" required></label><label>Organisation<input name="organization_id" autocomplete="organization" required></label><button class="primary auth-submit">Envoyer le lien</button><div id="recovery-msg" class="hint"></div><button type="button" class="link-btn" id="back">Retour à la connexion</button></form><div class="auth-boundary"><strong>Jeton à usage contrôlé</strong><span>Le lien de récupération est limité dans le temps et à usage unique.</span></div></div>`);
+  document.getElementById('recovery').onsubmit=async e=>{e.preventDefault();
+  const f=new FormData(e.currentTarget);
+  try{await api('/v1/auth/recovery/request',
   {method:'POST',
   body:JSON.stringify({email:f.get('email'),
-  organization_id:f.get('organization_id')})});document.getElementById('recovery-msg').textContent='Si les informations sont valides, un email de récupération a été envoyé.'}catch(x){document.getElementById('recovery-msg').textContent=x.message}};document.getElementById('back').onclick=()=>renderLogin()}
-function renderReset(){const p=new URLSearchParams(location.search);const token=p.get('token')||p.get('recovery_token');const org=p.get('organization_id')||'';document.body.innerHTML=authShell(`<form id="reset" class="stack"><h1>Nouveau mot de passe</h1><p>Le lien est à usage unique et limité dans le temps.</p><label>Organisation<input name="organization_id" required value="${esc(org)}"></label><label>Token de récupération<input name="recovery_token" required value="${esc(token)}"></label><label>Nouveau mot de passe<input name="new_password" type="password" autocomplete="new-password" required minlength="12"></label><button class="primary">Changer le mot de passe</button><div id="reset-msg" class="hint"></div></form>`);document.getElementById('reset').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget);try{await api('/v1/auth/recovery/reset',
+    organization_id:f.get('organization_id')})});
+    document.getElementById('recovery-msg').textContent='Si les informations sont valides, un email de récupération a été envoyé.'}catch(x){document.getElementById('recovery-msg').textContent=x.message}};
+    document.getElementById('back').onclick=()=>renderLogin()}
+function renderReset(){const p=new URLSearchParams(location.search);
+  const token=p.get('token')||p.get('recovery_token');
+  const org=p.get('organization_id')||'';
+  document.body.innerHTML=authShell(`<form id="reset" class="stack"><h1>Nouveau mot de passe</h1><p>Le lien est à usage unique et limité dans le temps.</p><label>Organisation<input name="organization_id" required value="${esc(org)}"></label><label>Token de récupération<input name="recovery_token" required value="${esc(token)}"></label><label>Nouveau mot de passe<input name="new_password" type="password" autocomplete="new-password" required minlength="12"></label><button class="primary">Changer le mot de passe</button><div id="reset-msg" class="hint"></div></form>`);
+  document.getElementById('reset').onsubmit=async e=>{e.preventDefault();
+  const f=new FormData(e.currentTarget);
+  try{await api('/v1/auth/recovery/reset',
   {method:'POST',
-  body:JSON.stringify(Object.fromEntries(f))});document.getElementById('reset-msg').textContent='Mot de passe modifié. Vous pouvez maintenant vous connecter.';setTimeout(renderLogin,
+    body:JSON.stringify(Object.fromEntries(f))});
+    document.getElementById('reset-msg').textContent='Mot de passe modifié. Vous pouvez maintenant vous connecter.';
+    setTimeout(renderLogin,
   1200)}catch(x){document.getElementById('reset-msg').textContent=x.message}}}
-function renderVerify(){const p=new URLSearchParams(location.search);document.body.innerHTML=authShell(`<div class="stack"><h1>Vérification de l’email</h1><p id="verify-msg">Validation du lien…</p><button class="primary" id="verify-btn">Vérifier</button></div>`);document.getElementById('verify-btn').onclick=async()=>{try{await api('/v1/auth/email-verification/verify',
+function renderVerify(){const p=new URLSearchParams(location.search);
+  document.body.innerHTML=authShell(`<div class="stack"><h1>Vérification de l’email</h1><p id="verify-msg">Validation du lien…</p><button class="primary" id="verify-btn">Vérifier</button></div>`);
+  document.getElementById('verify-btn').onclick=async()=>{try{await api('/v1/auth/email-verification/verify',
   {method:'POST',
   body:JSON.stringify({organization_id:p.get('organization_id')||'',
-  verification_token:p.get('token')||p.get('verification_token')||''})});document.getElementById('verify-msg').textContent='Email vérifié. Vous pouvez vous connecter.'}catch(x){document.getElementById('verify-msg').textContent=x.message}}}
+    verification_token:p.get('token')||p.get('verification_token')||''})});
+    document.getElementById('verify-msg').textContent='Email vérifié. Vous pouvez vous connecter.'}catch(x){document.getElementById('verify-msg').textContent=x.message}}}
 const navItems=[
  ['dashboard','Vue d’ensemble'],
  ['client-monitoring','Mon espace'],
@@ -309,7 +352,8 @@ function visibleNavItems(){
 }
 function shell(){
  const visible=visibleNavItems();
- document.body.classList.add('console-mode');document.body.innerHTML=`<div id="app"><aside class="sidebar" id="console-sidebar" aria-label="Navigation principale"><div class="brand">REVIEW<span>DEFENSE</span></div><button class="workspace-switcher" type="button" data-action="command-palette" aria-label="Ouvrir le sélecteur d’espace de travail"><span>⌘</span> Workspace <small>⌘K</small></button><nav id="nav">${visible.map(([id,label])=>`<button type="button" data-view="${id}" data-nav="${id}" aria-label="Ouvrir ${label}">${label}</button>`).join('')}</nav></aside><main><header><div><div class="eyebrow">REVIEW DEFENSE</div><h1 id="title">Dashboard</h1><p id="subtitle">Vue opérationnelle</p></div><div class="header-actions"><button class="icon-btn mobile-nav-toggle" type="button" data-action="mobile-nav" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="console-sidebar">☰</button><button class="command-btn" type="button" onclick="openCommandPalette()">Rechercher <kbd>⌘ K</kbd></button><button id="logout" class="ghost">Déconnexion</button></div></header><section id="content"></section></main></div><div id="toast" role="status" aria-live="polite"></div>`}
+  document.body.classList.add('console-mode');
+   document.body.innerHTML=`<div id="app"><aside class="sidebar" id="console-sidebar" aria-label="Navigation principale"><div class="brand">REVIEW<span>DEFENSE</span></div><button class="workspace-switcher" type="button" data-action="command-palette" aria-label="Ouvrir le sélecteur d’espace de travail"><span>⌘</span> Workspace <small>⌘K</small></button><nav id="nav">${visible.map(([id,label])=>`<button type="button" data-view="${id}" data-nav="${id}" aria-label="Ouvrir ${label}">${label}</button>`).join('')}</nav></aside><main><header><div><div class="eyebrow">REVIEW DEFENSE</div><h1 id="title">Dashboard</h1><p id="subtitle">Vue opérationnelle</p></div><div class="header-actions"><button class="icon-btn mobile-nav-toggle" type="button" data-action="mobile-nav" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="console-sidebar">☰</button><button class="command-btn" type="button" onclick="openCommandPalette()">Rechercher <kbd>⌘ K</kbd></button><button id="logout" class="ghost">Déconnexion</button></div></header><section id="content"></section></main></div><div id="toast" role="status" aria-live="polite"></div>`}
 const views={
  'client-monitoring':async()=>{
       const [profileData,
@@ -1446,9 +1490,11 @@ function openCommandPalette(){const old=document.getElementById('command-palette
   const input=document.getElementById('command-input');
   input?.focus();
   input?.addEventListener('input',
-  ()=>{const q=input.value.toLowerCase();document.querySelectorAll('.command-list button').forEach(b=>b.hidden=!b.innerText.toLowerCase().includes(q))})}
+    ()=>{const q=input.value.toLowerCase();
+    document.querySelectorAll('.command-list button').forEach(b=>b.hidden=!b.innerText.toLowerCase().includes(q))})}
 document.addEventListener('keydown',
-  e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openCommandPalette()}if(e.key==='Escape')document.getElementById('command-palette')?.remove()});
+    e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();
+    openCommandPalette()}if(e.key==='Escape')document.getElementById('command-palette')?.remove()});
   document.addEventListener('click',
   e=>{const b=e.target.closest('.billing-offer-btn');if(!b)return;selectClientBillingOffer(b.dataset.billingOffer||'',
   b.dataset.billingName||'',
@@ -1466,7 +1512,9 @@ async function downloadClientDocument(documentId){try{const headers={Accept:'app
     )"/);const link=document.createElement('a');const url=URL.createObjectURL(blob);link.href=url;link.download=match?.[1]||'document';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000)}catch(e){toast(e.message||'Téléchargement impossible','error')}}
 async function connectGoogle(){try{const result=await api('/v1/integrations/google/start',
   {method:'POST',
-  body:JSON.stringify({})});if(!result.authorization_url)throw new Error('URL Google indisponible');window.location.href=result.authorization_url}catch(e){toast(e.message||'Connexion Google impossible',
+    body:JSON.stringify({})});
+    if(!result.authorization_url)throw new Error('URL Google indisponible');
+    window.location.href=result.authorization_url}catch(e){toast(e.message||'Connexion Google impossible',
   'error')}}
 async function selectGoogleLocation(connectionId,
   accountId,
@@ -1482,10 +1530,17 @@ function formatBytes(value){const n=Number(value||0);if(n<1024)return n +
   ' o';if(n<1048576)return (n/1024).toFixed(1) +
   ' Ko';return (n/1048576).toFixed(1) +
   ' Mo'}
-async function uploadClientDocuments(files){const status=document.getElementById('client-upload-status');if(!files||!files.length)return;for(const file of files){try{if(file.size>25*1024*1024)throw new Error('Chaque document doit faire 25 Mo maximum.');if(status)status.textContent='Téléversement de ' +
+async function uploadClientDocuments(files){const status=document.getElementById('client-upload-status');
+  if(!files||!files.length)return;
+  for(const file of files){try{if(file.size>25*1024*1024)throw new Error('Chaque document doit faire 25 Mo maximum.');
+  if(status)status.textContent='Téléversement de ' +
   file.name +
   '…';const encoded=await new Promise((resolve,
-  reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]||'');reader.onerror=()=>reject(new Error('Lecture du fichier impossible'));reader.readAsDataURL(file)});await api('/v1/client/documents',
+    reject)=>{const reader=new FileReader();
+    reader.onload=()=>resolve(String(reader.result).split(',')[1]||'');
+    reader.onerror=()=>reject(new Error('Lecture du fichier impossible'));
+    reader.readAsDataURL(file)});
+    await api('/v1/client/documents',
   {method:'POST',
   body:JSON.stringify({filename:file.name,
   content_type:file.type||'application/octet-stream',
@@ -1510,7 +1565,11 @@ async function caseWorkspace(id,
   tasks=d.evidence_tasks||[],
   timeline=w.timeline||[],
   rows=matrix.items||matrix.rows||[];const ready=readiness.readiness||{},
-  decision=d.decision||{};const review=w.review||{};const status=String(w.state||'UNKNOWN').toUpperCase();const decisionStatus=String(decision.status||'NONE').toUpperCase();const stat=(label,
+    decision=d.decision||{};
+    const review=w.review||{};
+    const status=String(w.state||'UNKNOWN').toUpperCase();
+    const decisionStatus=String(decision.status||'NONE').toUpperCase();
+    const stat=(label,
   value,
   sub)=>'<div class="workspace-stat"><span>' +
   label +
