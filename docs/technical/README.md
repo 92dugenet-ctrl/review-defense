@@ -14,6 +14,7 @@ Cette documentation décrit le code présent et les chemins d'exécution observ�
 - [Audit du cycle de vie des données](./DATA_LIFECYCLE_AUDIT.md) — migrations, sauvegardes PostgreSQL, preuves, isolation tenant, conservation et effacement.
 - [Audit des suppressions et de l'intégrité référentielle](./DELETION_INTEGRITY_AUDIT.md) — cascades SQL, références orphelines potentielles, suppressions de comptes et organisations, preuves et effacement.
 - [Audit des traitements asynchrones](./ASYNC_PROCESSING_AUDIT.md) — files, leases, retries, notifications, Google Pub/Sub, PayPal et idempotence des effets externes.
+- [Audit de cohérence métier des dossiers](./CASE_BUSINESS_CONSISTENCY_AUDIT.md) — états, avis, preuves, snapshots, décisions, approbations, soumissions et facturation.
 
 ## Règles de maintenance
 

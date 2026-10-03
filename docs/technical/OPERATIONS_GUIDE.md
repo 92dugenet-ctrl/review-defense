@@ -190,3 +190,19 @@ Points de vigilance :
 - `scripts/worker.py` traite un job par invocation et ne lance pas le worker PostgreSQL de notifications.
 
 Les effets externes doivent être idempotents et rapprochés ; les réservations doivent être durables et courtes ; les reprises doivent rester bornées après expiration d'un lease. Aucun changement runtime n'est inclus dans ce lot.
+
+
+## 14. Cohérence métier des dossiers — lot Q
+
+Consulter [CASE_BUSINESS_CONSISTENCY_AUDIT.md](./CASE_BUSINESS_CONSISTENCY_AUDIT.md) avant toute modification des dossiers, décisions, snapshots, approbations, soumissions ou droits de facturation.
+
+Points de vigilance :
+- L'hydratation recharge le dossier, l'avis, les preuves et les faits, mais pas la décision ni le snapshot depuis PostgreSQL.
+- Le contrôle d'approbation compare le snapshot à son propre payload, pas au dossier courant.
+- Le snapshot ne comprend pas les preuves, faits vérifiés, contradictions/dispositions ni checklist.
+- La création d'une décision met le dossier à ANALYZED alors que la décision est DRAFT.
+- La route /submit crée seulement une soumission locale DRAFT avec external_call=false.
+- Les écritures décision, snapshot, approbation et statut sont des transactions repository distinctes.
+- Les statuts PayPal de billing.py ne sont pas tous classés comme actifs ou terminaux dans billing_service.py.
+
+Priorités : intégrité/invalidation des snapshots, hydratation durable du contexte décisionnel, transitions d'état centralisées, puis harmonisation des statuts de facturation. Aucun changement runtime n'est inclus dans ce lot.
