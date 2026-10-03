@@ -1462,3 +1462,267 @@ body.is-locked {
   .muse-site .footer-intro { grid-column: 1 / -1; }
   .muse-site .footer-bottom { flex-direction: column; gap: 8px; }
 }
+
+
+/* Shared page composition for Product, Method, Security, Pricing and Contact. */
+.muse-site .muse-hero {
+  min-height: min(760px, calc(100svh - 76px));
+  margin-top: 76px;
+  padding-top: clamp(100px, 12vw, 160px);
+  padding-bottom: clamp(90px, 10vw, 130px);
+  background:
+    radial-gradient(ellipse at 82% 20%, rgba(23,105,232,.09), transparent 36%),
+    linear-gradient(135deg, #fbfcfd 0%, #f3f6fa 100%);
+}
+.muse-site .muse-hero .scene-inner { width: min(1160px,100%); }
+.muse-site .muse-hero .reveal { max-width: 980px; }
+.muse-site .muse-hero h1 {
+  max-width: 960px;
+  margin: 0 0 26px;
+  font-size: clamp(52px, 7vw, 88px);
+  line-height: .99;
+}
+.muse-site .muse-hero h1 em,
+.muse-site .muse-hero h2 em,
+.muse-site .muse-two h2 em {
+  color: var(--rd-blue);
+  font-style: normal;
+}
+.muse-site .muse-hero p {
+  max-width: 650px;
+  margin: 0 0 30px;
+  font-size: 17px;
+}
+.muse-site .muse-light { background: #f5f6f8; }
+.muse-site .muse-blue-scene {
+  background:
+    radial-gradient(ellipse at 90% 10%, rgba(23,105,232,.18), transparent 36%),
+    linear-gradient(120deg,#eaf3ff,#f5f9ff 58%,#e9f2ff);
+}
+.muse-site .muse-dark-scene { background: #171b22; color: #fff; }
+.muse-site .muse-dark-scene h2 { color: #fff; }
+.muse-site .muse-dark-scene .muse-eyebrow { color: #a9c9fa; }
+.muse-site .muse-simple-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 250px;
+  padding: 28px;
+  border: 1px solid #e3e7ed;
+  border-radius: 17px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(20,35,60,.035);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.muse-site a.muse-simple-card { color: var(--rd-ink); }
+.muse-site .muse-simple-card:hover {
+  transform: translateY(-4px);
+  border-color: #c8d9f4;
+  box-shadow: 0 18px 40px rgba(20,50,100,.08);
+}
+.muse-site .muse-simple-card > b,
+.muse-site .muse-process-list article > b,
+.muse-site .muse-control-grid article > b {
+  color: var(--rd-blue);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+.muse-site .muse-simple-card h3 {
+  margin: 28px 0 10px;
+  color: var(--rd-ink);
+  font-size: 24px;
+  font-weight: 650;
+  line-height: 1.15;
+  letter-spacing: -.04em;
+}
+.muse-site .muse-simple-card p {
+  margin: 0;
+  color: #68717e;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.muse-site .muse-process-list { width: min(1080px,100%); }
+.muse-site .muse-process-list > .reveal { border-top: 1px solid #dfe4eb; }
+.muse-site .muse-process-list article {
+  grid-template-columns: 72px minmax(0,1fr) 190px;
+  gap: 28px;
+  padding: 30px 18px;
+  border-top: 0;
+  transition: background .2s ease;
+}
+.muse-site .muse-process-list article:hover { background: rgba(255,255,255,.68); }
+.muse-site .muse-process-list article small {
+  color: #78818d;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+.muse-site .muse-process-list article h2 {
+  margin: 7px 0 5px;
+  color: var(--rd-ink);
+  font-size: clamp(27px,3vw,38px);
+  font-weight: 650;
+  letter-spacing: -.05em;
+}
+.muse-site .muse-process-list article p { margin: 0; font-size: 14px; }
+.muse-site .muse-process-list article > span {
+  color: #78818d;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-align: right;
+}
+.muse-site .muse-process-list article.decision {
+  border-radius: 12px;
+  background: #eaf2ff;
+}
+.muse-site .muse-process-list article.decision > span { color: var(--rd-blue); }
+.muse-site .muse-state-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--rd-line);
+}
+.muse-site .muse-state-list > div {
+  display: grid;
+  grid-template-columns: 130px minmax(0,1fr);
+  gap: 24px;
+  padding: 21px 0;
+  border-bottom: 1px solid var(--rd-line);
+}
+.muse-site .muse-state-list b { color: var(--rd-ink); font-size: 15px; }
+.muse-site .muse-state-list span { color: #69717d; font-size: 14px; line-height: 1.55; }
+.muse-site .muse-control-grid article {
+  min-height: 190px;
+  padding: 26px;
+  border: 1px solid #e2e7ed;
+  border-radius: 15px;
+  background: #fff;
+}
+.muse-site .muse-control-grid article h3 {
+  margin: 24px 0 9px;
+  color: var(--rd-ink);
+  font-size: 21px;
+  letter-spacing: -.035em;
+}
+.muse-site .muse-control-grid article p { margin: 0; font-size: 13px; line-height: 1.65; }
+.muse-site .muse-principles > div {
+  padding: 25px;
+  border: 1px solid #e1e7ef;
+  border-radius: 15px;
+  background: #fff;
+}
+.muse-site .muse-principles b { color: var(--rd-ink); font-size: 18px; }
+.muse-site .muse-principles span { color: #69717d; font-size: 13px; line-height: 1.6; }
+.muse-site .muse-faq { max-width: 900px; margin-top: 38px; }
+.muse-site .muse-faq details {
+  padding: 22px 4px;
+  border-top: 1px solid #dfe4eb;
+}
+.muse-site .muse-faq details:last-child { border-bottom: 1px solid #dfe4eb; }
+.muse-site .muse-faq summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  color: var(--rd-ink);
+  font-size: 16px;
+  font-weight: 650;
+}
+.muse-site .muse-faq summary::after {
+  content: "+";
+  color: var(--rd-blue);
+  font-size: 24px;
+  font-weight: 400;
+}
+.muse-site .muse-faq details[open] summary::after { content: "−"; }
+.muse-site .muse-faq p {
+  max-width: 720px;
+  margin: 12px 0 0;
+  color: #69717d;
+  font-size: 14px;
+}
+.muse-site .muse-pricing-groups > section { margin-top: 58px; }
+.muse-site .muse-pricing-groups > section:first-child { margin-top: 0; }
+.muse-site .muse-pricing-groups > section > h2 {
+  margin: 0 0 25px;
+  color: var(--rd-ink);
+  font-size: clamp(30px,4vw,44px);
+  letter-spacing: -.055em;
+}
+.muse-site .muse-price-grid article {
+  display: flex;
+  min-height: 340px;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 30px;
+  border: 1px solid #e1e6ed;
+  border-radius: 17px;
+  box-shadow: 0 12px 32px rgba(20,35,60,.035);
+}
+.muse-site .muse-price-grid article small {
+  color: #69717d;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+.muse-site .muse-price-grid article h3 {
+  margin: 20px 0 6px;
+  color: var(--rd-ink);
+  font-size: 21px;
+  letter-spacing: -.035em;
+}
+.muse-site .muse-price-grid article strong {
+  color: var(--rd-ink);
+  font-size: 35px;
+  letter-spacing: -.06em;
+}
+.muse-site .muse-price-grid article p {
+  flex: 1;
+  margin: 8px 0 25px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.muse-site .muse-price-grid article .muse-pill,
+.muse-site .muse-price-grid article button {
+  min-height: 43px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+.muse-site .muse-wide-image {
+  border: 1px solid #e3e7ed;
+  border-radius: 20px;
+  box-shadow: 0 22px 55px rgba(20,35,60,.09);
+}
+.muse-site .muse-state-list,
+.muse-site .muse-control-grid,
+.muse-site .muse-principles,
+.muse-site .muse-faq,
+.muse-site .muse-price-grid,
+.muse-site .muse-process-list { width: 100%; }
+@media (max-width: 800px) {
+  .muse-site .muse-hero {
+    min-height: calc(100svh - 66px);
+    margin-top: 66px;
+    padding: 100px 22px 75px;
+  }
+  .muse-site .muse-hero h1 { font-size: clamp(46px,11vw,68px); }
+  .muse-site .muse-process-list article {
+    grid-template-columns: 42px minmax(0,1fr);
+    gap: 15px;
+    padding: 23px 8px;
+  }
+  .muse-site .muse-process-list article > span {
+    grid-column: 2;
+    text-align: left;
+  }
+  .muse-site .muse-state-list > div { grid-template-columns: 1fr; gap: 7px; }
+  .muse-site .muse-control-grid,
+  .muse-site .muse-principles,
+  .muse-site .muse-price-grid { grid-template-columns: 1fr; }
+  .muse-site .muse-simple-card { min-height: 210px; }
+}
