@@ -1886,6 +1886,7 @@ class PostgresAPIRepository(PostgresRepository):
                         "offer_id",
                         "current_period_start",
                         "current_period_end",
+                        "cancel_at_period_end",
                         "created_at",
                         "updated_at",
                     ),
