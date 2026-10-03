@@ -1236,9 +1236,15 @@ class PostgresAPIRepository(PostgresRepository):
                     "delivery_error","max_attempts","next_attempt_at","dead_lettered_at")
                 d=dict(zip(names,row))
                 for k in ("notification_id","organization_id","case_id","created_by","sent_by","cancelled_by"):
-                    if d.get(k) is not None: d[k]=str(d[k])
+                    if d.get(k) is not None:
+                        d[k] = str(d[k])
                 for k in ("created_at","sent_at","cancelled_at","last_attempt_at","next_attempt_at","dead_lettered_at"):
-                    if d.get(k) is not None: d[k]=d[k].isoformat() if hasattr(d[k],"isoformat") else str(d[k])
+                    if d.get(k) is not None:
+                        d[k] = (
+                            d[k].isoformat()
+                            if hasattr(d[k], "isoformat")
+                            else str(d[k])
+                        )
                 return d
 
     def list_notifications(self, organization_id: str, status=None):
