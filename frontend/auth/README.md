@@ -1,24 +1,23 @@
-# Auth — interface d'authentification React
+# Auth — archive de migration
 
-## Responsabilité
+## Source active
 
-Fournir l'état d'authentification partagé et les écrans d'accès à l'application.
+L'authentification React utilisée par Vite est centralisée dans :
+- `src/auth/AuthContext.tsx` : état de session et opérations d'authentification ;
+- `src/auth/sessionToken.ts` : lecture centralisée du jeton ;
+- `src/auth/RequireAuth.tsx` : garde des routes protégées ;
+- `src/pages/LoginPage.tsx` et `src/pages/RegisterPage.tsx` : écrans utilisés par le routeur.
 
-## Fichiers
+Vite et TypeScript compilent `src/` et l'alias `@/` pointe vers `src/`. Les copies strictement identiques de `RequireAuth`, `LoginPage` et `RegisterPage` ont donc été retirées de ce dossier.
 
-- `AuthContext.tsx` : état utilisateur, chargement de session, login, inscription, logout et rafraîchissement du profil.
-- `RequireAuth.tsx` : garde de navigation pour les routes protégées.
-- `login/LoginPage.tsx` : écran de connexion.
-- `register/RegisterPage.tsx` : écran d'inscription.
+## Fichier historique conservé
 
-## Contrat backend observé
-
-Le contexte appelle notamment `/v1/auth/login`, `/v1/auth/register`, `/v1/me` et `/v1/logout`. Il conserve le jeton d'accès et l'identifiant d'organisation en session navigateur.
+`AuthContext.tsx` est conservé temporairement comme référence d'ancienne implémentation. Il diffère du contexte actif : il lit directement une clé de session au lieu d'utiliser `src/auth/sessionToken.ts`. Il ne doit pas être importé dans le code actif ni servir de base à de nouveaux développements.
 
 ## Sécurité
 
-La garde React améliore le parcours utilisateur mais ne sécurise pas une API. Le backend doit continuer à valider le jeton, le rôle, l'organisation et l'autorisation de chaque opération. Ne jamais considérer une valeur stockée dans le navigateur comme une preuve d'autorisation.
+La garde côté navigateur n'est qu'un contrôle d'interface. Le backend doit vérifier indépendamment le jeton, l'utilisateur, l'organisation et les autorisations pour chaque requête. Ne jamais faire confiance à l'identifiant d'organisation stocké dans le navigateur sans validation serveur.
 
-## État de migration
+## Règle
 
-Des fichiers d'authentification équivalents existent sous `src/auth/`. Vite résout actuellement l'alias `@` vers `src/`; vérifier le consommateur effectif avant de modifier l'un ou l'autre emplacement.
+Toute évolution de l'authentification doit être faite dans `src/auth/` et `src/pages/`. Ne supprimer le contexte historique qu'après confirmation qu'aucun outil ou script de migration ne le consomme.
