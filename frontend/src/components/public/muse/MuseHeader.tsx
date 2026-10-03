@@ -11,18 +11,13 @@ const navigation = [
 type MuseHeaderProps = {
   menuOpen: boolean;
   onMenuToggle: () => void;
-  onSearchOpen: () => void;
 };
 
-export function MuseHeader({
-  menuOpen,
-  onMenuToggle,
-  onSearchOpen,
-}: MuseHeaderProps) {
+export function MuseHeader({ menuOpen, onMenuToggle }: MuseHeaderProps) {
   return (
     <>
       <header className="site-header" id="header">
-        <Link className="brand" to="/">
+        <Link className="brand" to="/" aria-label="Review Defense, accueil">
           ◉ Review Defense
         </Link>
 
@@ -35,14 +30,6 @@ export function MuseHeader({
         </nav>
 
         <div className="actions">
-          <button
-            type="button"
-            className="search-open"
-            aria-label="Rechercher"
-            onClick={onSearchOpen}
-          >
-            ⌕
-          </button>
           <Link className="pill blue" to="/register">
             Créer mon espace
           </Link>
@@ -51,12 +38,12 @@ export function MuseHeader({
         <button
           type="button"
           className="menu-toggle"
-          aria-label="Menu"
+          aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
           onClick={onMenuToggle}
         >
-          ☰
+          {menuOpen ? "×" : "☰"}
         </button>
       </header>
 
@@ -67,11 +54,15 @@ export function MuseHeader({
         aria-hidden={!menuOpen}
       >
         {navigation.map(([path, label]) => (
-          <Link key={path} to={path}>
+          <Link key={path} to={path} tabIndex={menuOpen ? 0 : -1}>
             {label}
           </Link>
         ))}
-        <Link className="pill blue" to="/register">
+        <Link
+          className="pill blue"
+          to="/register"
+          tabIndex={menuOpen ? 0 : -1}
+        >
           Créer mon espace
         </Link>
       </nav>

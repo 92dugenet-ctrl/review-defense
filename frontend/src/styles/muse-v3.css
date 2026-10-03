@@ -1019,3 +1019,99 @@ footer {
     font-size:clamp(48px,12vw,74px)
   }
 }
+
+
+/* Public shell and interaction refinements */
+.footer-top {
+  grid-template-columns: 1.5fr repeat(4, minmax(0, 1fr));
+}
+.footer-brand {
+  align-self: start;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -.04em;
+}
+.research-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.research-layout aside .research-filters button {
+  border: 0;
+  border-bottom: 1px solid #ddd;
+  border-radius: 0;
+  background: transparent;
+  padding: 14px 0;
+  text-align: left;
+  color: #60636a;
+}
+.research-layout aside .research-filters button.active {
+  color: #0879f9;
+  font-weight: 750;
+}
+.research-layout aside .research-filters button:focus-visible,
+.chips button:focus-visible,
+.site-header a:focus-visible,
+.mobile-menu a:focus-visible,
+.menu-toggle:focus-visible,
+.store-buttons a:focus-visible {
+  outline: 3px solid #0879f9;
+  outline-offset: 4px;
+}
+.chips button[aria-selected="true"] {
+  background: #111;
+  color: #fff;
+}
+.chat-caption {
+  margin: 20px 0 0;
+  font-size: 11px !important;
+  color: #777 !important;
+}
+.detail-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  color: #24262b;
+}
+.detail-summary strong {
+  font-size: clamp(22px, 3vw, 34px);
+  letter-spacing: -.04em;
+}
+.detail-summary > span:last-child {
+  color: #73757b;
+  font-size: 13px;
+}
+.detail-status {
+  border-radius: 999px;
+  padding: 7px 11px;
+  background: #e8f4ff;
+  color: #075fbd;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+.muse-outline {
+  border: 1px solid #111;
+  background: transparent;
+  color: #111;
+}
+.store-buttons .muse-pill {
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+@media(max-width: 800px) {
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+  }
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+  .research-filters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 18px;
+  }
+}

@@ -7,13 +7,14 @@ const footerGroups = [
       ["/produit", "Produit"],
       ["/fonctionnement", "Fonctionnement"],
       ["/securite", "Sécurité"],
+      ["/tarifs", "Tarifs"],
     ],
   },
   {
     title: "Ressources",
     links: [
       ["/contact", "Contact"],
-      ["/tarifs", "Tarifs"],
+      ["/accessibilite", "Accessibilité"],
     ],
   },
   {
@@ -23,13 +24,25 @@ const footerGroups = [
       ["/register", "Créer un espace"],
     ],
   },
+  {
+    title: "Informations légales",
+    links: [
+      ["/mentions-legales", "Mentions légales"],
+      ["/confidentialite", "Confidentialité"],
+      ["/cookies", "Cookies"],
+      ["/cgu", "CGU"],
+      ["/cgv", "CGV"],
+    ],
+  },
 ] as const;
 
 export function MuseFooter() {
   return (
-    <footer id="developers">
+    <footer id="footer">
       <div className="footer-top">
-        <b>◉ Review Defense</b>
+        <Link className="footer-brand" to="/" aria-label="Review Defense, accueil">
+          ◉ Review Defense
+        </Link>
         {footerGroups.map((group) => (
           <div key={group.title}>
             <h4>{group.title}</h4>
@@ -41,7 +54,7 @@ export function MuseFooter() {
           </div>
         ))}
       </div>
-      <small>© 2026 Review Defense — Analyse, dossiers, validation.</small>
+      <small>© {new Date().getFullYear()} Review Defense — Analyse, dossiers, validation.</small>
     </footer>
   );
 }

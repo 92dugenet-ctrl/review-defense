@@ -13,21 +13,19 @@ type MuseShellProps = {
 
 export function MuseShell({ children }: MuseShellProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
 
   useMuseMotion();
 
   useEffect(() => {
     setMenuOpen(false);
-    setSearchOpen(false);
     document.body.classList.remove("is-locked");
   }, [location.pathname]);
 
   useEffect(() => {
-    document.body.classList.toggle("is-locked", menuOpen || searchOpen);
+    document.body.classList.toggle("is-locked", menuOpen);
     return () => document.body.classList.remove("is-locked");
-  }, [menuOpen, searchOpen]);
+  }, [menuOpen]);
 
   return (
     <div className="muse-site muse-reference-site">
@@ -38,26 +36,10 @@ export function MuseShell({ children }: MuseShellProps) {
       <MuseHeader
         menuOpen={menuOpen}
         onMenuToggle={() => setMenuOpen((open) => !open)}
-        onSearchOpen={() => setSearchOpen(true)}
       />
 
       {children}
       <MuseFooter />
-
-      {searchOpen && (
-        <div className="search-panel open" role="dialog" aria-modal="true" aria-label="Recherche">
-          <button
-            type="button"
-            className="search-close"
-            aria-label="Fermer la recherche"
-            onClick={() => setSearchOpen(false)}
-          >
-            ×
-          </button>
-          <input autoFocus placeholder="Rechercher Review Defense…" />
-          <p>Recherchez une fonctionnalité ou une information</p>
-        </div>
-      )}
     </div>
   );
 }

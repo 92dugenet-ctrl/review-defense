@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
-
 import { MuseScene } from "../MuseScene";
+import { PublicActionLink } from "../PublicActionLink";
 
 export function HomeWorkspace() {
   return (
@@ -13,12 +12,10 @@ export function HomeWorkspace() {
             Un endroit pour rechercher, organiser et préparer les
             informations utiles avant d'agir.
           </p>
-          <Link className="pill blue" to="/produit">
-            Découvrir le produit
-          </Link>
+          <PublicActionLink to="/produit">Découvrir le produit</PublicActionLink>
         </div>
 
-        <div className="orb-stage">
+        <div className="orb-stage" aria-hidden="true">
           <div className="orb o1">⌁</div>
           <div className="orb o2">✦</div>
           <div className="orb o3">◫</div>

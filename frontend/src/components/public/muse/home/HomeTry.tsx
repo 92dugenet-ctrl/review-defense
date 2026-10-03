@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
-
 import { MuseScene } from "../MuseScene";
+import { PublicActionLink } from "../PublicActionLink";
 
 export function HomeTry() {
   return (
@@ -15,19 +14,21 @@ export function HomeTry() {
           </p>
 
           <div className="store-buttons">
-            <Link to="/register">Créer mon espace</Link>
-            <Link to="/login">Se connecter</Link>
+            <PublicActionLink to="/register">Créer mon espace</PublicActionLink>
+            <PublicActionLink to="/login" className="muse-pill muse-outline">
+              Se connecter
+            </PublicActionLink>
           </div>
         </div>
 
-        <div className="phone-stage">
+        <div className="phone-stage" aria-label="Aperçu illustratif de l'espace de travail">
           <div className="phone">
             <div className="phone-head">Review Defense</div>
             <div className="ai-message">Votre point de suivi est prêt.</div>
             <div className="ai-message soft">
               3 dossiers à vérifier et 2 validations en attente.
             </div>
-            <div className="phone-input">Ouvrir le dossier…</div>
+            <div className="phone-input">Aperçu du suivi des dossiers</div>
           </div>
         </div>
       </div>
