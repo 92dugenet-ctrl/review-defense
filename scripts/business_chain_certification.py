@@ -170,6 +170,9 @@ def main() -> int:
         isolated = repo.get_case_persistent(org_b, case_id)
         assert isolated is None, "tenant isolation failed: tenant B can see tenant A case"
 
+        # Also verify tenant isolation at the HTTP/API boundary.
+        cross_tenant = call(app, "GET", f"/v1/cases/{case_id}", token_b)
+        assert_status(cross_tenant, 404, "cross-tenant case access")
 
         # Database persistence: the exact frozen state exists in PostgreSQL.
         case_db = db_row(dsn, "SELECT status,decision_id,snapshot_sha256 FROM api_cases WHERE organization_id=%s AND case_id=%s",
@@ -259,7 +262,7 @@ def main() -> int:
             "external_call": False,
             "postgres": "verified",
             "tenant_isolation": "verified",
-            "negative_tests": 5,
+            "negative_tests": 6,
             "idempotency": "verified",
             "human_gate": "verified",
         }, indent=2))
