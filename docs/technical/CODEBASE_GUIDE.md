@@ -115,3 +115,7 @@ Pour suivre les parcours complets entre l'interface, l'API, les services métier
 ## Cartographie technique exhaustive
 
 Pour l'inventaire des fichiers Python, TypeScript et SQL, les routes React, les familles d'API et les différences entre arborescences historiques et chemins actifs, consulter [TECHNICAL_MAP.md](./TECHNICAL_MAP.md).
+
+## Traçabilité des dépendances
+
+Pour suivre les appels entre les pages React, les routes API, les services métier, les intégrations, les repositories et les tables SQL, consulter [DEPENDENCY_MAP.md](./DEPENDENCY_MAP.md).

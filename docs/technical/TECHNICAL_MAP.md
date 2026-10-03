@@ -538,3 +538,7 @@ Une relation n'est considérée comme confirmée que si elle est visible dans un
 ## 9. Limites de cette cartographie
 
 Cette carte couvre l'inventaire Git et les principaux chemins d'exécution. Elle ne prétend pas que chaque fonction de chacun des centaines de fichiers a été reliée à tous ses appelants. Les dépendances dynamiques (imports par chaîne, handlers configurés par environnement, plugins, scripts externes) demandent une analyse dédiée. Aucun code applicatif n'est modifié par ce document.
+
+## Dépendances entre modules
+
+La carte des dépendances vérifiées entre frontend, API, services, intégrations, repositories et tables PostgreSQL est disponible dans [DEPENDENCY_MAP.md](./DEPENDENCY_MAP.md).

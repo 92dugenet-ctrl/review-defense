@@ -10,3 +10,5 @@ This directory is part of the target Review Defense architecture. Existing imple
 - [Guide d'exploitation](./OPERATIONS_GUIDE.md) — configuration, démarrage, migrations, workers et workflows.
 
 - [Cartographie technique exhaustive](./TECHNICAL_MAP.md) — inventaire des sources, routes React, familles d'API, migrations et chemins d'exécution vérifiés.
+
+- [Traçabilité des dépendances](./DEPENDENCY_MAP.md) — liens vérifiés entre pages, endpoints, services, intégrations, repositories et tables PostgreSQL.
