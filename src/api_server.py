@@ -166,9 +166,17 @@ def _review_from_row(row: Any) -> ReviewContext:
 
 class ReviewDefenseAPI:
     """Small WSGI API with explicit human-gated state transitions."""
-    def __init__(self, store: MemoryStore | None = None, *, session_ttl: int = 3600,
-                                  limiter: RateLimiter | None = None, repository=None, delivery_email_config: dict[str,
-                     Any] | None = None, delivery_func=deliver, config: ProductionConfig | None = None):
+    def __init__(
+        self,
+        store: MemoryStore | None = None,
+        *,
+        session_ttl: int = 3600,
+        limiter: RateLimiter | None = None,
+        repository=None,
+        delivery_email_config: dict[str, Any] | None = None,
+        delivery_func=deliver,
+        config: ProductionConfig | None = None,
+    ):
         self.store = store or MemoryStore()
         self.config = config or ProductionConfig.from_env()
         self.config.validate_startup(require_database=(repository is not None or self.config.production))
@@ -176,19 +184,27 @@ class ReviewDefenseAPI:
         self.delivery_email_config = delivery_email_config or {}
         if not self.delivery_email_config and self.config.smtp_host and self.config.smtp_sender:
             self.delivery_email_config = {
-                "host": self.config.smtp_host, "port": self.config.smtp_port,
-                "username": self.config.smtp_username, "password": self.config.smtp_password,
-                "sender": self.config.smtp_sender, "starttls": self.config.smtp_starttls,
+                "host": self.config.smtp_host,
+                "port": self.config.smtp_port,
+                "username": self.config.smtp_username,
+                "password": self.config.smtp_password,
+                "sender": self.config.smtp_sender,
+                "starttls": self.config.smtp_starttls,
             }
         self.delivery_func = delivery_func
-        self.notification_worker = NotificationWorker(delivery_func=delivery_func, email_config=self.delivery_email_config)
-                self.notifications = NotificationService(store=self.store,
-             repository=self.repository,
-             audit_event=self.store.audit_event,
-             delivery_func=self.delivery_func,
-             email_config=self.delivery_email_config,
-             policy_provider=self._notification_policy,
-            worker=self.notification_worker)
+        self.notification_worker = NotificationWorker(
+            delivery_func=delivery_func,
+            email_config=self.delivery_email_config,
+        )
+        self.notifications = NotificationService(
+            store=self.store,
+            repository=self.repository,
+            audit_event=self.store.audit_event,
+            delivery_func=self.delivery_func,
+            email_config=self.delivery_email_config,
+            policy_provider=self._notification_policy,
+            worker=self.notification_worker,
+        )
         self.session_ttl = session_ttl
         self.limiter = limiter or RateLimiter(limit=120, window_seconds=60)
         self.auth_limiter = RateLimiter(limit=8, window_seconds=300)
@@ -197,9 +213,12 @@ class ReviewDefenseAPI:
         self.billing_events = self.store.billing_events
         self._idem_lock = __import__("threading").RLock()
         self.telemetry = InMemoryTelemetry()
-                DeploymentConfig(public_base_url=self.config.public_base_url,
-             environment=self.config.environment,
-            trust_proxy=self.config.trust_proxy).validate() if self.config.production else None
+        if self.config.production:
+            DeploymentConfig(
+                public_base_url=self.config.public_base_url,
+                environment=self.config.environment,
+                trust_proxy=self.config.trust_proxy,
+            ).validate()
         self.store.sla_calendars = self.store.sla_calendars
         self.store.escalations = self.store.escalations
         self.store.notifications = self.store.notifications
@@ -647,18 +666,24 @@ class ReviewDefenseAPI:
         if self.repository is not None and hasattr(self.repository, "get_organization_profile"):
             row = self.repository.get_organization_profile(organization_id)
             if row:
-                                profile = dict(zip(("legal_name",
-                     "website",
-                     "phone",
-                     "address",
-                     "city",
-                     "postal_code",
-                     "country",
-                     "sector",
-                     "employee_count",
-                     "description",
-                     "updated_at"),
-                    row))
+                profile = dict(
+                    zip(
+                        (
+                            "legal_name",
+                            "website",
+                            "phone",
+                            "address",
+                            "city",
+                            "postal_code",
+                            "country",
+                            "sector",
+                            "employee_count",
+                            "description",
+                            "updated_at",
+                        ),
+                        row,
+                    )
+                )
                 self.store.organization_profiles[organization_id] = profile
                 return profile
         return self.store.organization_profiles.get(organization_id, {})
@@ -743,12 +768,16 @@ class ReviewDefenseAPI:
             raise APIError(429, "RATE_LIMITED", "rate limit exceeded")
         if method == "GET" and path == "/health":
             result = health_check(checks={"store": lambda: self.store is not None})
-                        return self._json(200 if result.status == "ok" else 503,
-                 {"status": result.status,
-                 "service": "review-defense",
-                 "version": "6.40",
-                 "checks": result.checks,
-                "checked_at": result.checked_at})
+            return self._json(
+                200 if result.status == "ok" else 503,
+                {
+                    "status": result.status,
+                    "service": "review-defense",
+                    "version": "6.40",
+                    "checks": result.checks,
+                    "checked_at": result.checked_at,
+                },
+            )
         if method == "GET" and path == "/metrics":
             # Prometheus-compatible metrics contain only aggregate operational data.
             configured = os.getenv("REVIEW_DEFENSE_METRICS_TOKEN")
@@ -790,10 +819,12 @@ class ReviewDefenseAPI:
             if user is not None:
                 raw, token_hash = recovery_token()
                 expires = utc_now() + __import__("datetime").timedelta(minutes=30)
-                                self.store.recovery_tokens[token_hash] = {"organization_id":organization_id,
-                    "user_id":user.user_id,
-                    "expires_at":expires.isoformat(),
-                    "used_at":None}
+                self.store.recovery_tokens[token_hash] = {
+                    "organization_id": organization_id,
+                    "user_id": user.user_id,
+                    "expires_at": expires.isoformat(),
+                    "used_at": None,
+                }
                 if self.repository is not None and hasattr(self.repository, "create_recovery_token"):
                     self.repository.create_recovery_token(organization_id, user.user_id, token_hash, expires.isoformat())
                 self.store.audit_event(organization_id, None, "PASSWORD_RECOVERY_REQUESTED", f"user:{user.user_id}")
@@ -845,11 +876,13 @@ class ReviewDefenseAPI:
                 if hasattr(self.repository,"revoke_all_sessions"): self.repository.revoke_all_sessions(organization_id,user.user_id)
                 if hasattr(self.repository,"update_password"): self.repository.update_password(organization_id,user.user_id,new_hash)
                 if hasattr(self.repository,"consume_recovery_token"): self.repository.consume_recovery_token(organization_id,token_hash)
-                                if hasattr(self.repository,
-                    "security_event"): self.repository.security_event(organization_id,
-                    user.user_id,
-                    "PASSWORD_RECOVERED",
-                    user.user_id)
+                if hasattr(self.repository, "security_event"):
+                    self.repository.security_event(
+                        organization_id,
+                        user.user_id,
+                        "PASSWORD_RECOVERED",
+                        user.user_id,
+                    )
             row["used_at"] = utc_now().isoformat()
             self.store.audit_event(organization_id,user.user_id,"PASSWORD_RECOVERED",f"user:{user.user_id}")
             return self._json(200,{"status":"password_reset"})
@@ -879,9 +912,11 @@ class ReviewDefenseAPI:
             row["used_at"] = utc_now().isoformat()
             if self.repository is not None:
                 if hasattr(self.repository, "mark_email_verified"): self.repository.mark_email_verified(organization_id, user_id)
-                                if hasattr(self.repository,
-                     "consume_email_verification_token"): self.repository.consume_email_verification_token(organization_id,
-                    token_hash)
+                if hasattr(self.repository, "consume_email_verification_token"):
+                    self.repository.consume_email_verification_token(
+                        organization_id,
+                        token_hash,
+                    )
                 if hasattr(self.repository, "security_event"): self.repository.security_event(organization_id, user_id, "EMAIL_VERIFIED", user_id)
             self.store.audit_event(organization_id, user_id, "EMAIL_VERIFIED", f"user:{user_id}")
             return self._json(200, {"status": "email_verified"})
@@ -1068,12 +1103,16 @@ class ReviewDefenseAPI:
             if self.repository is not None and hasattr(self.repository,"put_session"):
                 self.repository.put_session(invitation["organization_id"],session.token_hash,uid,invitation["role"],session.expires_at.isoformat())
             self.store.audit_event(invitation["organization_id"],uid,"INVITATION_ACCEPTED",f"invitation:{invitation['invitation_id']}")
-                        return self._json(200,
-                {"status":"accepted",
-                "access_token":raw,
-                "token_type":"Bearer",
-                "expires_at":session.expires_at.isoformat(),
-                "role":invitation["role"]})
+            return self._json(
+                200,
+                {
+                    "status": "accepted",
+                    "access_token": raw,
+                    "token_type": "Bearer",
+                    "expires_at": session.expires_at.isoformat(),
+                    "role": invitation["role"],
+                },
+            )
 
         if method == "POST" and path == "/v1/paypal/webhook":
             length=int(environ.get("CONTENT_LENGTH") or 0)
@@ -1143,12 +1182,14 @@ class ReviewDefenseAPI:
                             self.repository.upsert_billing_account(tx["organization_id"],acct)
                         if hasattr(self.repository,"create_billing_event"):
                             self.repository.create_billing_event(tx["organization_id"],event_row)
-                                self.store.audit_event(tx["organization_id"],
-                    None,
-                    "PAYPAL_WEBHOOK_PROCESSED",
-                    f"billing:{tx['id']}",
-                    event_type=event_type,
-                    paypal_id=paypal_id)
+                    self.store.audit_event(
+                        tx["organization_id"],
+                        None,
+                        "PAYPAL_WEBHOOK_PROCESSED",
+                        f"billing:{tx['id']}",
+                        event_type=event_type,
+                        paypal_id=paypal_id,
+                    )
             return self._json(200,{"status":"accepted"})
         if method == "GET" and path == "/v1/integrations/google/callback":
             return self._google_callback(environ)
@@ -1160,8 +1201,13 @@ class ReviewDefenseAPI:
         if method in {"GET", "POST"} and path == "/v1/integrations/google/start":
             self._require_role(user, "OWNER", "ADMIN", "CLIENT")
             oauth_client, state_manager = self._google_oauth()
-                        authorization = state_manager.create(client_id=oauth_client.client_id,
-                redirect_uri=self.config.public_base_url.rstrip("/") + "/v1/integrations/google/callback")
+            authorization = state_manager.create(
+                client_id=oauth_client.client_id,
+                redirect_uri=(
+                    self.config.public_base_url.rstrip("/")
+                    + "/v1/integrations/google/callback"
+                ),
+            )
             from datetime import timedelta
             expires_at = (utc_now() + timedelta(seconds=state_manager.ttl_seconds)).isoformat()
             state_row = {"state": authorization.state, "organization_id": user.organization_id, "user_id": user.user_id,
@@ -1203,12 +1249,21 @@ class ReviewDefenseAPI:
                     errors.append({"connection_id": connection_id, "code": exc.code, "message": exc.message})
                 except (GoogleAPIError, GoogleIntegrationError) as exc:
                     errors.append({"connection_id": connection_id, "code": "GOOGLE_UPSTREAM_ERROR", "message": "Google locations could not be loaded"})
-                        return self._json(200,
-                 {"items": items,
-                 "connections": [{"connection_id": x["connection_id"],
-                 "status": x.get("status"),
-                 "location_title": x.get("location_title")} for x in connections],
-                "errors": errors})
+            return self._json(
+                200,
+                {
+                    "items": items,
+                    "connections": [
+                        {
+                            "connection_id": connection["connection_id"],
+                            "status": connection.get("status"),
+                            "location_title": connection.get("location_title"),
+                        }
+                        for connection in connections
+                    ],
+                    "errors": errors,
+                },
+            )
 
         if method == "POST" and path == "/v1/integrations/google/select-location":
             self._require_role(user, "OWNER", "ADMIN", "CLIENT")
@@ -1267,16 +1322,18 @@ class ReviewDefenseAPI:
             body = self._body(environ)
             fields = ("legal_name", "website", "phone", "address", "city", "postal_code", "country", "sector", "employee_count", "description")
             profile = {}
-                        limits = {"legal_name": 200,
-                 "website": 500,
-                 "phone": 60,
-                 "address": 300,
-                 "city": 120,
-                 "postal_code": 30,
-                 "country": 100,
-                 "sector": 120,
-                 "employee_count": 60,
-                "description": 2000}
+            limits = {
+                "legal_name": 200,
+                "website": 500,
+                "phone": 60,
+                "address": 300,
+                "city": 120,
+                "postal_code": 30,
+                "country": 100,
+                "sector": 120,
+                "employee_count": 60,
+                "description": 2000,
+            }
             for key in fields:
                 value = str(body.get(key, "")).strip()
                 if len(value) > limits[key]:
@@ -1399,19 +1456,26 @@ class ReviewDefenseAPI:
             if offer.kind!="subscription": raise APIError(422,"INVALID_OFFER","not a subscription offer")
             plan_id=paypal_plan_id(offer)
             if not paypal_configured() or not plan_id: raise APIError(503,"PAYPAL_NOT_CONFIGURED","PayPal subscription plan is not configured")
-                        return self._json(200,
-                {"offer_id":offer.offer_id,
-                "plan_id":plan_id,
-                "client_id":PAYPAL_SUBSCRIPTION_CLIENT_ID,
-                "currency":offer.currency,
-                "amount":str(offer.amount)})
+            return self._json(
+                200,
+                {
+                    "offer_id": offer.offer_id,
+                    "plan_id": plan_id,
+                    "client_id": PAYPAL_SUBSCRIPTION_CLIENT_ID,
+                    "currency": offer.currency,
+                    "amount": str(offer.amount),
+                },
+            )
         if method == "POST" and path == "/v1/paypal/subscription/confirm":
             body=self._body(environ); offer_id=str(body.get("offer_id","")).strip(); subscription_id=str(body.get("subscription_id","")).strip()
             try: offer=get_offer(offer_id)
             except ValueError as exc: raise APIError(422,"INVALID_OFFER","unknown subscription offer") from exc
-                        if offer.kind!="subscription" or not subscription_id: raise APIError(422,
-                "INVALID_SUBSCRIPTION",
-                "subscription and subscription offer are required")
+            if offer.kind != "subscription" or not subscription_id:
+                raise APIError(
+                    422,
+                    "INVALID_SUBSCRIPTION",
+                    "subscription and subscription offer are required",
+                )
             plan_id=paypal_plan_id(offer)
             if not plan_id: raise APIError(503,"PAYPAL_NOT_CONFIGURED","subscription plan is not configured")
             existing_tx=next((x for x in self.store.billing.values() if x.get("paypal_subscription_id")==subscription_id),None)
@@ -1420,17 +1484,20 @@ class ReviewDefenseAPI:
             if existing_tx is not None:
                 if str(existing_tx.get("organization_id","")) != str(user.organization_id):
                     raise APIError(409,"SUBSCRIPTION_ALREADY_LINKED","PayPal subscription is already linked to another organization")
-                                return self._json(200,
-                    {"status":existing_tx.get("status",
-                    "CREATED"),
-                    "subscription_id":subscription_id,
-                    "offer_id":existing_tx.get("offer_id",
-                    offer.offer_id),
-                    "existing":True})
+                return self._json(
+                    200,
+                    {
+                        "status": existing_tx.get("status", "CREATED"),
+                        "subscription_id": subscription_id,
+                        "offer_id": existing_tx.get("offer_id", offer.offer_id),
+                        "existing": True,
+                    },
+                )
             try: pp=paypal_request_json("GET",f"/v1/billing/subscriptions/{subscription_id}",access_token=paypal_access_token())
             except PayPalError as exc: raise APIError(502,"PAYPAL_SUBSCRIPTION_LOOKUP_FAILED","PayPal subscription lookup failed",exc.payload)
             if str(pp.get("plan_id",""))!=plan_id: raise APIError(409,"SUBSCRIPTION_PLAN_MISMATCH","subscription plan does not match the selected offer")
-                        tx_id=str(uuid.uuid4()); row={"id":tx_id,
+            tx_id = str(uuid.uuid4())
+            row = {"id":tx_id,
                 "organization_id":user.organization_id,
                 "user_id":user.user_id,
                 "offer_id":offer.offer_id,
