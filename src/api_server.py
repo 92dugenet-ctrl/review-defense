@@ -233,10 +233,10 @@ class ReviewDefenseAPI:
 
     def _persistent_uuid(self, value: Any, field: str) -> str:
         raw = str(value or "").strip()
-        if not raw:
-            raise APIError(422, "VALIDATION_ERROR", f"{field} is required")
         if self.repository is None or not getattr(self.repository, "uses_uuid_ids", False):
             return raw
+        if not raw:
+            raise APIError(422, "VALIDATION_ERROR", f"{field} is required")
         try:
             return str(uuid.UUID(raw))
         except (ValueError, TypeError, AttributeError) as exc:
@@ -974,7 +974,8 @@ class ReviewDefenseAPI:
                         "invited_by": str(dbrow[6]), "accepted_at": dbrow[7], "revoked_at": dbrow[8],
                     }
                     self.store.invitations[invitation["invitation_id"]] = invitation
-            if invitation is None or invitation.get("email") != email or invitation.get("accepted_at") or invitation.get("revoked_at"):
+            if (invitation is None or invitation.get("organization_id") != organization_id
+                    or invitation.get("email") != email or invitation.get("accepted_at") or invitation.get("revoked_at")):
                 raise APIError(400, "INVITATION_INVALID", "invitation is invalid or already used")
             from datetime import datetime
             if datetime.fromisoformat(invitation["expires_at"]) <= utc_now():
