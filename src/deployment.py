@@ -70,11 +70,24 @@ CSP = (
     "media-src 'none'; worker-src 'none'; manifest-src 'self'"
 )
 
+# Candidate policy without inline execution; kept in report-only during migration.
+CSP_REPORT_ONLY = (
+    "default-src 'self'; base-uri 'self'; object-src 'none'; "
+    "frame-ancestors 'none'; form-action 'self'; "
+    "script-src 'self' https://www.paypal.com https://www.paypalobjects.com; "
+    "script-src-attr 'none'; style-src 'self'; style-src-attr 'none'; "
+    "img-src 'self' data:; font-src 'self' data:; "
+    "connect-src 'self' https://www.paypal.com https://api-m.paypal.com; "
+    "frame-src 'self' https://www.paypal.com https://www.sandbox.paypal.com; "
+    "media-src 'none'; worker-src 'none'; manifest-src 'self'"
+)
+
 
 def security_headers(*, production: bool) -> dict[str, str]:
     """Retourne les en-têtes de défense en profondeur à appliquer aux réponses."""
     headers = {
         "Content-Security-Policy": CSP,
+        "Content-Security-Policy-Report-Only": CSP_REPORT_ONLY,
         "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
         "Cross-Origin-Opener-Policy": "same-origin",
         "Cross-Origin-Resource-Policy": "same-origin",

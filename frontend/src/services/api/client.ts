@@ -1,4 +1,7 @@
-import { readAccessToken } from "@/auth/sessionToken";
+import {
+  readAccessToken,
+  readCsrfToken,
+} from "@/auth/sessionToken";
 
 export type ApiErrorPayload = {
   code?: string;
@@ -58,6 +61,14 @@ export async function apiRequest<T>(
 
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
+    }
+  }
+
+  const method = (options.method ?? "GET").toUpperCase();
+  if (!["GET", "HEAD", "OPTIONS"].includes(method)) {
+    const csrfToken = readCsrfToken();
+    if (csrfToken && !headers.has("X-CSRF-Token")) {
+      headers.set("X-CSRF-Token", csrfToken);
     }
   }
 

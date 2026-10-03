@@ -9,16 +9,22 @@ import {
   useState,
 } from "react";
 
-import { ACCESS_TOKEN_KEY, readAccessToken } from "@/auth/sessionToken";
+import {
+  ACCESS_TOKEN_KEY,
+  readAccessToken,
+  readCsrfToken,
+  setCsrfToken,
+} from "@/auth/sessionToken";
 import { api, ApiError } from "@/services/api/client";
 import type { User } from "@/types/api";
 
 type SessionPayload = {
-  access_token: string;
-  token_type: string;
+  access_token?: string;
+  csrf_token?: string;
+  token_type?: string;
   expires_at: string;
-  role: string;
-  organization_id: string;
+  role?: string;
+  organization_id?: string;
 };
 
 type RegisterPayload = SessionPayload & {
@@ -47,16 +53,24 @@ const ORGANIZATION_KEY = "review-defense.organization-id";
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-/** Persist the access token and organization identifier for this browser tab. */
+/** Prefer the HttpOnly cookie; retain bearer storage for legacy deployments. */
 function saveSession(payload: SessionPayload) {
-  sessionStorage.setItem(ACCESS_TOKEN_KEY, payload.access_token);
-  sessionStorage.setItem(ORGANIZATION_KEY, payload.organization_id);
+  if (payload.access_token) {
+    sessionStorage.setItem(ACCESS_TOKEN_KEY, payload.access_token);
+  } else {
+    sessionStorage.removeItem(ACCESS_TOKEN_KEY);
+  }
+  if (payload.organization_id) {
+    sessionStorage.setItem(ORGANIZATION_KEY, payload.organization_id);
+  }
+  setCsrfToken(payload.csrf_token ?? null);
 }
 
 /** Remove local session values after logout or an expired/invalid session. */
 function clearSession() {
   sessionStorage.removeItem(ACCESS_TOKEN_KEY);
   sessionStorage.removeItem(ORGANIZATION_KEY);
+  setCsrfToken(null);
 }
 
 /**
@@ -71,20 +85,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   /** Revalidate the stored token and load the current user's profile. */
   const refresh = useCallback(async () => {
-    if (!readAccessToken()) {
-      setUser(null);
-      return null;
-    }
-
     try {
-      const currentUser = await api.get<User>("/v1/me", {
-        headers: { Authorization: `Bearer ${readAccessToken()}` },
-      });
+      if (!readAccessToken()) {
+        const session = await api.get<{ csrf_token: string }>("/v1/auth/csrf");
+        setCsrfToken(session.csrf_token);
+      }
+
+      const token = readAccessToken();
+      const currentUser = await api.get<User>(
+        "/v1/me",
+        token ? { headers: { Authorization: `Bearer ${token}` } } : undefined,
+      );
       setUser(currentUser);
       return currentUser;
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         clearSession();
+      } else if (!readAccessToken() && !readCsrfToken()) {
+        setCsrfToken(null);
       }
 
       setUser(null);
@@ -107,9 +125,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       saveSession(payload);
 
-      const currentUser = await api.get<User>("/v1/me", {
-        headers: { Authorization: `Bearer ${payload.access_token}` },
-      });
+      const currentUser = await api.get<User>(
+        "/v1/me",
+        payload.access_token
+          ? { headers: { Authorization: `Bearer ${payload.access_token}` } }
+          : undefined,
+      );
       setUser(currentUser);
     },
     [],
@@ -124,7 +145,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         password,
       });
 
-      if (!payload.access_token) {
+      if (!payload.access_token && !payload.csrf_token) {
         throw new ApiError(
           "La vérification de l’adresse e-mail est requise.",
           403,
@@ -134,9 +155,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       saveSession(payload);
 
-      const currentUser = await api.get<User>("/v1/me", {
-        headers: { Authorization: `Bearer ${payload.access_token}` },
-      });
+      const currentUser = await api.get<User>(
+        "/v1/me",
+        payload.access_token
+          ? { headers: { Authorization: `Bearer ${payload.access_token}` } }
+          : undefined,
+      );
       setUser(currentUser);
     },
     [],
@@ -147,10 +171,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const token = readAccessToken();
 
     try {
-      if (token) {
-        await api.post("/v1/logout", undefined, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+      if (token || readCsrfToken()) {
+        await api.post(
+          "/v1/logout",
+          undefined,
+          token ? { headers: { Authorization: `Bearer ${token}` } } : undefined,
+        );
       }
     } finally {
       clearSession();

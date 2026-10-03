@@ -279,3 +279,24 @@ Consulter [SECURITY_REMEDIATION_U.md](./SECURITY_REMEDIATION_U.md).
   encodage UTF-8 ; un Content-Type déclaré par le navigateur ne suffit plus.
 - La CSP stricte reste un chantier distinct : les gestionnaires JavaScript et
   styles inline historiques doivent être migrés avant retrait de unsafe-inline.
+
+
+## 19. CSP en observation et session cookie — lot V
+
+Consulter [SECURITY_REMEDIATION_V.md](./SECURITY_REMEDIATION_V.md).
+
+- Le serveur ajoute Content-Security-Policy-Report-Only avec une politique
+  candidate sans unsafe-inline. La politique CSP appliquée reste inchangée
+  pendant la migration des gestionnaires inline historiques.
+- Les deux blocs de styles inline de frontend/index.html sont déplacés dans
+  frontend/assets/inline-overrides.css.
+- L'authentification cookie est préparée mais reste désactivée par défaut.
+  Pour l'activer après déploiement coordonné du backend et du frontend,
+  définir REVIEW_DEFENSE_COOKIE_AUTH_ENABLED=true.
+- En production, le cookie porte le préfixe __Host-, HttpOnly, Secure,
+  SameSite=Lax et Path=/. Le frontend ne reçoit pas le bearer token lorsque
+  ce mode est activé.
+- Les mutations authentifiées par cookie exigent X-CSRF-Token. Le jeton CSRF
+  est dérivé du secret de session et conservé uniquement en mémoire frontend.
+- Les déploiements qui conservent l'authentification Bearer existante ne sont
+  pas modifiés ; le mode cookie doit être activé de manière coordonnée.

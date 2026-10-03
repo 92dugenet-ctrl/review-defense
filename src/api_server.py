@@ -14,11 +14,13 @@ import os
 import re
 
 import base64
+import hmac
 import json
 import secrets
 import time
 import uuid
 from dataclasses import asdict, dataclass
+from http.cookies import SimpleCookie
 from typing import Any, Callable, Mapping
 from urllib.parse import parse_qs, urlsplit
 
@@ -426,7 +428,21 @@ class ReviewDefenseAPI:
             "Content-Type": "application/json; charset=utf-8",
             **(headers or {}),
         }
-        body = json.dumps(payload, ensure_ascii=False).encode()
+        response_payload = dict(payload)
+        if self.config.cookie_auth_enabled and response_payload.get("access_token"):
+            raw_token = str(response_payload.pop("access_token"))
+            cookie_parts = [
+                f"{self._session_cookie_name()}={raw_token}",
+                "Path=/",
+                f"Max-Age={self.session_ttl}",
+                "HttpOnly",
+                "SameSite=Lax",
+            ]
+            if self.config.production:
+                cookie_parts.append("Secure")
+            response_headers["Set-Cookie"] = "; ".join(cookie_parts)
+            response_payload["csrf_token"] = self._csrf_token(raw_token)
+        body = json.dumps(response_payload, ensure_ascii=False).encode()
         return status, response_headers, body
 
     def _privacy_request_payload(self, row: Any) -> dict[str, Any]:
@@ -471,16 +487,44 @@ class ReviewDefenseAPI:
         )
         }
 
-    def _auth(self, environ) -> User:
-        """Valide le Bearer token, la session, l'utilisateur et son rôle.
+    def _session_cookie_name(self) -> str:
+        return "__Host-review-defense-session" if self.config.production else "review-defense-session"
 
-        Avec repository, l'état de révocation et le rôle sont relus en base :
-        le cache d'un worker Gunicorn ne fait pas autorité pour ces contrôles.
+    def _cookie_session_token(self, environ) -> str | None:
+        if not self.config.cookie_auth_enabled:
+            return None
+        parsed = SimpleCookie()
+        try:
+            parsed.load(environ.get("HTTP_COOKIE", ""))
+        except Exception:
+            return None
+        for name in ("__Host-review-defense-session", "review-defense-session"):
+            morsel = parsed.get(name)
+            if morsel and morsel.value:
+                return morsel.value
+        return None
+
+    @staticmethod
+    def _csrf_token(raw_token: str) -> str:
+        return hmac.new(
+            raw_token.encode("utf-8"),
+            b"review-defense-browser-csrf-v1",
+            "sha256",
+        ).hexdigest()
+
+    def _auth(self, environ) -> User:
+        """Valide le Bearer ou le cookie HttpOnly, puis la session et le rôle.
+
+        Les mutations authentifiées par cookie sont protégées par handle().
+        Le repository reste autoritaire pour la révocation et le rôle.
         """
         header = environ.get("HTTP_AUTHORIZATION", "")
-        if not isinstance(header, str) or not header.startswith("Bearer "):
-            raise APIError(401, "AUTH_REQUIRED", "authentication required")
-        raw = header[7:].strip()
+        if isinstance(header, str) and header.startswith("Bearer "):
+            raw = header[7:].strip()
+        else:
+            raw = self._cookie_session_token(environ) or ""
+            if not raw:
+                raise APIError(401, "AUTH_REQUIRED", "authentication required")
         if not raw or len(raw) > 4096:
             raise APIError(401, "AUTH_INVALID", "invalid or expired session")
         try:
@@ -879,6 +923,35 @@ class ReviewDefenseAPI:
         """
         path = urlsplit(environ.get("PATH_INFO", "/")).path.rstrip("/") or "/"
         method = environ.get("REQUEST_METHOD", "GET").upper()
+        cookie_token = self._cookie_session_token(environ)
+        authorization = environ.get("HTTP_AUTHORIZATION", "")
+        cookie_authenticated = bool(
+            cookie_token
+            and not (
+                isinstance(authorization, str)
+                and authorization.startswith("Bearer ")
+            )
+        )
+        csrf_exempt_paths = {
+            "/v1/auth/login",
+            "/v1/auth/register",
+            "/v1/auth/recovery/request",
+            "/v1/auth/recovery/reset",
+            "/v1/auth/verify-email",
+            "/v1/organization/invitations/accept",
+            "/v1/paypal/webhook",
+        }
+        if (
+            cookie_authenticated
+            and method in {"POST", "PUT", "PATCH", "DELETE"}
+            and path not in csrf_exempt_paths
+        ):
+            supplied_csrf = environ.get("HTTP_X_CSRF_TOKEN", "")
+            expected_csrf = self._csrf_token(cookie_token)
+            if not isinstance(supplied_csrf, str) or not hmac.compare_digest(
+                supplied_csrf, expected_csrf
+            ):
+                raise APIError(403, "CSRF_INVALID", "valid CSRF token is required")
         if path.startswith("/v1/") and method in {"POST", "PUT", "PATCH"} and path != "/v1/paypal/webhook":
             content_type = environ.get("CONTENT_TYPE", "").split(";", 1)[0].strip().lower()
             if content_type != "application/json":
@@ -887,6 +960,13 @@ class ReviewDefenseAPI:
             self.limiter, environ.get("REMOTE_ADDR", "unknown"), "request"
         ):
             raise APIError(429, "RATE_LIMITED", "rate limit exceeded")
+        if method == "GET" and path == "/v1/auth/csrf":
+            if not self.config.cookie_auth_enabled:
+                raise APIError(404, "NOT_FOUND", "not found")
+            raw_token = self._cookie_session_token(environ)
+            if not raw_token:
+                raise APIError(401, "AUTH_REQUIRED", "authentication required")
+            return self._json(200, {"csrf_token": self._csrf_token(raw_token)})
         if method == "GET" and path == "/health":
             result = health_check(checks={"store": lambda: self.store is not None})
             return self._json(
@@ -3679,7 +3759,16 @@ class ReviewDefenseAPI:
                         {"ip_hash": self._client_ip_hash(environ)},
                     )
                 self.store.audit_event(user.organization_id, user.user_id, "LOGOUT", "session")
-            return self._json(200, {"status": "logged_out"})
+            clear_cookie = (
+                f"{self._session_cookie_name()}=; Path=/; Max-Age=0; "
+                f"HttpOnly; SameSite=Lax"
+                + ("; Secure" if self.config.production else "")
+            )
+            return self._json(
+                200,
+                {"status": "logged_out"},
+                headers={"Set-Cookie": clear_cookie},
+            )
         raise APIError(404, "NOT_FOUND", "route not found")
 
     def __call__(self, environ, start_response):

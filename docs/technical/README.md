@@ -32,3 +32,5 @@ Cette documentation décrit le code présent et les chemins d'exécution observ�
 ## Contrôle
 
 La revue documentaire porte sur les diffs, l'arbre Git, les imports et références statiques. Aucun test, build, typecheck ou workflow de test ne doit être exécuté.
+
+- [Corrections de sécurité — lot V](./SECURITY_REMEDIATION_V.md) — CSP stricte en observation, retrait des styles inline de l'accueil et session cookie HttpOnly avec CSRF en option.

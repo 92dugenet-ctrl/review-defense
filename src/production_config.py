@@ -27,6 +27,7 @@ class ProductionConfig:
     evidence_max_request_bytes: int = 35_000_000
     recovery_email_enabled: bool = False
     require_email_verification: bool = False
+    cookie_auth_enabled: bool = False
     smtp_host: str | None = None
     smtp_port: int = 587
     smtp_username: str | None = None
@@ -68,6 +69,9 @@ class ProductionConfig:
             evidence_max_request_bytes=evidence_max,
             recovery_email_enabled=recovery_email_enabled,
             require_email_verification=require_email_verification,
+            cookie_auth_enabled=os.getenv(
+                "REVIEW_DEFENSE_COOKIE_AUTH_ENABLED", "false"
+            ).strip().lower() in TRUTHY,
             smtp_host=os.getenv("SMTP_HOST"),
             smtp_port=smtp_port,
             smtp_username=os.getenv("SMTP_USERNAME"),
@@ -86,6 +90,9 @@ class ProductionConfig:
         """Vérifie les prérequis avant de lancer ou d'exposer l'API."""
         if self.production and not self.secure_headers:
             raise ValueError("SECURE_HEADERS cannot be disabled in production")
+
+        if self.production and self.cookie_auth_enabled and not self.public_base_url.startswith("https://"):
+            raise ValueError("cookie authentication in production requires HTTPS")
 
         if self.production and not self.database_dsn and (require_database is not False):
             raise ValueError("DATABASE_URL is required in production")

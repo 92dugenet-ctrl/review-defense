@@ -42,3 +42,7 @@
 Inspection des appels de limitation, des frontières de stockage, des signatures
 de fichiers, du schéma PostgreSQL et des usages frontend inline. Aucun test,
 build, typecheck, lint ou workflow GitHub Actions n'a été exécuté.
+
+
+Étape suivante : [SECURITY_REMEDIATION_V.md](./SECURITY_REMEDIATION_V.md)
+documente la CSP en observation et le mode cookie HttpOnly avec protection CSRF.
