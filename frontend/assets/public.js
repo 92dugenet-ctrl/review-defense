@@ -2,57 +2,113 @@ const PUBLIC_MARKETING_BOUNDARIES=['Aucune suppression garantie','La décision f
 const PUBLIC_ASSET_VERSION='6716';
 let __seoArticlesPromise=null;
 let __publicNavigationToken=0;
-function ensureSeoArticles(){
- if(window.REVIEW_DEFENSE_SEO_ARTICLES) return Promise.resolve(window.REVIEW_DEFENSE_SEO_ARTICLES);
- if(__seoArticlesPromise) return __seoArticlesPromise;
- __seoArticlesPromise=new Promise((resolve,reject)=>{
-   const script=document.createElement('script');
-   script.src='/assets/seo-articles.js?v='+PUBLIC_ASSET_VERSION;
-   script.async=true;
-   let settled=false;
-   const finish=(fn)=>{if(settled)return;settled=true;fn()};
-   const timeout=window.setTimeout(()=>{__seoArticlesPromise=null;finish(()=>reject(new Error('Le contenu éditorial met trop de temps à répondre.')))},8000);
-   script.onload=()=>{window.clearTimeout(timeout);finish(()=>resolve(window.REVIEW_DEFENSE_SEO_ARTICLES||{}))};
-      script.onerror=()=>{window.clearTimeout(timeout);
-     __seoArticlesPromise=null;
-     finish(()=>reject(new Error('Impossible de charger les ressources éditoriales.')))};
-   document.head.appendChild(script);
- });
- return __seoArticlesPromise;
+function ensureSeoArticles() {
+  if (window.REVIEW_DEFENSE_SEO_ARTICLES) {
+    return Promise.resolve(window.REVIEW_DEFENSE_SEO_ARTICLES);
+  }
+
+  if (__seoArticlesPromise) {
+    return __seoArticlesPromise;
+  }
+
+  __seoArticlesPromise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "/assets/seo-articles.js?v=" + PUBLIC_ASSET_VERSION;
+    script.async = true;
+
+    let settled = false;
+    const finish = (callback) => {
+      if (settled) return;
+      settled = true;
+      callback();
+    };
+
+    const timeout = window.setTimeout(() => {
+      __seoArticlesPromise = null;
+      finish(() => {
+        reject(
+          new Error("Le contenu éditorial met trop de temps à répondre.")
+        );
+      });
+    }, 8000);
+
+    script.onload = () => {
+      window.clearTimeout(timeout);
+      finish(() => {
+        resolve(window.REVIEW_DEFENSE_SEO_ARTICLES || {});
+      });
+    };
+
+    script.onerror = () => {
+      window.clearTimeout(timeout);
+      __seoArticlesPromise = null;
+      finish(() => {
+        reject(
+          new Error("Impossible de charger les ressources éditoriales.")
+        );
+      });
+    };
+
+    document.head.appendChild(script);
+  });
+
+  return __seoArticlesPromise;
 }
-function publicLoadError(){
- ensurePublicStyles();
- const retry='<button class="btn-primary public-retry" type="button" onclick="bootPublicRoute()">Réessayer <span>↻</span></button>';
- return (
-   '<section class="public-error-state" role="alert" aria-live="assertive"><div class="public-error-card"><span class="rd-eyebrow-pill">REVIEW DEFENSE · CHARGEMENT</span>' +
-   '<h1>Cette page n’a pas pu être chargée.</h1><p>Le contenu éditorial n’a pas répondu correctement. Votre dossier et vos données ne sont pas concernés par cette erreur de chargement.</p>'
- )+retry+'</div></section>';
+
+function publicLoadError() {
+  ensurePublicStyles();
+
+  const retryButton = (
+    '<button class="btn-primary public-retry" type="button" '
+    + 'onclick="bootPublicRoute()">Réessayer <span>↻</span></button>'
+  );
+
+  const errorContent = (
+    '<section class="public-error-state" role="alert" '
+    + 'aria-live="assertive"><div class="public-error-card">'
+    + '<span class="rd-eyebrow-pill">REVIEW DEFENSE · CHARGEMENT</span>'
+    + '<h1>Cette page n’a pas pu être chargée.</h1>'
+    + '<p>Le contenu éditorial n’a pas répondu correctement. '
+    + 'Votre dossier et vos données ne sont pas concernés par cette '
+    + 'erreur de chargement.</p>'
+  );
+
+  return errorContent + retryButton + "</div></section>";
 }
+
 function publicPathPage(path){
  const match=Object.entries(PUBLIC_ROUTES).find(([,route])=>route===path);
  return match?.[0]||null;
 }
-const PUBLIC_ROUTES={home:'/',
-  compliance:'/conformite/',
-  features:'/produit/',
-  how:'/comment-ca-marche/',
-  services:'/services/',
-  pricing:'/tarifs/',
-  resources:'/ressources/',
-  contact:'/contact/',
-  analyze:'/analyse-avis-google/',
-  legal:'/mentions-legales/',
-  privacy:'/confidentialite/',
-  cgv:'/cgv/',
-  cgu:'/cgu/',
-  cookies:'/cookies/',
-  security:'/securite/',
-  retention:'/conservation-donnees/',
-  rights:'/droits-rgpd/',
-  breach:'/violation-donnees/',
-  subprocessors:'/sous-traitants/',
-  ai:'/ia-et-controle-humain/'};
-if(window.REVIEW_DEFENSE_SEO_ARTICLES){Object.keys(window.REVIEW_DEFENSE_SEO_ARTICLES).forEach(slug=>{PUBLIC_ROUTES[slug]='/'+slug+'/';});}
+const PUBLIC_ROUTES = {
+  home: "/",
+  compliance: "/conformite/",
+  features: "/produit/",
+  how: "/comment-ca-marche/",
+  services: "/services/",
+  pricing: "/tarifs/",
+  resources: "/ressources/",
+  contact: "/contact/",
+  analyze: "/analyse-avis-google/",
+  legal: "/mentions-legales/",
+  privacy: "/confidentialite/",
+  cgv: "/cgv/",
+  cgu: "/cgu/",
+  cookies: "/cookies/",
+  security: "/securite/",
+  retention: "/conservation-donnees/",
+  rights: "/droits-rgpd/",
+  breach: "/violation-donnees/",
+  subprocessors: "/sous-traitants/",
+  ai: "/ia-et-controle-humain/",
+};
+
+if (window.REVIEW_DEFENSE_SEO_ARTICLES) {
+  Object.keys(window.REVIEW_DEFENSE_SEO_ARTICLES).forEach((slug) => {
+    PUBLIC_ROUTES[slug] = "/" + slug + "/";
+  });
+}
+
 const PUBLIC_META={
  home:['Review Defense | Analyse et défense de votre réputation','Analysez, qualifiez et documentez vos avis Google. Préparez des dossiers traçables avec validation humaine.'],
  features:['Produit Review Defense | Analyse, preuves et traçabilité','Analyse, qualification, preuves, dossiers et traçabilité dans une console B2B conçue pour vos équipes.'],
@@ -75,69 +131,209 @@ const PUBLIC_META={
    compliance:['Centre conformité | Review Defense','Documents juridiques, RGPD, sécurité et contrôle humain de Review Defense.'],
  ai:['IA et contrôle humain | Review Defense','Utilisation de l’intelligence artificielle et contrôle humain dans Review Defense.']
 };
-function setPublicMeta(page){
- const article=window.REVIEW_DEFENSE_ARTICLE_META?.(page);
- const m=article?[article.title,article.title+' — guide pratique Review Defense pour vérifier les faits, structurer les preuves et préparer la suite.']:(PUBLIC_META[page]||PUBLIC_META.home);
- document.title=m[0];
-  const setMeta=(selector,
-   attr,
-      value)=>{let el=document.querySelector(selector);
-     if(!el){el=document.createElement('meta');
-     Object.entries(attr).forEach(([k,v])=>el.setAttribute(k,v));
-     document.head.appendChild(el)}el.setAttribute('content',
-   value)};
-  let d=document.querySelector('meta[name="description"]');
-    if(!d){d=document.createElement('meta');
-   d.name='description';
-   document.head.appendChild(d)} d.content=m[1];
-  let c=document.querySelector('link[rel="canonical"]');
-    if(!c){c=document.createElement('link');
-   c.rel='canonical';
-   document.head.appendChild(c)} c.href=location.origin+(PUBLIC_ROUTES[page]||'/');
- const canonical=c.href;
- setMeta('meta[property="og:title"]',{property:'og:title'},m[0]);
- setMeta('meta[property="og:description"]',{property:'og:description'},m[1]);
- setMeta('meta[property="og:url"]',{property:'og:url'},canonical);
- setMeta('meta[property="og:type"]',{property:'og:type'},article?'article':'website');
- setMeta('meta[name="twitter:card"]',{name:'twitter:card'},'summary');
- setMeta('meta[name="twitter:title"]',{name:'twitter:title'},m[0]);
- setMeta('meta[name="twitter:description"]',{name:'twitter:description'},m[1]);
+function setPublicMeta(page) {
+  const article = window.REVIEW_DEFENSE_ARTICLE_META?.(page);
+  const articleDescription = article
+    ? article.title
+      + " — guide pratique Review Defense pour vérifier les faits, "
+      + "structurer les preuves et préparer la suite."
+    : null;
+  const meta = article
+    ? [article.title, articleDescription]
+    : (PUBLIC_META[page] || PUBLIC_META.home);
+
+  document.title = meta[0];
+
+  const setMeta = (selector, attributes, value) => {
+    let element = document.querySelector(selector);
+
+    if (!element) {
+      element = document.createElement("meta");
+      Object.entries(attributes).forEach(([key, attributeValue]) => {
+        element.setAttribute(key, attributeValue);
+      });
+      document.head.appendChild(element);
+    }
+
+    element.setAttribute("content", value);
+  };
+
+  let description = document.querySelector(
+    'meta[name="description"]'
+  );
+  if (!description) {
+    description = document.createElement("meta");
+    description.name = "description";
+    document.head.appendChild(description);
+  }
+  description.content = meta[1];
+
+  let canonicalLink = document.querySelector(
+    'link[rel="canonical"]'
+  );
+  if (!canonicalLink) {
+    canonicalLink = document.createElement("link");
+    canonicalLink.rel = "canonical";
+    document.head.appendChild(canonicalLink);
+  }
+  canonicalLink.href = location.origin + (PUBLIC_ROUTES[page] || "/");
+
+  const canonicalUrl = canonicalLink.href;
+  setMeta(
+    'meta[property="og:title"]',
+    { property: "og:title" },
+    meta[0]
+  );
+  setMeta(
+    'meta[property="og:description"]',
+    { property: "og:description" },
+    meta[1]
+  );
+  setMeta(
+    'meta[property="og:url"]',
+    { property: "og:url" },
+    canonicalUrl
+  );
+  setMeta(
+    'meta[property="og:type"]',
+    { property: "og:type" },
+    article ? "article" : "website"
+  );
+  setMeta(
+    'meta[name="twitter:card"]',
+    { name: "twitter:card" },
+    "summary"
+  );
+  setMeta(
+    'meta[name="twitter:title"]',
+    { name: "twitter:title" },
+    meta[0]
+  );
+  setMeta(
+    'meta[name="twitter:description"]',
+    { name: "twitter:description" },
+    meta[1]
+  );
 }
-const PUBLIC_NAV_ITEMS=[
- ['features','Produit'],['how','Parcours'],['services','Services'],['resources','Ressources'],['pricing','Tarifs']
+
+const PUBLIC_NAV_ITEMS = [
+  ["features", "Produit"],
+  ["how", "Parcours"],
+  ["services", "Services"],
+  ["resources", "Ressources"],
+  ["pricing", "Tarifs"],
 ];
-const PUBLIC_FOOTER_GROUPS=[
- ['Produit',[['Fonctionnalités','/produit/'],['Comment ça marche','/comment-ca-marche/'],['Tarifs','/tarifs/']]],
- ['Ressources',[['Guides & SEO','/ressources/'],['Analyser un avis Google','/analyse-avis-google/'],['Contact','/contact/']]],
-  ['Confiance',
-   [['Centre conformité','/conformite/'],
-   ['Sécurité','/securite/'],
-   ['Confidentialité','/confidentialite/'],
-   ['Conservation des données','/conservation-donnees/'],
-   ['Sous-traitants','/sous-traitants/'],
-   ['IA & contrôle humain','/ia-et-controle-humain/']]],
- ['Juridique',[['Mentions légales','/mentions-legales/'],['CGV','/cgv/'],['CGU','/cgu/'],['Cookies','/cookies/'],['Droits RGPD','/droits-rgpd/'],['Violations de données','/violation-donnees/']]]
+
+const PUBLIC_FOOTER_GROUPS = [
+  [
+    "Produit",
+    [
+      ["Fonctionnalités", "/produit/"],
+      ["Comment ça marche", "/comment-ca-marche/"],
+      ["Tarifs", "/tarifs/"],
+    ],
+  ],
+  [
+    "Ressources",
+    [
+      ["Guides & SEO", "/ressources/"],
+      ["Analyser un avis Google", "/analyse-avis-google/"],
+      ["Contact", "/contact/"],
+    ],
+  ],
+  [
+    "Confiance",
+    [
+      ["Centre conformité", "/conformite/"],
+      ["Sécurité", "/securite/"],
+      ["Confidentialité", "/confidentialite/"],
+      ["Conservation des données", "/conservation-donnees/"],
+      ["Sous-traitants", "/sous-traitants/"],
+      ["IA & contrôle humain", "/ia-et-controle-humain/"],
+    ],
+  ],
+  [
+    "Juridique",
+    [
+      ["Mentions légales", "/mentions-legales/"],
+      ["CGV", "/cgv/"],
+      ["CGU", "/cgu/"],
+      ["Cookies", "/cookies/"],
+      ["Droits RGPD", "/droits-rgpd/"],
+      ["Violations de données", "/violation-donnees/"],
+    ],
+  ],
 ];
-function publicHeader(active){
- return (
-   '<header class="public-header rd-muse-header rd-editorial-header" data-public-shell="header"><div class="rd-nav-inner"><a class="public-brand" href="/" aria-label="Review Defense accueil">' +
-   '<b class="brand-mark">RD</b><span>Review Defense</span></a><nav class="public-nav" id="public-nav" aria-label="Navigation principale">'
- )+PUBLIC_NAV_ITEMS.map(x=>'<a class="'+(active===x[0]?'active':'')+'" href="'+PUBLIC_ROUTES[x[0]]+'" data-public="'+x[0]+'">'+x[1]+'</a>').join('')+(
-   '</nav><div class="public-actions"><a class="btn-secondary" id="public-login" href="/app">Espace client</a><a class="btn-primary" id="public-cta">Analyser un avis</a>' +
-   '</div><button class="mobile-menu" id="mobile-menu" type="button" aria-label="Ouvrir le menu" aria-controls="public-nav" aria-expanded="false">☰</button>' +
-   '</div></header>'
- )
+
+function publicHeader(active) {
+  const navigation = PUBLIC_NAV_ITEMS.map(([key, label]) => {
+    const isActive = active === key;
+    const activeClass = isActive ? "active" : "";
+    const route = PUBLIC_ROUTES[key];
+
+    return (
+      '<a class="' + activeClass + '" href="' + route + '" '
+      + 'data-public="' + key + '">' + label + "</a>"
+    );
+  }).join("");
+
+  return (
+    '<header class="public-header rd-muse-header rd-editorial-header" '
+    + 'data-public-shell="header"><div class="rd-nav-inner">'
+    + '<a class="public-brand" href="/" '
+    + 'aria-label="Review Defense accueil">'
+    + '<b class="brand-mark">RD</b><span>Review Defense</span></a>'
+    + '<nav class="public-nav" id="public-nav" '
+    + 'aria-label="Navigation principale">'
+    + navigation
+    + '</nav><div class="public-actions">'
+    + '<a class="btn-secondary" id="public-login" href="/app">'
+    + "Espace client</a>"
+    + '<a class="btn-primary" id="public-cta">Analyser un avis</a>'
+    + '</div><button class="mobile-menu" id="mobile-menu" '
+    + 'type="button" aria-label="Ouvrir le menu" '
+    + 'aria-controls="public-nav" aria-expanded="false">☰</button>'
+    + "</div></header>"
+  );
 }
-function publicFooter(){
- return (
-   '<footer class="public-footer" data-public-shell="footer"><div class="rd-footer-inner"><div class="footer-brand"><a class="public-brand" href="/">' +
-   '<b class="brand-mark">RD</b><span>Review Defense</span></a><p>Analyse, qualification et préparation de dossiers liés aux avis en ligne.</p>' +
-   '<small>Préparation ≠ exécution. Les décisions externes restent sous contrôle humain.</small></div>'
- )+PUBLIC_FOOTER_GROUPS.map(g=>'<div><b>'+g[0]+'</b>'+g[1].map(x=>'<a href="'+x[1]+'">'+x[0]+'</a>').join('')+'</div>').join('')+'</div><div class="footer-bottom"><span>© 2026 Review Defense</span><span>Plateforme d’aide et de préparation — aucune suppression garantie.</span></div></footer>';
+
+function publicFooter() {
+  const groups = PUBLIC_FOOTER_GROUPS.map(([title, links]) => {
+    const linkMarkup = links.map(([label, href]) => {
+      return '<a href="' + href + '">' + label + "</a>";
+    }).join("");
+
+    return "<div><b>" + title + "</b>" + linkMarkup + "</div>";
+  }).join("");
+
+  return (
+    '<footer class="public-footer" data-public-shell="footer">'
+    + '<div class="rd-footer-inner"><div class="footer-brand">'
+    + '<a class="public-brand" href="/">'
+    + '<b class="brand-mark">RD</b><span>Review Defense</span></a>'
+    + "<p>Analyse, qualification et préparation de dossiers liés "
+    + "aux avis en ligne.</p>"
+    + "<small>Préparation ≠ exécution. Les décisions externes "
+    + "restent sous contrôle humain.</small></div>"
+    + groups
+    + '</div><div class="footer-bottom">'
+    + "<span>© 2026 Review Defense</span>"
+    + "<span>Plateforme d’aide et de préparation — "
+    + "aucune suppression garantie.</span>"
+    + "</div></footer>"
+  );
 }
-function publicShell(active,body){
- return '<div class="marketing" data-public-shell="site"><div class="public-shell-header">'+publicHeader(active)+'</div><main>'+body+'</main><div class="public-shell-footer">'+publicFooter()+'</div></div>';
+
+function publicShell(active, body) {
+  return (
+    '<div class="marketing" data-public-shell="site">'
+    + '<div class="public-shell-header">' + publicHeader(active) + "</div>"
+    + "<main>" + body + "</main>"
+    + '<div class="public-shell-footer">' + publicFooter() + "</div>"
+    + "</div>"
+  );
 }
+
 function ensureMuseLandingStyles(){const x=document.getElementById('rd-muse-landing-styles');if(x)x.remove()}
 
 function ensurePublicStyles(){ensureMuseLandingStyles();
@@ -483,11 +679,27 @@ function servicesPage(){
    '</div></section>'
  );
 }
-function selectPricingOffer(type,name,price,offerId){
-  try{localStorage.setItem('rd_selected_offer',JSON.stringify({type,name,price,offer_id:offerId||null,selected_at:new Date().toISOString()}));
-   }catch(e){}
- location.href='/app?pricing_offer='+encodeURIComponent(offerId||type);
+function selectPricingOffer(type, name, price, offerId) {
+  try {
+    const selectedOffer = {
+      type,
+      name,
+      price,
+      offer_id: offerId || null,
+      selected_at: new Date().toISOString(),
+    };
+    localStorage.setItem(
+      "rd_selected_offer",
+      JSON.stringify(selectedOffer)
+    );
+  } catch (error) {
+    // Le parcours reste accessible si le stockage local est indisponible.
+  }
+
+  const selectedId = offerId || type;
+  location.href = "/app?pricing_offer=" + encodeURIComponent(selectedId);
 }
+
 function pricingPage(){
  const audits=[['1–9','79 €'],['10–49','149 €'],['50–99','249 €'],['100–249','399 €'],['250–499','599 €'],['500–999','899 €'],['1 000–2 499','1 290 €'],['2 500+','Sur devis']];
   const defense=[['01',
@@ -841,36 +1053,109 @@ function contactPage(){return (
   '</label><label>Message<textarea name="message" rows="5" required></textarea></label><button class="btn-primary" type="submit">Préparer le message</button>' +
   '<small class="form-note">L’envoi final est effectué depuis votre client e-mail.</small></form></section>'
 )}
-function editorializePublicPage(active){
-const main=document.querySelector('.marketing main');if(!main)return;
-const sections=[...main.children].filter(node=>node.tagName==='SECTION');
-sections.forEach((s,i)=>{s.classList.add('rd-story-scene');s.dataset.scene=String(i+1).padStart(2,'0');s.style.visibility='visible';s.style.opacity='1'});
-const shell=document.querySelector('.marketing');
-  if(shell){shell.dataset.storyPage=active||'home';
-  shell.dataset.storyScenes=String(sections.length);
-  shell.setAttribute('data-story-scenes',String(sections.length))}
+function editorializePublicPage(active) {
+  const main = document.querySelector(".marketing main");
+  if (!main) return;
+
+  const sections = [...main.children].filter((node) => {
+    return node.tagName === "SECTION";
+  });
+
+  sections.forEach((section, index) => {
+    section.classList.add("rd-story-scene");
+    section.dataset.scene = String(index + 1).padStart(2, "0");
+    section.style.visibility = "visible";
+    section.style.opacity = "1";
+  });
+
+  const shell = document.querySelector(".marketing");
+  if (!shell) return;
+
+  shell.dataset.storyPage = active || "home";
+  shell.dataset.storyScenes = String(sections.length);
+  shell.setAttribute("data-story-scenes", String(sections.length));
 }
 
-function marketingLayout(active,body){
- ensurePublicStyles();setPublicMeta(active||'home');
- document.body.innerHTML=publicShell(active,body);
- document.querySelectorAll('[data-public]').forEach(x=>x.addEventListener('click',e=>{if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();showPublicPage(x.dataset.public)}));
- const publicCta=document.getElementById('public-cta');
- publicCta?.setAttribute('role','button');
- publicCta?.setAttribute('tabindex','0');
- publicCta?.addEventListener('click',e=>{e.preventDefault();location.href='/analyse-avis-google/'});
- publicCta?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();location.href='/analyse-avis-google/'}});
- const menu=document.getElementById('mobile-menu');
- const nav=document.getElementById('public-nav');
-  const closePublicMenu=()=>{nav?.classList.remove('open');
-   menu?.setAttribute('aria-expanded','false');
-   menu?.setAttribute('aria-label','Ouvrir le menu')};
- menu?.addEventListener('click',()=>{const open=nav?.classList.toggle('open')||false;menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Fermer le menu':'Ouvrir le menu')});
- menu?.addEventListener('keydown',e=>{if(e.key==='Escape'&&nav?.classList.contains('open')){e.preventDefault();closePublicMenu();menu.focus()}});
- document.querySelectorAll('.public-nav [data-public]').forEach(x=>x.addEventListener('click',()=>{closePublicMenu();menu?.focus()}));
- editorializePublicPage(active);
- try{initPremiumInteractions()}catch(e){console.warn('Review Defense visual interaction init failed',e)}
+function marketingLayout(active, body) {
+  ensurePublicStyles();
+  setPublicMeta(active || "home");
+  document.body.innerHTML = publicShell(active, body);
+
+  document.querySelectorAll("[data-public]").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      const modifiedClick = (
+        event.defaultPrevented
+        || event.button !== 0
+        || event.metaKey
+        || event.ctrlKey
+        || event.shiftKey
+        || event.altKey
+      );
+      if (modifiedClick) return;
+
+      event.preventDefault();
+      showPublicPage(link.dataset.public);
+    });
+  });
+
+  const publicCta = document.getElementById("public-cta");
+  publicCta?.setAttribute("role", "button");
+  publicCta?.setAttribute("tabindex", "0");
+  publicCta?.addEventListener("click", (event) => {
+    event.preventDefault();
+    location.href = "/analyse-avis-google/";
+  });
+  publicCta?.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    location.href = "/analyse-avis-google/";
+  });
+
+  const menu = document.getElementById("mobile-menu");
+  const navigation = document.getElementById("public-nav");
+
+  const closePublicMenu = () => {
+    navigation?.classList.remove("open");
+    menu?.setAttribute("aria-expanded", "false");
+    menu?.setAttribute("aria-label", "Ouvrir le menu");
+  };
+
+  menu?.addEventListener("click", () => {
+    const isOpen = navigation?.classList.toggle("open") || false;
+    menu.setAttribute("aria-expanded", String(isOpen));
+    menu.setAttribute(
+      "aria-label",
+      isOpen ? "Fermer le menu" : "Ouvrir le menu"
+    );
+  });
+  menu?.addEventListener("keydown", (event) => {
+    const menuIsOpen = navigation?.classList.contains("open");
+    if (event.key !== "Escape" || !menuIsOpen) return;
+
+    event.preventDefault();
+    closePublicMenu();
+    menu.focus();
+  });
+
+  document.querySelectorAll(".public-nav [data-public]").forEach((link) => {
+    link.addEventListener("click", () => {
+      closePublicMenu();
+      menu?.focus();
+    });
+  });
+
+  editorializePublicPage(active);
+
+  try {
+    initPremiumInteractions();
+  } catch (error) {
+    console.warn(
+      "Review Defense visual interaction init failed",
+      error
+    );
+  }
 }
+
 function publicLoadingState(){
  if(document.body.dataset.publicLoading==='1') return;
  document.body.dataset.publicLoading='1';
@@ -930,65 +1215,119 @@ return '<section class="rd-v3-hero rd-v3-subhero"><div><small>01 / '+d[0]+'</sma
   '<h2>Voir Review Defense en situation.</h2><a class="btn-primary" href="/app">Entrer dans le logiciel →</a></section>'
 );
 }
-function showPublicPage(page,push=true){
-const navigationToken=++__publicNavigationToken;
-if(page==='accept-invitation'){clearPublicLoading();invitationSignupPage();return}
-const render=()=>{
-if(window.REVIEW_DEFENSE_RENDER_ARTICLE&&window.REVIEW_DEFENSE_ARTICLE_META&&window.REVIEW_DEFENSE_ARTICLE_META(page)){if(push&&PUBLIC_ROUTES[page]&&location.pathname!==PUBLIC_ROUTES[page])history.pushState({publicPage:page},
-  '',
-  PUBLIC_ROUTES[page]);marketingLayout('resources',
-  window.REVIEW_DEFENSE_RENDER_ARTICLE(page));clearPublicLoading();return}
-const commercial=['features','how','services','pricing','resources','analyze'];
-const route=page==='home'?['',
-  homePage]:commercial.includes(page)?[page,
-  ()=>commercialPage(page)]:page==='compliance'?['compliance',
-  compliancePage]:page==='contact'?['contact',
-  contactPage]:page==='legal'?['legal',
-  ()=>legalPage('legal')]:page==='privacy'?['privacy',
-  ()=>legalPage('privacy')]:page==='cgv'?['cgv',
-  ()=>legalPage('cgv')]:page==='cgu'?['cgu',
-  ()=>legalPage('cgu')]:page==='cookies'?['cookies',
-  ()=>legalPage('cookies')]:page==='security'?['security',
-  ()=>legalPage('security')]:page==='retention'?['retention',
-  ()=>legalPage('retention')]:page==='rights'?['rights',
-  ()=>legalPage('rights')]:page==='breach'?['breach',
-  ()=>legalPage('breach')]:page==='subprocessors'?['subprocessors',
-  ()=>legalPage('subprocessors')]:page==='ai'?['ai',
-  ()=>legalPage('ai')]:['',
-  homePage];
-if(push&&PUBLIC_ROUTES[page]&&location.pathname!==PUBLIC_ROUTES[page])history.pushState({publicPage:page},'',PUBLIC_ROUTES[page]);
-marketingLayout(route[0],route[1]());clearPublicLoading();
-};
-publicLoadingState();
-if(page==='resources'||!PUBLIC_ROUTES[page]){
-  ensureSeoArticles()
-    .then(()=>{
-      if(navigationToken!==__publicNavigationToken)return;
-      Object.keys(window.REVIEW_DEFENSE_SEO_ARTICLES||{}).forEach(
-        slug=>PUBLIC_ROUTES[slug]='/'+slug+'/'
-      );
-      render();
-    })
-    .catch(()=>{
-      if(navigationToken!==__publicNavigationToken)return;
+function showPublicPage(page, push = true) {
+  const navigationToken = ++__publicNavigationToken;
+
+  if (page === "accept-invitation") {
+    clearPublicLoading();
+    invitationSignupPage();
+    return;
+  }
+
+  const render = () => {
+    const articleMeta = window.REVIEW_DEFENSE_ARTICLE_META;
+    const renderArticle = window.REVIEW_DEFENSE_RENDER_ARTICLE;
+    const article = articleMeta?.(page);
+
+    if (renderArticle && article) {
+      const route = PUBLIC_ROUTES[page];
+      if (push && route && location.pathname !== route) {
+        history.pushState({ publicPage: page }, "", route);
+      }
+
+      marketingLayout("resources", renderArticle(page));
       clearPublicLoading();
-      marketingLayout('resources',publicLoadError());
-    });
-}
-else if(navigationToken===__publicNavigationToken)render();
+      return;
+    }
+
+    const commercialPages = [
+      "features",
+      "how",
+      "services",
+      "pricing",
+      "resources",
+      "analyze",
+    ];
+
+    let route;
+    if (page === "home") {
+      route = ["", homePage];
+    } else if (commercialPages.includes(page)) {
+      route = [page, () => commercialPage(page)];
+    } else if (page === "compliance") {
+      route = ["compliance", compliancePage];
+    } else if (page === "contact") {
+      route = ["contact", contactPage];
+    } else if (PUBLIC_META[page] && page !== "home") {
+      route = [page, () => legalPage(page)];
+    } else {
+      route = ["", homePage];
+    }
+
+    const routePath = PUBLIC_ROUTES[page];
+    if (push && routePath && location.pathname !== routePath) {
+      history.pushState({ publicPage: page }, "", routePath);
+    }
+
+    marketingLayout(route[0], route[1]());
+    clearPublicLoading();
+  };
+
+  publicLoadingState();
+
+  if (page === "resources" || !PUBLIC_ROUTES[page]) {
+    ensureSeoArticles()
+      .then(() => {
+        if (navigationToken !== __publicNavigationToken) return;
+
+        Object.keys(window.REVIEW_DEFENSE_SEO_ARTICLES || {}).forEach(
+          (slug) => {
+            PUBLIC_ROUTES[slug] = "/" + slug + "/";
+          }
+        );
+        render();
+      })
+      .catch(() => {
+        if (navigationToken !== __publicNavigationToken) return;
+
+        clearPublicLoading();
+        marketingLayout("resources", publicLoadError());
+      });
+    return;
+  }
+
+  if (navigationToken === __publicNavigationToken) {
+    render();
+  }
 }
 
-window.addEventListener('popstate',()=>{const page=publicPathPage(location.pathname);if(!page)return;showPublicPage(page,false)});
-let __publicInitialBooted=false;
-function bootPublicRoute(){
- if(__publicInitialBooted)return;
- const page=publicPathPage(location.pathname);
- if(!page)return;
- __publicInitialBooted=true;
- showPublicPage(page,false);
+window.addEventListener("popstate", () => {
+  const page = publicPathPage(location.pathname);
+  if (!page) return;
+  showPublicPage(page, false);
+});
+
+let __publicInitialBooted = false;
+
+function bootPublicRoute() {
+  if (__publicInitialBooted) return;
+
+  const page = publicPathPage(location.pathname);
+  if (!page) return;
+
+  __publicInitialBooted = true;
+  showPublicPage(page, false);
 }
+
 window.bootPublicRoute=bootPublicRoute;
-if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bootPublicRoute,{once:true}); else bootPublicRoute();
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", bootPublicRoute, {
+    once: true,
+  });
+} else {
+  bootPublicRoute();
+}
+
 function invitationSignupPage(){
  ensurePublicStyles();
  const p=new URLSearchParams(location.search);
