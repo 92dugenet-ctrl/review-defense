@@ -2330,7 +2330,7 @@ class ReviewDefenseAPI:
             if self.repository is not None and hasattr(self.repository, "get_evidence"):
                 dbrow = self.repository.get_evidence(user.organization_id, eid)
                 if dbrow:
-                                        row = dict(zip(
+                    row = dict(zip(
                         (
                             "evidence_id",
                             "organization_id",
