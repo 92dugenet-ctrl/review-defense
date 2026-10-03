@@ -1872,7 +1872,7 @@ class ReviewDefenseAPI:
             token_hash = hash_token(token)
             expires = utc_now() + timedelta(seconds=ttl)
             iid=str(uuid.uuid4())
-                        row={"invitation_id":iid,
+            row={"invitation_id":iid,
                 "organization_id":user.organization_id,
                 "email":email,
                 "role":role,
@@ -1909,7 +1909,7 @@ class ReviewDefenseAPI:
             target=User(target.user_id,target.organization_id,target.email,target.password_hash,role)
             self.store.users[target.user_id]=target
             for th,sess in list(self.store.sessions.items()):
-                                if sess.user_id==target.user_id and sess.organization_id==user.organization_id: self.store.sessions[th]=Session(sess.user_id,
+                if sess.user_id==target.user_id and sess.organization_id==user.organization_id: self.store.sessions[th]=Session(sess.user_id,
                     sess.organization_id,
                     role,
                     sess.token_hash,
@@ -1922,7 +1922,7 @@ class ReviewDefenseAPI:
             self.store.audit_event(user.organization_id,user.user_id,"ROLE_CHANGED",f"user:{target.user_id}",role=role)
             return self._json(200,{"user_id":target.user_id,"role":role})
         if method == "GET" and path == "/v1/organization/sla-calendar":
-                        return self._json(200,
+            return self._json(200,
                  {"calendar": self.store.sla_calendars.get(user.organization_id,
                  {"timezone":"UTC",
                 "workdays":[0,
@@ -1943,7 +1943,7 @@ class ReviewDefenseAPI:
                 cal = calendar_from_dict(body)
             except (TypeError, ValueError) as exc:
                 raise APIError(422, "VALIDATION_ERROR", str(exc)) from exc
-                        payload = {"timezone":cal.timezone,
+            payload = {"timezone":cal.timezone,
                 "workdays":list(cal.workdays),
                 "start_hour":cal.start_hour,
                 "end_hour":cal.end_hour,
@@ -1964,7 +1964,7 @@ class ReviewDefenseAPI:
                 raise APIError(422, "VALIDATION_ERROR", "rating must be an integer") from exc
             if rating < 1 or rating > 5:
                 raise APIError(422, "VALIDATION_ERROR", "rating must be between 1 and 5")
-                        review = ReviewContext(rid,
+            review = ReviewContext(rid,
                  user.organization_id,
                  str(body.get("location_id",
                  "")),
@@ -2024,7 +2024,7 @@ class ReviewDefenseAPI:
                 raise APIError(422, "VALIDATION_ERROR", "content_base64 is invalid") from exc
             evidence_id = str(uuid.uuid4())
             try:
-                                obj = self.store.vault.put(organization_id=user.organization_id,
+                obj = self.store.vault.put(organization_id=user.organization_id,
                      evidence_id=evidence_id,
                      content=content,
                      content_type=content_type,
