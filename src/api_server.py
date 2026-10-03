@@ -65,13 +65,27 @@ from .operations_ui import (
 )
 from .identity import normalize_email, validate_role, issue_session, can_manage_org
 from .production_config import ProductionConfig
-from .mfa import generate_secret, verify_totp, totp_code, otpauth_uri, encrypt_secret, decrypt_secret, recovery_token
+from .mfa import (
+    generate_secret,
+    verify_totp,
+    totp_code,
+    otpauth_uri,
+    encrypt_secret,
+    decrypt_secret,
+    recovery_token,
+)
 from .recovery_email import SMTPConfig, send_recovery_email, send_verification_email, RecoveryEmailError
 from .deployment import DeploymentConfig, security_headers
 from .observability import InMemoryTelemetry, TraceContext, health_check
 from .seo_renderer import is_seo_path, render_page, sitemap, robots
 from .billing_catalog import PAYPAL_SUBSCRIPTION_CLIENT_ID, get_offer, paypal_plan_id, public_catalog
-from .google_business_profile import OAuthStateManager, GoogleOAuthClient, GoogleBusinessProfileClient, GoogleAPIError, GoogleIntegrationError
+from .google_business_profile import (
+    OAuthStateManager,
+    GoogleOAuthClient,
+    GoogleBusinessProfileClient,
+    GoogleAPIError,
+    GoogleIntegrationError,
+)
 from .billing_service import account_status, plan_for_offer, public_plans
 from .paypal_client import (
     configured as paypal_configured,
@@ -291,13 +305,17 @@ class ReviewDefenseAPI:
         if self.repository is None or not getattr(self.repository, "uses_uuid_ids", False):
             return
         parts = path.split("/")
-        if len(parts) >= 4 and parts[1:3] in (["v1", "cases"], ["v1", "evidence"], ["v1", "escalations"]):
+        if len(parts) >= 4 and parts[1:
+            3] in (["v1", "cases"], ["v1", "evidence"], ["v1", "escalations"]):
             self._persistent_uuid(parts[3], "resource_id")
-        elif len(parts) >= 4 and parts[1:3] == ["v1", "notifications"]:
+        elif len(parts) >= 4 and parts[1:
+            3] == ["v1", "notifications"]:
             self._persistent_uuid(parts[3], "notification_id")
-        elif len(parts) >= 5 and parts[1:4] == ["v1", "privacy", "requests"]:
+        elif len(parts) >= 5 and parts[1:
+            4] == ["v1", "privacy", "requests"]:
             self._persistent_uuid(parts[4], "request_id")
-        elif len(parts) >= 6 and parts[1:4] == ["v1", "organization", "members"] and parts[5] == "role":
+        elif len(parts) >= 6 and parts[1:
+            4] == ["v1", "organization", "members"] and parts[5] == "role":
             self._persistent_uuid(parts[4], "user_id")
 
     def _user_for_organization(self, organization_id: str, user_id: str) -> User | None:
@@ -314,7 +332,8 @@ class ReviewDefenseAPI:
     def _calendar(self, organization_id: str):
         if organization_id not in self.store.sla_calendars and self.repository is not None and hasattr(self.repository, "get_sla_calendar"):
             row = self.repository.get_sla_calendar(organization_id)
-            if row: self.store.sla_calendars[organization_id] = row
+            if row:
+                self.store.sla_calendars[organization_id] = row
         return calendar_from_dict(self.store.sla_calendars.get(organization_id)) if organization_id in self.store.sla_calendars else default_calendar()
 
     def _notification_policy(self, organization_id: str):
@@ -344,8 +363,18 @@ class ReviewDefenseAPI:
             self.repository.mark_email_verified(organization_id, user.user_id)
         return user
 
-    def _json(self, status: int, payload: Mapping[str, Any], headers: Mapping[str, str] | None = None):
-        return status, {"Content-Type": "application/json; charset=utf-8", **(headers or {})}, json.dumps(payload, ensure_ascii=False).encode()
+    def _json(
+        self,
+        status: int,
+        payload: Mapping[str, Any],
+        headers: Mapping[str, str] | None = None,
+    ):
+        response_headers = {
+            "Content-Type": "application/json; charset=utf-8",
+            **(headers or {}),
+        }
+        body = json.dumps(payload, ensure_ascii=False).encode()
+        return status, response_headers, body
 
     def _privacy_request_payload(self, row: Any) -> dict[str, Any]:
         if isinstance(row, dict):
@@ -411,7 +440,8 @@ class ReviewDefenseAPI:
                 _, uid, org, role, expires_at, revoked_at = row
                 from datetime import datetime
                 def parse(v):
-                    if isinstance(v, datetime): return v
+                    if isinstance(v, datetime):
+                        return v
                     return datetime.fromisoformat(str(v).replace('Z','+00:00'))
                 session = Session(str(uid), str(org), str(role), token_hash, parse(expires_at), parse(revoked_at) if revoked_at else None)
                 self.store.sessions[token_hash] = session
@@ -426,7 +456,8 @@ class ReviewDefenseAPI:
                 _, uid, org, role, expires_at, revoked_at = row
                 from datetime import datetime
                 def parse(v):
-                    if isinstance(v, datetime): return v
+                    if isinstance(v, datetime):
+                        return v
                     return datetime.fromisoformat(str(v).replace('Z', '+00:00'))
                 session = Session(str(uid), str(org), str(role), token_hash, parse(expires_at), parse(revoked_at) if revoked_at else None)
                 self.store.sessions[token_hash] = session
@@ -883,17 +914,22 @@ class ReviewDefenseAPI:
             user = self.store.users.get(row["user_id"])
             if user is None and self.repository is not None and hasattr(self.repository, "get_user_by_id"):
                 urow = self.repository.get_user_by_id(organization_id, row["user_id"])
-                if urow: user = User(str(urow[0]), organization_id, str(urow[1]), str(urow[2]), str(urow[3]))
-            if user is None: raise APIError(400, "RECOVERY_INVALID", "recovery token is invalid")
+                if urow:
+                    user = User(str(urow[0]), organization_id, str(urow[1]), str(urow[2]), str(urow[3]))
+            if user is None:
+                raise APIError(400, "RECOVERY_INVALID", "recovery token is invalid")
             updated = User(user.user_id,user.organization_id,user.email,new_hash,user.role)
             self.store.users[user.user_id]=updated
             for th, sess in list(self.store.sessions.items()):
                 if sess.user_id == user.user_id and sess.organization_id == organization_id:
                     self.store.sessions[th] = Session(sess.user_id,sess.organization_id,sess.role,sess.token_hash,sess.expires_at,utc_now())
             if self.repository is not None:
-                if hasattr(self.repository,"revoke_all_sessions"): self.repository.revoke_all_sessions(organization_id,user.user_id)
-                if hasattr(self.repository,"update_password"): self.repository.update_password(organization_id,user.user_id,new_hash)
-                if hasattr(self.repository,"consume_recovery_token"): self.repository.consume_recovery_token(organization_id,token_hash)
+                if hasattr(self.repository,"revoke_all_sessions"):
+                    self.repository.revoke_all_sessions(organization_id,user.user_id)
+                if hasattr(self.repository,"update_password"):
+                    self.repository.update_password(organization_id,user.user_id,new_hash)
+                if hasattr(self.repository,"consume_recovery_token"):
+                    self.repository.consume_recovery_token(organization_id,token_hash)
                 if hasattr(self.repository, "security_event"):
                     self.repository.security_event(
                         organization_id,
@@ -929,13 +965,15 @@ class ReviewDefenseAPI:
             self.store.email_verified[user_id] = True
             row["used_at"] = utc_now().isoformat()
             if self.repository is not None:
-                if hasattr(self.repository, "mark_email_verified"): self.repository.mark_email_verified(organization_id, user_id)
+                if hasattr(self.repository, "mark_email_verified"):
+                    self.repository.mark_email_verified(organization_id, user_id)
                 if hasattr(self.repository, "consume_email_verification_token"):
                     self.repository.consume_email_verification_token(
                         organization_id,
                         token_hash,
                     )
-                if hasattr(self.repository, "security_event"): self.repository.security_event(organization_id, user_id, "EMAIL_VERIFIED", user_id)
+                if hasattr(self.repository, "security_event"):
+                    self.repository.security_event(organization_id, user_id, "EMAIL_VERIFIED", user_id)
             self.store.audit_event(organization_id, user_id, "EMAIL_VERIFIED", f"user:{user_id}")
             return self._json(200, {"status": "email_verified"})
 
@@ -1084,8 +1122,10 @@ class ReviewDefenseAPI:
                     if sess.user_id==uid and sess.organization_id==existing.organization_id:
                         self.store.sessions[th]=Session(sess.user_id,sess.organization_id,sess.role,sess.token_hash,sess.expires_at,utc_now())
                 if self.repository is not None:
-                    if hasattr(self.repository,"update_password"): self.repository.update_password(invitation["organization_id"],uid,ph)
-                    if hasattr(self.repository,"update_role"): self.repository.update_role(invitation["organization_id"],uid,invitation["role"])
+                    if hasattr(self.repository,"update_password"):
+                        self.repository.update_password(invitation["organization_id"],uid,ph)
+                    if hasattr(self.repository,"update_role"):
+                        self.repository.update_role(invitation["organization_id"],uid,invitation["role"])
             else:
                 uid=str(uuid.uuid4())
                 new_user=User(uid,invitation["organization_id"],email,ph,invitation["role"])
@@ -1145,7 +1185,8 @@ class ReviewDefenseAPI:
 
         if method == "POST" and path == "/v1/paypal/webhook":
             length=int(environ.get("CONTENT_LENGTH") or 0)
-            if length > 1000000: raise APIError(413,"PAYLOAD_TOO_LARGE","webhook payload too large")
+            if length > 1000000:
+                raise APIError(413,"PAYLOAD_TOO_LARGE","webhook payload too large")
             raw=environ["wsgi.input"].read(length)
             try:
                 verified, event = paypal_verify_webhook(
@@ -1162,9 +1203,11 @@ class ReviewDefenseAPI:
                     "PAYPAL_WEBHOOK_INVALID",
                     "invalid PayPal webhook",
                 ) from exc
-            if not verified: raise APIError(400,"PAYPAL_WEBHOOK_INVALID","PayPal webhook signature verification failed")
+            if not verified:
+                raise APIError(400,"PAYPAL_WEBHOOK_INVALID","PayPal webhook signature verification failed")
             event_id=str(event.get("id","")).strip()
-            if not event_id: raise APIError(400,"PAYPAL_WEBHOOK_INVALID","missing PayPal event id")
+            if not event_id:
+                raise APIError(400,"PAYPAL_WEBHOOK_INVALID","missing PayPal event id")
             event_type=str(event.get("event_type",""))
             resource=event.get("resource") or {}
             related_ids=((resource.get("supplementary_data") or {}).get("related_ids") or {})
@@ -1186,12 +1229,23 @@ class ReviewDefenseAPI:
                         tx=row
                         break
             if tx is not None:
-                status_map={"CHECKOUT.ORDER.COMPLETED":"COMPLETED","PAYMENT.CAPTURE.COMPLETED":"COMPLETED",
-                    "PAYMENT.CAPTURE.DENIED":"DENIED","PAYMENT.CAPTURE.PENDING":"PENDING","PAYMENT.SALE.COMPLETED":"ACTIVE",
-                    "BILLING.SUBSCRIPTION.ACTIVATED":"ACTIVE","BILLING.SUBSCRIPTION.UPDATED":"ACTIVE",
-                    "BILLING.SUBSCRIPTION.CANCELLED":"CANCELLED","BILLING.SUBSCRIPTION.SUSPENDED":"SUSPENDED",
-                    "BILLING.SUBSCRIPTION.EXPIRED":"EXPIRED","BILLING.SUBSCRIPTION.PAYMENT.FAILED":"PAYMENT_FAILED",
-                    "PAYMENT.SALE.REFUNDED":"REFUNDED","PAYMENT.SALE.REVERSED":"REVERSED","PAYMENT.CAPTURE.REFUNDED":"REFUNDED","PAYMENT.CAPTURE.REVERSED":"REVERSED"}
+                status_map = {
+                    "CHECKOUT.ORDER.COMPLETED": "COMPLETED",
+                    "PAYMENT.CAPTURE.COMPLETED": "COMPLETED",
+                    "PAYMENT.CAPTURE.DENIED": "DENIED",
+                    "PAYMENT.CAPTURE.PENDING": "PENDING",
+                    "PAYMENT.SALE.COMPLETED": "ACTIVE",
+                    "BILLING.SUBSCRIPTION.ACTIVATED": "ACTIVE",
+                    "BILLING.SUBSCRIPTION.UPDATED": "ACTIVE",
+                    "BILLING.SUBSCRIPTION.CANCELLED": "CANCELLED",
+                    "BILLING.SUBSCRIPTION.SUSPENDED": "SUSPENDED",
+                    "BILLING.SUBSCRIPTION.EXPIRED": "EXPIRED",
+                    "BILLING.SUBSCRIPTION.PAYMENT.FAILED": "PAYMENT_FAILED",
+                    "PAYMENT.SALE.REFUNDED": "REFUNDED",
+                    "PAYMENT.SALE.REVERSED": "REVERSED",
+                    "PAYMENT.CAPTURE.REFUNDED": "REFUNDED",
+                    "PAYMENT.CAPTURE.REVERSED": "REVERSED",
+                }
                 tx["status"]=status_map.get(event_type,tx.get("status","PENDING"))
                 tx["paypal_event_id"]=event_id
                 existing_metadata=tx.get("metadata") if isinstance(tx.get("metadata"),dict) else {}
@@ -1387,7 +1441,8 @@ class ReviewDefenseAPI:
                 # javascript: must never be reinterpreted as a hostname.
                 scheme_like = re.match(r"^[a-z][a-z0-9+.-]*:", website, re.IGNORECASE)
                 host_with_port = re.match(r"^[a-z0-9.-]+:\\d+(?:/|$)", website, re.IGNORECASE)
-                if scheme_like and "://" not in website and not host_with_port:
+                if scheme_like and ":
+                    //" not in website and not host_with_port:
                     raise APIError(422, "VALIDATION_ERROR", "website must be a valid http(s) URL")
                 parsed = urlsplit(website if "://" in website else "https://" + website)
                 if parsed.scheme not in {"http", "https"} or not parsed.netloc or "@" in parsed.netloc:
@@ -1403,9 +1458,18 @@ class ReviewDefenseAPI:
 
         if method == "GET" and path == "/v1/client/documents":
             documents = self._client_document_rows(user.organization_id)
-            safe = [{"document_id": str(d.get("document_id")), "filename": d.get("filename"), "content_type": d.get("content_type"),
-                     "size_bytes": int(d.get("size_bytes") or 0), "sha256": d.get("sha256"), "category": d.get("category"),
-                     "created_at": _iso_value(d.get("created_at"))} for d in documents]
+            safe = [
+                {
+                    "document_id": str(document.get("document_id")),
+                    "filename": document.get("filename"),
+                    "content_type": document.get("content_type"),
+                    "size_bytes": int(document.get("size_bytes") or 0),
+                    "sha256": document.get("sha256"),
+                    "category": document.get("category"),
+                    "created_at": _iso_value(document.get("created_at")),
+                }
+                for document in documents
+            ]
             return self._json(200, {"items": safe, "count": len(safe)})
 
         if method == "POST" and path == "/v1/client/documents":
@@ -1506,9 +1570,20 @@ class ReviewDefenseAPI:
                 content = self.store.vault.get(organization_id=user.organization_id, object_key=str(document["object_key"]))
             except (KeyError, PermissionError, OSError) as exc:
                 raise APIError(404, "DOCUMENT_UNAVAILABLE", "document content is unavailable") from exc
-            safe_name = "".join(ch if 32 <= ord(ch) < 127 else "_" for ch in str(document["filename"])).replace('"', "")
-            return 200, {"Content-Type": str(document["content_type"]), "Content-Length": str(len(content)),
-                         "Content-Disposition": 'attachment; filename="' + safe_name + '"', "X-Content-Type-Options": "nosniff"}, content
+            safe_name = "".join(
+                character if 32 <= ord(character) < 127 else "_"
+                for character in str(document["filename"])
+            ).replace('"', "")
+            return (
+                200,
+                {
+                    "Content-Type": str(document["content_type"]),
+                    "Content-Length": str(len(content)),
+                    "Content-Disposition": f'attachment; filename="{safe_name}"',
+                    "X-Content-Type-Options": "nosniff",
+                },
+                content,
+            )
 
         if method == "GET" and path == "/v1/billing":
             rows=list(self.store.billing.values())
@@ -1533,18 +1608,26 @@ class ReviewDefenseAPI:
             items = public_catalog()
             return self._json(200, {"items": items, "count": len(items)})
         if method == "GET" and path == "/v1/paypal/config":
-                        return self._json(200,
-                {"configured":paypal_configured(),
-                "client_id":PAYPAL_SUBSCRIPTION_CLIENT_ID,
-                "environment":"live",
-                "diagnostics":paypal_configuration_status()})
+                        return self._json(
+                200,
+                {
+                    "configured": paypal_configured(),
+                    "client_id": PAYPAL_SUBSCRIPTION_CLIENT_ID,
+                    "environment": "live",
+                    "diagnostics": paypal_configuration_status(),
+                },
+            )
         if method == "GET" and path == "/v1/paypal/subscription/config":
             offer_id=str(parse_qs(environ.get("QUERY_STRING","")).get("offer_id",[""])[0])
-            try: offer=get_offer(offer_id)
-            except ValueError as exc: raise APIError(422,"INVALID_OFFER","unknown subscription offer") from exc
-            if offer.kind!="subscription": raise APIError(422,"INVALID_OFFER","not a subscription offer")
+            try:
+                offer=get_offer(offer_id)
+            except ValueError as exc:
+                raise APIError(422,"INVALID_OFFER","unknown subscription offer") from exc
+            if offer.kind!="subscription":
+                raise APIError(422,"INVALID_OFFER","not a subscription offer")
             plan_id=paypal_plan_id(offer)
-            if not paypal_configured() or not plan_id: raise APIError(503,"PAYPAL_NOT_CONFIGURED","PayPal subscription plan is not configured")
+            if not paypal_configured() or not plan_id:
+                raise APIError(503,"PAYPAL_NOT_CONFIGURED","PayPal subscription plan is not configured")
             return self._json(
                 200,
                 {
@@ -1559,8 +1642,10 @@ class ReviewDefenseAPI:
             body=self._body(environ)
             offer_id=str(body.get("offer_id","")).strip()
             subscription_id=str(body.get("subscription_id","")).strip()
-            try: offer=get_offer(offer_id)
-            except ValueError as exc: raise APIError(422,"INVALID_OFFER","unknown subscription offer") from exc
+            try:
+                offer=get_offer(offer_id)
+            except ValueError as exc:
+                raise APIError(422,"INVALID_OFFER","unknown subscription offer") from exc
             if offer.kind != "subscription" or not subscription_id:
                 raise APIError(
                     422,
@@ -1568,7 +1653,8 @@ class ReviewDefenseAPI:
                     "subscription and subscription offer are required",
                 )
             plan_id=paypal_plan_id(offer)
-            if not plan_id: raise APIError(503,"PAYPAL_NOT_CONFIGURED","subscription plan is not configured")
+            if not plan_id:
+                raise APIError(503,"PAYPAL_NOT_CONFIGURED","subscription plan is not configured")
             existing_tx=next((x for x in self.store.billing.values() if x.get("paypal_subscription_id")==subscription_id),None)
             if existing_tx is None and self.repository is not None and hasattr(self.repository,"get_billing_by_paypal_id_global"):
                 existing_tx=self.repository.get_billing_by_paypal_id_global(subscription_id)
@@ -1584,9 +1670,12 @@ class ReviewDefenseAPI:
                         "existing": True,
                     },
                 )
-            try: pp=paypal_request_json("GET",f"/v1/billing/subscriptions/{subscription_id}",access_token=paypal_access_token())
-            except PayPalError as exc: raise APIError(502,"PAYPAL_SUBSCRIPTION_LOOKUP_FAILED","PayPal subscription lookup failed",exc.payload)
-            if str(pp.get("plan_id",""))!=plan_id: raise APIError(409,"SUBSCRIPTION_PLAN_MISMATCH","subscription plan does not match the selected offer")
+            try:
+                pp=paypal_request_json("GET",f"/v1/billing/subscriptions/{subscription_id}",access_token=paypal_access_token())
+            except PayPalError as exc:
+                raise APIError(502,"PAYPAL_SUBSCRIPTION_LOOKUP_FAILED","PayPal subscription lookup failed",exc.payload)
+            if str(pp.get("plan_id",""))!=plan_id:
+                raise APIError(409,"SUBSCRIPTION_PLAN_MISMATCH","subscription plan does not match the selected offer")
             tx_id = str(uuid.uuid4())
             row = {"id":tx_id,
                 "organization_id":user.organization_id,
@@ -1688,9 +1777,11 @@ class ReviewDefenseAPI:
         if method == "POST" and path == "/v1/auth/mfa/confirm":
             self._require_role(user, "OWNER", "ADMIN")
             state=self._mfa_state(user)
-            if not state.get("secret_enc"): raise APIError(400,"MFA_NOT_ENROLLED","MFA enrollment has not been started")
+            if not state.get("secret_enc"):
+                raise APIError(400,"MFA_NOT_ENROLLED","MFA enrollment has not been started")
             secret=decrypt_secret(state["secret_enc"],self._mfa_key())
-            if not self._consume_mfa_code(user, str(self._body(environ).get("code",""))): raise APIError(401,"MFA_INVALID","invalid MFA code")
+            if not self._consume_mfa_code(user, str(self._body(environ).get("code",""))):
+                raise APIError(401,"MFA_INVALID","invalid MFA code")
             state={"enabled":True,"secret_enc":state["secret_enc"]}
             self.store.mfa[user.user_id]=state
                         if self.repository is not None and hasattr(self.repository,
@@ -1706,11 +1797,14 @@ class ReviewDefenseAPI:
             body=self._body(environ)
             current=str(body.get("password",""))
             code=str(body.get("mfa_code",""))
-            if not verify_password(current,user.password_hash): raise APIError(401,"AUTH_INVALID","password is invalid")
+            if not verify_password(current,user.password_hash):
+                raise APIError(401,"AUTH_INVALID","password is invalid")
             secret=self._mfa_secret(user)
-            if secret is not None and not verify_totp(secret,code): raise APIError(401,"MFA_INVALID","valid MFA code is required")
+            if secret is not None and not verify_totp(secret,code):
+                raise APIError(401,"MFA_INVALID","valid MFA code is required")
             self.store.mfa[user.user_id]={"enabled":False,"secret_enc":None}
-            if self.repository is not None and hasattr(self.repository,"disable_mfa"): self.repository.disable_mfa(user.organization_id,user.user_id)
+            if self.repository is not None and hasattr(self.repository,"disable_mfa"):
+                self.repository.disable_mfa(user.organization_id,user.user_id)
             self.store.audit_event(user.organization_id,user.user_id,"MFA_DISABLED",f"user:{user.user_id}")
             return self._json(200,{"status":"disabled"})
 
@@ -1903,7 +1997,8 @@ class ReviewDefenseAPI:
             old_raw = environ.get("HTTP_AUTHORIZATION", "")[7:].strip()
             old_hash = hash_token(old_raw)
             old = self.store.sessions.get(old_hash)
-            if old is None: raise APIError(401, "AUTH_INVALID", "invalid session")
+            if old is None:
+                raise APIError(401, "AUTH_INVALID", "invalid session")
             raw, fresh = issue_session(user_id=user.user_id, organization_id=user.organization_id, role=user.role, ttl_seconds=self.session_ttl)
             self.store.sessions[old_hash] = Session(old.user_id, old.organization_id, old.role, old.token_hash, old.expires_at, utc_now())
             self.store.sessions[fresh.token_hash] = fresh
@@ -1939,7 +2034,8 @@ class ReviewDefenseAPI:
                 raise APIError(403, "FORBIDDEN", "only an owner can invite an owner")
             from datetime import timedelta
             ttl = int(body.get("ttl_seconds", 7*24*3600))
-            if ttl < 300 or ttl > 30*24*3600: raise APIError(422, "VALIDATION_ERROR", "invalid invitation ttl")
+            if ttl < 300 or ttl > 30*24*3600:
+                raise APIError(422, "VALIDATION_ERROR", "invalid invitation ttl")
             token = secrets.token_urlsafe(32)
             token_hash = hash_token(token)
             expires = utc_now() + timedelta(seconds=ttl)
@@ -1974,10 +2070,14 @@ class ReviewDefenseAPI:
             body=self._body(environ)
             role=validate_role(str(body.get("role","")))
             target=self._user_for_organization(user.organization_id, target_id)
-            if target is None: raise APIError(404,"NOT_FOUND","user not found")
-            if target.user_id == user.user_id: raise APIError(403,"FORBIDDEN","users cannot change their own role")
-            if role=="OWNER" and user.role!="OWNER": raise APIError(403,"FORBIDDEN","only an owner can assign owner")
-            if target.role=="OWNER" and role!="OWNER" and user.role!="OWNER": raise APIError(403,"FORBIDDEN","only an owner can demote an owner")
+            if target is None:
+                raise APIError(404,"NOT_FOUND","user not found")
+            if target.user_id == user.user_id:
+                raise APIError(403,"FORBIDDEN","users cannot change their own role")
+            if role=="OWNER" and user.role!="OWNER":
+                raise APIError(403,"FORBIDDEN","only an owner can assign owner")
+            if target.role=="OWNER" and role!="OWNER" and user.role!="OWNER":
+                raise APIError(403,"FORBIDDEN","only an owner can demote an owner")
             target=User(target.user_id,target.organization_id,target.email,target.password_hash,role)
             self.store.users[target.user_id]=target
             for token_hash, session in list(self.store.sessions.items()):
@@ -2084,7 +2184,8 @@ class ReviewDefenseAPI:
                 if row:
                     review = _review_from_row(row)
                     self.store.reviews[(user.organization_id, rid)] = review
-            if not review: raise APIError(404, "NOT_FOUND", "review not found")
+            if not review:
+                raise APIError(404, "NOT_FOUND", "review not found")
             claims = extract_claims(review)
             signals = classify_policy_signals(claims)
             return self._json(200, {"review": asdict(review), "claims": [asdict(c) for c in claims], "policy_signals": [asdict(s) for s in signals]})
@@ -2119,7 +2220,8 @@ class ReviewDefenseAPI:
             except (ValueError, PermissionError) as exc:
                 raise APIError(422, "VALIDATION_ERROR", str(exc)) from exc
             raw_facts = body.get("facts", [])
-            if raw_facts is None: raw_facts = []
+            if raw_facts is None:
+                raw_facts = []
             if not isinstance(raw_facts, list) or any(not isinstance(f, dict) for f in raw_facts):
                 raise APIError(422, "VALIDATION_ERROR", "facts must be a list of objects")
             facts = []
@@ -2242,7 +2344,8 @@ class ReviewDefenseAPI:
                         dbrow,
                     ))
                     self.store.evidence[(user.organization_id, eid)] = row
-            if not row: raise APIError(404, "NOT_FOUND", "evidence not found")
+            if not row:
+                raise APIError(404, "NOT_FOUND", "evidence not found")
             content = self.store.vault.get(organization_id=user.organization_id, object_key=row["object_key"])
             if not verify_integrity(content, row["sha256"]):
                 raise APIError(409, "INTEGRITY_FAILURE", "stored evidence integrity check failed")
@@ -2276,7 +2379,8 @@ class ReviewDefenseAPI:
                         dbrow,
                     ))
                     self.store.evidence[(user.organization_id, eid)] = row
-            if not row: raise APIError(404, "NOT_FOUND", "evidence not found")
+            if not row:
+                raise APIError(404, "NOT_FOUND", "evidence not found")
             if not verify_integrity(self.store.vault.get(organization_id=user.organization_id, object_key=row["object_key"]), row["sha256"]):
                 raise APIError(409, "INTEGRITY_FAILURE", "stored evidence integrity check failed")
             out = dict(row)
@@ -2307,7 +2411,8 @@ class ReviewDefenseAPI:
                         dbrow,
                     ))
                     self.store.evidence[(user.organization_id, eid)] = row
-            if not row: raise APIError(404, "NOT_FOUND", "evidence not found")
+            if not row:
+                raise APIError(404, "NOT_FOUND", "evidence not found")
             if not verify_integrity(self.store.vault.get(organization_id=user.organization_id, object_key=row["object_key"]), row["sha256"]):
                 raise APIError(409, "INTEGRITY_FAILURE", "stored evidence integrity check failed")
             row["verified"] = True
@@ -2348,7 +2453,8 @@ class ReviewDefenseAPI:
                         dbrow,
                     ))
                     self.store.evidence[key] = row
-            if not row: raise APIError(404, "NOT_FOUND", "evidence not found")
+            if not row:
+                raise APIError(404, "NOT_FOUND", "evidence not found")
             if not row.get("verified"):
                 raise APIError(409, "STATE_CONFLICT", "evidence must be verified before its facts can be verified")
             body = self._body(environ)
@@ -2367,8 +2473,10 @@ class ReviewDefenseAPI:
                     for r in dbfacts if str(r[1]) == eid
                 ]
                 self.store.evidence_facts[key] = facts
-            if fact_ids is None: fact_ids = [f["fact_id"] for f in facts]
-            if not isinstance(fact_ids, list): raise APIError(422, "VALIDATION_ERROR", "fact_ids must be a list")
+            if fact_ids is None:
+                fact_ids = [f["fact_id"] for f in facts]
+            if not isinstance(fact_ids, list):
+                raise APIError(422, "VALIDATION_ERROR", "fact_ids must be a list")
             selected = set(str(x) for x in fact_ids)
             changed = 0
             for fact in facts:
@@ -2465,18 +2573,23 @@ class ReviewDefenseAPI:
                     "due_soon_count": 0})
                 row["case_count"] += 1
                 row["priority_score_total"] += item.priority_score
-                if item.priority == "CRITICAL": row["critical_count"] += 1
-                elif item.priority == "HIGH": row["high_count"] += 1
+                if item.priority == "CRITICAL":
+                    row["critical_count"] += 1
+                elif item.priority == "HIGH":
+                    row["high_count"] += 1
                 sla = self.case_sla.calculate(case, item.priority, self._calendar(user.organization_id))
-                if sla.status == "OVERDUE": row["overdue_count"] += 1
-                elif sla.status == "DUE_SOON": row["due_soon_count"] += 1
+                if sla.status == "OVERDUE":
+                    row["overdue_count"] += 1
+                elif sla.status == "DUE_SOON":
+                    row["due_soon_count"] += 1
             items = sorted(rows.values(), key=lambda x: (-x["overdue_count"], -x["priority_score_total"], str(x["user_id"])))
             return self._json(200, {"items": items, "count": len(items)})
         if method == "POST" and path.startswith("/v1/review-queue/") and path.endswith("/claim"):
             self._require_role(user, "OWNER", "ADMIN", "ANALYST")
             cid = path.split("/")[3]
             case = self.store.cases.get((user.organization_id, cid))
-            if not case: raise APIError(404, "NOT_FOUND", "case not found")
+            if not case:
+                raise APIError(404, "NOT_FOUND", "case not found")
             if case.assigned_to and case.assigned_to != user.user_id:
                 raise APIError(409, "ALREADY_ASSIGNED", "case is already assigned")
             self.case_operations.assign(case=case, user_id=user.user_id)
@@ -2485,7 +2598,8 @@ class ReviewDefenseAPI:
             self._require_role(user, "OWNER", "ADMIN", "ANALYST")
             cid = path.split("/")[3]
             case = self.store.cases.get((user.organization_id, cid))
-            if not case: raise APIError(404, "NOT_FOUND", "case not found")
+            if not case:
+                raise APIError(404, "NOT_FOUND", "case not found")
             if case.assigned_to not in (None, user.user_id) and user.role not in {"OWNER", "ADMIN"}:
                 raise APIError(403, "FORBIDDEN", "only the assignee or manager may unclaim")
             self.case_operations.unassign(case=case, user_id=user.user_id)
@@ -2606,27 +2720,38 @@ class ReviewDefenseAPI:
         if method == "POST" and path.startswith("/v1/notifications/") and path.endswith("/cancel"):
             self._require_role(user,"OWNER","ADMIN")
             nid=path.split("/")[3]
-            try: n=self.notifications.cancel(organization_id=user.organization_id,notification_id=nid,actor_id=user.user_id)
-            except KeyError as exc: raise APIError(404,"NOT_FOUND","notification not found") from exc
-            except ValueError as exc: raise APIError(409,"STATE_CONFLICT",str(exc)) from exc
+            try:
+                n=self.notifications.cancel(organization_id=user.organization_id,notification_id=nid,actor_id=user.user_id)
+            except KeyError as exc:
+                raise APIError(404,"NOT_FOUND","notification not found") from exc
+            except ValueError as exc:
+                raise APIError(409,"STATE_CONFLICT",str(exc)) from exc
             return self._json(200,{"notification":n.payload()})
         if method == "POST" and path.startswith("/v1/notifications/") and path.endswith("/deliver"):
             self._require_role(user,"OWNER","ADMIN")
             nid=path.split("/")[3]
-            try: n,result=self.notifications.deliver(organization_id=user.organization_id,notification_id=nid,actor_id=user.user_id)
-            except KeyError as exc: raise APIError(404,"NOT_FOUND","notification not found") from exc
-            except PermissionError as exc: raise APIError(403,"NOTIFICATION_POLICY_BLOCKED",str(exc)) from exc
+            try:
+                n,result=self.notifications.deliver(organization_id=user.organization_id,notification_id=nid,actor_id=user.user_id)
+            except KeyError as exc:
+                raise APIError(404,"NOT_FOUND","notification not found") from exc
+            except PermissionError as exc:
+                raise APIError(403,"NOTIFICATION_POLICY_BLOCKED",str(exc)) from exc
             except DeliveryError as exc:
-                try: current=self.notifications._get(organization_id=user.organization_id,notification_id=nid)
-                except KeyError as missing: raise APIError(404,"NOT_FOUND","notification not found") from missing
+                try:
+                    current=self.notifications._get(organization_id=user.organization_id,notification_id=nid)
+                except KeyError as missing:
+                    raise APIError(404,"NOT_FOUND","notification not found") from missing
                 return self._json(502,{"error":{"code":"DELIVERY_FAILED","message":str(exc)},"notification":current.payload()})
             return self._json(200,{"notification":n.payload(),"delivery":result.__dict__})
         if method == "POST" and path.startswith("/v1/notifications/") and path.endswith("/mark-sent"):
             self._require_role(user,"OWNER","ADMIN")
             nid=path.split("/")[3]
-            try: n=self.notifications.mark_sent(organization_id=user.organization_id,notification_id=nid,actor_id=user.user_id)
-            except KeyError as exc: raise APIError(404,"NOT_FOUND","notification not found") from exc
-            except ValueError as exc: raise APIError(409,"STATE_CONFLICT",str(exc)) from exc
+            try:
+                n=self.notifications.mark_sent(organization_id=user.organization_id,notification_id=nid,actor_id=user.user_id)
+            except KeyError as exc:
+                raise APIError(404,"NOT_FOUND","notification not found") from exc
+            except ValueError as exc:
+                raise APIError(409,"STATE_CONFLICT",str(exc)) from exc
             return self._json(200,{"notification":n.payload()})
         if method == "GET" and path == "/v1/approvals":
             self._require_role(user, "OWNER", "ADMIN")
@@ -2666,12 +2791,14 @@ class ReviewDefenseAPI:
             return self._json(200, {"items": [asdict(c) for c in rows], "count": len(rows)})
         if path.startswith("/v1/cases/"):
             parts = path.split("/")
-            if len(parts) < 4: raise APIError(404, "NOT_FOUND", "resource not found")
+            if len(parts) < 4:
+                raise APIError(404, "NOT_FOUND", "resource not found")
             cid = parts[3]
             case, _review, _evidence, _evidence_facts = CaseService.hydrate_context(
                 self.store, self.repository, user.organization_id, cid, _review_from_row
             )
-            if not case: raise APIError(404, "NOT_FOUND", "case not found")
+            if not case:
+                raise APIError(404, "NOT_FOUND", "case not found")
             if method == "GET" and len(parts) == 4:
                 review = self.store.reviews[(user.organization_id, case.review_id)]
                 claims = extract_claims(review)
@@ -3276,15 +3403,26 @@ class ReviewDefenseAPI:
             if method == "GET" and len(parts) == 7 and parts[4] == "contradictions" and parts[6] == "history":
                 contradiction_id=parts[5]
                 rows=self.store.contradictions.get((user.organization_id,cid),[])
-                if not any(x.get("contradiction_id")==contradiction_id for x in rows): raise APIError(404,"NOT_FOUND","contradiction not found")
+                if not any(x.get("contradiction_id")==contradiction_id for x in rows):
+                    raise APIError(404,"NOT_FOUND","contradiction not found")
                 history=list(self.store.contradiction_disposition_history.get((user.organization_id,contradiction_id),[]))
                 if self.repository is not None and hasattr(self.repository,"list_contradiction_disposition_history"):
-                    try: history=self.repository.list_contradiction_disposition_history(user.organization_id,contradiction_id) or history
-                    except Exception: pass
-                return self._json(200,{"history":history,"count":len(history),"requires_human_review":True})
+                    try:
+                        history=self.repository.list_contradiction_disposition_history(user.organization_id,contradiction_id) or history
+                    except Exception:
+                        pass
+                return self._json(
+                    200,
+                    {
+                        "history": history,
+                        "count": len(history),
+                        "requires_human_review": True,
+                    },
+                )
             if method == "GET" and len(parts) == 5 and parts[4] == "evidence-matrix":
                 case=self.store.cases.get((user.organization_id,cid))
-                if case is None: raise APIError(404,"NOT_FOUND","case not found")
+                if case is None:
+                    raise APIError(404,"NOT_FOUND","case not found")
                 try:
                     matrix=self.case_evidence_matrix.build(
                         organization_id=user.organization_id,
@@ -3292,7 +3430,15 @@ class ReviewDefenseAPI:
                     )
                 except KeyError as exc:
                     raise APIError(404,"NOT_FOUND",str(exc)) from exc
-                return self._json(200,{"case_id":cid,"matrix":matrix,"count":len(matrix),"requires_human_review":True})
+                return self._json(
+                    200,
+                    {
+                        "case_id": cid,
+                        "matrix": matrix,
+                        "count": len(matrix),
+                        "requires_human_review": True,
+                    },
+                )
             if (
                 method == "GET"
                 and len(parts) == 6
@@ -3347,7 +3493,8 @@ class ReviewDefenseAPI:
                 body = self._body(environ)
                 kind = body.get("kind", "HUMAN_REVIEW")
                 rationale = str(body.get("rationale", ""))
-                if not rationale.strip(): raise APIError(422, "VALIDATION_ERROR", "rationale is required")
+                if not rationale.strip():
+                    raise APIError(422, "VALIDATION_ERROR", "rationale is required")
                 decision = self.case_decisions.create(
                     case=case,
                     user_id=user.user_id,
@@ -3357,7 +3504,8 @@ class ReviewDefenseAPI:
                 return self._json(201, {"decision": asdict(decision)})
             if method == "POST" and len(parts) == 5 and parts[4] == "freeze":
                 self._require_role(user, "OWNER", "ADMIN")
-                if not case.decision_id: raise APIError(409, "STATE_CONFLICT", "decision required before freeze")
+                if not case.decision_id:
+                    raise APIError(409, "STATE_CONFLICT", "decision required before freeze")
                 decision, snap = self.case_decisions.freeze(
                     case=case,
                     user_id=user.user_id,
@@ -3385,7 +3533,8 @@ class ReviewDefenseAPI:
                 return self._json(200, {"decision": asdict(approved), "approval": asdict(event)})
             if method == "POST" and len(parts) == 5 and parts[4] == "submit":
                 self._require_role(user, "OWNER", "ADMIN")
-                if not case.decision_id: raise APIError(409, "STATE_CONFLICT", "decision required")
+                if not case.decision_id:
+                    raise APIError(409, "STATE_CONFLICT", "decision required")
                 body = self._body(environ)
                 def submit():
                     try:
@@ -3431,18 +3580,36 @@ class ReviewDefenseAPI:
             body = render_page(path)
             self.telemetry.increment("http_requests_total", labels={"method":"GET","path":path,"status":"200"})
             self.telemetry.observe_ms("http_request_duration_ms", (_time.perf_counter()-started)*1000, labels={"method":"GET","path":path})
-            headers=[("Content-Type","text/html; charset=utf-8"),("Content-Length",str(len(body))),("X-Request-ID",trace_id)]
+            headers = [
+                ("Content-Type", "text/html; charset=utf-8"),
+                ("Content-Length", str(len(body))),
+                ("X-Request-ID", trace_id),
+            ]
             if self.config.secure_headers:
                 headers.extend(list(security_headers(production=self.config.production).items()))
             start_response("200 OK", headers)
             return [body]
         if path == "/robots.txt" and environ.get("REQUEST_METHOD") == "GET":
             body = robots()
-            start_response("200 OK", [("Content-Type","text/plain; charset=utf-8"),("Content-Length",str(len(body))),("X-Request-ID",trace_id)])
+            start_response(
+                "200 OK",
+                [
+                    ("Content-Type", "text/plain; charset=utf-8"),
+                    ("Content-Length", str(len(body))),
+                    ("X-Request-ID", trace_id),
+                ],
+            )
             return [body]
         if path == "/sitemap.xml" and environ.get("REQUEST_METHOD") == "GET":
             body = sitemap()
-            start_response("200 OK", [("Content-Type","application/xml; charset=utf-8"),("Content-Length",str(len(body))),("X-Request-ID",trace_id)])
+            start_response(
+                "200 OK",
+                [
+                    ("Content-Type", "application/xml; charset=utf-8"),
+                    ("Content-Length", str(len(body))),
+                    ("X-Request-ID", trace_id),
+                ],
+            )
             return [body]
         if path == "/":
             path = "/index.html"
