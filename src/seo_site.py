@@ -4,7 +4,9 @@ V6.40 integrates the supplied SEO architecture as crawlable public routes,
 including canonical URLs, sitemap, robots.txt, breadcrumbs and JSON-LD.
 """
 from __future__ import annotations
-import html, json, os
+import html
+import json
+import os
 from urllib.parse import urljoin
 
 SITE_MODIFIED = "2026-09-23"
@@ -394,95 +396,308 @@ def _url(path):
 def _e(value):
     return html.escape(str(value), quote=True)
 def _pages():
-    out=[]
-    title_counts={}
-    for s,t,k,c in _RAW:
-        title_counts[t]=title_counts.get(t,0)+1
-        occurrence=title_counts[t]
-        title=t if occurrence==1 else f"{t} | Cas concret {occurrence}"
-        out.append({"path":f"/{s}/","title":title,"h1":title,"keyword":k,"cluster":c,"service":s in _SERVICE_SLUGS,
-                    "description": (
-                        f"{title} : vérifiez les faits, identifiez le motif pertinent, "
-                        "préparez les éléments utiles et suivez les prochaines étapes. "
-                        + (
-                            "Aucune garantie de suppression : Google prend la décision finale."
-                            if s in _SERVICE_SLUGS
-                            else "Guide pratique et points de vigilance."
-                        )
-                    ),
-    return out
-def _related(page,pages):
-    hubs={
-        "Pillar / suppression":"/suppression-avis-google/",
-        "Faux avis":"/faux-avis-google/",
-        "Signalement":"/signaler-un-avis-google/",
-        "Refus / appel":"/que-faire-quand-google-refuse-de-supprimer-un-avis/",
-        "Services":"/analyse-avis-google/",
-        "Cas concrets / longue traîne":"/suppression-avis-google/",
-        "Éditorial":"/suppression-avis-google/",
-        "Procédure":"/signaler-un-avis-google/",
+    pages = []
+    title_counts = {}
+
+    for slug, title, keyword, cluster in _RAW:
+        title_counts[title] = title_counts.get(title, 0) + 1
+        occurrence = title_counts[title]
+        display_title = (
+            title
+            if occurrence == 1
+            else f"{title} | Cas concret {occurrence}"
+        )
+        description = (
+            f"{display_title} : vérifiez les faits, identifiez le motif pertinent, "
+            "préparez les éléments utiles et suivez les prochaines étapes. "
+            + (
+                "Aucune garantie de suppression : Google prend la décision finale."
+                if slug in _SERVICE_SLUGS
+                else "Guide pratique et points de vigilance."
+            )
+        )
+        pages.append(
+            {
+                "path": f"/{slug}/",
+                "title": display_title,
+                "h1": display_title,
+                "keyword": keyword,
+                "cluster": cluster,
+                "service": slug in _SERVICE_SLUGS,
+                "description": description,
+            }
+        )
+
+    return pages
+
+
+def _related(page, pages):
+    hubs = {
+        "Pillar / suppression": "/suppression-avis-google/",
+        "Faux avis": "/faux-avis-google/",
+        "Signalement": "/signaler-un-avis-google/",
+        "Refus / appel": (
+            "/que-faire-quand-google-refuse-de-supprimer-un-avis/"
+        ),
+        "Services": "/analyse-avis-google/",
+        "Cas concrets / longue traîne": "/suppression-avis-google/",
+        "Éditorial": "/suppression-avis-google/",
+        "Procédure": "/signaler-un-avis-google/",
     }
-    preferred={
-        "Pillar / suppression":["/peut-on-supprimer-un-avis-google/","/comment-supprimer-un-avis-google/","/faux-avis-google/","/signaler-un-avis-google/"],
-        "Faux avis":["/comment-reconnaitre-un-faux-avis-google/","/comment-prouver-qu-un-avis-google-est-faux/","/comment-constituer-un-dossier-contre-un-faux-avis-google/","/signaler-un-avis-google/"],
-        "Signalement":["/comment-signaler-un-avis-google-etape-par-etape/","/comment-signaler-un-avis-google-google-maps/","/comment-signaler-un-avis-google-business-profile/","/comment-suivre-un-signalement-avis-google/"],
-        "Refus / appel":["/pourquoi-mon-avis-google-reste-en-ligne/","/comment-faire-appel-apres-refus-suppression-avis-google/","/comment-contester-une-decision-concernant-un-avis-google/","/analyse-avis-google/"],
-        "Services":["/analyse-avis-google/","/faire-supprimer-avis-google/","/service-suppression-avis-google/","/prix-suppression-avis-google/"],
+    preferred = {
+        "Pillar / suppression": [
+            "/peut-on-supprimer-un-avis-google/",
+            "/comment-supprimer-un-avis-google/",
+            "/faux-avis-google/",
+            "/signaler-un-avis-google/",
+        ],
+        "Faux avis": [
+            "/comment-reconnaitre-un-faux-avis-google/",
+            "/comment-prouver-qu-un-avis-google-est-faux/",
+            "/comment-constituer-un-dossier-contre-un-faux-avis-google/",
+            "/signaler-un-avis-google/",
+        ],
+        "Signalement": [
+            "/comment-signaler-un-avis-google-etape-par-etape/",
+            "/comment-signaler-un-avis-google-google-maps/",
+            "/comment-signaler-un-avis-google-business-profile/",
+            "/comment-suivre-un-signalement-avis-google/",
+        ],
+        "Refus / appel": [
+            "/pourquoi-mon-avis-google-reste-en-ligne/",
+            "/comment-faire-appel-apres-refus-suppression-avis-google/",
+            "/comment-contester-une-decision-concernant-un-avis-google/",
+            "/analyse-avis-google/",
+        ],
+        "Services": [
+            "/analyse-avis-google/",
+            "/faire-supprimer-avis-google/",
+            "/service-suppression-avis-google/",
+            "/prix-suppression-avis-google/",
+        ],
     }
-    by={p["path"]:p for p in pages}; out=[]
-    hub=hubs.get(page["cluster"])
-    if hub and hub!=page["path"] and hub in by: out.append(by[hub])
-    for path in preferred.get(page["cluster"],[]):
-        if len(out)>=4: break
-        if path!=page["path"] and path in by and by[path] not in out: out.append(by[path])
-    for p in pages:
-        if len(out)>=5: break
-        if p["path"]!=page["path"] and p["cluster"]==page["cluster"] and p not in out: out.append(p)
-    return out[:5]
+
+    pages_by_path = {item["path"]: item for item in pages}
+    related_pages = []
+    hub = hubs.get(page["cluster"])
+
+    if hub and hub != page["path"] and hub in pages_by_path:
+        related_pages.append(pages_by_path[hub])
+
+    for path in preferred.get(page["cluster"], []):
+        if len(related_pages) >= 4:
+            break
+        if (
+            path != page["path"]
+            and path in pages_by_path
+            and pages_by_path[path] not in related_pages
+        ):
+            related_pages.append(pages_by_path[path])
+
+    for item in pages:
+        if len(related_pages) >= 5:
+            break
+        if (
+            item["path"] != page["path"]
+            and item["cluster"] == page["cluster"]
+            and item not in related_pages
+        ):
+            related_pages.append(item)
+
+    return related_pages[:5]
+
+
 def _sections(page):
-    title=page["title"]
-    keyword=page["keyword"]
-    cluster=page["cluster"]
-    context={
-      "Faux avis":"Examinez les indices disponibles sans transformer une suspicion en certitude : contenu, contexte de la relation, chronologie, répétitions éventuelles et éléments qui peuvent être vérifiés.",
-      "Signalement":"Un signalement doit correspondre au motif réellement observable dans le contenu publié. Préparez les faits et les pièces utiles avant d’utiliser la procédure de la plateforme.",
-      "Refus / appel":"Un refus ne signifie pas nécessairement que tous les éléments du dossier ont été examinés comme vous le souhaiteriez. Relisez la décision, vérifiez le motif et documentez la suite.",
-      "Procédure":"La démarche doit être suivie dans l’ordre : identifier la situation, rassembler les éléments utiles, utiliser la procédure adaptée puis conserver la trace de la décision.",
-      "Services":"Le service porte sur l’analyse, la qualification, la préparation et le suivi. Il ne transforme pas une hypothèse en fait établi et ne garantit pas une suppression.",
-      "Cas concrets / longue traîne":"La réponse dépend des faits précis du dossier. La formulation du problème ne suffit pas à établir qu’un avis est faux, illicite ou contraire aux règles de la plateforme.",
-      "Éditorial":"Deux démarches peuvent être complémentaires : répondre publiquement lorsque cela est utile et signaler lorsque le contenu semble relever d’un motif prévu par les règles.",
-      "Pillar / suppression":"Un avis négatif n’est pas automatiquement supprimable. La première étape consiste à vérifier le contenu exact, son contexte et le motif pertinent avant toute démarche.",
-    }.get(cluster,"Commencez par distinguer les faits observables, les éléments à vérifier et les options réellement disponibles.")
+    title = page["title"]
+    keyword = page["keyword"]
+    cluster = page["cluster"]
+    context_by_cluster = {
+        "Faux avis": (
+            "Examinez les indices disponibles sans transformer une suspicion "
+            "en certitude : contenu, contexte de la relation, chronologie, "
+            "répétitions éventuelles et éléments qui peuvent être vérifiés."
+        ),
+        "Signalement": (
+            "Un signalement doit correspondre au motif réellement observable "
+            "dans le contenu publié. Préparez les faits et les pièces utiles "
+            "avant d’utiliser la procédure de la plateforme."
+        ),
+        "Refus / appel": (
+            "Un refus ne signifie pas nécessairement que tous les éléments "
+            "du dossier ont été examinés comme vous le souhaiteriez. Relisez "
+            "la décision, vérifiez le motif et documentez la suite."
+        ),
+        "Procédure": (
+            "La démarche doit être suivie dans l’ordre : identifier la "
+            "situation, rassembler les éléments utiles, utiliser la procédure "
+            "adaptée puis conserver la trace de la décision."
+        ),
+        "Services": (
+            "Le service porte sur l’analyse, la qualification, la préparation "
+            "et le suivi. Il ne transforme pas une hypothèse en fait établi "
+            "et ne garantit pas une suppression."
+        ),
+        "Cas concrets / longue traîne": (
+            "La réponse dépend des faits précis du dossier. La formulation "
+            "du problème ne suffit pas à établir qu’un avis est faux, illicite "
+            "ou contraire aux règles de la plateforme."
+        ),
+        "Éditorial": (
+            "Deux démarches peuvent être complémentaires : répondre "
+            "publiquement lorsque cela est utile et signaler lorsque le "
+            "contenu semble relever d’un motif prévu par les règles."
+        ),
+        "Pillar / suppression": (
+            "Un avis négatif n’est pas automatiquement supprimable. La "
+            "première étape consiste à vérifier le contenu exact, son "
+            "contexte et le motif pertinent avant toute démarche."
+        ),
+    }
+    context = context_by_cluster.get(
+        cluster,
+        "Commencez par distinguer les faits observables, les éléments "
+        "à vérifier et les options réellement disponibles.",
+    )
+
     if page["service"]:
-        hs=["À quoi sert ce service ?","Ce qui est analysé","Comment le dossier est préparé","Validation et suivi","Limites du service"]
-    elif cluster=="Signalement": hs=["Réponse courte","Dans quels cas signaler ?","Identifier le motif pertinent","Préparer les éléments","Effectuer et suivre le signalement","Que faire après la décision ?","Quand demander une analyse ?"]
-    elif cluster=="Refus / appel": hs=["Réponse courte","Comprendre la décision","Vérifier le dossier","Conserver les éléments utiles","Préparer une éventuelle suite","Que faire si Google ne répond pas ?","Quand demander une analyse ?"]
-    elif cluster=="Faux avis": hs=["Réponse courte","Dans quels cas la situation peut-elle se présenter ?","Quels indices vérifier ?","Comment documenter les faits ?","Comment signaler la situation ?","Que faire si le signalement échoue ?","Quand demander une analyse ?"]
-    elif cluster=="Pillar / suppression": hs=["Réponse courte","Dans quels cas la question se pose ?","Quels éléments vérifier ?","Quels éléments factuels conserver ?","Quelles démarches sont possibles ?",
-        "Que faire en cas de refus ou d’absence de réponse ?","Quand demander une analyse professionnelle ?"]
-    else: hs=["Réponse courte","Dans quels cas cette situation peut-elle se présenter ?","Quels éléments faut-il vérifier ?","Quels éléments conserver ?","Quelles démarches sont possibles ?","Que faire si Google refuse ou ne répond pas ?","Quand demander une analyse professionnelle ?"]
-    out=[]
-    for h in hs:
-        if h=="Réponse courte":
-            t=f"Pour « {title} », commencez par vérifier les faits et le contenu exact de l’avis. {context}"
-        elif "motif" in h.lower():
-            t=f"Le mot-clé « {keyword} » décrit une intention de recherche, pas une conclusion juridique ou factuelle. Le motif retenu doit correspondre à ce qui est réellement visible dans l’avis et aux règles applicables."
-        elif "indices" in h.lower():
-            t="Un indice isolé ne permet pas toujours de conclure. Comparez les affirmations de l’avis avec les éléments dont vous disposez et notez précisément ce qui est vérifiable, incertain ou contradictoire."
-        elif "document" in h.lower() or "éléments" in h.lower() or "dossier" in h.lower():
-            t="Conservez l’URL de l’avis, une capture datée, les échanges utiles, les dates et les pièces factuelles permettant de vérifier les affirmations. Évitez d’exposer des données personnelles qui ne sont pas nécessaires au dossier."
-        elif "signal" in h.lower() or "démarches" in h.lower() or "options" in h.lower():
-            t="Lorsque la situation semble relever d’un motif prévu par la plateforme, utilisez la procédure correspondante et gardez une trace de la demande. Le signalement déclenche un examen ; il ne garantit pas une suppression."
-        elif "refus" in h.lower() or "suite" in h.lower() or "décision" in h.lower():
-            t="Relisez le motif communiqué, vérifiez les éléments déjà transmis et identifiez les voies de suivi ou de contestation effectivement proposées. Une nouvelle démarche doit apporter une information pertinente, pas simplement répéter la précédente."
-        elif "service" in h.lower() or "processus" in h.lower() or "prépar" in h.lower():
-            t="Review Defense structure le dossier autour de l’analyse, de la qualification, des preuves, de la décision humaine et du suivi. Les étapes importantes restent explicites et traçables."
-        elif "validation" in h.lower() or "suivi" in h.lower():
-            t="Les étapes importantes nécessitent une validation humaine explicite. L’outil prépare les informations et conserve une trace du dossier ; il n’exécute pas automatiquement une action Google."
+        headings = [
+            "À quoi sert ce service ?",
+            "Ce qui est analysé",
+            "Comment le dossier est préparé",
+            "Validation et suivi",
+            "Limites du service",
+        ]
+    elif cluster == "Signalement":
+        headings = [
+            "Réponse courte",
+            "Dans quels cas signaler ?",
+            "Identifier le motif pertinent",
+            "Préparer les éléments",
+            "Effectuer et suivre le signalement",
+            "Que faire après la décision ?",
+            "Quand demander une analyse ?",
+        ]
+    elif cluster == "Refus / appel":
+        headings = [
+            "Réponse courte",
+            "Comprendre la décision",
+            "Vérifier le dossier",
+            "Conserver les éléments utiles",
+            "Préparer une éventuelle suite",
+            "Que faire si Google ne répond pas ?",
+            "Quand demander une analyse ?",
+        ]
+    elif cluster == "Faux avis":
+        headings = [
+            "Réponse courte",
+            "Dans quels cas la situation peut-elle se présenter ?",
+            "Quels indices vérifier ?",
+            "Comment documenter les faits ?",
+            "Comment signaler la situation ?",
+            "Que faire si le signalement échoue ?",
+            "Quand demander une analyse ?",
+        ]
+    elif cluster == "Pillar / suppression":
+        headings = [
+            "Réponse courte",
+            "Dans quels cas la question se pose ?",
+            "Quels éléments vérifier ?",
+            "Quels éléments factuels conserver ?",
+            "Quelles démarches sont possibles ?",
+            "Que faire en cas de refus ou d’absence de réponse ?",
+            "Quand demander une analyse professionnelle ?",
+        ]
+    else:
+        headings = [
+            "Réponse courte",
+            "Dans quels cas cette situation peut-elle se présenter ?",
+            "Quels éléments faut-il vérifier ?",
+            "Quels éléments conserver ?",
+            "Quelles démarches sont possibles ?",
+            "Que faire si Google refuse ou ne répond pas ?",
+            "Quand demander une analyse professionnelle ?",
+        ]
+
+    sections = []
+    for heading in headings:
+        if heading == "Réponse courte":
+            text = (
+                f"Pour « {title} », commencez par vérifier les faits et "
+                f"le contenu exact de l’avis. {context}"
+            )
+        elif "motif" in heading.lower():
+            text = (
+                f"Le mot-clé « {keyword} » décrit une intention de recherche, "
+                "pas une conclusion juridique ou factuelle. Le motif retenu "
+                "doit correspondre à ce qui est réellement visible dans "
+                "l’avis et aux règles applicables."
+            )
+        elif "indices" in heading.lower():
+            text = (
+                "Un indice isolé ne permet pas toujours de conclure. "
+                "Comparez les affirmations de l’avis avec les éléments dont "
+                "vous disposez et notez précisément ce qui est vérifiable, "
+                "incertain ou contradictoire."
+            )
+        elif any(
+            term in heading.lower()
+            for term in ("document", "éléments", "dossier")
+        ):
+            text = (
+                "Conservez l’URL de l’avis, une capture datée, les échanges "
+                "utiles, les dates et les pièces factuelles permettant de "
+                "vérifier les affirmations. Évitez d’exposer des données "
+                "personnelles qui ne sont pas nécessaires au dossier."
+            )
+        elif any(
+            term in heading.lower()
+            for term in ("signal", "démarches", "options")
+        ):
+            text = (
+                "Lorsque la situation semble relever d’un motif prévu par "
+                "la plateforme, utilisez la procédure correspondante et "
+                "gardez une trace de la demande. Le signalement déclenche "
+                "un examen ; il ne garantit pas une suppression."
+            )
+        elif any(
+            term in heading.lower()
+            for term in ("refus", "suite", "décision")
+        ):
+            text = (
+                "Relisez le motif communiqué, vérifiez les éléments déjà "
+                "transmis et identifiez les voies de suivi ou de contestation "
+                "effectivement proposées. Une nouvelle démarche doit "
+                "apporter une information pertinente, pas simplement "
+                "répéter la précédente."
+            )
+        elif any(
+            term in heading.lower()
+            for term in ("service", "processus", "prépar")
+        ):
+            text = (
+                "Review Defense structure le dossier autour de l’analyse, "
+                "de la qualification, des preuves, de la décision humaine "
+                "et du suivi. Les étapes importantes restent explicites "
+                "et traçables."
+            )
+        elif any(
+            term in heading.lower()
+            for term in ("validation", "suivi")
+        ):
+            text = (
+                "Les étapes importantes nécessitent une validation humaine "
+                "explicite. L’outil prépare les informations et conserve "
+                "une trace du dossier ; il n’exécute pas automatiquement "
+                "une action Google."
+            )
         else:
-            t=context
-        out.append((h,t))
-    return out
+            text = context
+
+        sections.append((heading, text))
+
+    return sections
+
+
 def _faq_items(page):
     return [
       ("Peut-on supprimer un avis dans cette situation ?", "Cela dépend du contenu, du contexte et du motif applicable. Un avis négatif ou contesté n’est pas automatiquement supprimable."),
@@ -493,23 +708,61 @@ def _faq_items(page):
     ]
 
 def _schema(page):
-    c=_url(page["path"])
-    graph=[
-      {"@type":"Organization","@id":_url("/#organization"),"name":"Review Defense","url":_url("/")},
-      {"@type":"WebSite","@id":_url("/#website"),"name":"Review Defense","url":_url("/"),"publisher":{"@id":_url("/#organization")}},
-      {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":_url("/")},{"@type":"ListItem","position":2,"name":page["cluster"]},{"@type":"ListItem","position":3,"name":page["h1"],"item":c}]}
+    canonical_url = _url(page["path"])
+    graph = [
+        {
+            "@type": "Organization",
+            "@id": _url("/#organization"),
+            "name": "Review Defense",
+            "url": _url("/"),
+        },
+        {
+            "@type": "WebSite",
+            "@id": _url("/#website"),
+            "name": "Review Defense",
+            "url": _url("/"),
+            "publisher": {"@id": _url("/#organization")},
+        },
+        {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Accueil",
+                    "item": _url("/"),
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": page["cluster"],
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": page["h1"],
+                    "item": canonical_url,
+                },
+            ],
+        },
     ]
     graph.append(
         {
             "@type": "Service" if page["service"] else "Article",
-            "@id": c + "#content",
+            "@id": canonical_url + "#content",
             "name": page["h1"],
             "headline": page["h1"],
             "description": page["description"],
-            "url": c,
+            "url": canonical_url,
             "dateModified": SITE_MODIFIED,
-            "mainEntityOfPage": {"@type": "WebPage", "@id": c},
-            "author": {"@type": "Organization", "name": "Review Defense"},
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": canonical_url,
+            },
+            "author": {
+                "@type": "Organization",
+                "name": "Review Defense",
+            },
             "publisher": {
                 "@type": "Organization",
                 "name": "Review Defense",
@@ -517,8 +770,29 @@ def _schema(page):
             },
         }
     )
-    graph.append({"@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in _faq_items(page)]})
-    return {"@context":"https://schema.org","@graph":graph}
+    faq_entities = [
+        {
+            "@type": "Question",
+            "name": question,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": answer,
+            },
+        }
+        for question, answer in _faq_items(page)
+    ]
+    graph.append(
+        {
+            "@type": "FAQPage",
+            "mainEntity": faq_entities,
+        }
+    )
+    return {
+        "@context": "https://schema.org",
+        "@graph": graph,
+    }
+
+
 def _analysis_html():
     title="Analyse d’avis Google | Review Defense"
     description="Analysez une situation liée à un avis Google, structurez les faits disponibles et préparez un dossier avec validation humaine."
