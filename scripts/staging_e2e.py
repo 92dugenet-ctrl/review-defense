@@ -305,6 +305,9 @@ def main() -> int:
 
                     dashboard_title = page.locator("#title").inner_text()
                     dashboard_text = page.locator("#content").inner_text()
+                    dashboard_nav = page.locator('#nav button[data-view="dashboard"]')
+                    dashboard_nav_class = dashboard_nav.get_attribute("class") if dashboard_nav.count() else ""
+                    dashboard_nav_active = dashboard_nav.count() > 0 and "active" in (dashboard_nav_class or "")
                     reviews_text = view("reviews", "avis", ".review-overview", ("Qualification des avis", "Inbox des avis"))
                     reviews_ok = page.locator(".review-overview").count() > 0
                     cases_text = view("cases", "dossiers", ".case-overview", ("Centre des dossiers", "File des dossiers"))
@@ -317,10 +320,15 @@ def main() -> int:
 
                     resources = page.evaluate("performance.getEntriesByType('resource').map(x => x.name)")
                     forbidden = [u for u in resources if "googleapis.com" in u or "google.com" in u]
-                    dashboard_ok = dashboard_title.strip() in {"Dashboard", "Vue d'ensemble", "Vue d’ensemble"} and bool(dashboard_text.strip())
+                    dashboard_ok = (
+                        dashboard_title.strip() in {"Dashboard", "Vue d'ensemble", "Vue d’ensemble"}
+                        and bool(dashboard_text.strip())
+                        and dashboard_nav_active
+                    )
                     browser_checks = {
                         "login": "PASS",
                         "dashboard": dashboard_ok,
+                        "dashboard_nav_active": dashboard_nav_active,
                         "reviews": "PASS" if reviews_ok else "FAIL",
                         "cases": "PASS" if cases_ok else "FAIL",
                         "human_control_boundary": approval_marker,
