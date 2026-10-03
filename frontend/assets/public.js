@@ -294,24 +294,43 @@ function howPage(){
  ];
  return (
    '<section class="page-hero how-hero"><div class="page-mountain"></div><span>COMMENT ÇA MARCHE · WORKFLOW COMPLET</span><h1>Commencez par l’avis.<br>' +
-   '<span>Terminez avec une décision claire.</span></h1><p>Review Defense transforme une situation dispersée en parcours de travail : collecte, analyse, qualification, preuves, dossier, décision, gel, validation et préparation contrôlée. L’objectif est de rendre chaque étape compréhensible et vérifiable.</p>' +
+   (
+     '<span>Terminez avec une décision claire.</span>' +
+     '/h1>' +
+     'p>Review Defense transforme une situation dispersée en parcours de travail : collecte, analyse, qualification, preuves, dossier, décision, gel, validation et préparation contrôlée. L’objectif est de rendre chaque étape compréhensible et vérifiable.</p>'
+   ) +
    '<div class="rd-hero-actions"><button class="btn-primary rd-btn-lg" onclick="location.href=&quot;/analyse-avis-google/&quot;">Commencer une analyse <span>→</span>' +
    '</button><button class="btn-secondary rd-btn-lg" onclick="document.getElementById(&quot;how-steps&quot;).scrollIntoView({behavior:&quot;smooth&quot;})">Découvrir le parcours <span>↓</span>' +
    '</button></div></section>'
  )+
  (
    '<section id="how-steps" class="rd-section how-overview"><div class="rd-container"><div class="rd-section-heading centered"><span class="rd-eyebrow">LE PARCOURS EN 7 ÉTAPES</span>' +
-   '<h2>Une scène après l’autre.<br><span>Rien n’est laissé dans le flou.</span></h2><p>Le workflow évite de passer directement d’un avis à une action. On commence par comprendre, puis on documente, on décide et seulement ensuite on prépare une éventuelle démarche.</p>' +
+   (
+     '<h2>Une scène après l’autre.<br>' +
+     'span>Rien n’est laissé dans le flou.</span>' +
+     '/h2>' +
+     'p>Le workflow évite de passer directement d’un avis à une action. On commence par comprendre, puis on documente, on décide et seulement ensuite on prépare une éventuelle démarche.</p>'
+   ) +
    '</div><div class="steps premium-steps how-steps">'
  )+steps.map(x=>'<article><span>'+x[0]+'</span><i>'+x[1]+'</i><small>ÉTAPE '+x[0]+'</small><h3>'+x[2]+'</h3><p>'+x[3]+'</p><b>Étape suivante →</b></article>').join('')+'</div></div></section>'+
  (
    '<section class="rd-section how-deep-dive"><div class="rd-container"><div class="rd-section-heading"><span class="rd-eyebrow">CE QUI SE PASSE DANS LE DOSSIER</span>' +
-   '<h2>Du contenu brut à une<br><span>lecture exploitable.</span></h2><p>Le workflow ne se limite pas à afficher un score. Il organise les informations pour permettre à une équipe de comprendre pourquoi un élément mérite d’être vérifié et quelles pièces peuvent l’étayer.</p>' +
+   (
+     '<h2>Du contenu brut à une<br>' +
+     'span>lecture exploitable.</span>' +
+     '/h2>' +
+     'p>Le workflow ne se limite pas à afficher un score. Il organise les informations pour permettre à une équipe de comprendre pourquoi un élément mérite d’être vérifié et quelles pièces peuvent l’étayer.</p>'
+   ) +
    '</div><div class="feature-grid premium-grid how-check-grid">'
  )+checks.map(x=>'<article><i>✓</i><small>MODULE</small><h3>'+x[0]+'</h3><p>'+x[1]+'</p></article>').join('')+'</div></div></section>'+
  (
    '<section class="rd-section how-example"><div class="rd-container product-two-col"><div class="rd-section-heading"><span class="rd-eyebrow">EXEMPLE CONCRET</span>' +
-   '<h2>Un avis très négatif<br><span>devient un dossier lisible.</span></h2><p>Imaginons un avis affirmant qu’un établissement aurait facturé un service jamais réalisé. Review Defense ne conclut pas automatiquement que l’avis est faux : il structure ce qui doit être vérifié.</p>' +
+   (
+     '<h2>Un avis très négatif<br>' +
+     'span>devient un dossier lisible.</span>' +
+     '/h2>' +
+     'p>Imaginons un avis affirmant qu’un établissement aurait facturé un service jamais réalisé. Review Defense ne conclut pas automatiquement que l’avis est faux : il structure ce qui doit être vérifié.</p>'
+   ) +
    '<div class="how-example-list"><div><b>01</b><span><strong>Affirmation</strong><small>« Le service n’a jamais été réalisé. »</small>' +
    '</span></div><div><b>02</b><span><strong>Élément à vérifier</strong><small>Existe-t-il une commande, une intervention ou une preuve contraire&nbsp;?</small>' +
    '</span></div><div><b>03</b><span><strong>Preuve associée</strong><small>Facture, historique, échange client, compte-rendu ou document disponible.</small>' +
@@ -360,19 +379,33 @@ function servicesPage(){
  ];
  return (
    '<section class="page-hero services-hero"><div class="page-mountain"></div><span>SERVICES B2B · REVIEW DEFENSE</span><h1>Du premier signal<br>' +
-   '<span>au dossier que votre équipe maîtrise.</span></h1><p>De l’audit global au traitement d’un avis précis, Review Defense vous aide à transformer des situations dispersées en dossiers clairs, documentés et suivis. Chaque service s’intègre au même parcours de travail et conserve la validation humaine comme point de contrôle.</p>' +
+   (
+     '<span>au dossier que votre équipe maîtrise.</span>' +
+     '/h1>' +
+     'p>De l’audit global au traitement d’un avis précis, Review Defense vous aide à transformer des situations dispersées en dossiers clairs, documentés et suivis. Chaque service s’intègre au même parcours de travail et conserve la validation humaine comme point de contrôle.</p>'
+   ) +
    '<div class="rd-hero-actions"><button class="btn-primary rd-btn-lg" onclick="location.href=&quot;/analyse-avis-google/&quot;">Analyser un avis <span>→</span>' +
    '</button><button class="btn-secondary rd-btn-lg" onclick="showPublicPage(&quot;how&quot;)">Voir comment ça marche <span>→</span>' +
    '</button></div></section>'
  )+
  (
    '<section class="rd-section services-overview"><div class="rd-container"><div class="rd-section-heading centered"><span class="rd-eyebrow">NOTRE PÉRIMÈTRE</span>' +
-   '<h2>Un même fil conducteur.<br><span>Comprendre, documenter, décider.</span></h2><p>Vous pouvez commencer par une analyse ponctuelle ou utiliser plusieurs briques ensemble. Le principe reste le même : comprendre, documenter, décider et préparer.</p>' +
+   (
+     '<h2>Un même fil conducteur.<br>' +
+     'span>Comprendre, documenter, décider.</span>' +
+     '/h2>' +
+     'p>Vous pouvez commencer par une analyse ponctuelle ou utiliser plusieurs briques ensemble. Le principe reste le même : comprendre, documenter, décider et préparer.</p>'
+   ) +
    '</div><div class="feature-grid premium-grid services-grid">'
  )+services.map(x=>'<article class="service-card service-'+x[4]+'"><span class="pillar-number">'+x[0]+'</span><i>'+x[1]+'</i><small>SERVICE</small><h3>'+x[2]+'</h3><p>'+x[3]+'</p><a href="/comment-ca-marche/">Voir le parcours <span>→</span></a></article>').join('')+'</div></div></section>'+
  (
    '<section class="rd-section services-method"><div class="rd-container product-two-col"><div class="rd-section-heading"><span class="rd-eyebrow">UNE MÉTHODE UNIQUE</span>' +
-   '<h2>Pas de services isolés.<br><span>Un dossier qui reste cohérent.</span></h2><p>Un audit peut faire émerger plusieurs situations. Une analyse peut nécessiter des preuves. Une preuve peut conduire à une décision. Le service reste cohérent parce que toutes les étapes utilisent la même logique de dossier.</p>' +
+   (
+     '<h2>Pas de services isolés.<br>' +
+     'span>Un dossier qui reste cohérent.</span>' +
+     '/h2>' +
+     'p>Un audit peut faire émerger plusieurs situations. Une analyse peut nécessiter des preuves. Une preuve peut conduire à une décision. Le service reste cohérent parce que toutes les étapes utilisent la même logique de dossier.</p>'
+   ) +
    '<p>Vous évitez ainsi les informations éparpillées entre e-mails, captures d’écran, fichiers et notes internes.</p><div class="services-method-points">' +
    '<span><b>01</b>Contexte centralisé</span><span><b>02</b>Preuves reliées</span><span><b>03</b>Décisions documentées</span><span>' +
    '<b>04</b>Historique conservé</span></div></div><div class="interface-illustration"><div class="mini-browser services-dashboard">' +
@@ -448,13 +481,33 @@ function pricingPage(){
    '<span>↗</span></div></div>'
  )+
  '<div class="reference-pricing-grid">'+
-  '<article class="reference-panel audit-panel"><div class="reference-panel-title"><div class="reference-icon blue">⌕</div><div><h2>Audit de réputation</h2><p>Un diagnostic complet de vos avis Google.</p></div></div><ul class="reference-checks">'+['Analyse de la note et des tendances',
+  (
+    '<article class="reference-panel audit-panel">' +
+    'div class="reference-panel-title">' +
+    'div class="reference-icon blue">⌕</div>' +
+    'div>' +
+    'h2>Audit de réputation</h2>' +
+    'p>Un diagnostic complet de vos avis Google.</p>' +
+    '/div>' +
+    '/div>' +
+    'ul class="reference-checks">'
+  )+['Analyse de la note et des tendances',
    'Identification des avis problématiques',
    'Thèmes récurrents et axes d’amélioration',
    'Recommandations personnalisées',
    'Rapport détaillé et priorisation'].map(x=>'<li><i>✓</i>'+x+'</li>').join('')+'</ul><div class="reference-table"><div class="reference-table-head"><span>Nombre d’avis</span><b>Prix</b></div>'+audits.map(x=>'<button type="button" class="reference-table-row" onclick="selectPricingOffer(\'audit\',\'Audit '+x[0]+' avis\',\''+x[1]+'\',\'audit_'+x[0].replace(/[^0-9]/g,
    '_')+'\')"><span>'+x[0]+'</span><b>'+x[1]+'</b></button>').join('')+'</div><button class="reference-panel-cta blue-cta" type="button" onclick="selectPricingOffer(\'audit\',\'Audit de réputation\',\'Selon volume\',\'audit\')">Demander un audit <span>→</span></button></article>'+
-  '<article class="reference-panel defense-panel"><div class="reference-panel-title"><div class="reference-icon red">◇</div><div><h2>Défense d’un avis</h2><p>Un traitement professionnel<br>et progressif.</p></div></div><div class="reference-steps">'+defense.map(x=>'<button type="button" class="reference-step" onclick="selectPricingOffer(\'defense_step\',\''+x[1]+'\',\''+x[3].replace('+ ',
+  (
+    '<article class="reference-panel defense-panel">' +
+    'div class="reference-panel-title">' +
+    'div class="reference-icon red">◇</div>' +
+    'div>' +
+    'h2>Défense d’un avis</h2>' +
+    'p>Un traitement professionnel<br>et progressif.</p>' +
+    '/div>' +
+    '/div>' +
+    'div class="reference-steps">'
+  )+defense.map(x=>'<button type="button" class="reference-step" onclick="selectPricingOffer(\'defense_step\',\''+x[1]+'\',\''+x[3].replace('+ ',
    '')+'\',\'defense_'+x[0]+'\')"><b>'+x[0]+'</b><span><strong>'+x[1]+'</strong><small>'+x[2]+'</small></span><em>'+x[3]+'</em></button>').join('')+(
    '</div><div class="reference-total"><span>Estimation totale par dossier</span><strong>De 49 € à 275 €</strong><p>Vous ne payez que les étapes nécessaires,<br>avec votre validation à chaque étape.</p>' +
    '</div><button class="reference-panel-cta red-cta" type="button" onclick="selectPricingOffer(\'defense_step\',\'Analyse initiale et qualification\',\'49 €\',\'defense_01\')">Démarrer un dossier <span>→</span>' +
@@ -529,19 +582,49 @@ function pricingPage(){
    "</div></div><div class=\"reference-monitoring-price\"><strong>49 €</strong><span>/ mois au départ</span></div><div class=\"reference-monitoring-floor\">Plancher fidélité : 37 € / mois</div>" +
    "<div class=\"reference-monitoring-table\"><div class=\"reference-monitoring-row\"><span>0–3 mois</span><b>49 €</b></div><div class=\"reference-monitoring-row\">" +
    "<span>4–6 mois</span><b>46 €</b></div><div class=\"reference-monitoring-row\"><span>7–12 mois</span><b>43 €</b></div><div class=\"reference-monitoring-row\">" +
-   "<span>Année 2</span><b>40 €</b></div><div class=\"reference-monitoring-row\"><span>Année 3+</span><b>37 €</b></div></div><button class=\"reference-panel-cta blue-cta\" type=\"button\" onclick=\"location.href='/app'\">Choisir Essential <span>→</span>" +
+   (
+     "<span>Année 2</span>" +
+     "b>40 €</b>" +
+     "/div>" +
+     "div class=\"reference-monitoring-row\">" +
+     "span>Année 3+</span>" +
+     "b>37 €</b>" +
+     "/div>" +
+     "/div>" +
+     "button class=\"reference-panel-cta blue-cta\" type=\"button\" onclick=\"location.href='/app'\">Choisir Essential <span>→</span>"
+   ) +
    "</button></article>\n<article class=\"reference-panel reference-monitoring-panel\"><div class=\"reference-panel-title\"><div class=\"reference-icon red\">◇</div>" +
    "<div><h2>Professional</h2><p>Surveillance avancée + création de réponses.</p></div></div><div class=\"reference-monitoring-price\">" +
    "<strong>89 €</strong><span>/ mois au départ</span></div><div class=\"reference-monitoring-floor\">Plancher fidélité : 69 € / mois</div>" +
    "<div class=\"reference-monitoring-table\"><div class=\"reference-monitoring-row\"><span>0–3 mois</span><b>89 €</b></div><div class=\"reference-monitoring-row\">" +
    "<span>4–6 mois</span><b>84 €</b></div><div class=\"reference-monitoring-row\"><span>7–12 mois</span><b>79 €</b></div><div class=\"reference-monitoring-row\">" +
-   "<span>Année 2</span><b>74 €</b></div><div class=\"reference-monitoring-row\"><span>Année 3+</span><b>69 €</b></div></div><button class=\"reference-panel-cta red-cta\" type=\"button\" onclick=\"location.href='/app'\">Choisir Professional <span>→</span>" +
+   (
+     "<span>Année 2</span>" +
+     "b>74 €</b>" +
+     "/div>" +
+     "div class=\"reference-monitoring-row\">" +
+     "span>Année 3+</span>" +
+     "b>69 €</b>" +
+     "/div>" +
+     "/div>" +
+     "button class=\"reference-panel-cta red-cta\" type=\"button\" onclick=\"location.href='/app'\">Choisir Professional <span>→</span>"
+   ) +
    "</button></article>\n<article class=\"reference-panel reference-monitoring-panel\"><div class=\"reference-panel-title\"><div class=\"reference-icon green\">□</div>" +
    "<div><h2>Business</h2><p>Surveillance avancée + réponses + besoins plus importants / multi-sites.</p></div></div><div class=\"reference-monitoring-price\">" +
    "<strong>159 €</strong><span>/ mois au départ</span></div><div class=\"reference-monitoring-floor\">Plancher fidélité : 119 € / mois</div>" +
    "<div class=\"reference-monitoring-table\"><div class=\"reference-monitoring-row\"><span>0–3 mois</span><b>159 €</b></div><div class=\"reference-monitoring-row\">" +
    "<span>4–6 mois</span><b>149 €</b></div><div class=\"reference-monitoring-row\"><span>7–12 mois</span><b>139 €</b></div><div class=\"reference-monitoring-row\">" +
-   "<span>Année 2</span><b>129 €</b></div><div class=\"reference-monitoring-row\"><span>Année 3+</span><b>119 €</b></div></div><button class=\"reference-panel-cta green-cta\" type=\"button\" onclick=\"location.href='/app'\">Choisir Business <span>→</span>" +
+   (
+     "<span>Année 2</span>" +
+     "b>129 €</b>" +
+     "/div>" +
+     "div class=\"reference-monitoring-row\">" +
+     "span>Année 3+</span>" +
+     "b>119 €</b>" +
+     "/div>" +
+     "/div>" +
+     "button class=\"reference-panel-cta green-cta\" type=\"button\" onclick=\"location.href='/app'\">Choisir Business <span>→</span>"
+   ) +
    "</button></article>\n</div>\n<div class=\"reference-monitoring-bottom\"><div><strong>Le tarif fidélité devient une propriété du compte.</strong>" +
    "<p>Plus l’abonnement reste actif, plus le prix mensuel baisse, jusqu’au plancher de la formule. Les prestations ponctuelles restent disponibles séparément.</p>" +
    "</div><span class=\"reference-monitoring-badge\">PRIX DE FIDÉLITÉ</span></div></section>"
@@ -777,7 +860,15 @@ return '<section class="rd-v3-hero rd-v3-subhero"><div><small>01 / '+d[0]+'</sma
   '</div></div></section><section class="rd-v3-scene"><div><small>02 / PARCOURS</small><h2>Une situation. Des étapes visibles.</h2>' +
   '<p>Le site présente le produit comme un parcours éditorial : comprendre, documenter, décider, puis valider.</p></div><div class="rd-v3-list">'
 )+cards+(
-  '</div></section><section class="rd-v3-scene rd-v3-dark"><div><small>03 / CONTRÔLE</small><h2>Préparation ≠ exécution.</h2><p>Le produit peut assister l’analyse et la préparation, mais les actions externes sensibles restent sous contrôle humain.</p>' +
+  (
+    '</div>' +
+    '/section>' +
+    'section class="rd-v3-scene rd-v3-dark">' +
+    'div>' +
+    'small>03 / CONTRÔLE</small>' +
+    'h2>Préparation ≠ exécution.</h2>' +
+    'p>Le produit peut assister l’analyse et la préparation, mais les actions externes sensibles restent sous contrôle humain.</p>'
+  ) +
   '</div><div class="rd-v3-approval"><b>HUMAN GATE</b><strong>Validation requise</strong><span>Aucune action externe sensible n’est déclenchée automatiquement.</span>' +
   '</div></section><section class="rd-v3-scene"><div><small>04 / INTERFACE</small><h2>Le site commercial mène au logiciel existant.</h2>' +
   '<p>Cette reconstruction concerne uniquement l’expérience web commerciale. Le logiciel client et les interfaces administrateur restent séparés et inchangés.</p>' +
@@ -861,7 +952,12 @@ function invitationSignupPage(){
        organization_id:String(f.get('organization_id')),email:String(f.get('email')),invitation_token:String(f.get('invitation_token')),password
      })});
      if(d.access_token){localStorage.setItem('rd_token',d.access_token);location.href='/app';return}
-     document.querySelector('.auth-form').innerHTML='<div class="eyebrow">EMAIL VERIFICATION</div><h1>Vérifiez votre e-mail</h1><p>Votre compte a été créé. Consultez votre boîte mail pour confirmer votre adresse avant de vous connecter.</p><button type="button" class="btn-primary" id="go-login">Retour à la connexion</button>';
+     document.querySelector('.auth-form').innerHTML=(
+       '<div class="eyebrow">EMAIL VERIFICATION</div>' +
+       'h1>Vérifiez votre e-mail</h1>' +
+       'p>Votre compte a été créé. Consultez votre boîte mail pour confirmer votre adresse avant de vous connecter.</p>' +
+       'button type="button" class="btn-primary" id="go-login">Retour à la connexion</button>'
+     );
      document.getElementById('go-login').onclick=()=>renderLogin();
    }catch(x){err.textContent=x.message||'Impossible d’activer le compte.'}
  };
@@ -936,4 +1032,14 @@ function resourcesPage(){const cards=[['GUIDE','Comment supprimer un faux avis G
   '</h1><p>Un hub éditorial pour vérifier les faits, structurer les preuves et comprendre les procédures liées aux avis.</p></section>' +
   '<section class="article-grid premium-articles">'
 )+cards.map((x,
-  i)=>'<article><div class="article-image article-'+i+'"></div><small>'+x[0]+'</small><h3>'+x[1]+'</h3><p>Vérifications, éléments utiles et étapes à connaître avant d’agir.</p><a href="'+x[2]+'">Lire le guide <span>→</span></a></article>').join('')+'</section><section class="newsletter-band"><div><span class="rd-eyebrow">RESSOURCES</span><h2>Recevez les prochains guides.</h2><p>Un contenu utile, sans promesses artificielles.</p></div><a class="btn-primary" href="/contact/">Nous contacter →</a></section>'}
+  i)=>'<article><div class="article-image article-'+i+'"></div><small>'+x[0]+'</small><h3>'+x[1]+'</h3><p>Vérifications, éléments utiles et étapes à connaître avant d’agir.</p><a href="'+x[2]+'">Lire le guide <span>→</span></a></article>').join('')+(
+    '</section>' +
+    'section class="newsletter-band">' +
+    'div>' +
+    'span class="rd-eyebrow">RESSOURCES</span>' +
+    'h2>Recevez les prochains guides.</h2>' +
+    'p>Un contenu utile, sans promesses artificielles.</p>' +
+    '/div>' +
+    'a class="btn-primary" href="/contact/">Nous contacter →</a>' +
+    '/section>'
+  )}

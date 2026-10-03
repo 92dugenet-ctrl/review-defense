@@ -67,11 +67,16 @@ function login(){
  let mode=params.get("auth")==="register"||location.pathname==="/inscription"?"register":"login";
  const render=()=>{
   const registering=mode==="register";
-    app.innerHTML='<main class="login"><section class="loginbox"><div><b style="color:#0878ee">◆</b> Review Defense</div><h1>' +
+    app.innerHTML='<main class="login"><section class="loginbox"><div><b style="color:#0878ee(
+      ">◆</b> Review Defense</div>" +
+      "h1>' +
     (registering?'Créer votre espace':'Connexion à votre espace') +
-    '</h1><p>' +
+    '</h1>" +
+      "p>' +
     (registering?'Créez votre compte pour commencer à analyser et suivre vos avis.':'Connectez-vous pour retrouver vos avis, dossiers, preuves et actions.') +
-    '</p><div class="auth-tabs"><button type="button" class="btn ' +
+    '</p>" +
+      "div class="
+    )auth-tabs"><button type="button" class="btn ' +
     (!registering?'primary':'') +
     '" id="auth-login">Connexion</button><button type="button" class="btn ' +
     (registering?'primary':'') +

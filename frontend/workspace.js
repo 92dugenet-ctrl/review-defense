@@ -68,11 +68,16 @@ function recovery(){
    organizationId=params.get("organization_id")||localStorage.getItem("rd_org_id")||"",
    token=params.get("token")||"",
    resetting=Boolean(token);
-  app.innerHTML='<main class="login"><section class="loginbox"><div><b style="color:#0878ee">◆</b> Review Defense</div><h1>' +
+  app.innerHTML='<main class="login"><section class="loginbox"><div><b style="color:#0878ee(
+    ">◆</b> Review Defense</div>" +
+    "h1>' +
    (resetting?'Choisir un nouveau mot de passe':'Récupérer mon compte') +
-   '</h1><p>' +
+   '</h1>" +
+    "p>' +
    (resetting?'Définissez un nouveau mot de passe.':'Indiquez votre organisation et votre adresse email. Si le compte existe, un lien sera envoyé.') +
-   '</p><form id="recovery-form">' +
+   '</p>" +
+    "form id="
+  )recovery-form">' +
    (resetting?'':(
         '<div class="field"><label>Identifiant de votre organisation</label><input name="organ' +
         'ization_id" required value="'
@@ -153,11 +158,16 @@ function login(){
  let mode=params.get("auth")==="register"||location.pathname==="/inscription"?"register":"login";
  const render=()=>{
   const registering=mode==="register";
-    app.innerHTML='<main class="login"><section class="loginbox"><div><b style="color:#0878ee">◆</b> Review Defense</div><h1>' +
+    app.innerHTML='<main class="login"><section class="loginbox"><div><b style="color:#0878ee(
+      ">◆</b> Review Defense</div>" +
+      "h1>' +
     (registering?'Créer votre espace':'Connexion à votre espace') +
-    '</h1><p>' +
+    '</h1>" +
+      "p>' +
     (registering?'Créez votre compte pour commencer à analyser et suivre vos avis.':'Connectez-vous pour retrouver vos avis, dossiers, preuves et actions.') +
-    '</p><div class="auth-tabs"><button type="button" class="btn ' +
+    '</p>" +
+      "div class="
+    )auth-tabs"><button type="button" class="btn ' +
     (!registering?'primary':'') +
     '" id="auth-login">Connexion</button><button type="button" class="btn ' +
     (registering?'primary':'') +
