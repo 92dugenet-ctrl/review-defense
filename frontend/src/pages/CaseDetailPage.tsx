@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { BackLink } from "@/components/layout/BackLink";
 import { DetailMeta } from "@/components/layout/DetailMeta";
 import { FeedbackMessage } from "@/components/layout/FeedbackMessage";
+import { PageHeading } from "@/components/layout/PageHeading";
 import { SignalRow } from "@/components/layout/SignalRow";
 import { StatusPill } from "@/components/layout/StatusPill";
 import { api } from "@/services/api/client";
