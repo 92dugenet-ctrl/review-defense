@@ -48,3 +48,19 @@ Conséquence : ne pas supprimer `index.html`, `script.js`, `styles.css`, `worksp
 ## État de validation
 
 Audit statique des fichiers et références GitHub effectué. Aucun build, typecheck ou test navigateur n'a été exécuté dans cette étape.
+## Contrôle des contrats API — audit React/backend
+
+Comparaison statique de `src/api_server.py` avec les appels émis par les pages routées.
+
+- `ReviewsPage` : `GET /v1/reviews` renvoie `items`; les champs affichés correspondent au modèle Review. Contrat cohérent.
+- `ReviewDetailPage` : `GET /v1/reviews/{id}` renvoie `review` et `policy_signals`; `POST /v1/cases` attend `review_id` et renvoie `case.case_id`. Contrat cohérent.
+- `CasesPage` : `GET /v1/cases` renvoie `items` de cas avec `case_id`, `status` et `created_at`. Contrat cohérent.
+- `CaseDetailPage` : le workspace est enveloppé sous `workspace`; l'avis est `workspace.review`, les preuves sont `workspace.evidence` et les besoins complémentaires sont `evidence_tasks`. L'ancienne page lisait les propriétés au mauvais niveau. Corrigé pour consommer le contrat réel.
+- `AnalysisPage` : `GET /v1/review-queue` et `/workload` renvoient respectivement `items` et un objet contenant `items`; le composant consomme la file et le champ `total` de workload, mais le backend expose `items`/`count` et des métriques par utilisateur. Le total affiché doit donc être calculé à partir de `items` si l'on souhaite une charge agrégée. (À traiter dans l'étape suivante après vérification des champs de charge.)
+- `BillingPage` : `GET /v1/billing` expose `account`, `events`, `paypal_configured`; `/billing/catalog` expose `items` et les offres `kind=subscription`; les routes PayPal de configuration et confirmation correspondent aux appels de la page.
+- `AdminPage` : `GET /v1/organization/invitations` n'existe pas côté API ; seul `POST /v1/organization/invitations` est déclaré. Le changement de rôle est `POST /v1/organization/members/{user_id}/role`, pas PATCH. Le frontend a été corrigé : chargement des membres seul, affichage explicite de la dernière invitation créée sans prétendre lister toutes les invitations, et méthode POST pour les rôles.
+- `AdminPage` : `POST /v1/auth/revoke-all` cible l'utilisateur courant par défaut. Le bouton a été renommé pour préciser l'effet et la page déconnecte l'utilisateur après révocation.
+- `NotificationsPage` : `GET /v1/notifications` et POST `/{id}/deliver`/`/{id}/cancel` existent. Le backend réserve la lecture aux rôles OWNER/ADMIN/ANALYST et les actions aux OWNER/ADMIN ; l'interface ne doit pas être interprétée comme une autorisation.
+- `PrivacyPage` : GET export et GET/POST requests existent. La liste utilise `id`, `request_type`, `status`, `due_at`, `created_at`; la création renvoie `{request: row}`. L'export est un objet JSON et le frontend le télécharge en JSON.
+
+Limites : audit statique des contrats déclarés dans `src/api_server.py`, pas d'appel HTTP sur serveur réel. Les autorisations effectives restent celles du backend. Les contrôles d'organisation et d'UUID ne sont pas modifiés ici.
