@@ -82,3 +82,35 @@ def test_evidence_download_uses_authenticated_tenant_scoped_content_route():
     assert 'verify_integrity(content, row["sha256"])' in API
     assert '"/v1/evidence/"+encodeURIComponent(id)+"/content"' in FRONTEND
     assert 'download-evidence:' in FRONTEND
+
+def test_password_recovery_link_is_visible_on_login():
+    assert 'href="/reset-password">Mot de passe oublié ?' in FRONTEND
+
+
+def test_auth_route_aliases_serve_the_workspace_shell():
+    from wsgi import app
+
+    for route in ["/connexion/", "/inscription/", "/verify-email/", "/reset-password/", "/accept-invitation/"]:
+        captured = {}
+
+        def start_response(status, headers):
+            captured["status"] = status
+            captured["headers"] = dict(headers)
+
+        body = app(
+            {
+                "PATH_INFO": route,
+                "QUERY_STRING": "",
+                "REQUEST_METHOD": "GET",
+                "wsgi.url_scheme": "https",
+                "SERVER_NAME": "review-defense.test",
+                "SERVER_PORT": "443",
+                "SCRIPT_NAME": "",
+                "REMOTE_ADDR": "127.0.0.1",
+                "wsgi.input": __import__("io").BytesIO(),
+            },
+            start_response,
+        )
+        assert captured["status"] == "200 OK"
+        assert b"/workspace.js" in body[0]
+
