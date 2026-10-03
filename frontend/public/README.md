@@ -15,7 +15,7 @@ Les copies React strictement identiques qui se trouvaient dans `public/component
 
 - `assets/` : médias, illustrations et scripts statiques historiques ;
 - `pages/*.html` : pages HTML historiques ;
-- `styles/` : feuilles de style de transition ;
+- `styles/` : feuilles de style de transition ; voir `styles/README.md` pour les copies identiques et les règles de conservation ;
 - les composants React spécifiques qui ne sont pas des doublons exacts (notamment certains composants d'habillage et le catalogue de tarifs) restent à examiner avant toute migration.
 
 ## Règles de migration
