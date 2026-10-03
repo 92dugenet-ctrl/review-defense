@@ -3444,11 +3444,26 @@ class ReviewDefenseAPI:
             body = sitemap()
             start_response("200 OK", [("Content-Type","application/xml; charset=utf-8"),("Content-Length",str(len(body))),("X-Request-ID",trace_id)])
             return [body]
-        if path == "/" :
+        if path == "/":
             path = "/index.html"
-        elif path == "/app" or path == "/app/":
-            path = "/index.html"
-        elif path in {"/client", "/client/", "/admin", "/admin/", "/connexion", "/inscription", "/verify-email"}:
+        elif (
+            path == "/app"
+            or path.startswith("/app/")
+            or path in {"/login", "/register"}
+        ):
+            path = "/dist/react.html"
+        elif path.startswith("/react/"):
+            path = "/dist/" + path[len("/react/"):]
+        elif path in {
+            "/client",
+            "/client/",
+            "/admin",
+            "/admin/",
+            "/connexion",
+            "/inscription",
+            "/verify-email",
+        }:
+            path = "/workspace.html"        elif path in {"/client", "/client/", "/admin", "/admin/", "/connexion", "/inscription", "/verify-email"}:
             path = "/workspace.html"
         elif path in {
             "/conformite/","/produit/","/comment-ca-marche/","/services/","/tarifs/","/ressources/",
@@ -3468,7 +3483,7 @@ class ReviewDefenseAPI:
             "/workspace.css",
             "/styles.css",
             "/script.js",
-        } or path.startswith("/assets/"):
+        } or path.startswith("/assets/") or path.startswith("/dist/"):
             from pathlib import Path
             import mimetypes
             root = Path(__file__).resolve().parents[1] / "frontend"
