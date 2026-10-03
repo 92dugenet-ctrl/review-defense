@@ -4,13 +4,16 @@ Deterministic, human-gated comparison of explicit claim facts against explicit
 verified evidence facts. It never infers facts from binary evidence content and
 never performs an external/Google action.
 """
+
 from __future__ import annotations
-from dataclasses import dataclass, asdict
+
+from dataclasses import dataclass
 from hashlib import sha256
 import re
 from typing import Iterable
 
 from .review_workspace import ReviewClaim
+
 
 @dataclass(frozen=True)
 class ClaimFact:
@@ -20,6 +23,7 @@ class ClaimFact:
     value: str
     source_text: str
 
+
 @dataclass(frozen=True)
 class EvidenceFact:
     evidence_id: str
@@ -28,6 +32,7 @@ class EvidenceFact:
     value: str
     source_location: str = ""
     verified: bool = False
+
 
 @dataclass(frozen=True)
 class ContradictionResult:
@@ -42,49 +47,209 @@ class ContradictionResult:
     confidence: float
     requires_human_review: bool = True
 
-_AMOUNT = re.compile(r"(?P<num>\d+(?:[\.,]\d{1,2})?)\s*(?P<currency>€|euros?|eur|\$|usd|dollars?)", re.I)
-_DURATION = re.compile(r"(?P<num>\d+(?:[\.,]\d+)?)\s*(?P<unit>h|heures?|hours?|min|minutes?)", re.I)
-_DATE = re.compile(r"\b(?:le\s+)?(?P<day>\d{1,2})[/-](?P<month>\d{1,2})(?:[/-](?P<year>\d{2,4}))?\b", re.I)
+
+_AMOUNT = re.compile(
+    r"(?P<num>\d+(?:[\.,]\d{1,2})?)\s*"
+    r"(?P<currency>€|euros?|eur|\$|usd|dollars?)",
+    re.I,
+)
+_DURATION = re.compile(
+    r"(?P<num>\d+(?:[\.,]\d+)?)\s*"
+    r"(?P<unit>h|heures?|hours?|min|minutes?)",
+    re.I,
+)
+_DATE = re.compile(
+    r"\b(?:le\s+)?(?P<day>\d{1,2})[/-]"
+    r"(?P<month>\d{1,2})"
+    r"(?:[/-](?P<year>\d{2,4}))?\b",
+    re.I,
+)
+
 
 def _norm_number(value: str) -> str:
-    return value.replace(',', '.').rstrip('0').rstrip('.') if '.' in value.replace(',', '.') else value.lstrip('0') or '0'
+    normalized_value = value.replace(",", ".")
 
-def extract_claim_facts(claim: ReviewClaim) -> tuple[ClaimFact, ...]:
-    out: list[ClaimFact] = []
-    for m in _AMOUNT.finditer(claim.text):
-        cur = m.group('currency').lower().replace('euros', 'eur').replace('euro', 'eur').replace('dollars', 'usd').replace('$', 'usd').replace('€', 'eur')
-        out.append(ClaimFact(claim.claim_id, f"amount:{cur}", "AMOUNT", _norm_number(m.group('num')), claim.text))
-    for m in _DURATION.finditer(claim.text):
-        unit = m.group('unit').lower()
-        canonical = 'HOURS' if unit.startswith(('h', 'heure', 'hour')) else 'MINUTES'
-        number = float(m.group('num').replace(',', '.'))
-        minutes = number * 60 if canonical == 'HOURS' else number
-        out.append(ClaimFact(claim.claim_id, "duration:minutes", "DURATION", _norm_number(str(minutes)), claim.text))
-    for m in _DATE.finditer(claim.text):
-        year = m.group('year') or ''
-        if len(year) == 2: year = '20' + year
-        value = f"{int(m.group('day')):02d}-{int(m.group('month')):02d}" + (f"-{year}" if year else '')
-        out.append(ClaimFact(claim.claim_id, "date:day", "DATE", value, claim.text))
-    return tuple(out)
+    if "." in normalized_value:
+        return normalized_value.rstrip("0").rstrip(".")
 
-def contradiction_id(organization_id: str, case_id: str, claim_id: str, key: str, evidence_ids: Iterable[str]) -> str:
-    material = "|".join([organization_id, case_id, claim_id, key, *sorted(evidence_ids)])
-    return "ctr_" + sha256(material.encode()).hexdigest()[:24]
+    return normalized_value.lstrip("0") or "0"
 
-def detect_contradictions(*, organization_id: str, case_id: str, claims: Iterable[ReviewClaim], evidence_facts: Iterable[EvidenceFact]) -> tuple[ContradictionResult, ...]:
-    verified = [f for f in evidence_facts if f.verified]
-    by_key: dict[tuple[str, str], list[EvidenceFact]] = {}
-    for fact in verified:
-        by_key.setdefault((fact.key, fact.kind), []).append(fact)
+
+def extract_claim_facts(
+    claim: ReviewClaim,
+) -> tuple[ClaimFact, ...]:
+    facts: list[ClaimFact] = []
+
+    for match in _AMOUNT.finditer(claim.text):
+        currency = (
+            match.group("currency")
+            .lower()
+            .replace("euros", "eur")
+            .replace("euro", "eur")
+            .replace("dollars", "usd")
+            .replace("$", "usd")
+            .replace("€", "eur")
+        )
+        facts.append(
+            ClaimFact(
+                claim.claim_id,
+                f"amount:{currency}",
+                "AMOUNT",
+                _norm_number(match.group("num")),
+                claim.text,
+            )
+        )
+
+    for match in _DURATION.finditer(claim.text):
+        unit = match.group("unit").lower()
+        canonical_unit = (
+            "HOURS"
+            if unit.startswith(("h", "heure", "hour"))
+            else "MINUTES"
+        )
+        number = float(match.group("num").replace(",", "."))
+        minutes = (
+            number * 60
+            if canonical_unit == "HOURS"
+            else number
+        )
+        facts.append(
+            ClaimFact(
+                claim.claim_id,
+                "duration:minutes",
+                "DURATION",
+                _norm_number(str(minutes)),
+                claim.text,
+            )
+        )
+
+    for match in _DATE.finditer(claim.text):
+        year = match.group("year") or ""
+
+        if len(year) == 2:
+            year = "20" + year
+
+        value = (
+            f"{int(match.group('day')):02d}-"
+            f"{int(match.group('month')):02d}"
+        )
+
+        if year:
+            value += f"-{year}"
+
+        facts.append(
+            ClaimFact(
+                claim.claim_id,
+                "date:day",
+                "DATE",
+                value,
+                claim.text,
+            )
+        )
+
+    return tuple(facts)
+
+
+def contradiction_id(
+    organization_id: str,
+    case_id: str,
+    claim_id: str,
+    key: str,
+    evidence_ids: Iterable[str],
+) -> str:
+    material_parts = [
+        organization_id,
+        case_id,
+        claim_id,
+        key,
+        *sorted(evidence_ids),
+    ]
+    material = "|".join(material_parts)
+    digest = sha256(material.encode()).hexdigest()[:24]
+
+    return "ctr_" + digest
+
+
+def detect_contradictions(
+    *,
+    organization_id: str,
+    case_id: str,
+    claims: Iterable[ReviewClaim],
+    evidence_facts: Iterable[EvidenceFact],
+) -> tuple[ContradictionResult, ...]:
+    verified_facts = [
+        fact
+        for fact in evidence_facts
+        if fact.verified
+    ]
+    evidence_by_key: dict[
+        tuple[str, str],
+        list[EvidenceFact],
+    ] = {}
+
+    for fact in verified_facts:
+        key = (fact.key, fact.kind)
+        evidence_by_key.setdefault(key, []).append(fact)
+
     results: list[ContradictionResult] = []
+
     for claim in claims:
-        for cf in extract_claim_facts(claim):
-            matches = by_key.get((cf.key, cf.kind), [])
-            conflicting = [f for f in matches if f.value != cf.value]
-            if not conflicting:
+        claim_facts = extract_claim_facts(claim)
+
+        for claim_fact in claim_facts:
+            key = (claim_fact.key, claim_fact.kind)
+            matching_facts = evidence_by_key.get(key, [])
+            conflicting_facts = [
+                fact
+                for fact in matching_facts
+                if fact.value != claim_fact.value
+            ]
+
+            if not conflicting_facts:
                 continue
-            eids = tuple(sorted({f.evidence_id for f in conflicting}))
-            vals = tuple(sorted({f.value for f in conflicting}))
-            desc = f"Claim states {cf.kind.lower()} {cf.value!r} for {cf.key}; verified evidence states {', '.join(repr(v) for v in vals)}."
-            results.append(ContradictionResult(contradiction_id(organization_id, case_id, claim.claim_id, cf.key, eids), claim.claim_id, eids, cf.key, cf.kind, cf.value, vals, desc, 0.99, True))
+
+            evidence_ids = tuple(
+                sorted(
+                    {
+                        fact.evidence_id
+                        for fact in conflicting_facts
+                    }
+                )
+            )
+            evidence_values = tuple(
+                sorted(
+                    {
+                        fact.value
+                        for fact in conflicting_facts
+                    }
+                )
+            )
+            description = (
+                f"Claim states {claim_fact.kind.lower()} "
+                f"{claim_fact.value!r} for {claim_fact.key}; "
+                "verified evidence states "
+                f"{', '.join(repr(value) for value in evidence_values)}."
+            )
+
+            results.append(
+                ContradictionResult(
+                    contradiction_id(
+                        organization_id,
+                        case_id,
+                        claim.claim_id,
+                        claim_fact.key,
+                        evidence_ids,
+                    ),
+                    claim.claim_id,
+                    evidence_ids,
+                    claim_fact.key,
+                    claim_fact.kind,
+                    claim_fact.value,
+                    evidence_values,
+                    description,
+                    0.99,
+                    True,
+                )
+            )
+
     return tuple(results)
