@@ -1,5 +1,160 @@
-import{useEffect,useState}from"react";import{useNavigate,useParams}from"react-router-dom";import{api}from"@/services/api/client";
-import { FeedbackMessage } from "@/components/layout/FeedbackMessage";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
 import { BackLink } from "@/components/layout/BackLink";
 import { DetailMeta } from "@/components/layout/DetailMeta";
-import { SignalRow } from "@/components/layout/SignalRow";export function ReviewDetailPage(){const{id}=useParams(),nav=useNavigate(),[data,setData]=useState<any>(null),[error,setError]=useState(""),[creating,setCreating]=useState(false);useEffect(()=>{if(id)api.get<any>("/v1/reviews/"+id).then(setData).catch(e=>setError(e instanceof Error?e.message:"Avis introuvable"))},[id]);const createCase=async()=>{if(!id)return;setCreating(true);setError("");try{const x=await api.post<any>("/v1/cases",{review_id:id});nav("/app/cases/"+(x.case?.case_id??""))}catch(e){setError(e instanceof Error?e.message:"Impossible de créer le dossier")}finally{setCreating(false)}};if(error)return <section className="workspace"><FeedbackMessage className="form-error">{error}</FeedbackMessage></section>;if(!data)return <section className="workspace"><FeedbackMessage className="empty">Chargement…</FeedbackMessage></section>;const r=data.review??data;return <section className="workspace"><BackLink to="/app/reviews">← Tous les avis</BackLink><div className="detail-layout"><article className="panel detail-main"><span className="eyebrow">AVIS · {r.source??"SOURCE"}</span><div className="detail-rating"><span className={"rating r"+r.rating}>{r.rating}</span><div><h1>{r.author_display_name||"Client"}</h1><p>{r.published_at?new Date(r.published_at).toLocaleString("fr-FR"):"Date inconnue"}</p></div></div><blockquote>“{r.text}”</blockquote><DetailMeta><span>Source</span><b>{r.source??"—"}</b><span>URL</span><b>{r.review_url?<a href={r.review_url} target="_blank" rel="noreferrer">Ouvrir la source →</a>:"—"}</b></DetailMeta></article><aside className="panel"><span className="eyebrow">ANALYSE</span><h2>Signaux détectés</h2>{(data.policy_signals??[]).map((x:any,i:number)=><SignalRow key={i}>{typeof x==="string"?x:JSON.stringify(x)}</SignalRow>)}{!(data.policy_signals??[]).length&&<FeedbackMessage className="empty">Aucun signal remonté.</FeedbackMessage>}<button className="button button-dark button-wide" onClick={()=>void createCase()} disabled={creating}>{creating?"Création…":"Créer un dossier →"}</button></aside></div></section>}
+import { FeedbackMessage } from "@/components/layout/FeedbackMessage";
+import { SignalRow } from "@/components/layout/SignalRow";
+import { api } from "@/services/api/client";
+
+type ReviewDetails = {
+  review?: {
+    source?: string;
+    rating?: number;
+    author_display_name?: string | null;
+    published_at?: string | null;
+    text?: string;
+    review_url?: string;
+  };
+  policy_signals?: unknown[];
+};
+
+/** Shows one imported review and lets the user open a case for further work. */
+export function ReviewDetailPage() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [data, setData] = useState<ReviewDetails | null>(null);
+  const [error, setError] = useState("");
+  const [creatingCase, setCreatingCase] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+
+    api
+      .get<ReviewDetails>(`/v1/reviews/${id}`)
+      .then(setData)
+      .catch((caught) => {
+        setError(
+          caught instanceof Error ? caught.message : "Avis introuvable",
+        );
+      });
+  }, [id]);
+
+  async function createCase() {
+    if (!id) return;
+
+    setCreatingCase(true);
+    setError("");
+
+    try {
+      const response = await api.post<{ case?: { case_id?: string } }>(
+        "/v1/cases",
+        { review_id: id },
+      );
+      navigate(`/app/cases/${response.case?.case_id ?? ""}`);
+    } catch (caught) {
+      setError(
+        caught instanceof Error
+          ? caught.message
+          : "Impossible de créer le dossier",
+      );
+    } finally {
+      setCreatingCase(false);
+    }
+  }
+
+  if (error) {
+    return (
+      <section className="workspace">
+        <FeedbackMessage className="form-error">{error}</FeedbackMessage>
+      </section>
+    );
+  }
+
+  if (!data) {
+    return (
+      <section className="workspace">
+        <FeedbackMessage className="empty">Chargement…</FeedbackMessage>
+      </section>
+    );
+  }
+
+  const review = data.review ?? {};
+
+  return (
+    <section className="workspace">
+      <BackLink to="/app/reviews">← Tous les avis</BackLink>
+
+      <div className="detail-layout">
+        <article className="panel detail-main">
+          <span className="eyebrow">AVIS · {review.source ?? "SOURCE"}</span>
+
+          <div className="detail-rating">
+            <span className={`rating r${review.rating}`}>
+              {review.rating}
+            </span>
+
+            <div>
+              <h1>{review.author_display_name || "Client"}</h1>
+              <p>
+                {review.published_at
+                  ? new Date(review.published_at).toLocaleString("fr-FR")
+                  : "Date inconnue"}
+              </p>
+            </div>
+          </div>
+
+          <blockquote>“{review.text}”</blockquote>
+
+          <DetailMeta>
+            <span>Source</span>
+            <b>{review.source ?? "—"}</b>
+
+            <span>URL</span>
+            <b>
+              {review.review_url ? (
+                <a
+                  href={review.review_url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Ouvrir la source →
+                </a>
+              ) : (
+                "—"
+              )}
+            </b>
+          </DetailMeta>
+        </article>
+
+        <aside className="panel">
+          <span className="eyebrow">ANALYSE</span>
+          <h2>Signaux détectés</h2>
+
+          {(data.policy_signals ?? []).map((signal, index) => (
+            <SignalRow key={index}>
+              {typeof signal === "string"
+                ? signal
+                : JSON.stringify(signal)}
+            </SignalRow>
+          ))}
+
+          {!data.policy_signals?.length && (
+            <FeedbackMessage className="empty">
+              Aucun signal remonté.
+            </FeedbackMessage>
+          )}
+
+          <button
+            className="button button-dark button-wide"
+            onClick={() => void createCase()}
+            disabled={creatingCase}
+          >
+            {creatingCase ? "Création…" : "Créer un dossier →"}
+          </button>
+        </aside>
+      </div>
+    </section>
+  );
+}

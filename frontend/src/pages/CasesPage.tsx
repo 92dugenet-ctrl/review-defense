@@ -1,4 +1,74 @@
-import{useEffect,useState}from"react";import{Link}from"react-router-dom";import{api}from"@/services/api/client";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
+import { FeedbackMessage } from "@/components/layout/FeedbackMessage";
 import { PageHeading } from "@/components/layout/PageHeading";
 import { StatusPill } from "@/components/layout/StatusPill";
-import { FeedbackMessage } from "@/components/layout/FeedbackMessage";export function CasesPage(){const[data,setData]=useState<any[]>([]),[loading,setLoading]=useState(true);useEffect(()=>{api.get<any>("/v1/cases").then(x=>setData(x.items??[])).finally(()=>setLoading(false))},[]);return <section className="workspace"><PageHeading eyebrow="DOSSIERS" title="Un dossier par décision." description="Suivez le statut, les preuves et les prochaines actions sans perdre le contexte." /><div className="panel table-panel">{loading?<FeedbackMessage className="empty">Chargement…</FeedbackMessage>:data.map(x=><Link className="case-row" key={x.case_id} to={"/app/cases/"+x.case_id}><div className="case-index">D</div><div><b>{x.case_id}</b><p>{x.status} · priorité {x.priority??"standard"}</p></div><StatusPill>{x.status}</StatusPill><span>→</span></Link>)}{!data.length&&!loading&&<FeedbackMessage className="empty">Aucun dossier. Créez-en un depuis un avis.</FeedbackMessage>}</div></section>}
+import { api } from "@/services/api/client";
+
+type CaseSummary = {
+  case_id: string;
+  status: string;
+  priority?: string;
+};
+
+type CasesResponse = {
+  items?: CaseSummary[];
+};
+
+/** Lists the cases available to the currently authenticated organization. */
+export function CasesPage() {
+  const [cases, setCases] = useState<CaseSummary[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api
+      .get<CasesResponse>("/v1/cases")
+      .then((response) => setCases(response.items ?? []))
+      .finally(() => setLoading(false));
+  }, []);
+
+  return (
+    <section className="workspace">
+      <PageHeading
+        eyebrow="DOSSIERS"
+        title="Un dossier par décision."
+        description="Suivez le statut, les preuves et les prochaines actions sans perdre le contexte."
+      />
+
+      <div className="panel table-panel">
+        {loading ? (
+          <FeedbackMessage className="empty">
+            Chargement…
+          </FeedbackMessage>
+        ) : (
+          cases.map((item) => (
+            <Link
+              className="case-row"
+              key={item.case_id}
+              to={`/app/cases/${item.case_id}`}
+            >
+              <div className="case-index">D</div>
+
+              <div>
+                <b>{item.case_id}</b>
+                <p>
+                  {item.status} · priorité {item.priority ?? "standard"}
+                </p>
+              </div>
+
+              <StatusPill>{item.status}</StatusPill>
+              <span>→</span>
+            </Link>
+          ))
+        )}
+
+        {!loading && !cases.length && (
+          <FeedbackMessage className="empty">
+            Aucun dossier. Créez-en un depuis un avis.
+          </FeedbackMessage>
+        )}
+      </div>
+    </section>
+  );
+}

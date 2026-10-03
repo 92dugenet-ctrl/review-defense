@@ -1,50 +1,60 @@
-# Frontend — carte de l'interface
+# Review Defense — guide du frontend
 
-Le frontend contient plusieurs générations d'interface qui coexistent. Les dossiers ne sont pas interchangeables : certains sont actifs dans le runtime actuel, d'autres servent de cible de migration ou de copies de transition.
+Ce document décrit l'organisation du frontend React et les responsabilités de ses principaux modules. Il sert de point d'entrée avant de modifier le code.
 
-## Carte rapide
+## Démarrage et points d'entrée
 
-| Zone | Rôle | État |
-|---|---|---|
-| `public/` | Composants React et pages du site public | Structure cible; les copies publiques historiques restent servies |
-| `auth/` | Contexte et garde d'authentification React, écrans de connexion/inscription | Modules React organisés; vérifier le point d'entrée qui les consomme |
-| `application/` | Organisation cible de l'espace applicatif par fonctionnalité | En cours; plusieurs fichiers s'appuient encore sur l'alias `@` vers `src/` |
-| `src/` | Source React actuellement référencée par Vite | Entrée React configurée dans le build Vite |
-| `assets/` | JS/CSS, images, vidéos et assets statiques historiques | Répertoire statique utilisé par le WSGI actuel |
-| `workspace.html/js/css` | Workspace historique client/admin | Toujours servi sur les routes d'espace connues |
-| `dist/` | Résultat compilé de Vite | Artefacts générés; ne pas modifier manuellement |
+- `src/main.tsx` monte l'application React, les styles globaux, le fournisseur d'authentification et le routeur.
+- `src/app/router.tsx` déclare les URL publiques, les pages légales, les écrans de connexion et les routes de l'espace client.
+- `index.html` est une entrée HTML historique distincte. Ne pas la supprimer ou la fusionner sans vérifier la configuration Vite et le déploiement.
 
-## Chemins réellement utilisés
+## Organisation de `src/`
 
-### Site public et workspace historique
+| Dossier | Responsabilité |
+| --- | --- |
+| `app/` | Configuration et déclaration des routes |
+| `auth/` | Session, authentification et protection des routes |
+| `components/layout/` | Éléments d'interface partagés par l'espace client |
+| `components/public/muse/` | Composition des pages publiques et composants du design Muse |
+| `hooks/` | Hooks React réutilisables |
+| `pages/` | Écrans associés aux routes |
+| `services/api/` | Communication HTTP avec le backend |
+| `styles/` | Variables, styles globaux et styles du site public |
+| `types/` | Types partagés des réponses et objets API |
 
-- Le WSGI sert le site public depuis `src/seo_site.py`.
-- Les ressources statiques historiques sont servies depuis `frontend/assets/`.
-- `workspace.html`, `workspace.js` et `workspace.css` constituent encore le workspace servi par les routes d'espace.
-- Les chemins historiques ne doivent pas être supprimés ou déplacés tant que le serveur et les routes n'ont pas été migrés et vérifiés.
+## Parcours d'une requête API
 
-### Build React
+1. Une page ou un hook appelle une méthode de `api` dans `services/api/client.ts`.
+2. Le client HTTP ajoute les en-têtes communs et, pour les routes `/v1/`, le jeton de session si nécessaire.
+3. La réponse est convertie en JSON ou en texte.
+4. Une réponse HTTP en erreur devient une instance de `ApiError`, que l'interface peut afficher à l'utilisateur.
 
-- Le projet Node est défini dans `package.json`.
-- Vite utilise `frontend/index.html` comme entrée legacy et `frontend/src/main.tsx` comme entrée React.
-- L'alias TypeScript/Vite `@` pointe actuellement vers `frontend/src/`.
-- `npm run build` exécute TypeScript puis Vite; `npm run typecheck` lance le contrôle TypeScript.
+Les composants d'interface ne doivent pas construire eux-mêmes les URL de base ni réimplémenter la gestion commune du jeton.
 
-## Attention aux doublons
+## Authentification et autorisation
 
-`src/` et `application/` contiennent des fichiers de démarrage et de routage portant les mêmes noms et, pour les points inspectés, les mêmes contenus. Cependant, l'alias `@` de Vite pointe vers `src/`. Les fichiers de `application/` ne constituent donc pas une application autonome : leurs imports peuvent résoudre vers `src/pages`, `src/styles`, `src/auth` et `src/components`.
+- `AuthContext.tsx` expose l'utilisateur courant, l'état de chargement et les actions de connexion, inscription, déconnexion et actualisation.
+- `sessionToken.ts` centralise la lecture de la clé de session dans `sessionStorage`.
+- `RequireAuth.tsx` empêche l'accès aux routes de l'espace client lorsqu'aucune session authentifiée n'est disponible.
+- Le routeur regroupe les écrans privés sous `/app`.
+- Les autorisations fines, notamment les droits liés à une organisation ou à un rôle, doivent être contrôlées côté backend. Masquer un bouton dans le frontend ne constitue pas une protection d'accès.
 
-`public/` et `src/components/public/` comportent également des composants de site public en parallèle. `public/MIGRATION.md` précise que les fichiers de ce dossier sont des copies de transition des pages et assets historiques. Ne pas synchroniser ni supprimer ces copies à l'aveugle.
+## Pages publiques et espace client
 
-## Règles de maintenance
+Les pages publiques sont principalement composées à partir de `components/public/muse/` et de `MuseShell`. Les pages de l'espace client se trouvent dans `pages/` et utilisent les composants partagés de `components/layout/`.
 
-1. Identifier le consommateur et le point d'entrée avant de modifier un fichier.
-2. Ne pas confondre source React, copie de transition et artefact `dist/`.
-3. Préserver les URL publiques, les routes d'espace, les contrats `/v1` et les noms d'assets consommés par le WSGI.
-4. Garder l'authentification et les permissions effectives côté backend; les gardes frontend ne sont pas une frontière de sécurité.
-5. Ne déplacer ni renommer des fichiers avant d'avoir vérifié les imports, alias, références HTML/CSS/JS, routes serveur et scripts de build.
-6. Migrer un périmètre à la fois et conserver une compatibilité pendant la transition.
+Le shell public et le shell de l'application authentifiée sont distincts. Une modification du menu ou du pied de page public ne doit pas modifier la navigation de l'espace client.
 
-## Prochaine migration
+## Conventions de maintenance
 
-La cible est une séparation nette entre `public/`, `auth/` et `application/`, avec un seul point d'entrée React explicite. Cette séparation devra être réalisée par étapes après comparaison des composants et pages, définition des routes finales et vérification du raccordement serveur. Cette documentation ne bascule aucun chemin de production.
+- Une instruction ou un élément JSX par ligne lorsque cela améliore la lecture.
+- Utiliser des noms explicites pour les états, fonctions, paramètres et réponses API.
+- Extraire une fonction lorsqu'elle représente une action métier identifiable ou évite une imbrication difficile à lire.
+- Préférer des types dédiés aux objets API plutôt que `any` lorsque le contrat est connu.
+- Documenter les responsabilités et les effets de bord aux frontières des modules ; éviter les commentaires qui répètent littéralement le code.
+- Conserver les chemins d'API, les méthodes HTTP, les noms de propriétés JSON et les règles métier existantes lors d'une passe de formatage.
+- Ne pas déplacer ou supprimer une feuille de style, une route ou un composant avant d'avoir recherché toutes ses références.
+
+## Vérifications avant intégration
+
+Après une passe de refactorisation, exécuter au minimum le contrôle TypeScript et le build du frontend, puis les tests concernés. Les modifications purement documentaires et de formatage doivent également être relues pour vérifier qu'elles n'ont pas changé les appels API ou les conditions métier.
