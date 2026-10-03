@@ -909,7 +909,6 @@ function contradictionsMarkup(rows){
       'Une analyse peut être lancée par un administrateur.</p>';
   }
   return '<div class="table"><table><thead><tr><th>Description</th><th>Éléments</th><th>Statut</th></tr></thead><tbody>' +
-    return '<div class="table"><table><thead><tr><th>Description</th><th>Éléments</th><th>Statut</th></tr></thead><tbody>' +
   rows.map(x=>'<tr><td>' +
   esc(x.description) +
   '</td><td>' +
