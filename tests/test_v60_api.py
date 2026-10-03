@@ -6,7 +6,7 @@ from src.api_server import create_app, MemoryStore
 def call(app, method, path, body=None, token=None, headers=None):
     env = {}
     setup_testing_defaults(env)
-    env.update({"REQUEST_METHOD": method, "PATH_INFO": path, "wsgi.input": io.BytesIO(json.dumps(body or {}).encode()), "CONTENT_LENGTH": str(len(json.dumps(body or {}).encode())), "REMOTE_ADDR": "test"})
+    env.update({"REQUEST_METHOD": method, "PATH_INFO": path, "wsgi.input": io.BytesIO(json.dumps(body or {}).encode()), "CONTENT_LENGTH": str(len(json.dumps(body or {}).encode())), "CONTENT_TYPE": "application/json", "REMOTE_ADDR": "test"})
     if token: env["HTTP_AUTHORIZATION"] = "Bearer " + token
     for k,v in (headers or {}).items(): env[k] = v
     out = {}
