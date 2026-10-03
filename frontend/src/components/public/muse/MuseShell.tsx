@@ -11,17 +11,25 @@ type MuseShellProps = {
   children: ReactNode;
 };
 
+/**
+ * Application shell for the public marketing pages.
+ *
+ * It centralizes the shared header/footer, public-site styles, scroll motion,
+ * and mobile-menu lifecycle. Page components provide only their own content.
+ */
 export function MuseShell({ children }: MuseShellProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
 
   useMuseMotion();
 
+  // Close the mobile menu after navigation to another route.
   useEffect(() => {
     setMenuOpen(false);
     document.body.classList.remove("is-locked");
   }, [location.pathname]);
 
+  // Lock page scrolling while the mobile navigation is open.
   useEffect(() => {
     document.body.classList.toggle("is-locked", menuOpen);
 
@@ -30,7 +38,9 @@ export function MuseShell({ children }: MuseShellProps) {
     }
 
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false);
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
     };
 
     window.addEventListener("keydown", closeOnEscape);

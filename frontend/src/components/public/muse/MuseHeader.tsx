@@ -1,5 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 
+/** Public routes shown in both desktop and mobile navigation. */
 const navigation = [
   ["/produit", "La solution"],
   ["/fonctionnement", "Comment ça marche"],
@@ -13,6 +14,11 @@ type MuseHeaderProps = {
   onMenuToggle: () => void;
 };
 
+/**
+ * Shared public-site header.
+ * The parent shell owns menu state; this component renders navigation and
+ * reports interactions so desktop and mobile menus stay synchronized.
+ */
 export function MuseHeader({ menuOpen, onMenuToggle }: MuseHeaderProps) {
   return (
     <>
@@ -61,7 +67,9 @@ export function MuseHeader({ menuOpen, onMenuToggle }: MuseHeaderProps) {
             key={path}
             to={path}
             tabIndex={menuOpen ? 0 : -1}
-            onClick={() => { if (menuOpen) onMenuToggle(); }}
+            onClick={() => {
+              if (menuOpen) onMenuToggle();
+            }}
           >
             {label}
           </NavLink>
@@ -70,7 +78,9 @@ export function MuseHeader({ menuOpen, onMenuToggle }: MuseHeaderProps) {
           className="header-login"
           to="/login"
           tabIndex={menuOpen ? 0 : -1}
-          onClick={() => { if (menuOpen) onMenuToggle(); }}
+          onClick={() => {
+            if (menuOpen) onMenuToggle();
+          }}
         >
           Connexion
         </Link>
@@ -78,7 +88,9 @@ export function MuseHeader({ menuOpen, onMenuToggle }: MuseHeaderProps) {
           className="pill blue"
           to="/register"
           tabIndex={menuOpen ? 0 : -1}
-          onClick={() => { if (menuOpen) onMenuToggle(); }}
+          onClick={() => {
+            if (menuOpen) onMenuToggle();
+          }}
         >
           Créer mon espace
         </Link>
