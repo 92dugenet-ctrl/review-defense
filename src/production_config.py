@@ -99,3 +99,6 @@ class ProductionConfig:
 
             if self.production and not self.public_base_url.startswith("https://"):
                 raise ValueError("production authentication email links require an HTTPS public base URL")
+
+            if self.production and not self.smtp_starttls:
+                raise ValueError("SMTP_STARTTLS must be enabled in production")

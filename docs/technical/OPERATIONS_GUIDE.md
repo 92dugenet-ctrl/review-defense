@@ -243,3 +243,22 @@ Points de vigilance :
 Priorités : atomicité récupération, en-têtes statiques, rate limiting distribué ; ensuite session navigateur/CSP, configuration MFA/SMTP et détection des formats ; enfin minimisation des données PayPal et gouvernance des clés. Aucun changement runtime n'est inclus dans ce lot.
 
 Aucun test, build, typecheck, lint ou workflow GitHub Actions ne doit être exécuté.
+
+
+## 17. Corrections de sécurité — lot T
+
+Consulter [SECURITY_REMEDIATION_T.md](./SECURITY_REMEDIATION_T.md) et l'audit [SECURITY_API_DATA_AUDIT.md](./SECURITY_API_DATA_AUDIT.md).
+
+Corrections intégrées :
+- La récupération PostgreSQL consomme le token non expiré et met à jour le mot de passe, révoque les sessions et écrit l'événement de sécurité dans une transaction unique.
+- Le mode mémoire sérialise la consommation et la mise à jour puis revérifie l'état du token sous verrou.
+- Les réponses frontend statiques, robots.txt et sitemap.xml reçoivent les en-têtes de sécurité configurés.
+- Le contrôle de clé MFA utilise le prédicat de production normalisé, y compris pour l'environnement `prod`.
+- STARTTLS est obligatoire lorsque les emails d'authentification sont activés en production ; SMTP AUTH est refusé si STARTTLS est désactivé.
+
+Points toujours ouverts :
+- Le rate limiting reste local au processus et doit être remplacé par un mécanisme partagé entre workers.
+- Le bearer token reste dans `sessionStorage` ; le durcissement XSS/CSP et l'évolution éventuelle vers cookie HttpOnly/CSRF nécessitent un chantier dédié.
+- La détection du type réel des fichiers et la minimisation du payload PayPal ne sont pas modifiées dans ce lot.
+
+Aucun test, build, typecheck, lint ou workflow GitHub Actions n'a été exécuté.

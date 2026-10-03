@@ -582,7 +582,7 @@ class ReviewDefenseAPI:
         import os
         key = os.getenv("REVIEW_DEFENSE_MFA_ENCRYPTION_KEY", "")
         if not key:
-            if self.config.environment == "production":
+            if self.config.production:
                 raise APIError(503, "MFA_NOT_CONFIGURED", "MFA encryption key is not configured")
             key = os.getenv("REVIEW_DEFENSE_DEV_MFA_KEY") or __import__("cryptography.fernet", fromlist=["Fernet"]).Fernet.generate_key().decode()
         return key
@@ -973,28 +973,44 @@ class ReviewDefenseAPI:
                     user = User(str(urow[0]), organization_id, str(urow[1]), str(urow[2]), str(urow[3]))
             if user is None:
                 raise APIError(400, "RECOVERY_INVALID", "recovery token is invalid")
-            updated = User(user.user_id,user.organization_id,user.email,new_hash,user.role)
-            self.store.users[user.user_id]=updated
+            if self.repository is not None:
+                reset = getattr(self.repository, "reset_password_with_recovery_token", None)
+                if reset is None:
+                    raise APIError(503, "RECOVERY_NOT_SUPPORTED", "atomic password recovery is not available")
+                reset_user_id = reset(organization_id, token_hash, new_hash)
+                if not reset_user_id or str(reset_user_id) != user.user_id:
+                    raise APIError(400, "RECOVERY_INVALID", "recovery token is invalid")
+                self.store.users[user.user_id] = User(
+                    user.user_id, user.organization_id, user.email, new_hash, user.role
+                )
+                row["used_at"] = utc_now().isoformat()
+            else:
+                # Memory mode has no database transaction; serialize the final
+                # consume-and-update section and re-check the token under lock.
+                with self._idem_lock:
+                    if row.get("used_at"):
+                        raise APIError(400, "RECOVERY_INVALID", "recovery token is invalid")
+                    current_expiry = row["expires_at"]
+                    if not isinstance(current_expiry, datetime):
+                        current_expiry = datetime.fromisoformat(
+                            str(current_expiry).replace("Z", "+00:00")
+                        )
+                    if current_expiry <= utc_now():
+                        raise APIError(400, "RECOVERY_EXPIRED", "recovery token has expired")
+                    self.store.users[user.user_id] = User(
+                        user.user_id, user.organization_id, user.email, new_hash, user.role
+                    )
+                    row["used_at"] = utc_now().isoformat()
             for th, sess in list(self.store.sessions.items()):
                 if sess.user_id == user.user_id and sess.organization_id == organization_id:
-                    self.store.sessions[th] = Session(sess.user_id,sess.organization_id,sess.role,sess.token_hash,sess.expires_at,utc_now())
-            if self.repository is not None:
-                if hasattr(self.repository,"revoke_all_sessions"):
-                    self.repository.revoke_all_sessions(organization_id,user.user_id)
-                if hasattr(self.repository,"update_password"):
-                    self.repository.update_password(organization_id,user.user_id,new_hash)
-                if hasattr(self.repository,"consume_recovery_token"):
-                    self.repository.consume_recovery_token(organization_id,token_hash)
-                if hasattr(self.repository, "security_event"):
-                    self.repository.security_event(
-                        organization_id,
-                        user.user_id,
-                        "PASSWORD_RECOVERED",
-                        user.user_id,
+                    self.store.sessions[th] = Session(
+                        sess.user_id, sess.organization_id, sess.role,
+                        sess.token_hash, sess.expires_at, utc_now()
                     )
-            row["used_at"] = utc_now().isoformat()
-            self.store.audit_event(organization_id,user.user_id,"PASSWORD_RECOVERED",f"user:{user.user_id}")
-            return self._json(200,{"status":"password_reset"})
+            self.store.audit_event(
+                organization_id, user.user_id, "PASSWORD_RECOVERED", f"user:{user.user_id}"
+            )
+            return self._json(200, {"status": "password_reset"})
 
         if method == "POST" and path == "/v1/auth/email-verification/verify":
             body = self._body(environ)
@@ -3675,6 +3691,11 @@ class ReviewDefenseAPI:
                     ("Content-Type", "text/plain; charset=utf-8"),
                     ("Content-Length", str(len(body))),
                     ("X-Request-ID", trace_id),
+                    *(
+                        list(security_headers(production=self.config.production).items())
+                        if self.config.secure_headers
+                        else []
+                    ),
                 ],
             )
             return [body]
@@ -3686,6 +3707,11 @@ class ReviewDefenseAPI:
                     ("Content-Type", "application/xml; charset=utf-8"),
                     ("Content-Length", str(len(body))),
                     ("X-Request-ID", trace_id),
+                    *(
+                        list(security_headers(production=self.config.production).items())
+                        if self.config.secure_headers
+                        else []
+                    ),
                 ],
             )
             return [body]
@@ -3746,7 +3772,17 @@ class ReviewDefenseAPI:
                 elapsed = (_time.perf_counter() - started) * 1000
                 self.telemetry.increment("http_requests_total", labels={"method": environ.get("REQUEST_METHOD", "GET"), "path": path, "status": "200"})
                 self.telemetry.observe_ms("http_request_duration_ms", elapsed, labels={"method": environ.get("REQUEST_METHOD", "GET"), "path": path})
-                start_response("200 OK", [("Content-Type", ctype), ("Content-Length", str(len(body))), ("X-Request-ID", trace_id)])
+                response_headers = [
+                    ("Content-Type", ctype),
+                    ("Content-Length", str(len(body))),
+                    ("X-Request-ID", trace_id),
+                    ("Cache-Control", "no-cache"),
+                ]
+                if self.config.secure_headers:
+                    response_headers.extend(
+                        security_headers(production=self.config.production).items()
+                    )
+                start_response("200 OK", response_headers)
                 return [body]
         try:
             status, headers, body = self.handle(environ)

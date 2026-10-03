@@ -1667,6 +1667,70 @@ class PostgresAPIRepository(PostgresRepository):
                 )
                 return cur.rowcount == 1
 
+    def reset_password_with_recovery_token(
+        self,
+        organization_id: str,
+        token_hash: str,
+        password_hash: str,
+    ):
+        """Consume one live recovery token and update password/session state atomically."""
+        with self.transaction(organization_id) as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    UPDATE password_recovery_tokens
+                    SET used_at = now()
+                    WHERE organization_id = %s
+                      AND token_hash = %s
+                      AND used_at IS NULL
+                      AND expires_at > now()
+                    RETURNING user_id
+                    """,
+                    (organization_id, token_hash),
+                )
+                token_row = cur.fetchone()
+                if not token_row:
+                    return None
+
+                user_id = str(token_row[0])
+                cur.execute(
+                    """
+                    UPDATE users
+                    SET password_hash = %s,
+                        password_changed_at = now(),
+                        updated_at = now()
+                    WHERE id = %s
+                    """,
+                    (password_hash, user_id),
+                )
+                if cur.rowcount != 1:
+                    raise RuntimeError("recovery token references an unavailable user")
+
+                cur.execute(
+                    """
+                    UPDATE api_sessions
+                    SET revoked_at = now()
+                    WHERE organization_id = %s
+                      AND user_id = %s
+                      AND revoked_at IS NULL
+                    """,
+                    (organization_id, user_id),
+                )
+                cur.execute(
+                    """
+                    INSERT INTO security_events(
+                        organization_id, actor_user_id, event_type,
+                        target_user_id, metadata
+                    )
+                    VALUES (%s, %s, %s, %s, %s::jsonb)
+                    """,
+                    (
+                        organization_id, user_id, "PASSWORD_RECOVERED",
+                        user_id, json.dumps({}, sort_keys=True),
+                    ),
+                )
+                return user_id
+
 
     def get_email_verified(self, organization_id: str, user_id: str):
         with self.transaction(organization_id) as conn:

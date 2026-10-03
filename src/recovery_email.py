@@ -47,6 +47,10 @@ def build_verification_link(base_url: str, organization_id: str, token: str) -> 
 def _send(*, recipient: str, subject: str, body: str, config: SMTPConfig, smtp_factory=smtplib.SMTP) -> None:
     if not config.host or not config.sender:
         raise RecoveryEmailError("SMTP host and sender are required")
+    if config.username and not config.starttls:
+        raise RecoveryEmailError(
+            "SMTP authentication requires STARTTLS on this transport"
+        )
     msg = EmailMessage()
     msg["From"] = config.sender
     msg["To"] = recipient
