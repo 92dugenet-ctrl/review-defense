@@ -625,7 +625,14 @@ def _services_html():
         .svc-service-row:nth-child(even) .svc-media{order:initial}.svc-visual{min-height:500px}.svc-media{min-height:390px}.svc-window{min-height:440px}.svc-cta-inner{gap:30px}}
     @media(max-width:620px){.svc-hero{padding-top:70px}.svc-hero h1{font-size:52px}.svc-hero-actions{flex-direction:column;align-items:stretch}.svc-btn{width:100%}.svc-visual{padding:16px;min-height:390px;border-radius:24px}.svc-window{min-height:350px}.svc-window-body{grid-template-columns:90px 1fr}.svc-sidebar{font-size:9px;padding:15px 8px}.svc-dashboard{padding:18px}.svc-dashboard h3{font-size:21px}.svc-kpis{grid-template-columns:1fr}.svc-service-list{padding-top:60px}.svc-service-row{padding:75px 0}.svc-media{padding:18px;min-height:340px}.svc-copy h3{font-size:40px}.svc-cta{padding:85px 0}}
     """
-    nav='<a href="/produit/">Produit</a><a href="/comment-ca-marche/">Comment ça fonctionne</a><a href="/services/">Services</a><a href="/tarifs/">Tarifs</a><a href="/ressources/">Ressources</a><a href="/contact/">Contact</a>'
+    nav=(
+            '<a href="/produit/">Produit</a><' +
+            'a href="/comment-ca-marche/">Comment ça fonctionne</a><' +
+            'a href="/services/">Services</a><' +
+            'a href="/tarifs/">Tarifs</a><' +
+            'a href="/ressources/">Ressources</a><' +
+            'a href="/contact/">Contact</a>'
+        )
     services=[
             ("01",
           "Analyse des avis",
@@ -654,11 +661,115 @@ def _services_html():
           "approval"),
     ]
     visuals={
-      "review":'<div class="svc-art-card"><span class="svc-art-meta">ANALYSE · AVIS #REV-88421</span><h4>Situation à examiner</h4><div class="svc-review-head"><span class="svc-stars">★★★★★</span><span class="svc-badge">À VÉRIFIER</span></div><div class="svc-review"><p>« Expérience très décevante, je n’ai jamais été client de cet établissement… »</p></div><div class="svc-kpis"><div class="svc-kpi"><b>03</b><span>signaux</span></div><div class="svc-kpi"><b>07</b><span>éléments</span></div><div class="svc-kpi"><b>01</b><span>dossier</span></div></div></div>',
-      "evidence":'<div class="svc-art-card"><span class="svc-art-meta">DOSSIER · PREUVES</span><h4>Éléments associés</h4><div class="svc-evidence-row"><div class="svc-evidence-icon">↗</div><div><b>URL de l’avis</b><small> · source publique</small></div><span class="svc-status">LIÉE</span></div><div class="svc-evidence-row"><div class="svc-evidence-icon">▣</div><div><b>Capture datée</b><small> · 30/09/2026</small></div><span class="svc-status">VÉRIFIÉE</span></div><div class="svc-evidence-row"><div class="svc-evidence-icon">✦</div><div><b>Échange client</b><small> · contexte</small></div><span class="svc-status">À LIRE</span></div></div>',
-      "reply":'<div class="svc-art-card"><span class="svc-art-meta">RÉPONSE · BROUILLON</span><h4>Préparation assistée</h4><div class="svc-chat"><div class="svc-bubble">Voici les éléments factuels disponibles dans le dossier.</div><div class="svc-bubble me">Prépare une réponse courte, professionnelle et factuelle.</div><div class="svc-bubble">Brouillon prêt. Vérifiez le contenu avant toute publication.</div></div><div class="svc-compose">Relire le brouillon… <b style="float:right">→</b></div></div>',
-      "timeline":'<div class="svc-art-card"><span class="svc-art-meta">SUIVI · CHRONOLOGIE</span><h4>Un dossier, une vue claire</h4><div class="svc-timeline"><div class="svc-step"><b>Analyse terminée</b><span>Les éléments disponibles ont été qualifiés.</span></div><div class="svc-step"><b>Dossier complété</b><span>Les preuves utiles ont été associées.</span></div><div class="svc-step"><b>Signalement préparé</b><span>Le contenu et le motif ont été revus.</span></div><div class="svc-step"><b>Validation requise</b><span>Une décision humaine reste nécessaire.</span></div></div></div>',
-      "approval":'<div class="svc-approval"><div class="svc-approval-top"><small>ÉTAPE CONTRÔLÉE</small><span class="svc-badge">APPROBATION</span></div><h4>Prêt pour votre validation</h4><p>Le dossier est structuré. Aucune action externe n’est exécutée tant que vous n’avez pas validé explicitement la suite.</p><div class="svc-approval-actions"><span class="selected">Valider</span><span>Modifier</span><span>Refuser</span></div></div>'
+      "review":(
+            '<div class="svc-art-card"><' +
+            'span class="svc-art-meta">ANALYSE · AVIS #REV-88421</span><' +
+            'h4>Situation à examiner</h4><' +
+            'div class="svc-review-head"><' +
+            'span class="svc-stars">★★★★★</span><' +
+            'span class="svc-badge">À VÉRIFIER</span><' +
+            '/div><' +
+            'div class="svc-review"><' +
+            'p>« Expérience très décevante, je n’ai jamais été client de cet établissement… »</p><' +
+            '/div><' +
+            'div class="svc-kpis"><' +
+            'div class="svc-kpi"><' +
+            'b>03</b><' +
+            'span>signaux</span><' +
+            '/div><' +
+            'div class="svc-kpi"><' +
+            'b>07</b><' +
+            'span>éléments</span><' +
+            '/div><' +
+            'div class="svc-kpi"><' +
+            'b>01</b><' +
+            'span>dossier</span><' +
+            '/div><' +
+            '/div><' +
+            '/div>'
+        ),
+      "evidence":(
+            '<div class="svc-art-card"><' +
+            'span class="svc-art-meta">DOSSIER · PREUVES</span><' +
+            'h4>Éléments associés</h4><' +
+            'div class="svc-evidence-row"><' +
+            'div class="svc-evidence-icon">↗</div><' +
+            'div><' +
+            'b>URL de l’avis</b><' +
+            'small> · source publique</small><' +
+            '/div><' +
+            'span class="svc-status">LIÉE</span><' +
+            '/div><' +
+            'div class="svc-evidence-row"><' +
+            'div class="svc-evidence-icon">▣</div><' +
+            'div><' +
+            'b>Capture datée</b><' +
+            'small> · 30/09/2026</small><' +
+            '/div><' +
+            'span class="svc-status">VÉRIFIÉE</span><' +
+            '/div><' +
+            'div class="svc-evidence-row"><' +
+            'div class="svc-evidence-icon">✦</div><' +
+            'div><' +
+            'b>Échange client</b><' +
+            'small> · contexte</small><' +
+            '/div><' +
+            'span class="svc-status">À LIRE</span><' +
+            '/div><' +
+            '/div>'
+        ),
+      "reply":(
+            '<div class="svc-art-card"><' +
+            'span class="svc-art-meta">RÉPONSE · BROUILLON</span><' +
+            'h4>Préparation assistée</h4><' +
+            'div class="svc-chat"><' +
+            'div class="svc-bubble">Voici les éléments factuels disponibles dans le dossier.</div><' +
+            'div class="svc-bubble me">Prépare une réponse courte, professionnelle et factuelle.</div><' +
+            'div class="svc-bubble">Brouillon prêt. Vérifiez le contenu avant toute publication.</div><' +
+            '/div><' +
+            'div class="svc-compose">Relire le brouillon… <b style="float:right">→</b><' +
+            '/div><' +
+            '/div>'
+        ),
+      "timeline":(
+            '<div class="svc-art-card"><' +
+            'span class="svc-art-meta">SUIVI · CHRONOLOGIE</span><' +
+            'h4>Un dossier, une vue claire</h4><' +
+            'div class="svc-timeline"><' +
+            'div class="svc-step"><' +
+            'b>Analyse terminée</b><' +
+            'span>Les éléments disponibles ont été qualifiés.</span><' +
+            '/div><' +
+            'div class="svc-step"><' +
+            'b>Dossier complété</b><' +
+            'span>Les preuves utiles ont été associées.</span><' +
+            '/div><' +
+            'div class="svc-step"><' +
+            'b>Signalement préparé</b><' +
+            'span>Le contenu et le motif ont été revus.</span><' +
+            '/div><' +
+            'div class="svc-step"><' +
+            'b>Validation requise</b><' +
+            'span>Une décision humaine reste nécessaire.</span><' +
+            '/div><' +
+            '/div><' +
+            '/div>'
+        ),
+      "approval":(
+            '<div class="svc-approval"><' +
+            'div class="svc-approval-top"><' +
+            'small>ÉTAPE CONTRÔLÉE</small><' +
+            'span class="svc-badge">APPROBATION</span><' +
+            '/div><' +
+            'h4>Prêt pour votre validation</h4><' +
+            'p>Le dossier est structuré. Aucune action externe n’est exécutée tant que vous n’avez pas validé explicitement la suite.</p><' +
+            'div class="svc-approval-actions"><' +
+            'span class="selected">Valider</span><' +
+            'span>Modifier</span><' +
+            'span>Refuser</span><' +
+            '/div><' +
+            '/div>'
+        )
     }
         rows="".join(f'<article class="svc-service-row"><div class="svc-copy"><span class="svc-number">{n} · SERVICE</span><h3>{_e(h)}</h3><p>{_e(d)}</p><p>{_e(t)}</p><a href="/analyse-avis-google/">Démarrer une analyse →</a></div><div class="svc-media">{visuals[k]}</div></article>' for n,
         h,
@@ -715,7 +826,14 @@ def _commercial_html(path):
         (h,
         t) in enumerate(d["sections"],
         1))
-    nav='<a href="/produit/">Produit</a><a href="/comment-ca-marche/">Comment ça fonctionne</a><a href="/services/">Services</a><a href="/tarifs/">Tarifs</a><a href="/ressources/">Ressources</a><a href="/contact/">Contact</a>'
+    nav=(
+            '<a href="/produit/">Produit</a><' +
+            'a href="/comment-ca-marche/">Comment ça fonctionne</a><' +
+            'a href="/services/">Services</a><' +
+            'a href="/tarifs/">Tarifs</a><' +
+            'a href="/ressources/">Ressources</a><' +
+            'a href="/contact/">Contact</a>'
+        )
         schema=json.dumps({"@context":"https://schema.org",
         "@graph":[{"@type":"Organization",
         "@id":_url("/#organization"),
@@ -737,9 +855,42 @@ def _commercial_html(path):
     extra=""
     if path=="/ressources/":
         links=_related({"path":path,"cluster":"Faux avis"},_pages())[:5]
-        extra='<section class="rd-section rd-light"><div class="rd-container"><span class="rd-eyebrow">GUIDES SEO</span><h2>Explorer les guides par situation.</h2><div class="rd-value-grid">'+''.join(f'<article class="rd-value-card"><h2>{_e(p["h1"])}</h2><a href="{_e(p["path"])}">Lire le guide →</a></article>' for p in links)+'</div></div></section>'
+        extra=(
+            '<section class="rd-section rd-light"><' +
+            'div class="rd-container"><' +
+            'span class="rd-eyebrow">GUIDES SEO</span><' +
+            'h2>Explorer les guides par situation.</h2><' +
+            'div class="rd-value-grid">'
+        )+''.join(f'<article class="rd-value-card"><h2>{_e(p["h1"])}</h2><a href="{_e(p["path"])}">Lire le guide →</a></article>' for p in links)+(
+            '</div><' +
+            '/div><' +
+            '/section>'
+        )
     if path=="/contact/":
-        extra='<section class="rd-section rd-light"><div class="rd-container rd-contact-grid"><div><span class="rd-eyebrow">CONTACT</span><h2>Une question ?<br><span>Une démo ?</span></h2><p>Présentez votre besoin. Les demandes commerciales restent séparées des dossiers d’avis.</p></div><form class="rd-contact-form" id="rd-contact-form"><label>Nom complet<input name="name" required></label><label>E-mail professionnel<input name="email" type="email" required></label><label>Entreprise<input name="company"></label><label>Message<textarea name="message" rows="5" required></textarea><button class="btn-primary" type="submit">Envoyer le message →</button></form></div></section>'
+        extra=(
+            '<section class="rd-section rd-light"><' +
+            'div class="rd-container rd-contact-grid"><' +
+            'div><' +
+            'span class="rd-eyebrow">CONTACT</span><' +
+            'h2>Une question ?<br><' +
+            'span>Une démo ?</span><' +
+            '/h2><' +
+            'p>Présentez votre besoin. Les demandes commerciales restent séparées des dossiers d’avis.</p><' +
+            '/div><' +
+            'form class="rd-contact-form" id="rd-contact-form"><' +
+            'label>Nom complet<input name="name" required><' +
+            '/label><' +
+            'label>E-mail professionnel<input name="email" type="email" required><' +
+            '/label><' +
+            'label>Entreprise<input name="company"><' +
+            '/label><' +
+            'label>Message<textarea name="message" rows="5" required><' +
+            '/textarea><' +
+            'button class="btn-primary" type="submit">Envoyer le message →</button><' +
+            '/form><' +
+            '/div><' +
+            '/section>'
+        )
     return (
         f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{_e(d["title"])}</title><meta name="description" content="{_e(d["description"])}">'''
         f'''<meta name="robots" content="index,follow"><link rel="canonical" href="{_e(_url(path))}"><meta property="og:type" content="website"><meta property="og:title" content="{_e(d["title"])}">'''
