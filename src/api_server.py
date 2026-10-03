@@ -1621,12 +1621,16 @@ class ReviewDefenseAPI:
             secret=decrypt_secret(state["secret_enc"],self._mfa_key())
             if not self._consume_mfa_code(user, str(self._body(environ).get("code",""))): raise APIError(401,"MFA_INVALID","invalid MFA code")
             state={"enabled":True,"secret_enc":state["secret_enc"]}
-            self.store.mfa[user.user_id]=state
-                        if self.repository is not None and hasattr(self.repository,
-                "set_mfa_secret"): self.repository.set_mfa_secret(user.organization_id,
-                user.user_id,
-                state["secret_enc"],
-                True)
+            self.store.mfa[user.user_id] = state
+            if self.repository is not None and hasattr(
+                self.repository, "set_mfa_secret"
+            ):
+                self.repository.set_mfa_secret(
+                    user.organization_id,
+                    user.user_id,
+                    state["secret_enc"],
+                    True,
+                )
             self.store.audit_event(user.organization_id,user.user_id,"MFA_ENABLED",f"user:{user.user_id}")
             return self._json(200,{"status":"enabled"})
 
