@@ -5,6 +5,12 @@ changes notification state; it derives metrics from the notification records and
 already-audited lifecycle events.
 """
 from __future__ import annotations
+
+# Architecture : métriques et traces fonctionnelles du cycle de vie des notifications.
+# Le module observe les créations, tentatives, succès et échecs afin de rendre le traitement
+# asynchrone exploitable par les opérateurs. Les données de télémétrie doivent rester minimales :
+# ne pas y recopier le corps des messages, les jetons ou d'autres secrets/données personnelles.
+
 from collections import Counter
 from typing import Iterable, Mapping, Any
 

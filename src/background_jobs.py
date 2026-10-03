@@ -7,6 +7,13 @@ network calls are performed by this module.
 """
 from __future__ import annotations
 
+# Architecture : primitives de file de travaux en arrière-plan et coordination des workers.
+# Le code sépare la création d'un travail, sa réservation temporaire par un worker et sa terminaison.
+# Les états, délais de réservation et mécanismes de reprise évitent qu'un travail abandonné reste
+# bloqué indéfiniment ; les événements associés rendent les transitions consultables.
+# Les handlers métier sont injectés par l'appelant : la file ne connaît pas les règles Google, PayPal ou dossier.
+
+
 import json
 import sqlite3
 import threading

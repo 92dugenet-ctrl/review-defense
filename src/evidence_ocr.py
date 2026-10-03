@@ -6,6 +6,13 @@ network I/O. Image OCR uses an optional system tesseract binary; the application
 does not depend on OCR being installed at startup.
 """
 from __future__ import annotations
+
+# Architecture : adaptateur OCR chargé de convertir des pages/images en texte exploitable.
+# Il intervient en amont de l'extraction métier : il produit du texte et des informations de page,
+# sans décider de la pertinence juridique ou de la véracité du contenu.
+# Les limites de format, la qualité du document et les erreurs du moteur OCR influencent le résultat ;
+# les données extraites doivent donc conserver leur lien vers la preuve source et rester vérifiables.
+
 from dataclasses import dataclass
 from io import BytesIO
 import shutil

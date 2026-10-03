@@ -10,6 +10,14 @@ uses Python's standard library only.
 """
 from __future__ import annotations
 
+# Architecture : adaptateur Google Business Profile de seconde génération, distinct du module
+# google_integration.py conservé pour compatibilité. Il encapsule l'authentification OAuth,
+# les requêtes officielles et la normalisation des comptes, établissements et avis.
+# Avant de modifier ce fichier, vérifier les imports depuis api_server et les services de synchronisation :
+# plusieurs générations d'adaptateurs coexistent et ne doivent pas être considérées comme interchangeables.
+# La frontière reste en lecture : les actions externes sur les avis relèvent d'un workflow distinct.
+
+
 import base64
 import hashlib
 import hmac

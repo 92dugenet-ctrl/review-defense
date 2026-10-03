@@ -3,6 +3,13 @@ All event claiming, review upsert and job enqueue operations are tenant-scoped
 and transactionally safe. This module is adapter-only: it never calls Google.
 """
 from __future__ import annotations
+
+# Architecture : persistance PostgreSQL de l'état de synchronisation Google et des reçus Pub/Sub.
+# Le dépôt conserve les curseurs de pagination et les identifiants d'événements déjà reçus afin
+# de rendre les synchronisations reprenables et les notifications dédupliquées.
+# Les méthodes reçoivent explicitement l'organisation concernée : cette clé tenant doit être
+# conservée dans toutes les lectures/écritures et ne pas être remplacée par un identifiant global seul.
+
 import hashlib, json, time, uuid
 from contextlib import contextmanager
 from dataclasses import dataclass

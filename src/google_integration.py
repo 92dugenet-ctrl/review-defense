@@ -9,6 +9,15 @@ never reports/removes reviews or performs another external mutation.
 """
 from __future__ import annotations
 
+# Architecture : cet adaptateur isole OAuth 2.0 et les appels REST Google Business Profile du domaine métier.
+# Le flux est : création/consommation d'un state PKCE, échange ou renouvellement du jeton,
+# lecture paginée des comptes, établissements et avis, puis conversion en ReviewContext.
+# TokenStore et HTTPTransport sont des frontières injectables : le stockage concret des jetons
+# et le transport réseau peuvent être remplacés sans coupler le domaine aux API Google.
+# ReviewCache compare des empreintes par organisation et applique une durée de conservation bornée.
+# Cette intégration est volontairement en lecture/synchronisation : elle n'envoie ni réponse ni signalement.
+
+
 import base64
 import hashlib
 import json

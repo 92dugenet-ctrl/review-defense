@@ -7,6 +7,13 @@ accidentally bypassing tenant boundaries.
 """
 from __future__ import annotations
 
+# Point d'entrée d'exploitation : démarre le processus worker en dehors du serveur HTTP.
+# Le script charge la configuration d'exécution, assemble la file et les handlers disponibles,
+# puis laisse le worker consommer les travaux selon le cycle défini dans les modules src.
+# Il constitue le raccord entre le déploiement (commande/processus) et les traitements asynchrones ;
+# les règles métier restent dans les handlers et services, pas dans ce script.
+
+
 import importlib
 import os
 import socket

@@ -5,6 +5,12 @@ configuration only: they never invoke external services and cannot bypass Google
 human-approval gates.
 """
 from __future__ import annotations
+
+# Architecture : règles qui déterminent si une notification doit être émise, à qui et par quel canal.
+# Ce module se situe entre l'événement métier et l'outbox : il transforme le contexte métier en décision
+# de notification, sans effectuer lui-même l'envoi réseau. La séparation permet de faire évoluer
+# les préférences, catégories et conditions d'envoi sans coupler ces règles au worker SMTP.
+
 from dataclasses import dataclass, asdict
 from datetime import datetime, time
 from zoneinfo import ZoneInfo

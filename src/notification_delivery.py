@@ -5,6 +5,13 @@ Webhook targets are validated against SSRF/private-network protections; email us
 configured SMTP only. Tests can inject transports so no network is required.
 """
 from __future__ import annotations
+
+# Architecture : adaptateurs de livraison des notifications vers leurs canaux de sortie.
+# Le module reçoit une notification déjà préparée et assure sa transmission au fournisseur configuré.
+# Il reste en aval de l'outbox et des politiques de notification : il ne choisit ni les destinataires
+# ni le moment métier de l'envoi. Les erreurs de transport sont remontées pour que le worker
+# puisse appliquer sa politique de reprise et conserver la traçabilité de la tentative.
+
 from dataclasses import dataclass
 from datetime import datetime, timezone
 import ipaddress

@@ -2,6 +2,15 @@
 
 from __future__ import annotations
 
+# Architecture : adaptateurs REST serveur pour PayPal, utilisés par les services de facturation.
+# Les fonctions historiques utilisent la configuration d'abonnement globale et l'API live ;
+# PayPalClient est l'adaptateur explicite Sandbox/Production avec ses propres identifiants et délais.
+# Les deux chemins obtiennent un jeton OAuth côté serveur, puis ajoutent le Bearer token aux requêtes.
+# verify_webhook transmet les en-têtes et le corps reçus à l'API officielle de vérification PayPal :
+# le payload d'un webhook ne doit pas être considéré comme fiable avant cette vérification.
+# Ce module transporte les échanges et normalise les erreurs ; les règles d'abonnement restent dans billing.
+
+
 import base64
 import json
 import os

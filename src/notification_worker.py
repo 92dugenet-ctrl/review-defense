@@ -2,6 +2,12 @@
 
 from __future__ import annotations
 
+# Architecture : worker applicatif qui consomme les notifications en attente et pilote leur livraison.
+# Il relie la persistance de l'outbox au service/adaptateur de livraison ; il ne doit pas être appelé
+# dans le chemin synchrone d'une requête utilisateur. Les états de tentative et les erreurs
+# permettent de reprendre les envois sans confondre une notification créée avec une notification remise.
+
+
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from typing import Callable, Iterable

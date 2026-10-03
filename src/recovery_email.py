@@ -7,6 +7,14 @@ performed and tokens are never persisted in clear text.
 # Adaptateur SMTP dédié aux emails de vérification et de récupération. Il construit les liens et transmet le message ; la génération, le hash, l'expiration et la consommation des tokens restent gérés par les composants d'identité et leur repository.
 
 from __future__ import annotations
+
+# Architecture : adaptateur d'envoi SMTP pour les messages de récupération et de vérification d'adresse.
+# Les services d'identité construisent le contexte et les liens à envoyer ; ce module assure uniquement
+# le transport du message vers le serveur SMTP configuré par l'environnement.
+# Les identifiants SMTP et les paramètres de connexion sont des secrets/configurations serveur :
+# ils ne doivent jamais être exposés au navigateur ni enregistrés dans les journaux applicatifs.
+# Un succès SMTP confirme la remise au serveur de courrier, pas la lecture par le destinataire.
+
 from dataclasses import dataclass
 from email.message import EmailMessage
 from urllib.parse import quote

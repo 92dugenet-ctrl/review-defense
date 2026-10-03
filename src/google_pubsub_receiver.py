@@ -3,6 +3,14 @@ The verifier is deliberately injected: production should use Google's OIDC
 JWT verification with issuer/audience checks. An absent verifier rejects pushes.
 """
 from __future__ import annotations
+
+# Architecture : point d'entrée HTTP logique des notifications push Google Pub/Sub.
+# La requête reçue n'est pas considérée comme fiable : un vérificateur OIDC fourni par l'application
+# authentifie l'émetteur, puis ReviewEventParser extrait un événement métier minimal.
+# Le reçu est enregistré de façon idempotente dans PostgresSyncRepository afin d'éviter de traiter
+# plusieurs fois le même message ; le résultat renvoie l'identifiant du travail asynchrone éventuel.
+# Ce module ne synchronise pas lui-même les avis : il valide, déduplique et transmet au moteur de sync.
+
 import base64,json
 from dataclasses import dataclass
 from typing import Any,Callable,Mapping

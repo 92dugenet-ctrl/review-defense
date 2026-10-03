@@ -5,6 +5,13 @@ adapter while tests remain network-free. Claims use SKIP LOCKED for concurrency.
 """
 from __future__ import annotations
 
+# Architecture : variante de worker notification adaptée à une file/outbox persistée dans PostgreSQL.
+# Elle s'appuie sur les primitives transactionnelles et de réservation en base pour coordonner
+# plusieurs processus, contrairement à une file purement locale au processus.
+# Le worker traite les messages réservés, délègue l'envoi au composant de livraison puis enregistre
+# le résultat ; les règles de contenu et de destinataire restent dans les services en amont.
+
+
 import json
 from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta

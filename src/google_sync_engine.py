@@ -6,6 +6,14 @@ client; this layer never reports, deletes, or replies to reviews.
 """
 from __future__ import annotations
 
+# Architecture : orchestration entre les notifications Google, la lecture des avis et la file de travaux.
+# ReviewEventParser transforme l'enveloppe Pub/Sub en événement typé ; SyncStateStore conserve
+# curseurs et identifiants déjà traités ; la file découple la réception du travail réseau.
+# GoogleSyncEngine consomme ensuite l'événement ou une réconciliation planifiée, appelle le client
+# Google fourni par client_factory, observe les avis dans le cache et mémorise le curseur de pagination.
+# Les résultats sont indexés par organisation : le périmètre tenant est donc une donnée explicite du flux.
+
+
 import base64
 import hashlib
 import json

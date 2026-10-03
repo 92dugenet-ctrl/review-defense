@@ -5,6 +5,13 @@ cannot mutate Google resources. A separate, explicitly authorized delivery adapt
 may consume the outbox in a future release.
 """
 from __future__ import annotations
+
+# Architecture : outbox transactionnelle entre les événements métier et la livraison des notifications.
+# Le service métier inscrit un message à transmettre dans la persistance ; un worker séparé le récupère
+# ensuite et le remet au canal de livraison. Cette séparation évite de dépendre du serveur SMTP
+# pendant la transaction métier et permet de reprendre les messages en attente après une interruption.
+# L'outbox transporte l'intention de notification ; elle ne décide pas du contenu métier à notifier.
+
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
 import hashlib

@@ -4,6 +4,13 @@ Only extracts bounded facts from explicitly readable text evidence. Suggestions 
 never verified automatically and never trigger decisions or Google actions.
 """
 from __future__ import annotations
+
+# Architecture : orchestration de l'extraction d'informations depuis une preuve déjà enregistrée.
+# Le module reçoit une référence de preuve, récupère son contenu via la couche de stockage,
+# puis transforme le document en données candidates exploitables par l'analyse du dossier.
+# Une extraction est une aide à la lecture : elle ne remplace pas la pièce originale ni une validation humaine.
+# Les erreurs de lecture ou de format doivent rester distinguées d'une absence de preuve.
+
 from dataclasses import dataclass, asdict
 from hashlib import sha256
 import re

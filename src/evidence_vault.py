@@ -3,6 +3,14 @@ Framework-neutral reference implementation. No external network calls.
 """
 from __future__ import annotations
 
+# Architecture : dépôt des pièces justificatives et frontière entre métadonnées métier et octets stockés.
+# Le service centralise l'enregistrement, l'accès et le cycle de vie des preuves ; les références
+# conservées par les dossiers pointent vers ce dépôt plutôt que d'embarquer les fichiers dans les objets métier.
+# Les contrôles de tenant, de type/taille et de disponibilité du stockage conditionnent les opérations.
+# Les composants qui extraient ou analysent le contenu doivent passer par cette frontière au lieu
+# de contourner le dépôt ; la conservation et la suppression restent pilotées par les règles du service.
+
+
 import base64
 import hashlib
 import hmac

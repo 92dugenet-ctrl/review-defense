@@ -1,4 +1,11 @@
 from __future__ import annotations
+
+# Architecture : file persistée des traitements différés, avec idempotence et historique des tentatives.
+# SQLiteProcessingQueue stocke la charge utile, le tenant, les clés de déduplication et les baux worker.
+# ProcessingWorker associe chaque type de travail à un handler injecté, puis marque le travail terminé
+# ou planifie une nouvelle tentative en cas d'erreur ; un nombre maximal de tentatives borne les reprises.
+# request_id et correlation_id permettent de relier le travail asynchrone à la requête qui l'a déclenché.
+
 import hashlib, json, sqlite3, threading, time, uuid
 from dataclasses import dataclass
 from enum import Enum

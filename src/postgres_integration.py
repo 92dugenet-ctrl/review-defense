@@ -6,6 +6,13 @@ DATABASE_URL.
 """
 from __future__ import annotations
 
+# Architecture : adaptateur PostgreSQL pour les données d'intégration et leurs états persistants.
+# Il fait le lien entre les objets métier d'intégration et les tables relationnelles, en centralisant
+# les requêtes et conversions de données. Les services orchestrent les opérations ; ce module
+# assure leur persistance, avec le contexte d'organisation nécessaire à l'isolation multi-tenant.
+# Les transactions et contraintes de base complètent les contrôles applicatifs, elles ne les remplacent pas.
+
+
 import os
 import time
 from dataclasses import dataclass
