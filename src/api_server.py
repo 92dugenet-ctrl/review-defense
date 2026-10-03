@@ -2290,19 +2290,23 @@ class ReviewDefenseAPI:
             if self.repository is not None and hasattr(self.repository, "get_evidence"):
                 dbrow = self.repository.get_evidence(user.organization_id, eid)
                 if dbrow:
-                                        row = dict(zip(("evidence_id",
-                        "organization_id",
-                        "case_id",
-                        "filename",
-                        "content_type",
-                        "size_bytes",
-                        "sha256",
-                        "object_key",
-                        "verified",
-                        "created_by",
-                        "verified_by",
-                        "verified_at"),
-                        dbrow))
+                                        row = dict(zip(
+                        (
+                            "evidence_id",
+                            "organization_id",
+                            "case_id",
+                            "filename",
+                            "content_type",
+                            "size_bytes",
+                            "sha256",
+                            "object_key",
+                            "verified",
+                            "created_by",
+                            "verified_by",
+                            "verified_at",
+                        ),
+                        dbrow,
+                    ))
                     self.store.evidence[key] = row
             if not row: raise APIError(404, "NOT_FOUND", "evidence not found")
             if not row.get("verified"):
@@ -2851,55 +2855,105 @@ class ReviewDefenseAPI:
                 review = self.store.reviews[(user.organization_id, case.review_id)]
                 claims = extract_claims(review)
                 signals = classify_policy_signals(claims)
-                contradictions = self.store.contradictions.get((user.organization_id, cid), [])
-                suggestions = self.store.fact_suggestions.get((user.organization_id, cid), [])
-                evidence_rows = [e for (org, _), e in self.store.evidence.items() if org == user.organization_id and e.get("case_id") == cid]
+                contradictions = self.store.contradictions.get(
+                    (user.organization_id, cid),
+                    [],
+                )
+                suggestions = self.store.fact_suggestions.get(
+                    (user.organization_id, cid),
+                    [],
+                )
+                evidence_rows = [
+                    evidence
+                    for (organization_id, _), evidence in self.store.evidence.items()
+                    if organization_id == user.organization_id
+                    and evidence.get("case_id") == cid
+                ]
                 required = {}
                 for signal in signals:
                     for claim_id in signal.claim_ids:
-                        required.setdefault(claim_id, []).extend(signal.evidence_required)
-                                evidence = tuple(EvidenceView(e["evidence_id"],
-                     e["filename"],
-                     e.get("content_type") or "UNKNOWN",
-                     e["sha256"],
-                    "VERIFIED" if e.get("verified") else "UNVERIFIED") for e in evidence_rows)
-                                ws = CaseWorkspace(cid,
-                     user.organization_id,
-                     case.status,
-                     "NORMAL",
-                     ReviewSummary(review.review_id,
-                     review.rating,
-                     review.text,
-                     review.published_at),
-                     tuple(ClaimView(c.claim_id,
-                    c.text,
-                    c.claim_type,
-                    "UNVERIFIED") for c in claims),
-                     tuple(PolicySignalView(s.code,
-                    s.status,
-                    s.justification) for s in signals),
-                     evidence,
-                     (),
-                     tuple(Contradiction(c["contradiction_id"],
-                    c["description"],
-                    c["claim_id"],
-                    tuple(c["evidence_ids"]),
-                    True) for c in contradictions))
-                missing = missing_evidence_tasks(ws, required)
-                key=(user.organization_id,cid)
-                                items=self.case_review.ensure_checklist(organization_id=user.organization_id,
-                     case_id=cid,
-                     has_policy_signals=bool(signals),
-                     contradiction_count=len(contradictions),
-                     unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")),
-                    missing_evidence_count=len(missing))
-                                readiness=self.case_review.readiness(case_id=cid,
-                     organization_id=user.organization_id,
-                     items=items,
-                     contradiction_count=len(contradictions),
-                     unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")),
-                    missing_evidence_count=len(missing))
-                return self._json(200, {"items":items, "readiness":asdict(readiness)})
+                        required.setdefault(claim_id, []).extend(
+                            signal.evidence_required
+                        )
+                evidence = tuple(
+                    EvidenceView(
+                        item["evidence_id"],
+                        item["filename"],
+                        item.get("content_type") or "UNKNOWN",
+                        item["sha256"],
+                        "VERIFIED" if item.get("verified") else "UNVERIFIED",
+                    )
+                    for item in evidence_rows
+                )
+                workspace = CaseWorkspace(
+                    cid,
+                    user.organization_id,
+                    case.status,
+                    "NORMAL",
+                    ReviewSummary(
+                        review.review_id,
+                        review.rating,
+                        review.text,
+                        review.published_at,
+                    ),
+                    tuple(
+                        ClaimView(
+                            claim.claim_id,
+                            claim.text,
+                            claim.claim_type,
+                            "UNVERIFIED",
+                        )
+                        for claim in claims
+                    ),
+                    tuple(
+                        PolicySignalView(
+                            signal.code,
+                            signal.status,
+                            signal.justification,
+                        )
+                        for signal in signals
+                    ),
+                    evidence,
+                    (),
+                    tuple(
+                        Contradiction(
+                            item["contradiction_id"],
+                            item["description"],
+                            item["claim_id"],
+                            tuple(item["evidence_ids"]),
+                            True,
+                        )
+                        for item in contradictions
+                    ),
+                )
+                missing = missing_evidence_tasks(workspace, required)
+                checklist_items = self.case_review.ensure_checklist(
+                    organization_id=user.organization_id,
+                    case_id=cid,
+                    has_policy_signals=bool(signals),
+                    contradiction_count=len(contradictions),
+                    unverified_fact_count=sum(
+                        1 for item in suggestions if not item.get("verified")
+                    ),
+                    missing_evidence_count=len(missing),
+                )
+                readiness = self.case_review.readiness(
+                    case_id=cid,
+                    organization_id=user.organization_id,
+                    items=checklist_items,
+                    contradiction_count=len(contradictions),
+                    unverified_fact_count=sum(
+                        1 for item in suggestions if not item.get("verified")
+                    ),
+                    missing_evidence_count=len(missing),
+                )
+                return self._json(
+                    200,
+                    {
+                        "items": checklist_items,
+                        "readiness": asdict(readiness),
+                    },
+                )
             if method == "POST" and len(parts) == 5 and parts[4] == "review-checklist":
                 self._require_role(user, "OWNER", "ADMIN", "ANALYST")
                 body = self._body(environ)
