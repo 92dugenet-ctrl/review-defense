@@ -69,26 +69,115 @@ const state={token:localStorage.getItem('rd_token'),
   loading:false};
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const toast=(msg,kind='info')=>{const el=document.getElementById('toast');if(!el)return;el.className=kind;el.textContent=msg;clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.textContent='',3500)};
+const toast=(msg,
+  kind='info')=>{const el=document.getElementById('toast');if(!el)return;el.className=kind;el.textContent=msg;clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.textContent='',
+  3500)};
 function demoData(path,opts={}){
- if(path==='/v1/me') return {user_id:'demo-user',organization_id:'demo-org',role:'OWNER',email:'owner@demo.review-defense.com'};
- if(path==='/v1/reviews') return {items:[demoReview,{review_id:'REV-88396',author_display_name:'Utilisateur',rating:2,text:'Expérience très décevante.',source:'Google'},{review_id:'REV-88170',author_display_name:'Client',rating:1,text:'Le produit ne correspondait pas à la description.',source:'Tripadvisor'}]};
+  if(path==='/v1/me') return {user_id:'demo-user',
+   organization_id:'demo-org',
+   role:'OWNER',
+   email:'owner@demo.review-defense.com'};
+  if(path==='/v1/reviews') return {items:[demoReview,
+   {review_id:'REV-88396',
+   author_display_name:'Utilisateur',
+   rating:2,
+   text:'Expérience très décevante.',
+   source:'Google'},
+   {review_id:'REV-88170',
+   author_display_name:'Client',
+   rating:1,
+   text:'Le produit ne correspondait pas à la description.',
+   source:'Tripadvisor'}]};
  if(path==='/v1/cases') return {items:demoCases};
- if(path==='/v1/approvals') return {items:[{approval_id:'APR-2081',case_id:'CASE-10479',status:'PENDING'},{approval_id:'APR-2076',case_id:'CASE-10482',status:'NOT_REQUIRED'}]};
+  if(path==='/v1/approvals') return {items:[{approval_id:'APR-2081',
+   case_id:'CASE-10479',
+   status:'PENDING'},
+   {approval_id:'APR-2076',
+   case_id:'CASE-10482',
+   status:'NOT_REQUIRED'}]};
  if(path==='/v1/notifications/metrics') return {total:7,unread:3};
- if(path==='/v1/notifications') return {items:[{notification_id:'N-71',level:'HIGH',channel:'EMAIL',status:'PENDING'},{notification_id:'N-69',level:'INFO',channel:'IN_APP',status:'DELIVERED'}]};
- if(path==='/v1/review-queue/workload') return {items:[{user_id:'demo-analyst',case_count:12,priority_score_total:38,critical_count:2,high_count:5,overdue_count:1,due_soon_count:3}]};
- if(path==='/v1/escalations') return {items:[{case_id:'CASE-10479',level:'L2',status:'OPEN',reason:'SLA proche de l’échéance'},{case_id:'CASE-10482',level:'L1',status:'OPEN',reason:'Contradiction non résolue'}]};
- if(path==='/v1/evidence') return {items:[{evidence_id:'E-991',content_type:'application/pdf',size_bytes:482331,sha256:'8e6c…9af1'},{evidence_id:'E-988',content_type:'image/png',size_bytes:183920,sha256:'4c2a…17d0'}]};
- if(path==='/v1/submissions') return {items:[{submission_id:'SUB-44',case_id:'CASE-10479',status:'READY_FOR_HUMAN_ACTION',external_call:false}]};
- if(path==='/v1/organization/members') return {items:[{user_id:'demo-user',email:'owner@demo.review-defense.com',role:'OWNER'},{user_id:'demo-analyst',email:'analyst@demo.review-defense.com',role:'ANALYST'}]};
- if(path.includes('/workspace')) return {workspace:{state:'IN_REVIEW',priority:'HIGH',review:demoReview,claims:[{claim_type:'DELIVERY',text:'Commande non reçue'}],policies:[{code:'GOOGLE_POLICY',justification:'Signal à vérifier avant toute action externe.'}],evidence:[{filename:'preuve-commande.pdf',evidence_type:'DOCUMENT',status:'VERIFIED',sha256:'8e6c…9af1'}],timeline:[{occurred_at:'2026-09-21 10:42',kind:'CASE_CREATED',actor:'system'},{occurred_at:'2026-09-21 11:08',kind:'HUMAN_REVIEW',actor:'analyst'}]},evidence_tasks:[{priority:'HIGH',evidence_requirement:'Vérifier la preuve de livraison',claim_id:'DELIVERY'}],requires_human_review:true,decision:{status:'PENDING_APPROVAL',rationale:'Dossier documenté, contradiction à confirmer humainement.'}};
- if(path.includes('/evidence-matrix')) return {items:[{claim_id:'DELIVERY',claim_text:'Commande non reçue',evidence_id:'E-991',status:'SUPPORTS'}]};
- if(path.includes('/review-readiness')) return {readiness:{ready:false,reason:'Une contradiction nécessite encore une validation humaine.'}};
+  if(path==='/v1/notifications') return {items:[{notification_id:'N-71',
+   level:'HIGH',
+   channel:'EMAIL',
+   status:'PENDING'},
+   {notification_id:'N-69',
+   level:'INFO',
+   channel:'IN_APP',
+   status:'DELIVERED'}]};
+  if(path==='/v1/review-queue/workload') return {items:[{user_id:'demo-analyst',
+   case_count:12,
+   priority_score_total:38,
+   critical_count:2,
+   high_count:5,
+   overdue_count:1,
+   due_soon_count:3}]};
+  if(path==='/v1/escalations') return {items:[{case_id:'CASE-10479',
+   level:'L2',
+   status:'OPEN',
+   reason:'SLA proche de l’échéance'},
+   {case_id:'CASE-10482',
+   level:'L1',
+   status:'OPEN',
+   reason:'Contradiction non résolue'}]};
+  if(path==='/v1/evidence') return {items:[{evidence_id:'E-991',
+   content_type:'application/pdf',
+   size_bytes:482331,
+   sha256:'8e6c…9af1'},
+   {evidence_id:'E-988',
+   content_type:'image/png',
+   size_bytes:183920,
+   sha256:'4c2a…17d0'}]};
+  if(path==='/v1/submissions') return {items:[{submission_id:'SUB-44',
+   case_id:'CASE-10479',
+   status:'READY_FOR_HUMAN_ACTION',
+   external_call:false}]};
+  if(path==='/v1/organization/members') return {items:[{user_id:'demo-user',
+   email:'owner@demo.review-defense.com',
+   role:'OWNER'},
+   {user_id:'demo-analyst',
+   email:'analyst@demo.review-defense.com',
+   role:'ANALYST'}]};
+  if(path.includes('/workspace')) return {workspace:{state:'IN_REVIEW',
+   priority:'HIGH',
+   review:demoReview,
+   claims:[{claim_type:'DELIVERY',
+   text:'Commande non reçue'}],
+   policies:[{code:'GOOGLE_POLICY',
+   justification:'Signal à vérifier avant toute action externe.'}],
+   evidence:[{filename:'preuve-commande.pdf',
+   evidence_type:'DOCUMENT',
+   status:'VERIFIED',
+   sha256:'8e6c…9af1'}],
+   timeline:[{occurred_at:'2026-09-21 10:42',
+   kind:'CASE_CREATED',
+   actor:'system'},
+   {occurred_at:'2026-09-21 11:08',
+   kind:'HUMAN_REVIEW',
+   actor:'analyst'}]},
+   evidence_tasks:[{priority:'HIGH',
+   evidence_requirement:'Vérifier la preuve de livraison',
+   claim_id:'DELIVERY'}],
+   requires_human_review:true,
+   decision:{status:'PENDING_APPROVAL',
+   rationale:'Dossier documenté, contradiction à confirmer humainement.'}};
+  if(path.includes('/evidence-matrix')) return {items:[{claim_id:'DELIVERY',
+   claim_text:'Commande non reçue',
+   evidence_id:'E-991',
+   status:'SUPPORTS'}]};
+  if(path.includes('/review-readiness')) return {readiness:{ready:false,
+   reason:'Une contradiction nécessite encore une validation humaine.'}};
  if(opts.method==='POST') return {ok:true,status:'RECORDED',access_token:'demo-token'};
  return {};
 }
-async function api(path,opts={}){if(demoMode)return demoData(path,opts);const headers={'Accept':'application/json',...(opts.body?{'Content-Type':'application/json'}:{}),...(opts.headers||{})};if(state.token)headers.Authorization=`Bearer ${state.token}`;const r=await fetch(path,{...opts,headers});if(r.status===401){state.token=null;localStorage.removeItem('rd_token');if(!['/v1/auth/login','/v1/auth/recovery/request','/v1/auth/recovery/reset'].includes(path)){renderLogin();} }const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data?.error?.message||data?.message||data?.error||`HTTP ${r.status}`);return data}
+async function api(path,
+  opts={}){if(demoMode)return demoData(path,
+  opts);const headers={'Accept':'application/json',
+  ...(opts.body?{'Content-Type':'application/json'}:{}),
+  ...(opts.headers||{})};if(state.token)headers.Authorization=`Bearer ${state.token}`;const r=await fetch(path,
+  {...opts,
+  headers});if(r.status===401){state.token=null;localStorage.removeItem('rd_token');if(!['/v1/auth/login',
+  '/v1/auth/recovery/request',
+  '/v1/auth/recovery/reset'].includes(path)){renderLogin();} }const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data?.error?.message||data?.message||data?.error||`HTTP ${r.status}`);return data}
 const rdT=(s)=>window.ReviewDefenseI18n?.t?.(s)||s;
 function setToken(t){state.token=t;localStorage.setItem('rd_token',t)}
 function authShell(inner){return `<main class="auth-page"><div class="auth-card"><div class="brand large">REVIEW<span>DEFENSE</span></div>${inner}<div class="auth-foot">Les actions externes restent soumises à approbation humaine.</div></div></main>`}
@@ -97,7 +186,11 @@ function clearSelectedPricingOffer(){try{localStorage.removeItem('rd_selected_of
 function renderSignup(error=''){
  document.body.classList.remove('console-mode');
  const selected=getSelectedPricingOffer();
- const selectedMarkup=selected?'<div class="pricing-selection-banner"><strong>Offre sélectionnée</strong><span>'+esc(selected.name||'')+(selected.price?' — '+esc(selected.price):'')+'</span><button type="button" class="link-btn" id="clear-pricing-selection">Modifier</button></div>':'';
+  const selectedMarkup=selected?'<div class="pricing-selection-banner"><strong>Offre sélectionnée</strong><span>' +
+   esc(selected.name||'') +
+   (selected.price?' — ' +
+   esc(selected.price):'') +
+   '</span><button type="button" class="link-btn" id="clear-pricing-selection">Modifier</button></div>':'';
  document.body.innerHTML=authShell(`<div class="auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Création de votre espace</small></div></div><div class="auth-trust-row"><span>Inscription sécurisée</span><span>Votre organisation</span><span>MFA disponible</span></div>${selectedMarkup}<form id="signup" class="stack auth-form"><div><div class="eyebrow">GET STARTED</div><h1>Créer mon compte</h1><p>Créez directement votre espace Review Defense. Vous pourrez ensuite inviter les membres de votre équipe.</p></div><label>Nom de l’entreprise<input name="organization_name" autocomplete="organization" required maxlength="200" placeholder="Mon entreprise"></label><label>Email professionnel<input name="email" type="email" autocomplete="email" required></label><label>Mot de passe<input name="password" type="password" autocomplete="new-password" minlength="12" required></label><label>Confirmer le mot de passe<input name="password_confirmation" type="password" autocomplete="new-password" minlength="12" required></label><button class="primary auth-submit" type="submit">Créer mon espace gratuitement</button><div id="signup-error" class="error">${error?esc(error):''}</div><button type="button" class="link-btn" id="signup-back">J’ai déjà un compte</button></form><div class="auth-boundary"><strong>Compte entreprise</strong><span>Le premier compte créé devient OWNER de l’organisation. Les membres CLIENT peuvent ensuite être invités depuis l’espace organisationnel.</span></div></div>`);
  document.getElementById('signup').onsubmit=async e=>{
    e.preventDefault();
@@ -105,20 +198,41 @@ function renderSignup(error=''){
    const password=String(f.get('password')||''), confirmation=String(f.get('password_confirmation')||'');
    if(password!==confirmation){err.textContent='Les deux mots de passe ne correspondent pas.';return}
    try{
-     const d=await api('/v1/auth/register',{method:'POST',body:JSON.stringify({organization_name:String(f.get('organization_name')),email:String(f.get('email')),password})});
+          const d=await api('/v1/auth/register',
+       {method:'POST',
+       body:JSON.stringify({organization_name:String(f.get('organization_name')),
+       email:String(f.get('email')),
+       password})});
      if(d.access_token){setToken(d.access_token);location.href='/app';return}
      err.className='hint';err.textContent='Votre compte a été créé. Vérifiez votre e-mail avant de vous connecter.';
    }catch(x){err.textContent=x.message||'Impossible de créer le compte.'}
  };
- document.getElementById('signup-back').onclick=()=>renderLogin();document.getElementById('clear-pricing-selection')?.addEventListener('click',()=>{clearSelectedPricingOffer();renderSignup()});
+  document.getElementById('signup-back').onclick=()=>renderLogin();document.getElementById('clear-pricing-selection')?.addEventListener('click',
+   ()=>{clearSelectedPricingOffer();renderSignup()});
 }
 function renderLogin(error=''){document.body.classList.remove('console-mode');state.login.mfaRequired=false;document.body.innerHTML=authShell(`<div class="auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Console sécurisée</small></div></div><div class="auth-trust-row"><span>Connexion sécurisée</span><span>Compte protégé</span><span>Vérification renforcée</span></div><form id="login" class="stack auth-form"><div><div class="eyebrow">IDENTITY & ACCESS</div><h1>Connexion</h1><p>Accédez à votre espace organisationnel sécurisé.</p></div><label>Email<input name="email" type="email" autocomplete="username" required value="${esc(state.login.email)}"></label><label>Organisation<input name="organization_id" autocomplete="organization" required value="${esc(state.login.organization_id)}"></label><label>Mot de passe<div class="password-field"><input id="login-password" name="password" type="password" autocomplete="current-password" required><button type="button" class="ghost" onclick="togglePasswordVisibility('login-password',
   this)" aria-label="Afficher le mot de passe">Afficher</button></div></label><div id="mfa-slot" hidden></div><button class="primary auth-submit" type="submit">Se connecter</button>${error?`<div class="error">${esc(error)}</div>`:''}<button type="button" class="link-btn" id="forgot">Mot de passe oublié ?</button><button type="button" class="link-btn" id="create-account">Créer un compte</button><button type="button" class="link-btn" id="invite-account">J’ai une invitation</button></form><div class="auth-boundary"><strong>Contrôle humain & serveur</strong><span>Aucune action Google externe n'est exécutée pendant l'authentification.</span></div></div>`);document.getElementById('login').onsubmit=loginSubmit;document.getElementById('forgot').onclick=renderRecovery;document.getElementById('create-account').onclick=()=>renderSignup();document.getElementById('invite-account').onclick=()=>{location.href='/?page=accept-invitation'}}
-function togglePasswordVisibility(id,button){const input=document.getElementById(id);if(!input)return;const visible=input.type==='text';input.type=visible?'password':'text';button.textContent=visible?'Afficher':'Masquer';button.setAttribute('aria-label',visible?'Afficher le mot de passe':'Masquer le mot de passe')}
-async function loginSubmit(e){e.preventDefault();const f=new FormData(e.currentTarget);state.login.email=String(f.get('email'));state.login.organization_id=String(f.get('organization_id'));const body={email:state.login.email,organization_id:state.login.organization_id,password:String(f.get('password'))};const code=f.get('mfa_code');if(code)body.mfa_code=String(code);try{const d=await api('/v1/auth/login',{method:'POST',body:JSON.stringify(body)});setToken(d.access_token);location.href='/app'}catch(x){if(String(x.message).toLowerCase().includes('mfa')){state.login.mfaRequired=true;const slot=document.getElementById('mfa-slot');if(slot){slot.hidden=false;slot.innerHTML='<label>Code MFA<input id="login-mfa" name="mfa_code" inputmode="numeric" autocomplete="one-time-code" pattern="\\d{6}" maxlength="6" placeholder="000000" required></label><p class="hint">Entrez le code de votre application d’authentification.</p>';slot.querySelector('input')?.focus()}}const err=document.querySelector('#login .error');if(err)err.textContent=x.message;else document.querySelector('#login').insertAdjacentHTML('beforeend',`<div class="error">${esc(x.message)}</div>`)}}
-function renderRecovery(){document.body.innerHTML=authShell(`<div class="auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Récupération sécurisée</small></div></div><form id="recovery" class="stack auth-form"><div><div class="eyebrow">ACCOUNT RECOVERY</div><h1>Récupérer l’accès</h1><p>La réponse reste générique afin de ne pas révéler l’existence d’un compte.</p></div><label>Email<input name="email" type="email" autocomplete="username" required></label><label>Organisation<input name="organization_id" autocomplete="organization" required></label><button class="primary auth-submit">Envoyer le lien</button><div id="recovery-msg" class="hint"></div><button type="button" class="link-btn" id="back">Retour à la connexion</button></form><div class="auth-boundary"><strong>Jeton à usage contrôlé</strong><span>Le lien de récupération est limité dans le temps et à usage unique.</span></div></div>`);document.getElementById('recovery').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget);try{await api('/v1/auth/recovery/request',{method:'POST',body:JSON.stringify({email:f.get('email'),organization_id:f.get('organization_id')})});document.getElementById('recovery-msg').textContent='Si les informations sont valides, un email de récupération a été envoyé.'}catch(x){document.getElementById('recovery-msg').textContent=x.message}};document.getElementById('back').onclick=()=>renderLogin()}
-function renderReset(){const p=new URLSearchParams(location.search);const token=p.get('token')||p.get('recovery_token');const org=p.get('organization_id')||'';document.body.innerHTML=authShell(`<form id="reset" class="stack"><h1>Nouveau mot de passe</h1><p>Le lien est à usage unique et limité dans le temps.</p><label>Organisation<input name="organization_id" required value="${esc(org)}"></label><label>Token de récupération<input name="recovery_token" required value="${esc(token)}"></label><label>Nouveau mot de passe<input name="new_password" type="password" autocomplete="new-password" required minlength="12"></label><button class="primary">Changer le mot de passe</button><div id="reset-msg" class="hint"></div></form>`);document.getElementById('reset').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget);try{await api('/v1/auth/recovery/reset',{method:'POST',body:JSON.stringify(Object.fromEntries(f))});document.getElementById('reset-msg').textContent='Mot de passe modifié. Vous pouvez maintenant vous connecter.';setTimeout(renderLogin,1200)}catch(x){document.getElementById('reset-msg').textContent=x.message}}}
-function renderVerify(){const p=new URLSearchParams(location.search);document.body.innerHTML=authShell(`<div class="stack"><h1>Vérification de l’email</h1><p id="verify-msg">Validation du lien…</p><button class="primary" id="verify-btn">Vérifier</button></div>`);document.getElementById('verify-btn').onclick=async()=>{try{await api('/v1/auth/email-verification/verify',{method:'POST',body:JSON.stringify({organization_id:p.get('organization_id')||'',verification_token:p.get('token')||p.get('verification_token')||''})});document.getElementById('verify-msg').textContent='Email vérifié. Vous pouvez vous connecter.'}catch(x){document.getElementById('verify-msg').textContent=x.message}}}
+function togglePasswordVisibility(id,
+  button){const input=document.getElementById(id);if(!input)return;const visible=input.type==='text';input.type=visible?'password':'text';button.textContent=visible?'Afficher':'Masquer';button.setAttribute('aria-label',
+  visible?'Afficher le mot de passe':'Masquer le mot de passe')}
+async function loginSubmit(e){e.preventDefault();const f=new FormData(e.currentTarget);state.login.email=String(f.get('email'));state.login.organization_id=String(f.get('organization_id'));const body={email:state.login.email,
+  organization_id:state.login.organization_id,
+  password:String(f.get('password'))};const code=f.get('mfa_code');if(code)body.mfa_code=String(code);try{const d=await api('/v1/auth/login',
+  {method:'POST',
+  body:JSON.stringify(body)});setToken(d.access_token);location.href='/app'}catch(x){if(String(x.message).toLowerCase().includes('mfa')){state.login.mfaRequired=true;const slot=document.getElementById('mfa-slot');if(slot){slot.hidden=false;slot.innerHTML='<label>Code MFA<input id="login-mfa" name="mfa_code" inputmode="numeric" autocomplete="one-time-code" pattern="\\d{6}" maxlength="6" placeholder="000000" required></label><p class="hint">Entrez le code de votre application d’authentification.</p>';slot.querySelector('input')?.focus()}}const err=document.querySelector('#login .error');if(err)err.textContent=x.message;else document.querySelector('#login').insertAdjacentHTML('beforeend',
+  `<div class="error">${esc(x.message)}</div>`)}}
+function renderRecovery(){document.body.innerHTML=authShell(`<div class="auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Récupération sécurisée</small></div></div><form id="recovery" class="stack auth-form"><div><div class="eyebrow">ACCOUNT RECOVERY</div><h1>Récupérer l’accès</h1><p>La réponse reste générique afin de ne pas révéler l’existence d’un compte.</p></div><label>Email<input name="email" type="email" autocomplete="username" required></label><label>Organisation<input name="organization_id" autocomplete="organization" required></label><button class="primary auth-submit">Envoyer le lien</button><div id="recovery-msg" class="hint"></div><button type="button" class="link-btn" id="back">Retour à la connexion</button></form><div class="auth-boundary"><strong>Jeton à usage contrôlé</strong><span>Le lien de récupération est limité dans le temps et à usage unique.</span></div></div>`);document.getElementById('recovery').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget);try{await api('/v1/auth/recovery/request',
+  {method:'POST',
+  body:JSON.stringify({email:f.get('email'),
+  organization_id:f.get('organization_id')})});document.getElementById('recovery-msg').textContent='Si les informations sont valides, un email de récupération a été envoyé.'}catch(x){document.getElementById('recovery-msg').textContent=x.message}};document.getElementById('back').onclick=()=>renderLogin()}
+function renderReset(){const p=new URLSearchParams(location.search);const token=p.get('token')||p.get('recovery_token');const org=p.get('organization_id')||'';document.body.innerHTML=authShell(`<form id="reset" class="stack"><h1>Nouveau mot de passe</h1><p>Le lien est à usage unique et limité dans le temps.</p><label>Organisation<input name="organization_id" required value="${esc(org)}"></label><label>Token de récupération<input name="recovery_token" required value="${esc(token)}"></label><label>Nouveau mot de passe<input name="new_password" type="password" autocomplete="new-password" required minlength="12"></label><button class="primary">Changer le mot de passe</button><div id="reset-msg" class="hint"></div></form>`);document.getElementById('reset').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget);try{await api('/v1/auth/recovery/reset',
+  {method:'POST',
+  body:JSON.stringify(Object.fromEntries(f))});document.getElementById('reset-msg').textContent='Mot de passe modifié. Vous pouvez maintenant vous connecter.';setTimeout(renderLogin,
+  1200)}catch(x){document.getElementById('reset-msg').textContent=x.message}}}
+function renderVerify(){const p=new URLSearchParams(location.search);document.body.innerHTML=authShell(`<div class="stack"><h1>Vérification de l’email</h1><p id="verify-msg">Validation du lien…</p><button class="primary" id="verify-btn">Vérifier</button></div>`);document.getElementById('verify-btn').onclick=async()=>{try{await api('/v1/auth/email-verification/verify',
+  {method:'POST',
+  body:JSON.stringify({organization_id:p.get('organization_id')||'',
+  verification_token:p.get('token')||p.get('verification_token')||''})});document.getElementById('verify-msg').textContent='Email vérifié. Vous pouvez vous connecter.'}catch(x){document.getElementById('verify-msg').textContent=x.message}}}
 const navItems=[
  ['dashboard','Vue d’ensemble'],
  ['client-monitoring','Mon espace'],
@@ -130,7 +244,17 @@ const navItems=[
  ['billing','Abonnement & facturation'],
  ['settings','Organisation']
 ];
-const LEGACY_CONSOLE_VIEW_CONTRACT=[['dashboard'],['reviews'],['cases'],['workload'],['escalations'],['evidence'],['approvals'],['submissions'],['alerts'],['audit'],['settings']];
+const LEGACY_CONSOLE_VIEW_CONTRACT=[['dashboard'],
+  ['reviews'],
+  ['cases'],
+  ['workload'],
+  ['escalations'],
+  ['evidence'],
+  ['approvals'],
+  ['submissions'],
+  ['alerts'],
+  ['audit'],
+  ['settings']];
 const CLIENT_CONSOLE_LEGACY_CONTRACT="'dashboard',
   'reviews',
   'cases',
@@ -154,8 +278,24 @@ function visibleNavItems(){
    CLIENT:new Set(['dashboard','client-monitoring','reviews','cases','evidence','activity','billing']),
    VIEWER:new Set(['dashboard','reviews','cases','activity']),
    ANALYST:new Set(['dashboard','client-monitoring','reviews','cases','evidence','approvals','activity']),
-   ADMIN:new Set(['dashboard','client-monitoring','reviews','cases','evidence','approvals','activity','billing','settings']),
-   OWNER:new Set(['dashboard','client-monitoring','reviews','cases','evidence','approvals','activity','billing','settings'])
+      ADMIN:new Set(['dashboard',
+     'client-monitoring',
+     'reviews',
+     'cases',
+     'evidence',
+     'approvals',
+     'activity',
+     'billing',
+     'settings']),
+      OWNER:new Set(['dashboard',
+     'client-monitoring',
+     'reviews',
+     'cases',
+     'evidence',
+     'approvals',
+     'activity',
+     'billing',
+     'settings'])
  };
  const items=allowed[role]?navItems.filter(([id])=>allowed[role].has(id)):navItems.filter(([id])=>id==='dashboard');
  return items.map(([id,label])=>[id,role==='CLIENT'&&id==='activity'?'Suivi':label]);
@@ -165,15 +305,103 @@ function shell(){
  document.body.classList.add('console-mode');document.body.innerHTML=`<div id="app"><aside class="sidebar" id="console-sidebar" aria-label="Navigation principale"><div class="brand">REVIEW<span>DEFENSE</span></div><button class="workspace-switcher" type="button" data-action="command-palette" aria-label="Ouvrir le sélecteur d’espace de travail"><span>⌘</span> Workspace <small>⌘K</small></button><nav id="nav">${visible.map(([id,label])=>`<button type="button" data-view="${id}" data-nav="${id}" aria-label="Ouvrir ${label}">${label}</button>`).join('')}</nav></aside><main><header><div><div class="eyebrow">REVIEW DEFENSE</div><h1 id="title">Dashboard</h1><p id="subtitle">Vue opérationnelle</p></div><div class="header-actions"><button class="icon-btn mobile-nav-toggle" type="button" data-action="mobile-nav" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="console-sidebar">☰</button><button class="command-btn" type="button" onclick="openCommandPalette()">Rechercher <kbd>⌘ K</kbd></button><button id="logout" class="ghost">Déconnexion</button></div></header><section id="content"></section></main></div><div id="toast" role="status" aria-live="polite"></div>`}
 const views={
  'client-monitoring':async()=>{
-   const [profileData,documentsData,googleData]=await Promise.all([api('/v1/client/profile'),api('/v1/client/documents'),api('/v1/integrations/google/locations')]);
-   const p=profileData.profile||{},docs=documentsData.items||[],locations=googleData.items||[],connections=googleData.connections||[];
+      const [profileData,
+     documentsData,
+     googleData]=await Promise.all([api('/v1/client/profile'),
+     api('/v1/client/documents'),
+     api('/v1/integrations/google/locations')]);
+      const p=profileData.profile||{},
+     docs=documentsData.items||[],
+     locations=googleData.items||[],
+     connections=googleData.connections||[];
    const canEdit=['OWNER','ADMIN','CLIENT'].includes(state.me?.role);
-   const fields=[['legal_name','Raison sociale'],['website','Site web'],['phone','Téléphone'],['address','Adresse'],['city','Ville'],['postal_code','Code postal'],['country','Pays'],['sector','Secteur'],['employee_count','Effectif'],['description','Description']];
-   const input=(name,label)=>'<label>'+label+'<input name="'+name+'" value="'+esc(p[name]||'')+'" maxlength="'+(name==='description'?2000:500)+'" '+(!canEdit?'disabled':'')+'></label>';
-   const profileForm='<form id="client-profile-form" class="panel stack"><div class="section-toolbar"><div><div class="eyebrow">ORGANISATION</div><h2>Profil de l’entreprise</h2><p>Ces informations restent dans votre espace organisationnel.</p></div></div><div class="card-grid three">'+fields.map(([name,label])=>input(name,label)).join('')+'</div><div class="form-actions"><button class="primary" type="submit" '+(!canEdit?'disabled':'')+'>Enregistrer le profil</button></div></form>';
-   const googlePanel='<section class="panel stack"><div class="section-toolbar"><div><div class="eyebrow">GOOGLE BUSINESS PROFILE</div><h2>Connexion Google</h2><p>Synchronisation en lecture seule des établissements et des avis. Aucune réponse ni modification ne sera envoyée.</p></div><span class="pill">'+connections.length+' connexion(s)</span></div><div><button class="primary" type="button" onclick="connectGoogle()" '+(!canEdit?'disabled':'')+'>Connecter Google</button></div>'+(googleData.errors||[]).map(x=>'<p class="error">'+esc(x.message||'Connexion Google indisponible')+'</p>').join('')+(locations.length?'<div class="case-list">'+locations.map(x=>'<article class="case-card"><div class="case-row"><div class="case-main"><strong>'+esc(x.location_name||'Établissement Google')+'</strong><span>'+esc(x.account_name||x.account_id||'')+'</span></div><div class="case-meta"><button type="button" class="'+(x.selected?'primary':'ghost')+'" onclick="selectGoogleLocation(\''+esc(x.connection_id)+'\',\''+esc(x.account_id)+'\',\''+esc(x.location_id)+'\')" '+(!canEdit?'disabled':'')+'>'+(x.selected?'Établissement sélectionné':'Sélectionner')+'</button></div></div></article>').join('')+'</div>':'<div class="empty">Aucun établissement détecté. Connectez un compte Google pour afficher ses fiches.</div>')+'</section>';
-   const documentPanel='<section class="panel stack"><div class="section-toolbar"><div><div class="eyebrow">DOCUMENTS</div><h2>Documents de l’organisation</h2><p>PDF, images et fichiers texte — 25 Mo maximum par fichier.</p></div><span class="pill">'+docs.length+' document(s)</span></div>'+(canEdit?'<label>Ajouter un document<input id="client-document-input" type="file" accept="application/pdf,image/jpeg,image/png,image/webp,text/plain,text/csv" multiple></label>':'')+'<div class="case-list">'+(docs.length?docs.map(d=>'<article class="case-card"><div class="case-row"><div class="case-main"><strong>'+esc(d.filename||'Document')+'</strong><span>'+esc(d.category||'GENERAL')+' · '+formatBytes(d.size_bytes)+' · '+esc(d.created_at||'')+'</span></div><div class="case-meta"><code>'+esc(String(d.sha256||'').slice(0,
-  16))+'</code><button type="button" class="ghost" onclick="downloadClientDocument(\''+esc(d.document_id)+'\')">Télécharger</button></div></div></article>').join(''):'<div class="empty">Aucun document déposé pour le moment.</div>')+'</div><p id="client-upload-status" class="hint" aria-live="polite"></p></section>';
+      const fields=[['legal_name',
+     'Raison sociale'],
+     ['website',
+     'Site web'],
+     ['phone',
+     'Téléphone'],
+     ['address',
+     'Adresse'],
+     ['city',
+     'Ville'],
+     ['postal_code',
+     'Code postal'],
+     ['country',
+     'Pays'],
+     ['sector',
+     'Secteur'],
+     ['employee_count',
+     'Effectif'],
+     ['description',
+     'Description']];
+      const input=(name,
+     label)=>'<label>' +
+     label +
+     '<input name="' +
+     name +
+     '" value="' +
+     esc(p[name]||'') +
+     '" maxlength="' +
+     (name==='description'?2000:500) +
+     '" ' +
+     (!canEdit?'disabled':'') +
+     '></label>';
+      const profileForm='<form id="client-profile-form" class="panel stack"><div class="section-toolbar"><div><div class="eyebrow">ORGANISATION</div><h2>Profil de l’entreprise</h2><p>Ces informations restent dans votre espace organisationnel.</p></div></div><div class="card-grid three">' +
+     fields.map(([name,
+     label])=>input(name,
+     label)).join('') +
+     '</div><div class="form-actions"><button class="primary" type="submit" ' +
+     (!canEdit?'disabled':'') +
+     '>Enregistrer le profil</button></div></form>';
+      const googlePanel='<section class="panel stack"><div class="section-toolbar"><div><div class="eyebrow">GOOGLE BUSINESS PROFILE</div><h2>Connexion Google</h2><p>Synchronisation en lecture seule des établissements et des avis. Aucune réponse ni modification ne sera envoyée.</p></div><span class="pill">' +
+     connections.length +
+     ' connexion(s)</span></div><div><button class="primary" type="button" onclick="connectGoogle()" ' +
+     (!canEdit?'disabled':'') +
+     '>Connecter Google</button></div>' +
+     (googleData.errors||[]).map(x=>'<p class="error">' +
+     esc(x.message||'Connexion Google indisponible') +
+     '</p>').join('') +
+     (locations.length?'<div class="case-list">' +
+     locations.map(x=>'<article class="case-card"><div class="case-row"><div class="case-main"><strong>' +
+     esc(x.location_name||'Établissement Google') +
+     '</strong><span>' +
+     esc(x.account_name||x.account_id||'') +
+     '</span></div><div class="case-meta"><button type="button" class="' +
+     (x.selected?'primary':'ghost') +
+     '" onclick="selectGoogleLocation(\'' +
+     esc(x.connection_id) +
+     '\',\'' +
+     esc(x.account_id) +
+     '\',\'' +
+     esc(x.location_id) +
+     '\')" ' +
+     (!canEdit?'disabled':'') +
+     '>' +
+     (x.selected?'Établissement sélectionné':'Sélectionner') +
+     '</button></div></div></article>').join('') +
+     '</div>':'<div class="empty">Aucun établissement détecté. Connectez un compte Google pour afficher ses fiches.</div>') +
+     '</section>';
+      const documentPanel='<section class="panel stack"><div class="section-toolbar"><div><div class="eyebrow">DOCUMENTS</div><h2>Documents de l’organisation</h2><p>PDF, images et fichiers texte — 25 Mo maximum par fichier.</p></div><span class="pill">' +
+     docs.length +
+     ' document(s)</span></div>' +
+     (canEdit?'<label>Ajouter un document<input id="client-document-input" type="file" accept="application/pdf,image/jpeg,image/png,image/webp,text/plain,text/csv" multiple></label>':'') +
+     '<div class="case-list">' +
+     (docs.length?docs.map(d=>'<article class="case-card"><div class="case-row"><div class="case-main"><strong>' +
+     esc(d.filename||'Document') +
+     '</strong><span>' +
+     esc(d.category||'GENERAL') +
+     ' · ' +
+     formatBytes(d.size_bytes) +
+     ' · ' +
+     esc(d.created_at||'') +
+     '</span></div><div class="case-meta"><code>' +
+     esc(String(d.sha256||'').slice(0,
+    16)) +
+    '</code><button type="button" class="ghost" onclick="downloadClientDocument(\'' +
+    esc(d.document_id) +
+    '\')">Télécharger</button></div></div></article>').join(''):'<div class="empty">Aucun document déposé pour le moment.</div>') +
+    '</div><p id="client-upload-status" class="hint" aria-live="polite"></p></section>';
    const status=new URLSearchParams(location.search).get('google');
    const notice=status==='connected'?'<p class="hint success-text">Compte Google connecté. Sélectionnez un établissement ci-dessous.</p>':status==='denied'?'<p class="hint">Connexion Google annulée.</p>':'';
    return pageHead('client-monitoring')+notice+profileForm+googlePanel+documentPanel;
@@ -181,12 +409,34 @@ const views={
  activity:async()=>{if(state.me?.role==='CLIENT'){const d=await api('/v1/cases');
   const items=d.items||[];
   return pageHead('activity',
-  'Suivi')+'<div class="panel"><div class="section-toolbar"><div><div class="eyebrow">SUIVI</div><h2>Suivi de vos dossiers</h2><p>État d’avancement de vos dossiers et prochaine étape.</p></div><span class="pill">'+items.length+' dossiers</span></div>'+(items.length?'<div class="case-list">'+items.map(x=>'<article class="case-card"><button class="case-row" type="button" onclick="openCase(\''+esc(x.case_id||'')+'\')"><div class="case-main"><strong>'+esc(x.case_id||'Dossier')+'</strong><span>'+esc(x.review_id||'Avis')+'</span></div><div class="case-meta"><span class="status">'+esc(x.status||'En cours')+'</span><span>Voir le détail →</span></div></button></article>').join('')+'</div>':'<div class="empty">Aucun dossier en cours.<small>Créez votre premier dossier depuis l’accueil.</small></div>')+'</div>';}const alerts=await views.alerts();
+    'Suivi') +
+    '<div class="panel"><div class="section-toolbar"><div><div class="eyebrow">SUIVI</div><h2>Suivi de vos dossiers</h2><p>État d’avancement de vos dossiers et prochaine étape.</p></div><span class="pill">' +
+    items.length +
+    ' dossiers</span></div>' +
+    (items.length?'<div class="case-list">' +
+    items.map(x=>'<article class="case-card"><button class="case-row" type="button" onclick="openCase(\'' +
+    esc(x.case_id||'') +
+    '\')"><div class="case-main"><strong>' +
+    esc(x.case_id||'Dossier') +
+    '</strong><span>' +
+    esc(x.review_id||'Avis') +
+    '</span></div><div class="case-meta"><span class="status">' +
+    esc(x.status||'En cours') +
+    '</span><span>Voir le détail →</span></div></button></article>').join('') +
+    '</div>':'<div class="empty">Aucun dossier en cours.<small>Créez votre premier dossier depuis l’accueil.</small></div>') +
+    '</div>';}const alerts=await views.alerts();
   const [audit,
   escalations]=await Promise.all([views.audit(),
   views.escalations()]);
   return pageHead('activity',
-  'Activité')+'<div class="activity-grid"><section class="panel"><div class="section-toolbar"><div><div class="eyebrow">ALERTES</div><h2>Alertes</h2><p>Événements opérationnels nécessitant une attention.</p></div></div>'+alerts+'</section><section class="panel"><div class="section-toolbar"><div><div class="eyebrow">ESCALADES</div><h2>Escalades</h2><p>Dossiers dont le SLA ou le niveau de risque nécessite une revue.</p></div></div>'+escalations+'</section><section class="panel"><div class="section-toolbar"><div><div class="eyebrow">JOURNAL</div><h2>Historique</h2><p>Chronologie des actions et événements enregistrés.</p></div></div>'+audit+'</section></div>'},
+    'Activité') +
+    '<div class="activity-grid"><section class="panel"><div class="section-toolbar"><div><div class="eyebrow">ALERTES</div><h2>Alertes</h2><p>Événements opérationnels nécessitant une attention.</p></div></div>' +
+    alerts +
+    '</section><section class="panel"><div class="section-toolbar"><div><div class="eyebrow">ESCALADES</div><h2>Escalades</h2><p>Dossiers dont le SLA ou le niveau de risque nécessite une revue.</p></div></div>' +
+    escalations +
+    '</section><section class="panel"><div class="section-toolbar"><div><div class="eyebrow">JOURNAL</div><h2>Historique</h2><p>Chronologie des actions et événements enregistrés.</p></div></div>' +
+    audit +
+    '</section></div>'},
  dashboard:async()=>{const [r,
   c,
   a,
@@ -195,7 +445,8 @@ const views={
   state.me?.role==='CLIENT'?Promise.resolve({items:[]}):api('/v1/approvals'),
   api('/v1/notifications/metrics').catch(()=>({}))]);
   return pageHead('dashboard',
-  'Pilotage')+`<div class="hero-grid"><div class="hero-card"><div class="eyebrow">REVIEW DEFENSE</div><h2>Décider avec des preuves. Soumettre avec contrôle humain.</h2><p>Chaque dossier reste suivi et protégé par des étapes explicites.</p><div class="hero-actions">${state.me?.role==='CLIENT'?'<button class="primary" onclick="showNewClientCase()">+ Nouveau dossier</button><button class="ghost" onclick="state.view=\'cases\';reviewDefenseRender()">Suivre mes dossiers</button>':'<button class="primary" onclick="state.view=\'cases\';reviewDefenseRender()">Ouvrir les dossiers</button><button class="ghost" onclick="state.view=\'approvals\';reviewDefenseRender()">Voir les validations</button>'}</div></div><div class="card"><div class="label">Reviews</div><div class="metric">${r.items?.length??0}</div><span class="metric-caption">Avis ingérés</span></div><div class="card"><div class="label">Dossiers</div><div class="metric">${c.items?.length??0}</div><span class="metric-caption">Dossiers suivis</span></div><div class="card"><div class="label">Approvals</div><div class="metric">${a.items?.length??0}</div><span class="metric-caption">Contrôles humains</span></div></div><div class="panel client-focus-panel"><div class="section-toolbar"><div><div class="eyebrow">À TRAITER MAINTENANT</div><h3>Votre prochaine action</h3><p>Le tableau de bord met en avant ce qui mérite votre attention avant le reste.</p></div><span class="pill warning">${a.items?.filter(x=>String(x.status||'').toUpperCase()==='PENDING').length||0} validation(s)</span></div><div class="client-focus-grid"><button class="client-focus-item" type="button" onclick="state.view='cases';reviewDefenseRender()"><span class="item-index">01</span><span><strong>Suivre les dossiers actifs</strong><small>${c.items?.filter(x=>['OPEN','IN_REVIEW','PENDING'].includes(String(x.status||'').toUpperCase())).length||0} dossier(s) en cours</small></span><b>→</b></button>${state.me?.role==='CLIENT'?'<button class="client-focus-item" type="button" onclick="state.view=\'cases\';reviewDefenseRender()"><span class="item-index">02</span><span><strong>Compléter un dossier</strong><small>Ajouter les justificatifs manquants</small></span><b>→</b></button>':"<button class=\"client-focus-item\" type=\"button\" onclick=\"state.view='approvals';reviewDefenseRender()\"><span class=\"item-index\">02</span><span><strong>Vérifier les validations</strong><small>${a.items?.filter(x=>String(x.status||'').toUpperCase()==='PENDING').length||0} décision(s) humaine(s) en attente</small></span><b>→</b></button>"}<button class="client-focus-item" type="button" onclick="state.view='evidence';reviewDefenseRender()"><span class="item-index">03</span><span><strong>Contrôler les preuves</strong><small>Accéder au registre d’intégrité documentaire</small></span><b>→</b></button></div></div><div class="card-grid three"><div class="panel"><h3>Pipeline</h3><p>Analyse → preuves → validation humaine → préparation.</p><div class="pipeline"><span>Analyse</span><i>→</i><span>Preuves</span><i>→</i><span>Humain</span><i>→</i><span>Gel</span></div></div><div class="panel"><h3>Garde-fous</h3><p>Des contrôles de sécurité et une validation humaine encadrent les étapes sensibles.</p><div class="guardrail">Revue humaine requise avant toute action externe.</div></div><div class="panel"><h3>Notifications</h3><p class="metric-inline">${n.total!==undefined?esc(n.total):'—'} <small>événements</small></p><span class="metric-caption">${n.unread!==undefined?esc(n.unread):'—'} non lus</span></div></div>`},
+    'Pilotage') +
+    `<div class="hero-grid"><div class="hero-card"><div class="eyebrow">REVIEW DEFENSE</div><h2>Décider avec des preuves. Soumettre avec contrôle humain.</h2><p>Chaque dossier reste suivi et protégé par des étapes explicites.</p><div class="hero-actions">${state.me?.role==='CLIENT'?'<button class="primary" onclick="showNewClientCase()">+ Nouveau dossier</button><button class="ghost" onclick="state.view=\'cases\';reviewDefenseRender()">Suivre mes dossiers</button>':'<button class="primary" onclick="state.view=\'cases\';reviewDefenseRender()">Ouvrir les dossiers</button><button class="ghost" onclick="state.view=\'approvals\';reviewDefenseRender()">Voir les validations</button>'}</div></div><div class="card"><div class="label">Reviews</div><div class="metric">${r.items?.length??0}</div><span class="metric-caption">Avis ingérés</span></div><div class="card"><div class="label">Dossiers</div><div class="metric">${c.items?.length??0}</div><span class="metric-caption">Dossiers suivis</span></div><div class="card"><div class="label">Approvals</div><div class="metric">${a.items?.length??0}</div><span class="metric-caption">Contrôles humains</span></div></div><div class="panel client-focus-panel"><div class="section-toolbar"><div><div class="eyebrow">À TRAITER MAINTENANT</div><h3>Votre prochaine action</h3><p>Le tableau de bord met en avant ce qui mérite votre attention avant le reste.</p></div><span class="pill warning">${a.items?.filter(x=>String(x.status||'').toUpperCase()==='PENDING').length||0} validation(s)</span></div><div class="client-focus-grid"><button class="client-focus-item" type="button" onclick="state.view='cases';reviewDefenseRender()"><span class="item-index">01</span><span><strong>Suivre les dossiers actifs</strong><small>${c.items?.filter(x=>['OPEN','IN_REVIEW','PENDING'].includes(String(x.status||'').toUpperCase())).length||0} dossier(s) en cours</small></span><b>→</b></button>${state.me?.role==='CLIENT'?'<button class="client-focus-item" type="button" onclick="state.view=\'cases\';reviewDefenseRender()"><span class="item-index">02</span><span><strong>Compléter un dossier</strong><small>Ajouter les justificatifs manquants</small></span><b>→</b></button>':"<button class=\"client-focus-item\" type=\"button\" onclick=\"state.view='approvals';reviewDefenseRender()\"><span class=\"item-index\">02</span><span><strong>Vérifier les validations</strong><small>${a.items?.filter(x=>String(x.status||'').toUpperCase()==='PENDING').length||0} décision(s) humaine(s) en attente</small></span><b>→</b></button>"}<button class="client-focus-item" type="button" onclick="state.view='evidence';reviewDefenseRender()"><span class="item-index">03</span><span><strong>Contrôler les preuves</strong><small>Accéder au registre d’intégrité documentaire</small></span><b>→</b></button></div></div><div class="card-grid three"><div class="panel"><h3>Pipeline</h3><p>Analyse → preuves → validation humaine → préparation.</p><div class="pipeline"><span>Analyse</span><i>→</i><span>Preuves</span><i>→</i><span>Humain</span><i>→</i><span>Gel</span></div></div><div class="panel"><h3>Garde-fous</h3><p>Des contrôles de sécurité et une validation humaine encadrent les étapes sensibles.</p><div class="guardrail">Revue humaine requise avant toute action externe.</div></div><div class="panel"><h3>Notifications</h3><p class="metric-inline">${n.total!==undefined?esc(n.total):'—'} <small>événements</small></p><span class="metric-caption">${n.unread!==undefined?esc(n.unread):'—'} non lus</span></div></div>`},
  reviews:async()=>{const d=await api('/v1/reviews');
   const items=d.items||[];
   const avg=items.length?(items.reduce((sum,
@@ -205,14 +456,59 @@ const views={
   const high=items.filter(x=>Number(x.rating||0)>=4).length;
   const sourceCount=new Set(items.map(x=>x.source).filter(Boolean)).size;
   return pageHead('reviews',
-  String(items.length)+' avis')+'<div class="review-overview"><div class="panel review-summary"><div><div class="eyebrow">REVIEW INTAKE</div><h3>Qualification des avis</h3><p>Identifier rapidement les avis à examiner, sans déclencher d’action externe automatique.</p></div><div class="review-summary-score"><strong>'+esc(String(avg))+'</strong><span>note moyenne</span></div></div><div class="review-mini-grid"><div class="card"><span class="label">À examiner</span><strong>'+low+'</strong><small>avis ≤ 2 étoiles</small></div><div class="card"><span class="label">Positifs</span><strong>'+high+'</strong><small>avis ≥ 4 étoiles</small></div><div class="card"><span class="label">Sources</span><strong>'+sourceCount+'</strong><small>sources représentées</small></div></div></div>'+'<div class="panel reviews-panel"><div class="section-toolbar"><div><h3>Inbox des avis</h3><p>Recherche et lecture des éléments disponibles.</p></div><span class="pill">'+items.length+' résultats</span></div><div class="review-toolbar"><input aria-label="Rechercher un avis" placeholder="Rechercher auteur, texte, source ou identifiant…" oninput="filterReviewCards(this)"><select aria-label="Filtrer par note" onchange="filterReviewCards(this)"><option value="">Toutes les notes</option><option value="1">1 étoile</option><option value="2">2 étoiles</option><option value="3">3 étoiles</option><option value="4">4 étoiles</option><option value="5">5 étoiles</option></select><select aria-label="Filtrer par priorité" onchange="filterReviewCards(this)"><option value="">Toutes les priorités</option><option value="low">À examiner</option><option value="high">Positif</option></select></div>'+(items.length?'<div class="review-list">'+items.map(x=>{const rating=Number(x.rating||0);const priority=rating<=2?'low':rating>=4?'high':'neutral';return '<article class="review-card" data-rating="'+rating+'" data-priority="'+priority+'" data-search="'+esc([x.review_id,
+    String(items.length) +
+    ' avis') +
+    '<div class="review-overview"><div class="panel review-summary"><div><div class="eyebrow">REVIEW INTAKE</div><h3>Qualification des avis</h3><p>Identifier rapidement les avis à examiner, sans déclencher d’action externe automatique.</p></div><div class="review-summary-score"><strong>' +
+    esc(String(avg)) +
+    '</strong><span>note moyenne</span></div></div><div class="review-mini-grid"><div class="card"><span class="label">À examiner</span><strong>' +
+    low +
+    '</strong><small>avis ≤ 2 étoiles</small></div><div class="card"><span class="label">Positifs</span><strong>' +
+    high +
+    '</strong><small>avis ≥ 4 étoiles</small></div><div class="card"><span class="label">Sources</span><strong>' +
+    sourceCount +
+    '</strong><small>sources représentées</small></div></div></div>' +
+    '<div class="panel reviews-panel"><div class="section-toolbar"><div><h3>Inbox des avis</h3><p>Recherche et lecture des éléments disponibles.</p></div><span class="pill">' +
+    items.length +
+    ' résultats</span></div><div class="review-toolbar"><input aria-label="Rechercher un avis" placeholder="Rechercher auteur, texte, source ou identifiant…" oninput="filterReviewCards(this)"><select aria-label="Filtrer par note" onchange="filterReviewCards(this)"><option value="">Toutes les notes</option><option value="1">1 étoile</option><option value="2">2 étoiles</option><option value="3">3 étoiles</option><option value="4">4 étoiles</option><option value="5">5 étoiles</option></select><select aria-label="Filtrer par priorité" onchange="filterReviewCards(this)"><option value="">Toutes les priorités</option><option value="low">À examiner</option><option value="high">Positif</option></select></div>' +
+    (items.length?'<div class="review-list">' +
+    items.map(x=>{const rating=Number(x.rating||0);const priority=rating<=2?'low':rating>=4?'high':'neutral';return '<article class="review-card" data-rating="' +
+    rating +
+    '" data-priority="' +
+    priority +
+    '" data-search="' +
+    esc([x.review_id,
   x.author_display_name,
   x.text,
-  x.source].filter(Boolean).join(' ').toLowerCase())+'"><div class="review-card-top"><div><span class="review-id">'+esc(x.review_id||'REVIEW')+'</span><span class="review-source">'+esc(x.source||'Source inconnue')+'</span></div><span class="rating-badge rating-'+rating+'">'+('★'.repeat(Math.max(0,
+    x.source].filter(Boolean).join(' ').toLowerCase()) +
+    '"><div class="review-card-top"><div><span class="review-id">' +
+    esc(x.review_id||'REVIEW') +
+    '</span><span class="review-source">' +
+    esc(x.source||'Source inconnue') +
+    '</span></div><span class="rating-badge rating-' +
+    rating +
+    '">' +
+    ('★'.repeat(Math.max(0,
   Math.min(5,
-  rating))))+'<small>'+rating+'/5</small></span></div><div class="review-author">'+esc(x.author_display_name||'Auteur non renseigné')+'</div><p class="review-text">'+esc(x.text||'Aucun texte fourni.')+'</p><div class="review-card-footer"><span class="status">'+(priority==='low'?'À examiner':priority==='high'?'Positif':'Neutre')+'</span><div class="review-card-actions"><button class="link-btn" type="button" onclick="focusReview(\''+esc(x.review_id||'')+'\')">Ouvrir l’avis →</button>'+(['OWNER',
+    rating)))) +
+    '<small>' +
+    rating +
+    '/5</small></span></div><div class="review-author">' +
+    esc(x.author_display_name||'Auteur non renseigné') +
+    '</div><p class="review-text">' +
+    esc(x.text||'Aucun texte fourni.') +
+    '</p><div class="review-card-footer"><span class="status">' +
+    (priority==='low'?'À examiner':priority==='high'?'Positif':'Neutre') +
+    '</span><div class="review-card-actions"><button class="link-btn" type="button" onclick="focusReview(\'' +
+    esc(x.review_id||'') +
+    '\')">Ouvrir l’avis →</button>' +
+    (['OWNER',
   'ADMIN',
-  'ANALYST'].includes(state.me?.role)?'<button class="primary compact" type="button" onclick="createCaseFromReview(\''+esc(x.review_id||'')+'\')">Créer le dossier</button>':'')+'</div></div></article>'}).join('')+'</div>':'<div class="empty">Aucun avis disponible.<small>Les avis ingérés apparaîtront ici après synchronisation.</small></div>')+'</div></div>'},
+    'ANALYST'].includes(state.me?.role)?'<button class="primary compact" type="button" onclick="createCaseFromReview(\'' +
+    esc(x.review_id||'') +
+    '\')">Créer le dossier</button>':'') +
+    '</div></div></article>'}).join('') +
+    '</div>':'<div class="empty">Aucun avis disponible.<small>Les avis ingérés apparaîtront ici après synchronisation.</small></div>') +
+    '</div></div>'},
    cases:async()=>{const d=await api('/v1/cases');
   const items=d.items||[];
   const open=items.filter(x=>['OPEN',
@@ -221,11 +517,44 @@ const views={
   const critical=items.filter(x=>String(x.priority||x.level||'').toUpperCase()==='CRITICAL').length;
   const overdue=items.filter(x=>x.overdue===true||String(x.sla_status||'').toUpperCase()==='OVERDUE').length;
   return pageHead('cases',
-  String(items.length)+' dossiers')+'<div class="case-overview"><div class="panel case-summary"><div><div class="eyebrow">CASE MANAGEMENT</div><h3>Centre des dossiers</h3><p>Transformer chaque signal en dossier traçable, avec priorité, état et prochaine action clairement visibles.</p></div><div class="case-summary-count"><strong>'+items.length+'</strong><span>dossiers</span></div></div><div class="case-mini-grid"><div class="card"><span class="label">Actifs</span><strong>'+open+'</strong><small>dossiers en cours</small></div><div class="card"><span class="label">Critiques</span><strong>'+critical+'</strong><small>priorité critique</small></div><div class="card"><span class="label">SLA</span><strong>'+overdue+'</strong><small>en dépassement</small></div></div></div>'+'<div class="panel cases-panel"><div class="section-toolbar"><div><h3>Mes dossiers</h3><p>Déposez vos demandes, complétez les justificatifs et suivez leur avancement.</p></div>'+ (state.me?.role==='CLIENT'?'<button class="primary" type="button" onclick="showNewClientCase()">+ Nouveau dossier</button>':'<span class="pill">'+items.length+' dossiers</span>') +'</div><div class="case-toolbar"><input aria-label="Rechercher un dossier" placeholder="Rechercher ID, avis, statut ou priorité…" oninput="filterCaseCards(this)"><select aria-label="Filtrer les dossiers" onchange="filterCaseCards(this)"><option value="">Tous les statuts</option><option value="OPEN">Ouverts</option><option value="IN_REVIEW">En revue</option><option value="PENDING">En attente</option><option value="CLOSED">Clôturés</option></select></div>'+(items.length?'<div class="case-list">'+items.map(x=>'<article class="case-card" data-status="'+esc(String(x.status||'').toUpperCase())+'" data-search="'+esc([x.case_id,
+    String(items.length) +
+    ' dossiers') +
+    '<div class="case-overview"><div class="panel case-summary"><div><div class="eyebrow">CASE MANAGEMENT</div><h3>Centre des dossiers</h3><p>Transformer chaque signal en dossier traçable, avec priorité, état et prochaine action clairement visibles.</p></div><div class="case-summary-count"><strong>' +
+    items.length +
+    '</strong><span>dossiers</span></div></div><div class="case-mini-grid"><div class="card"><span class="label">Actifs</span><strong>' +
+    open +
+    '</strong><small>dossiers en cours</small></div><div class="card"><span class="label">Critiques</span><strong>' +
+    critical +
+    '</strong><small>priorité critique</small></div><div class="card"><span class="label">SLA</span><strong>' +
+    overdue +
+    '</strong><small>en dépassement</small></div></div></div>' +
+    '<div class="panel cases-panel"><div class="section-toolbar"><div><h3>Mes dossiers</h3><p>Déposez vos demandes, complétez les justificatifs et suivez leur avancement.</p></div>' +
+     (state.me?.role==='CLIENT'?'<button class="primary" type="button" onclick="showNewClientCase()">+ Nouveau dossier</button>':'<span class="pill">' +
+    items.length +
+    ' dossiers</span>') +
+    '</div><div class="case-toolbar"><input aria-label="Rechercher un dossier" placeholder="Rechercher ID, avis, statut ou priorité…" oninput="filterCaseCards(this)"><select aria-label="Filtrer les dossiers" onchange="filterCaseCards(this)"><option value="">Tous les statuts</option><option value="OPEN">Ouverts</option><option value="IN_REVIEW">En revue</option><option value="PENDING">En attente</option><option value="CLOSED">Clôturés</option></select></div>' +
+    (items.length?'<div class="case-list">' +
+    items.map(x=>'<article class="case-card" data-status="' +
+    esc(String(x.status||'').toUpperCase()) +
+    '" data-search="' +
+    esc([x.case_id,
   x.review_id,
   x.status,
   x.priority,
-  x.level].filter(Boolean).join(' ').toLowerCase())+'"><button class="case-row" type="button" onclick="openCase(\''+esc(x.case_id||'')+'\')"><div class="case-main"><strong>'+esc(x.case_id||'CASE')+'</strong><span>'+esc(x.review_id||'Avis non lié')+'</span></div><div class="case-meta"><span class="case-priority">'+esc(x.priority||x.level||'STANDARD')+'</span><span class="status">'+esc(x.status||'UNKNOWN')+'</span></div></button></article>').join(''):'<div class="empty">Aucun dossier pour le moment.<small>Les nouveaux dossiers apparaîtront ici après ingestion.</small></div>')+'</div></div>'+'<div class="case-guardrail"><span class="guardrail-icon">✓</span><div><strong>Traçabilité conservée</strong><p>Les décisions et actions sensibles restent soumises aux contrôles humains et aux règles de sécurité.</p></div></div>'},
+    x.level].filter(Boolean).join(' ').toLowerCase()) +
+    '"><button class="case-row" type="button" onclick="openCase(\'' +
+    esc(x.case_id||'') +
+    '\')"><div class="case-main"><strong>' +
+    esc(x.case_id||'CASE') +
+    '</strong><span>' +
+    esc(x.review_id||'Avis non lié') +
+    '</span></div><div class="case-meta"><span class="case-priority">' +
+    esc(x.priority||x.level||'STANDARD') +
+    '</span><span class="status">' +
+    esc(x.status||'UNKNOWN') +
+    '</span></div></button></article>').join(''):'<div class="empty">Aucun dossier pour le moment.<small>Les nouveaux dossiers apparaîtront ici après ingestion.</small></div>') +
+    '</div></div>' +
+    '<div class="case-guardrail"><span class="guardrail-icon">✓</span><div><strong>Traçabilité conservée</strong><p>Les décisions et actions sensibles restent soumises aux contrôles humains et aux règles de sécurité.</p></div></div>'},
    workload:async()=>{const d=await api('/v1/review-queue/workload');
   const items=d.items||[];
   const total=items.reduce((n,
@@ -244,12 +573,53 @@ const views={
   x)=>n+Number(x.priority_score_total||0),
   0);
   return pageHead('workload',
-  String(items.length)+' analystes')+'<div class="sla-overview"><div class="panel sla-hero"><div><div class="eyebrow">SLA CONTROL CENTER</div><h2>Charge & délais</h2><p>Visualiser la capacité opérationnelle et les signaux SLA sans modifier automatiquement l’affectation des dossiers.</p></div><div class="sla-health"><span class="health-dot '+(overdue?'warning':'good')+'"></span><strong>'+(overdue?'Attention SLA':'SLA sous contrôle')+'</strong></div></div><div class="sla-kpis"><div class="card"><span class="label">Dossiers</span><strong>'+total+'</strong><small>charge totale</small></div><div class="card"><span class="label">En retard</span><strong>'+overdue+'</strong><small>overdue</small></div><div class="card"><span class="label">À échéance</span><strong>'+due+'</strong><small>due soon</small></div><div class="card"><span class="label">Critiques</span><strong>'+critical+'</strong><small>priorité élevée</small></div></div></div><div class="panel workload-panel"><div class="section-toolbar"><div><h3>Charge par analyste</h3><p>Répartition actuelle issue du moteur de file SLA.</p></div><span class="pill">'+items.length+' analystes</span></div><div class="workload-list">'+(items.length?items.map(x=>{const count=Number(x.case_count||0);const max=Math.max(...items.map(y=>Number(y.case_count||0)),
+    String(items.length) +
+    ' analystes') +
+    '<div class="sla-overview"><div class="panel sla-hero"><div><div class="eyebrow">SLA CONTROL CENTER</div><h2>Charge & délais</h2><p>Visualiser la capacité opérationnelle et les signaux SLA sans modifier automatiquement l’affectation des dossiers.</p></div><div class="sla-health"><span class="health-dot ' +
+    (overdue?'warning':'good') +
+    '"></span><strong>' +
+    (overdue?'Attention SLA':'SLA sous contrôle') +
+    '</strong></div></div><div class="sla-kpis"><div class="card"><span class="label">Dossiers</span><strong>' +
+    total +
+    '</strong><small>charge totale</small></div><div class="card"><span class="label">En retard</span><strong>' +
+    overdue +
+    '</strong><small>overdue</small></div><div class="card"><span class="label">À échéance</span><strong>' +
+    due +
+    '</strong><small>due soon</small></div><div class="card"><span class="label">Critiques</span><strong>' +
+    critical +
+    '</strong><small>priorité élevée</small></div></div></div><div class="panel workload-panel"><div class="section-toolbar"><div><h3>Charge par analyste</h3><p>Répartition actuelle issue du moteur de file SLA.</p></div><span class="pill">' +
+    items.length +
+    ' analystes</span></div><div class="workload-list">' +
+    (items.length?items.map(x=>{const count=Number(x.case_count||0);const max=Math.max(...items.map(y=>Number(y.case_count||0)),
   1);const pct=Math.min(100,
-  Math.round(count/max*100));return '<article class="workload-row"><div class="workload-person"><strong>'+esc(x.user_id||'NON ASSIGNÉ')+'</strong><span>'+count+' dossier(s) · score '+esc(x.priority_score_total||0)+'</span></div><div class="workload-track"><i style="width:'+pct+'%"></i></div><div class="workload-badges"><span>Critical '+esc(x.critical_count||0)+'</span><span>High '+esc(x.high_count||0)+'</span><span class="'+(Number(x.overdue_count||0)?'bad':'')+'">Overdue '+esc(x.overdue_count||0)+'</span><span class="'+(Number(x.due_soon_count||0)?'warn':'')+'">Due soon '+esc(x.due_soon_count||0)+'</span></div></article>'}).join(''):'<div class="empty">Aucune charge analyste disponible.<small>Les données apparaîtront lorsque la file SLA sera alimentée.</small></div>')+'</div></div><div class="panel sla-note"><strong>Contrôle humain</strong><span>Cette vue expose les signaux de charge et de délai. Les affectations et escalades restent régies par les contrôles serveur et les règles existantes.</span><b>Score global '+score+'</b></div>'},
+    Math.round(count/max*100));return '<article class="workload-row"><div class="workload-person"><strong>' +
+    esc(x.user_id||'NON ASSIGNÉ') +
+    '</strong><span>' +
+    count +
+    ' dossier(s) · score ' +
+    esc(x.priority_score_total||0) +
+    '</span></div><div class="workload-track"><i style="width:' +
+    pct +
+    '%"></i></div><div class="workload-badges"><span>Critical ' +
+    esc(x.critical_count||0) +
+    '</span><span>High ' +
+    esc(x.high_count||0) +
+    '</span><span class="' +
+    (Number(x.overdue_count||0)?'bad':'') +
+    '">Overdue ' +
+    esc(x.overdue_count||0) +
+    '</span><span class="' +
+    (Number(x.due_soon_count||0)?'warn':'') +
+    '">Due soon ' +
+    esc(x.due_soon_count||0) +
+    '</span></div></article>'}).join(''):'<div class="empty">Aucune charge analyste disponible.<small>Les données apparaîtront lorsque la file SLA sera alimentée.</small></div>') +
+    '</div></div><div class="panel sla-note"><strong>Contrôle humain</strong><span>Cette vue expose les signaux de charge et de délai. Les affectations et escalades restent régies par les contrôles serveur et les règles existantes.</span><b>Score global ' +
+    score +
+    '</b></div>'},
  escalations:async()=>{const d=await api('/v1/escalations');
   return pageHead('escalations',
-  `${d.items?.length||0} signaux`)+`<div class="panel"><div class="section-toolbar"><div><h3>Signaux actifs</h3><p>Prioriser les écarts SLA et contradictions à traiter.</p></div><span class="pill warning">${(d.items||[]).filter(x=>x.status==='OPEN').length} ouverts</span></div>${(d.items||[]).length?`<table class="table"><thead><tr><th>Case</th><th>Niveau</th><th>Statut</th><th>Motif</th></tr></thead><tbody>${d.items.map(x=>`<tr><td>${esc(x.case_id)}</td><td>${esc(x.level)}</td><td>${esc(x.status)}</td><td>${esc(x.reason)}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">Aucune escalation active.<small>Le centre reste surveillé par les règles SLA.</small></div>'}</div>`},
+    `${d.items?.length||0} signaux`) +
+    `<div class="panel"><div class="section-toolbar"><div><h3>Signaux actifs</h3><p>Prioriser les écarts SLA et contradictions à traiter.</p></div><span class="pill warning">${(d.items||[]).filter(x=>x.status==='OPEN').length} ouverts</span></div>${(d.items||[]).length?`<table class="table"><thead><tr><th>Case</th><th>Niveau</th><th>Statut</th><th>Motif</th></tr></thead><tbody>${d.items.map(x=>`<tr><td>${esc(x.case_id)}</td><td>${esc(x.level)}</td><td>${esc(x.status)}</td><td>${esc(x.reason)}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">Aucune escalation active.<small>Le centre reste surveillé par les règles SLA.</small></div>'}</div>`},
  evidence:async()=>{const d=await api('/v1/evidence');
   const items=d.items||[];
   const verified=items.filter(x=>String(x.status||'').toUpperCase()==='VERIFIED').length;
@@ -260,19 +630,83 @@ const views={
   0);
   const types=new Set(items.map(x=>x.content_type).filter(Boolean)).size;
   return pageHead('evidence',
-  String(items.length)+' éléments')+'<div class="evidence-overview"><div class="panel evidence-hero"><div><div class="eyebrow">EVIDENCE CONTROL</div><h2>Preuves et justificatifs</h2><p>'+ (state.me?.role==='CLIENT' ? 'Déposez et consultez vos justificatifs. Leur vérification est réalisée par Review Defense.' : 'Conserver, vérifier et relier les éléments de preuve avec une intégrité documentaire explicite.') +'</p></div><div class="integrity-badge"><span class="health-dot '+(items.length&&verified===items.length?'good':'warning')+'"></span><strong>'+(items.length&&verified===items.length?'Intégrité vérifiée':'Vérification requise')+'</strong></div></div><div class="evidence-kpis"><div class="card"><span class="label">Éléments</span><strong>'+items.length+'</strong><small>preuves enregistrées</small></div><div class="card"><span class="label">Vérifiées</span><strong>'+verified+'</strong><small>intégrité validée</small></div><div class="card"><span class="label">À vérifier</span><strong>'+pending+'</strong><small>statut non final</small></div><div class="card"><span class="label">Types</span><strong>'+types+'</strong><small>formats représentés</small></div></div></div><div class="panel evidence-registry"><div class="section-toolbar"><div><h3>Registre</h3><p>Recherche et consultation des justificatifs.</p></div><span class="pill">'+items.length+' preuves</span></div><div class="evidence-toolbar"><input aria-label="Rechercher une preuve" placeholder="Rechercher ID, type, statut ou Empreinte documentaire…" oninput="filterEvidenceCards(this)"><select aria-label="Filtrer les preuves" onchange="filterEvidenceCards(this)"><option value="">Tous les statuts</option><option value="VERIFIED">Vérifiées</option><option value="PENDING">À vérifier</option><option value="REJECTED">Rejetées</option></select></div>'+(items.length?'<div class="evidence-list">'+items.map(x=>'<article class="evidence-card" data-status="'+esc(String(x.status||'').toUpperCase())+'" data-search="'+esc([x.evidence_id,
+    String(items.length) +
+    ' éléments') +
+    '<div class="evidence-overview"><div class="panel evidence-hero"><div><div class="eyebrow">EVIDENCE CONTROL</div><h2>Preuves et justificatifs</h2><p>' +
+     (state.me?.role==='CLIENT' ? 'Déposez et consultez vos justificatifs. Leur vérification est réalisée par Review Defense.' : 'Conserver, vérifier et relier les éléments de preuve avec une intégrité documentaire explicite.') +
+    '</p></div><div class="integrity-badge"><span class="health-dot ' +
+    (items.length&&verified===items.length?'good':'warning') +
+    '"></span><strong>' +
+    (items.length&&verified===items.length?'Intégrité vérifiée':'Vérification requise') +
+    '</strong></div></div><div class="evidence-kpis"><div class="card"><span class="label">Éléments</span><strong>' +
+    items.length +
+    '</strong><small>preuves enregistrées</small></div><div class="card"><span class="label">Vérifiées</span><strong>' +
+    verified +
+    '</strong><small>intégrité validée</small></div><div class="card"><span class="label">À vérifier</span><strong>' +
+    pending +
+    '</strong><small>statut non final</small></div><div class="card"><span class="label">Types</span><strong>' +
+    types +
+    '</strong><small>formats représentés</small></div></div></div><div class="panel evidence-registry"><div class="section-toolbar"><div><h3>Registre</h3><p>Recherche et consultation des justificatifs.</p></div><span class="pill">' +
+    items.length +
+    ' preuves</span></div><div class="evidence-toolbar"><input aria-label="Rechercher une preuve" placeholder="Rechercher ID, type, statut ou Empreinte documentaire…" oninput="filterEvidenceCards(this)"><select aria-label="Filtrer les preuves" onchange="filterEvidenceCards(this)"><option value="">Tous les statuts</option><option value="VERIFIED">Vérifiées</option><option value="PENDING">À vérifier</option><option value="REJECTED">Rejetées</option></select></div>' +
+    (items.length?'<div class="evidence-list">' +
+    items.map(x=>'<article class="evidence-card" data-status="' +
+    esc(String(x.status||'').toUpperCase()) +
+    '" data-search="' +
+    esc([x.evidence_id,
   x.content_type,
   x.status,
-  x.sha256].filter(Boolean).join(' ').toLowerCase())+'"><div class="evidence-card-top"><div><strong>'+esc(x.evidence_id||'EVIDENCE')+'</strong><span>'+esc(x.content_type||'Type inconnu')+' · '+esc(x.size_bytes||0)+' octets</span></div><span class="evidence-status">'+esc(x.status||'UNKNOWN')+'</span></div><div class="hash-block"><span>Empreinte documentaire</span><code>'+esc(x.sha256||'Empreinte indisponible')+'</code><button class="link-btn" type="button" onclick="copyEvidenceHash(this)">Copier</button></div></article>').join('')+'</div>':'<div class="empty">Aucune preuve enregistrée.<small>Les éléments ingérés apparaîtront ici.</small></div>')+'</div><div class="evidence-integrity-note"><strong>Intégrité documentaire</strong><span>Chaque preuve conserve son empreinte Empreinte documentaire. La présentation ne modifie jamais le contenu source.</span></div>'},
+    x.sha256].filter(Boolean).join(' ').toLowerCase()) +
+    '"><div class="evidence-card-top"><div><strong>' +
+    esc(x.evidence_id||'EVIDENCE') +
+    '</strong><span>' +
+    esc(x.content_type||'Type inconnu') +
+    ' · ' +
+    esc(x.size_bytes||0) +
+    ' octets</span></div><span class="evidence-status">' +
+    esc(x.status||'UNKNOWN') +
+    '</span></div><div class="hash-block"><span>Empreinte documentaire</span><code>' +
+    esc(x.sha256||'Empreinte indisponible') +
+    '</code><button class="link-btn" type="button" onclick="copyEvidenceHash(this)">Copier</button></div></article>').join('') +
+    '</div>':'<div class="empty">Aucune preuve enregistrée.<small>Les éléments ingérés apparaîtront ici.</small></div>') +
+    '</div><div class="evidence-integrity-note"><strong>Intégrité documentaire</strong><span>Chaque preuve conserve son empreinte Empreinte documentaire. La présentation ne modifie jamais le contenu source.</span></div>'},
  approvals:async()=>{const d=await api('/v1/approvals');
   const items=d.items||[];
   const pending=items.filter(x=>String(x.status||'').toUpperCase()==='PENDING').length;
   const approved=items.filter(x=>String(x.status||'').toUpperCase()==='APPROVED').length;
   const rejected=items.filter(x=>String(x.status||'').toUpperCase()==='REJECTED').length;
   return pageHead('approvals',
-  String(pending)+' en attente')+'<div class="approval-overview"><div class="panel approval-hero"><div><div class="eyebrow">HUMAN APPROVAL GATE</div><h2>Centre de validation</h2><p>Chaque action sensible reste bloquée jusqu’à une validation humaine explicite et traçable.</p></div><span class="approval-lock">🔒 HUMAN GATE</span></div><div class="approval-kpis"><div class="card"><span class="label">En attente</span><strong>'+pending+'</strong><small>requiert une décision</small></div><div class="card"><span class="label">Approuvées</span><strong>'+approved+'</strong><small>validation enregistrée</small></div><div class="card"><span class="label">Refusées</span><strong>'+rejected+'</strong><small>contrôle négatif</small></div></div></div><div class="panel approvals-panel"><div class="section-toolbar"><div><h3>File de validation</h3><p>Examiner les demandes avant toute préparation d’action externe.</p></div><span class="pill warning">'+pending+' à traiter</span></div><div class="approval-toolbar"><input aria-label="Rechercher une approbation" placeholder="Rechercher ID, dossier ou statut…" oninput="filterApprovalCards(this)"><select aria-label="Filtrer les approbations" onchange="filterApprovalCards(this)"><option value="">Tous les statuts</option><option value="PENDING">En attente</option><option value="APPROVED">Approuvées</option><option value="REJECTED">Refusées</option></select></div>'+(items.length?'<div class="approval-list">'+items.map(x=>'<article class="approval-card" data-status="'+esc(String(x.status||'').toUpperCase())+'" data-search="'+esc([x.approval_id,
+    String(pending) +
+    ' en attente') +
+    '<div class="approval-overview"><div class="panel approval-hero"><div><div class="eyebrow">HUMAN APPROVAL GATE</div><h2>Centre de validation</h2><p>Chaque action sensible reste bloquée jusqu’à une validation humaine explicite et traçable.</p></div><span class="approval-lock">🔒 HUMAN GATE</span></div><div class="approval-kpis"><div class="card"><span class="label">En attente</span><strong>' +
+    pending +
+    '</strong><small>requiert une décision</small></div><div class="card"><span class="label">Approuvées</span><strong>' +
+    approved +
+    '</strong><small>validation enregistrée</small></div><div class="card"><span class="label">Refusées</span><strong>' +
+    rejected +
+    '</strong><small>contrôle négatif</small></div></div></div><div class="panel approvals-panel"><div class="section-toolbar"><div><h3>File de validation</h3><p>Examiner les demandes avant toute préparation d’action externe.</p></div><span class="pill warning">' +
+    pending +
+    ' à traiter</span></div><div class="approval-toolbar"><input aria-label="Rechercher une approbation" placeholder="Rechercher ID, dossier ou statut…" oninput="filterApprovalCards(this)"><select aria-label="Filtrer les approbations" onchange="filterApprovalCards(this)"><option value="">Tous les statuts</option><option value="PENDING">En attente</option><option value="APPROVED">Approuvées</option><option value="REJECTED">Refusées</option></select></div>' +
+    (items.length?'<div class="approval-list">' +
+    items.map(x=>'<article class="approval-card" data-status="' +
+    esc(String(x.status||'').toUpperCase()) +
+    '" data-search="' +
+    esc([x.approval_id,
   x.case_id,
-  x.status].filter(Boolean).join(' ').toLowerCase())+'"><div class="approval-card-top"><div><strong>'+esc(x.approval_id||'APPROVAL')+'</strong><span>Dossier '+esc(x.case_id||'—')+'</span></div><span class="approval-status">'+esc(x.status||'UNKNOWN')+'</span></div><div class="approval-gate"><div><span>État de la chaîne</span><strong>'+(String(x.status||'').toUpperCase()==='PENDING'?'Décision humaine requise':String(x.status||'').toUpperCase()==='APPROVED'?'Validation enregistrée':'Contrôle clôturé')+'</strong></div><div class="approval-steps"><span class="done">Décision</span><span class="current">Gel</span><span class="locked">Approbation</span><span class="locked">Soumission</span></div></div><div class="approval-card-footer"><span class="human-note">Aucune action externe automatique</span><button class="link-btn" type="button" onclick="openApprovalCase(\''+esc(x.case_id||'')+'\')">Ouvrir le dossier →</button></div></article>').join('')+'</div>':'<div class="empty">Aucune demande de validation.<small>Les demandes nécessitant une décision humaine apparaîtront ici.</small></div>')+'</div><div class="approval-guardrail"><strong>Validation explicite obligatoire</strong><span>Revue humaine requise. Aucune de ces actions n’envoie ou ne supprime automatiquement un avis Google. Une approbation n’exécute pas une action Google. Elle autorise uniquement la progression vers l’étape contrôlée suivante.</span></div>'},
+    x.status].filter(Boolean).join(' ').toLowerCase()) +
+    '"><div class="approval-card-top"><div><strong>' +
+    esc(x.approval_id||'APPROVAL') +
+    '</strong><span>Dossier ' +
+    esc(x.case_id||'—') +
+    '</span></div><span class="approval-status">' +
+    esc(x.status||'UNKNOWN') +
+    '</span></div><div class="approval-gate"><div><span>État de la chaîne</span><strong>' +
+    (String(x.status||'').toUpperCase()==='PENDING'?'Décision humaine requise':String(x.status||'').toUpperCase()==='APPROVED'?'Validation enregistrée':'Contrôle clôturé') +
+    '</strong></div><div class="approval-steps"><span class="done">Décision</span><span class="current">Gel</span><span class="locked">Approbation</span><span class="locked">Soumission</span></div></div><div class="approval-card-footer"><span class="human-note">Aucune action externe automatique</span><button class="link-btn" type="button" onclick="openApprovalCase(\'' +
+    esc(x.case_id||'') +
+    '\')">Ouvrir le dossier →</button></div></article>').join('') +
+    '</div>':'<div class="empty">Aucune demande de validation.<small>Les demandes nécessitant une décision humaine apparaîtront ici.</small></div>') +
+    '</div><div class="approval-guardrail"><strong>Validation explicite obligatoire</strong><span>Revue humaine requise. Aucune de ces actions n’envoie ou ne supprime automatiquement un avis Google. Une approbation n’exécute pas une action Google. Elle autorise uniquement la progression vers l’étape contrôlée suivante.</span></div>'},
  submissions:async()=>{const d=await api('/v1/submissions');
   const items=d.items||[];
   const prepared=items.filter(x=>['PREPARED',
@@ -281,9 +715,40 @@ const views={
   'PENDING_APPROVAL'].includes(String(x.status||'').toUpperCase())).length;
   const executed=items.filter(x=>x.external_call===true).length;
   return pageHead('submissions',
-  'Human gate')+'<div class="submission-overview"><div class="panel submission-hero"><div><div class="eyebrow">CONTROLLED SUBMISSION</div><h2>Préparation des soumissions</h2><p>Préparer une action documentée après approbation, sans exécuter automatiquement d\'action externe.</p></div><div class="submission-lock"><span>●</span><strong>Exécution désactivée</strong></div></div><div class="submission-kpis"><div class="card"><span class="label">Préparées</span><strong>'+prepared+'</strong><small>prêtes sous contrôle</small></div><div class="card"><span class="label">En attente</span><strong>'+pending+'</strong><small>chaîne incomplète</small></div><div class="card"><span class="label">Externe</span><strong>'+executed+'</strong><small>appels exécutés</small></div></div></div><div class="panel submissions-panel"><div class="section-toolbar"><div><h3>Registre des soumissions</h3><p>Chaque préparation reste associée à son dossier et à son état de contrôle.</p></div><span class="pill">'+items.length+' éléments</span></div><div class="submission-toolbar"><input aria-label="Rechercher une soumission" placeholder="Rechercher ID, dossier ou statut…" oninput="filterSubmissionCards(this)"><select aria-label="Filtrer les soumissions" onchange="filterSubmissionCards(this)"><option value="">Tous les statuts</option><option value="PREPARED">Préparées</option><option value="PENDING">En attente</option><option value="APPROVED">Approuvées</option></select></div>'+(items.length?'<div class="submission-list">'+items.map(x=>'<article class="submission-card" data-status="'+esc(String(x.status||'').toUpperCase())+'" data-search="'+esc([x.submission_id,
+    'Human gate') +
+    '<div class="submission-overview"><div class="panel submission-hero"><div><div class="eyebrow">CONTROLLED SUBMISSION</div><h2>Préparation des soumissions</h2><p>Préparer une action documentée après approbation, sans exécuter automatiquement d\'action externe.</p></div><div class="submission-lock"><span>●</span><strong>Exécution désactivée</strong></div></div><div class="submission-kpis"><div class="card"><span class="label">Préparées</span><strong>' +
+    prepared +
+    '</strong><small>prêtes sous contrôle</small></div><div class="card"><span class="label">En attente</span><strong>' +
+    pending +
+    '</strong><small>chaîne incomplète</small></div><div class="card"><span class="label">Externe</span><strong>' +
+    executed +
+    '</strong><small>appels exécutés</small></div></div></div><div class="panel submissions-panel"><div class="section-toolbar"><div><h3>Registre des soumissions</h3><p>Chaque préparation reste associée à son dossier et à son état de contrôle.</p></div><span class="pill">' +
+    items.length +
+    ' éléments</span></div><div class="submission-toolbar"><input aria-label="Rechercher une soumission" placeholder="Rechercher ID, dossier ou statut…" oninput="filterSubmissionCards(this)"><select aria-label="Filtrer les soumissions" onchange="filterSubmissionCards(this)"><option value="">Tous les statuts</option><option value="PREPARED">Préparées</option><option value="PENDING">En attente</option><option value="APPROVED">Approuvées</option></select></div>' +
+    (items.length?'<div class="submission-list">' +
+    items.map(x=>'<article class="submission-card" data-status="' +
+    esc(String(x.status||'').toUpperCase()) +
+    '" data-search="' +
+    esc([x.submission_id,
   x.case_id,
-  x.status].filter(Boolean).join(' ').toLowerCase())+'"><div class="submission-card-top"><div><strong>'+esc(x.submission_id||'SUBMISSION')+'</strong><span>Dossier '+esc(x.case_id||'—')+'</span></div><span class="submission-status">'+esc(x.status||'UNKNOWN')+'</span></div><div class="submission-chain"><span class="done">Décision</span><span class="done">Gel</span><span class="'+(String(x.status||'').toUpperCase()==='PREPARED'?'done':'current')+'">Approbation</span><span class="'+(x.external_call?'done':'locked')+'">Externe</span></div><div class="submission-card-footer"><span class="human-note">'+(x.external_call?'Appel externe enregistré':'Aucune exécution externe')+'</span><button class="link-btn" type="button" onclick="openSubmissionCase(\''+esc(x.case_id||'')+'\')">Ouvrir le dossier →</button></div></article>').join('')+'</div>':'<div class="empty">Aucune préparation de soumission.<small>Les préparations approuvées apparaîtront ici.</small></div>')+'</div><div class="submission-guardrail"><strong>Dernier verrou</strong><span>La préparation ne déclenche ni publication, ni suppression, ni réponse automatique sur Google.</span></div>'},
+    x.status].filter(Boolean).join(' ').toLowerCase()) +
+    '"><div class="submission-card-top"><div><strong>' +
+    esc(x.submission_id||'SUBMISSION') +
+    '</strong><span>Dossier ' +
+    esc(x.case_id||'—') +
+    '</span></div><span class="submission-status">' +
+    esc(x.status||'UNKNOWN') +
+    '</span></div><div class="submission-chain"><span class="done">Décision</span><span class="done">Gel</span><span class="' +
+    (String(x.status||'').toUpperCase()==='PREPARED'?'done':'current') +
+    '">Approbation</span><span class="' +
+    (x.external_call?'done':'locked') +
+    '">Externe</span></div><div class="submission-card-footer"><span class="human-note">' +
+    (x.external_call?'Appel externe enregistré':'Aucune exécution externe') +
+    '</span><button class="link-btn" type="button" onclick="openSubmissionCase(\'' +
+    esc(x.case_id||'') +
+    '\')">Ouvrir le dossier →</button></div></article>').join('') +
+    '</div>':'<div class="empty">Aucune préparation de soumission.<small>Les préparations approuvées apparaîtront ici.</small></div>') +
+    '</div><div class="submission-guardrail"><strong>Dernier verrou</strong><span>La préparation ne déclenche ni publication, ni suppression, ni réponse automatique sur Google.</span></div>'},
  alerts:async()=>{const d=await api('/v1/notifications');
   const items=d.items||[];
   const open=items.filter(x=>!['SENT',
@@ -296,10 +761,45 @@ const views={
   'READ'].includes(String(x.status||'').toUpperCase())).length;
   const channels=new Set(items.map(x=>x.channel).filter(Boolean)).size;
   return pageHead('alerts',
-  String(items.length)+' alertes')+'<div class="alert-overview"><div class="panel alert-hero"><div><div class="eyebrow">ALERT & AUDIT CONTROL</div><h2>Alertes opérationnelles</h2><p>Surveiller les notifications, les signaux critiques et leur état de traitement avec une traçabilité lisible.</p></div><div class="alert-health"><span class="health-dot '+(critical?'warning':'good')+'"></span><strong>'+(critical?critical+' critique(s)':'Aucun signal critique')+'</strong></div></div><div class="alert-kpis"><div class="card"><span class="label">Actives</span><strong>'+open+'</strong><small>à traiter</small></div><div class="card"><span class="label">Critiques</span><strong>'+critical+'</strong><small>niveau critique</small></div><div class="card"><span class="label">Traitées</span><strong>'+delivered+'</strong><small>envoyées / lues</small></div><div class="card"><span class="label">Canaux</span><strong>'+channels+'</strong><small>canaux utilisés</small></div></div></div><div class="panel alerts-panel"><div class="section-toolbar"><div><h3>Centre d’alertes</h3><p>Prioriser les signaux sans déclencher d’action externe depuis cette vue.</p></div><span class="pill warning">'+open+' actives</span></div><div class="alert-toolbar"><input aria-label="Rechercher une alerte" placeholder="Rechercher ID, niveau, canal ou statut…" oninput="filterAlertCards(this)"><select aria-label="Filtrer les alertes" onchange="filterAlertCards(this)"><option value="">Tous les niveaux</option><option value="CRITICAL">Critiques</option><option value="HIGH">Élevées</option><option value="WARNING">Avertissements</option><option value="INFO">Information</option></select></div>'+(items.length?'<div class="alert-list">'+items.map(x=>'<article class="alert-card" data-level="'+esc(String(x.level||'').toUpperCase())+'" data-search="'+esc([x.notification_id,
+    String(items.length) +
+    ' alertes') +
+    '<div class="alert-overview"><div class="panel alert-hero"><div><div class="eyebrow">ALERT & AUDIT CONTROL</div><h2>Alertes opérationnelles</h2><p>Surveiller les notifications, les signaux critiques et leur état de traitement avec une traçabilité lisible.</p></div><div class="alert-health"><span class="health-dot ' +
+    (critical?'warning':'good') +
+    '"></span><strong>' +
+    (critical?critical +
+    ' critique(s)':'Aucun signal critique') +
+    '</strong></div></div><div class="alert-kpis"><div class="card"><span class="label">Actives</span><strong>' +
+    open +
+    '</strong><small>à traiter</small></div><div class="card"><span class="label">Critiques</span><strong>' +
+    critical +
+    '</strong><small>niveau critique</small></div><div class="card"><span class="label">Traitées</span><strong>' +
+    delivered +
+    '</strong><small>envoyées / lues</small></div><div class="card"><span class="label">Canaux</span><strong>' +
+    channels +
+    '</strong><small>canaux utilisés</small></div></div></div><div class="panel alerts-panel"><div class="section-toolbar"><div><h3>Centre d’alertes</h3><p>Prioriser les signaux sans déclencher d’action externe depuis cette vue.</p></div><span class="pill warning">' +
+    open +
+    ' actives</span></div><div class="alert-toolbar"><input aria-label="Rechercher une alerte" placeholder="Rechercher ID, niveau, canal ou statut…" oninput="filterAlertCards(this)"><select aria-label="Filtrer les alertes" onchange="filterAlertCards(this)"><option value="">Tous les niveaux</option><option value="CRITICAL">Critiques</option><option value="HIGH">Élevées</option><option value="WARNING">Avertissements</option><option value="INFO">Information</option></select></div>' +
+    (items.length?'<div class="alert-list">' +
+    items.map(x=>'<article class="alert-card" data-level="' +
+    esc(String(x.level||'').toUpperCase()) +
+    '" data-search="' +
+    esc([x.notification_id,
   x.level,
   x.channel,
-  x.status].filter(Boolean).join(' ').toLowerCase())+'"><div class="alert-card-top"><div><strong>'+esc(x.notification_id||'ALERT')+'</strong><span>'+esc(x.channel||'Canal inconnu')+'</span></div><span class="alert-level">'+esc(x.level||'INFO')+'</span></div><div class="alert-state"><span>Statut</span><strong>'+esc(x.status||'UNKNOWN')+'</strong></div><div class="alert-card-footer"><span class="alert-audit-dot">Traçable</span><span>'+esc(x.created_at||'')+'</span></div></article>').join('')+'</div>':'<div class="empty">Aucune alerte enregistrée.<small>Les notifications opérationnelles apparaîtront ici.</small></div>')+'</div><div class="alert-guardrail"><strong>Observabilité uniquement</strong><span>Cette interface ne supprime, ne publie et ne répond à aucun avis Google automatiquement.</span></div>'},
+    x.status].filter(Boolean).join(' ').toLowerCase()) +
+    '"><div class="alert-card-top"><div><strong>' +
+    esc(x.notification_id||'ALERT') +
+    '</strong><span>' +
+    esc(x.channel||'Canal inconnu') +
+    '</span></div><span class="alert-level">' +
+    esc(x.level||'INFO') +
+    '</span></div><div class="alert-state"><span>Statut</span><strong>' +
+    esc(x.status||'UNKNOWN') +
+    '</strong></div><div class="alert-card-footer"><span class="alert-audit-dot">Traçable</span><span>' +
+    esc(x.created_at||'') +
+    '</span></div></article>').join('') +
+    '</div>':'<div class="empty">Aucune alerte enregistrée.<small>Les notifications opérationnelles apparaîtront ici.</small></div>') +
+    '</div><div class="alert-guardrail"><strong>Observabilité uniquement</strong><span>Cette interface ne supprime, ne publie et ne répond à aucun avis Google automatiquement.</span></div>'},
  audit:async()=>{const events=[{time:'2026-09-21 11:08',
   type:'HUMAN_REVIEW',
   actor:'Analyst',
@@ -316,7 +816,8 @@ const views={
   target:'E-991',
   result:'Empreinte documentaire vérifié'}];
   return pageHead('audit',
-  '3 événements')+`<div class="panel"><div class="section-toolbar"><div><h3>Journal d’audit</h3><p>TRACEABILITY · lecture seule · les événements sont enregistrés côté serveur.</p></div><span class="pill">Lecture seule</span></div><div class="audit-list">${events.map(e=>`<article class="audit-item"><div class="audit-dot"></div><div class="audit-main"><div class="audit-top"><strong>${esc(e.type)}</strong><span>${esc(e.time)}</span></div><div class="audit-meta">${esc(e.actor)} · ${esc(e.target)}</div><p>${esc(e.result)}</p></div></article>`).join('')}</div></div>`},
+    '3 événements') +
+    `<div class="panel"><div class="section-toolbar"><div><h3>Journal d’audit</h3><p>TRACEABILITY · lecture seule · les événements sont enregistrés côté serveur.</p></div><span class="pill">Lecture seule</span></div><div class="audit-list">${events.map(e=>`<article class="audit-item"><div class="audit-dot"></div><div class="audit-main"><div class="audit-top"><strong>${esc(e.type)}</strong><span>${esc(e.time)}</span></div><div class="audit-meta">${esc(e.actor)} · ${esc(e.target)}</div><p>${esc(e.result)}</p></div></article>`).join('')}</div></div>`},
  billing:async()=>{
  const en=window.ReviewDefenseI18n?.getLanguage?.()==='en';
   let b={items:[]};
@@ -346,12 +847,85 @@ const views={
   eyebrow:'PACKS',
   description:en?'Prepaid case packs for recurring needs.':'Crédits prépayés pour plusieurs dossiers.',
   kinds:['credit_pack']}];
- const offerCard=x=>'<article class="billing-offer-card"><div class="billing-offer-main"><span class="product-tag">'+esc(x.kind==='subscription'?'PLAN':x.kind==='credit_pack'?'PACK':x.kind.startsWith('defense')?'DEFENSE':'AUDIT')+'</span><h3>'+esc(en?x.name_en:x.name_fr)+'</h3><span class="billing-offer-id">'+esc(x.offer_id)+'</span></div><div class="billing-offer-side"><strong>'+esc(x.amount||'—')+' €'+(x.recurring==='true'?'<small>/mois</small>':'')+'</strong><button class="primary billing-offer-btn" data-billing-offer="'+esc(x.kind)+'" data-billing-name="'+esc(en?x.name_en:x.name_fr)+'" data-billing-price="'+esc(x.amount||'')+'" data-billing-id="'+esc(x.offer_id)+'"'+(!x.paypal_hosted_button_id&&!x.paypal_plan_id?' disabled title="'+(en?'Payment not configured yet':'Paiement non configuré')+'"':'')+'>'+((x.paypal_hosted_button_id||x.paypal_plan_id)?(en?'Choose':'Choisir'):(en?'Unavailable':'Indisponible'))+'</button></div></article>';
- const sections=groups.map(g=>{const list=items.filter(x=>g.kinds.includes(x.kind));return '<section class="panel billing-category"><div class="billing-category-head"><div><div class="eyebrow">'+g.eyebrow+'</div><h2>'+g.title+'</h2><p>'+g.description+'</p></div><span class="pill">'+list.length+' '+(en?'offers':'offres')+'</span></div><div class="billing-offer-grid">'+(list.length?list.map(offerCard).join(''):'<div class="empty">Aucune offre disponible.</div>')+'</div></section>'}).join('');
+  const offerCard=x=>'<article class="billing-offer-card"><div class="billing-offer-main"><span class="product-tag">' +
+   esc(x.kind==='subscription'?'PLAN':x.kind==='credit_pack'?'PACK':x.kind.startsWith('defense')?'DEFENSE':'AUDIT') +
+   '</span><h3>' +
+   esc(en?x.name_en:x.name_fr) +
+   '</h3><span class="billing-offer-id">' +
+   esc(x.offer_id) +
+   '</span></div><div class="billing-offer-side"><strong>' +
+   esc(x.amount||'—') +
+   ' €' +
+   (x.recurring==='true'?'<small>/mois</small>':'') +
+   '</strong><button class="primary billing-offer-btn" data-billing-offer="' +
+   esc(x.kind) +
+   '" data-billing-name="' +
+   esc(en?x.name_en:x.name_fr) +
+   '" data-billing-price="' +
+   esc(x.amount||'') +
+   '" data-billing-id="' +
+   esc(x.offer_id) +
+   '"' +
+   (!x.paypal_hosted_button_id&&!x.paypal_plan_id?' disabled title="' +
+   (en?'Payment not configured yet':'Paiement non configuré') +
+   '"':'') +
+   '>' +
+   ((x.paypal_hosted_button_id||x.paypal_plan_id)?(en?'Choose':'Choisir'):(en?'Unavailable':'Indisponible')) +
+   '</button></div></article>';
+  const sections=groups.map(g=>{const list=items.filter(x=>g.kinds.includes(x.kind));return '<section class="panel billing-category"><div class="billing-category-head"><div><div class="eyebrow">' +
+   g.eyebrow +
+   '</div><h2>' +
+   g.title +
+   '</h2><p>' +
+   g.description +
+   '</p></div><span class="pill">' +
+   list.length +
+   ' ' +
+   (en?'offers':'offres') +
+   '</span></div><div class="billing-offer-grid">' +
+   (list.length?list.map(offerCard).join(''):'<div class="empty">Aucune offre disponible.</div>') +
+   '</div></section>'}).join('');
  const rows=b.items||[],
-  rowsHtml=rows.length?'<div class="table-wrap"><table class="table"><thead><tr><th>Offre</th><th>Montant</th><th>Statut</th><th>Date</th></tr></thead><tbody>'+rows.map(x=>'<tr><td>'+esc(x.offer_id||'—')+'</td><td>'+esc(x.amount||'—')+' '+esc(x.currency||'EUR')+'</td><td>'+esc(x.status||'—')+'</td><td>'+esc(x.created_at||'—')+'</td></tr>').join('')+'</tbody></table></div>':'<div class="billing-empty-state"><strong>'+ (en?'No payments recorded':'Aucun paiement enregistré') +'</strong><span>'+ (en?'Your payment transactions will appear here.':'Vos transactions de paiement apparaîtront ici.') +'</span></div>';
+    rowsHtml=rows.length?'<div class="table-wrap"><table class="table"><thead><tr><th>Offre</th><th>Montant</th><th>Statut</th><th>Date</th></tr></thead><tbody>' +
+    rows.map(x=>'<tr><td>' +
+    esc(x.offer_id||'—') +
+    '</td><td>' +
+    esc(x.amount||'—') +
+    ' ' +
+    esc(x.currency||'EUR') +
+    '</td><td>' +
+    esc(x.status||'—') +
+    '</td><td>' +
+    esc(x.created_at||'—') +
+    '</td></tr>').join('') +
+    '</tbody></table></div>':'<div class="billing-empty-state"><strong>' +
+     (en?'No payments recorded':'Aucun paiement enregistré') +
+    '</strong><span>' +
+     (en?'Your payment transactions will appear here.':'Vos transactions de paiement apparaîtront ici.') +
+    '</span></div>';
  return pageHead("billing",
-  en?'Subscription & billing':'Abonnement & facturation')+'<div class="billing-hero"><div><div class="eyebrow">BILLING CENTER</div><h2>'+ (en?'Services and payments':'Services et paiements') +'</h2><p>'+ (en?'Choose a service, review the server-validated price and pay securely.':'Choisissez un service, vérifiez le tarif validé par le serveur et payez en toute sécurité.') +'</p></div><span class="billing-status billing-status-neutral">'+((catalog.items||[]).some(x=>x.paypal_hosted_button_id||x.paypal_plan_id)?(en?'Payment available':'Paiement disponible'):(en?'Payment setup pending':'Paiement en attente de configuration'))+'</span></div><div class="billing-categories">'+sections+'</div><section class="panel billing-payments"><div class="section-toolbar"><div><div class="eyebrow">PAIEMENTS</div><h3>'+ (en?'History':'Historique') +'</h3><p>'+ (en?'Statuses are recorded server-side.':'Les statuts sont enregistrés côté serveur.') +'</p></div><button class="ghost" type="button" onclick="state.view=\'cases\';window.reviewDefenseRender()">'+(en?'Open cases':'Ouvrir les dossiers')+'</button></div>'+rowsHtml+'</section><div class="billing-guardrail"><strong>'+ (en?'Server-validated checkout':'Paiement contrôlé et validé côté serveur') +'</strong><span>'+ (en?'The browser only selects an offer published by the server. Subscription plans and Hosted Button prices are configured in PayPal.':'Le navigateur sélectionne uniquement une offre publiée par le serveur. Les plans d’abonnement et les tarifs des Hosted Buttons sont configurés dans PayPal.') +'</span></div>';
+    en?'Subscription & billing':'Abonnement & facturation') +
+    '<div class="billing-hero"><div><div class="eyebrow">BILLING CENTER</div><h2>' +
+     (en?'Services and payments':'Services et paiements') +
+    '</h2><p>' +
+     (en?'Choose a service, review the server-validated price and pay securely.':'Choisissez un service, vérifiez le tarif validé par le serveur et payez en toute sécurité.') +
+    '</p></div><span class="billing-status billing-status-neutral">' +
+    ((catalog.items||[]).some(x=>x.paypal_hosted_button_id||x.paypal_plan_id)?(en?'Payment available':'Paiement disponible'):(en?'Payment setup pending':'Paiement en attente de configuration')) +
+    '</span></div><div class="billing-categories">' +
+    sections +
+    '</div><section class="panel billing-payments"><div class="section-toolbar"><div><div class="eyebrow">PAIEMENTS</div><h3>' +
+     (en?'History':'Historique') +
+    '</h3><p>' +
+     (en?'Statuses are recorded server-side.':'Les statuts sont enregistrés côté serveur.') +
+    '</p></div><button class="ghost" type="button" onclick="state.view=\'cases\';window.reviewDefenseRender()">' +
+    (en?'Open cases':'Ouvrir les dossiers') +
+    '</button></div>' +
+    rowsHtml +
+    '</section><div class="billing-guardrail"><strong>' +
+     (en?'Server-validated checkout':'Paiement contrôlé et validé côté serveur') +
+    '</strong><span>' +
+     (en?'The browser only selects an offer published by the server. Subscription plans and Hosted Button prices are configured in PayPal.':'Le navigateur sélectionne uniquement une offre publiée par le serveur. Les plans d’abonnement et les tarifs des Hosted Buttons sont configurés dans PayPal.') +
+    '</span></div>';
 },
   settings:async()=>{
  const [m,
@@ -377,19 +951,84 @@ const views={
   PORTABILITY:'Portabilité'};
  return pageHead('settings',
   members.length+' membres')+
- '<div class="org-overview"><div class="panel org-hero"><div><div class="eyebrow">IDENTITY & ACCESS</div><h2>Organisation</h2><p>Gérer les membres, les rôles, la sécurité et les demandes relatives aux données. Les contrôles d’accès sont appliqués côté serveur.</p></div><span class="org-role-badge">'+esc(state.me?.role||'—')+'</span></div>'+
- '<div class="org-kpis"><div class="card"><span class="label">Membres</span><strong>'+members.length+'</strong><small>dans l’organisation</small></div><div class="card"><span class="label">Administrateurs</span><strong>'+members.filter(x=>['OWNER',
-  'ADMIN'].includes(x.role)).length+'</strong><small>accès de gestion</small></div><div class="card"><span class="label">Demandes RGPD</span><strong>'+requests.length+'</strong><small>vos demandes</small></div></div></div>'+
+  '<div class="org-overview"><div class="panel org-hero"><div><div class="eyebrow">IDENTITY & ACCESS</div><h2>Organisation</h2><p>Gérer les membres, les rôles, la sécurité et les demandes relatives aux données. Les contrôles d’accès sont appliqués côté serveur.</p></div><span class="org-role-badge">' +
+   esc(state.me?.role||'—') +
+   '</span></div>'+
+  '<div class="org-kpis"><div class="card"><span class="label">Membres</span><strong>' +
+   members.length +
+   '</strong><small>dans l’organisation</small></div><div class="card"><span class="label">Administrateurs</span><strong>' +
+   members.filter(x=>['OWNER',
+    'ADMIN'].includes(x.role)).length +
+    '</strong><small>accès de gestion</small></div><div class="card"><span class="label">Demandes RGPD</span><strong>' +
+    requests.length +
+    '</strong><small>vos demandes</small></div></div></div>'+
  '<div class="panel privacy-center"><div class="section-toolbar"><div><div class="eyebrow">RGPD</div><h3>Centre de confidentialité</h3><p>Exercer vos droits, récupérer vos données de compte et conserver la trace des demandes.</p></div><button class="primary" type="button" onclick="downloadPrivacyExport()">Exporter mes données</button></div>'+
  '<div class="privacy-actions"><button class="ghost" onclick="createPrivacyRequest(\'ACCESS\')">Demander l’accès</button><button class="ghost" onclick="createPrivacyRequest(\'RECTIFICATION\')">Demander une rectification</button><button class="ghost" onclick="createPrivacyRequest(\'ERASURE\')">Demander l’effacement</button><button class="ghost" onclick="createPrivacyRequest(\'RESTRICTION\')">Demander la limitation</button><button class="ghost" onclick="createPrivacyRequest(\'OBJECTION\')">Exercer une opposition</button><button class="ghost" onclick="createPrivacyRequest(\'PORTABILITY\')">Demander la portabilité</button></div>'+
- '<div class="privacy-grid"><div><h4>Mes demandes</h4>'+(requests.length?'<div class="privacy-request-list">'+requests.map(x=>'<div class="privacy-request"><div><strong>'+esc(requestLabel[x.request_type]||x.request_type)+'</strong><span>'+esc(x.status||'RECEIVED')+'</span></div><small>Échéance indicative : '+esc(x.due_at||'—')+'</small></div>').join('')+'</div>':'<div class="empty">Aucune demande enregistrée.<small>Les demandes sont journalisées côté serveur.</small></div>')+'</div><div><h4>Consentements optionnels</h4>'+(consents.length?'<div class="privacy-request-list">'+consents.map(x=>'<div class="privacy-request"><div><strong>'+esc(x.purpose)+'</strong><span>'+(x.granted?'ACTIF':'RETIRÉ')+'</span></div><small>Version '+esc(x.policy_version||'—')+'</small></div>').join(''):'<div class="empty">Aucun consentement optionnel enregistré.</div>')+'</div></div></div>'+
+  '<div class="privacy-grid"><div><h4>Mes demandes</h4>' +
+   (requests.length?'<div class="privacy-request-list">' +
+   requests.map(x=>'<div class="privacy-request"><div><strong>' +
+   esc(requestLabel[x.request_type]||x.request_type) +
+   '</strong><span>' +
+   esc(x.status||'RECEIVED') +
+   '</span></div><small>Échéance indicative : ' +
+   esc(x.due_at||'—') +
+   '</small></div>').join('') +
+   '</div>':'<div class="empty">Aucune demande enregistrée.<small>Les demandes sont journalisées côté serveur.</small></div>') +
+   '</div><div><h4>Consentements optionnels</h4>' +
+   (consents.length?'<div class="privacy-request-list">' +
+   consents.map(x=>'<div class="privacy-request"><div><strong>' +
+   esc(x.purpose) +
+   '</strong><span>' +
+   (x.granted?'ACTIF':'RETIRÉ') +
+   '</span></div><small>Version ' +
+   esc(x.policy_version||'—') +
+   '</small></div>').join(''):'<div class="empty">Aucun consentement optionnel enregistré.</div>') +
+   '</div></div></div>'+
  (canManage?'<div class="privacy-admin"><div class="section-toolbar"><div><h4>Traitement organisationnel</h4><p>Réservé aux OWNER / ADMIN. Les changements d’état sont audités.</p></div><button class="ghost" onclick="loadPrivacyAdmin()">Voir les demandes de l’organisation</button></div><div id="privacy-admin-results"></div></div>':'')+
  '</div>'+
- '<div class="panel org-members"><div class="section-toolbar"><div><h3>Membres & rôles</h3><p>Chaque changement est contrôlé et journalisé côté serveur.</p></div>'+(canManage?'<button class="primary" type="button" onclick="inviteOrganizationMember()">Inviter un membre</button>':'')+'</div><div class="org-member-list">'+(members.length?members.map(x=>'<article class="org-member"><div class="org-member-main"><div class="org-avatar">'+esc((x.email||'?')[0].toUpperCase())+'</div><div><strong>'+esc(x.email)+'</strong><span>'+esc(x.user_id)+'</span></div></div><div class="org-member-actions"><span class="org-role">'+esc(x.role)+'</span>'+(canManage&&x.user_id!==state.me?.user_id?'<select aria-label="Rôle de '+esc(x.email)+'" onchange="changeOrganizationRole(\''+esc(x.user_id)+'\',this.value)"><option value="CLIENT" '+(x.role==='CLIENT'?'selected':'')+'>CLIENT</option><option value="ANALYST" '+(x.role==='ANALYST'?'selected':'')+'>ANALYST</option><option value="ADMIN" '+(x.role==='ADMIN'?'selected':'')+'>ADMIN</option><option value="OWNER" '+(x.role==='OWNER'?'selected':'')+'>OWNER</option></select>':'')+'</div></article>').join(''):'<div class="empty">Aucun membre.</div>')+'</div></div>'+
- '<div class="org-bottom-grid"><div class="panel"><div class="section-toolbar"><div><h3>Calendrier SLA</h3><p>Référence utilisée pour les échéances opérationnelles.</p></div><span class="pill">'+esc(cal.calendar?.timezone||'UTC')+'</span></div><div class="org-calendar"><div><span>Jours actifs</span><strong>'+((cal.calendar?.workdays?.length??'—')+' / 7')+'</strong></div><div><span>Horaires</span><strong>'+(cal.calendar?(String(cal.calendar.start_hour).padStart(2,
+  '<div class="panel org-members"><div class="section-toolbar"><div><h3>Membres & rôles</h3><p>Chaque changement est contrôlé et journalisé côté serveur.</p></div>' +
+   (canManage?'<button class="primary" type="button" onclick="inviteOrganizationMember()">Inviter un membre</button>':'') +
+   '</div><div class="org-member-list">' +
+   (members.length?members.map(x=>'<article class="org-member"><div class="org-member-main"><div class="org-avatar">' +
+   esc((x.email||'?')[0].toUpperCase()) +
+   '</div><div><strong>' +
+   esc(x.email) +
+   '</strong><span>' +
+   esc(x.user_id) +
+   '</span></div></div><div class="org-member-actions"><span class="org-role">' +
+   esc(x.role) +
+   '</span>' +
+   (canManage&&x.user_id!==state.me?.user_id?'<select aria-label="Rôle de ' +
+   esc(x.email) +
+   '" onchange="changeOrganizationRole(\'' +
+   esc(x.user_id) +
+   '\',this.value)"><option value="CLIENT" ' +
+   (x.role==='CLIENT'?'selected':'') +
+   '>CLIENT</option><option value="ANALYST" ' +
+   (x.role==='ANALYST'?'selected':'') +
+   '>ANALYST</option><option value="ADMIN" ' +
+   (x.role==='ADMIN'?'selected':'') +
+   '>ADMIN</option><option value="OWNER" ' +
+   (x.role==='OWNER'?'selected':'') +
+   '>OWNER</option></select>':'') +
+   '</div></article>').join(''):'<div class="empty">Aucun membre.</div>') +
+   '</div></div>'+
+  '<div class="org-bottom-grid"><div class="panel"><div class="section-toolbar"><div><h3>Calendrier SLA</h3><p>Référence utilisée pour les échéances opérationnelles.</p></div><span class="pill">' +
+   esc(cal.calendar?.timezone||'UTC') +
+   '</span></div><div class="org-calendar"><div><span>Jours actifs</span><strong>' +
+   ((cal.calendar?.workdays?.length??'—') +
+   ' / 7') +
+   '</strong></div><div><span>Horaires</span><strong>' +
+   (cal.calendar?(String(cal.calendar.start_hour).padStart(2,
   '0')+':00 — '+String(cal.calendar.end_hour).padStart(2,
-  '0')+':00'):'—')+'</strong></div><div><span>Jours fériés</span><strong>'+((cal.calendar?.holidays?.length)??0)+'</strong></div></div></div><div class="panel"><div class="section-toolbar"><div><h3>Contrôles d’accès</h3><p>Session et authentification de votre compte.</p></div></div><div class="settings-actions"><button class="ghost" onclick="showPasswordChange()">Changer le mot de passe</button>'+(["OWNER",
-  "ADMIN"].includes(state.me?.role)?'<button class="ghost" onclick="showMfa()">Configurer MFA</button>':'')+'</div></div></div>'+
+    '0') +
+    ':00'):'—') +
+    '</strong></div><div><span>Jours fériés</span><strong>' +
+    ((cal.calendar?.holidays?.length)??0) +
+    '</strong></div></div></div><div class="panel"><div class="section-toolbar"><div><h3>Contrôles d’accès</h3><p>Session et authentification de votre compte.</p></div></div><div class="settings-actions"><button class="ghost" onclick="showPasswordChange()">Changer le mot de passe</button>' +
+    (["OWNER",
+    "ADMIN"].includes(state.me?.role)?'<button class="ghost" onclick="showMfa()">Configurer MFA</button>':'') +
+    '</div></div></div>'+
  '<div class="org-guardrail"><strong>Isolation organisationnelle</strong><span>Les membres affichés appartiennent uniquement à votre organisation. Les données et demandes RGPD restent isolées côté serveur. Les demandes RGPD ne déclenchent aucune suppression irréversible automatiquement.</span></div>'
 }};
 function table(title,
@@ -531,13 +1170,73 @@ async function downloadClientDocument(documentId){try{const headers={Accept:'app
   if(!response.ok){const error=await response.json().catch(()=>({}));
   throw new Error(error?.error?.message||'Téléchargement impossible')}const blob=await response.blob();
   const disposition=response.headers.get('Content-Disposition')||'';
-  const match=disposition.match(/filename="([^"]+)"/);const link=document.createElement('a');const url=URL.createObjectURL(blob);link.href=url;link.download=match?.[1]||'document';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000)}catch(e){toast(e.message||'Téléchargement impossible','error')}}
-async function connectGoogle(){try{const result=await api('/v1/integrations/google/start',{method:'POST',body:JSON.stringify({})});if(!result.authorization_url)throw new Error('URL Google indisponible');window.location.href=result.authorization_url}catch(e){toast(e.message||'Connexion Google impossible','error')}}
-async function selectGoogleLocation(connectionId,accountId,locationId){try{const result=await api('/v1/integrations/google/select-location',{method:'POST',body:JSON.stringify({connection_id:connectionId,account_id:accountId,location_id:locationId})});toast((result.reviews_synced||0)+' avis synchronisés','success');await reviewDefenseRender()}catch(e){toast(e.message||'Sélection Google impossible','error')}}
-function formatBytes(value){const n=Number(value||0);if(n<1024)return n+' o';if(n<1048576)return (n/1024).toFixed(1)+' Ko';return (n/1048576).toFixed(1)+' Mo'}
-async function uploadClientDocuments(files){const status=document.getElementById('client-upload-status');if(!files||!files.length)return;for(const file of files){try{if(file.size>25*1024*1024)throw new Error('Chaque document doit faire 25 Mo maximum.');if(status)status.textContent='Téléversement de '+file.name+'…';const encoded=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]||'');reader.onerror=()=>reject(new Error('Lecture du fichier impossible'));reader.readAsDataURL(file)});await api('/v1/client/documents',{method:'POST',body:JSON.stringify({filename:file.name,content_type:file.type||'application/octet-stream',content_base64:encoded,category:'GENERAL'})});if(status)status.textContent='Document ajouté : '+file.name;toast('Document ajouté','success')}catch(e){if(status)status.textContent=e.message||'Téléversement impossible';toast(e.message||'Téléversement impossible','error')}}await reviewDefenseRender()}
-async function openCase(id){state.caseId=id;try{const d=await api('/v1/cases/'+encodeURIComponent(id)+'/workspace');document.getElementById('title').textContent='Dossier '+id;document.getElementById('content').innerHTML=await caseWorkspace(id,d)}catch(e){document.getElementById('content').innerHTML=panel('Erreur',e.message)}}
-async function caseWorkspace(id,d){const w=d.workspace||{};let matrix={items:[]},readiness={readiness:null};try{[matrix,readiness]=await Promise.all([api(`/v1/cases/${encodeURIComponent(id)}/evidence-matrix`),api(`/v1/cases/${encodeURIComponent(id)}/review-readiness`)])}catch(_){}const claims=w.claims||[],policies=w.policies||[],evidence=w.evidence||[],tasks=d.evidence_tasks||[],timeline=w.timeline||[],rows=matrix.items||matrix.rows||[];const ready=readiness.readiness||{},decision=d.decision||{};const review=w.review||{};const status=String(w.state||'UNKNOWN').toUpperCase();const decisionStatus=String(decision.status||'NONE').toUpperCase();const stat=(label,value,sub)=>'<div class="workspace-stat"><span>'+label+'</span><strong>'+value+'</strong><small>'+sub+'</small></div>';const canAct=['OWNER','ADMIN','ANALYST'].includes(state.me?.role);return '<div class="workspace-header"><div><button class="ghost" type="button" onclick="state.view=\'cases\';reviewDefenseRender()">← Dossiers</button><div class="eyebrow">CASE WORKSPACE</div><h1>Dossier '+esc(id)+'</h1><p>Analyse structurée, preuves, contradictions et décision dans un espace traçable.</p></div><div class="workspace-header-actions"><span class="pill">'+esc(status)+'</span><span class="pill warning">'+(d.requires_human_review?'Revue humaine requise':'Lecture contrôlée')+'</span></div></div>'+'<div class="workspace-stats">'+stat('Priorité',
+    const match=disposition.match(/filename="([^"] +
+    )"/);const link=document.createElement('a');const url=URL.createObjectURL(blob);link.href=url;link.download=match?.[1]||'document';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000)}catch(e){toast(e.message||'Téléchargement impossible','error')}}
+async function connectGoogle(){try{const result=await api('/v1/integrations/google/start',
+  {method:'POST',
+  body:JSON.stringify({})});if(!result.authorization_url)throw new Error('URL Google indisponible');window.location.href=result.authorization_url}catch(e){toast(e.message||'Connexion Google impossible',
+  'error')}}
+async function selectGoogleLocation(connectionId,
+  accountId,
+  locationId){try{const result=await api('/v1/integrations/google/select-location',
+  {method:'POST',
+  body:JSON.stringify({connection_id:connectionId,
+  account_id:accountId,
+  location_id:locationId})});toast((result.reviews_synced||0) +
+  ' avis synchronisés',
+  'success');await reviewDefenseRender()}catch(e){toast(e.message||'Sélection Google impossible',
+  'error')}}
+function formatBytes(value){const n=Number(value||0);if(n<1024)return n +
+  ' o';if(n<1048576)return (n/1024).toFixed(1) +
+  ' Ko';return (n/1048576).toFixed(1) +
+  ' Mo'}
+async function uploadClientDocuments(files){const status=document.getElementById('client-upload-status');if(!files||!files.length)return;for(const file of files){try{if(file.size>25*1024*1024)throw new Error('Chaque document doit faire 25 Mo maximum.');if(status)status.textContent='Téléversement de ' +
+  file.name +
+  '…';const encoded=await new Promise((resolve,
+  reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]||'');reader.onerror=()=>reject(new Error('Lecture du fichier impossible'));reader.readAsDataURL(file)});await api('/v1/client/documents',
+  {method:'POST',
+  body:JSON.stringify({filename:file.name,
+  content_type:file.type||'application/octet-stream',
+  content_base64:encoded,
+  category:'GENERAL'})});if(status)status.textContent='Document ajouté : ' +
+  file.name;toast('Document ajouté',
+  'success')}catch(e){if(status)status.textContent=e.message||'Téléversement impossible';toast(e.message||'Téléversement impossible',
+  'error')}}await reviewDefenseRender()}
+async function openCase(id){state.caseId=id;try{const d=await api('/v1/cases/' +
+  encodeURIComponent(id) +
+  '/workspace');document.getElementById('title').textContent='Dossier ' +
+  id;document.getElementById('content').innerHTML=await caseWorkspace(id,
+  d)}catch(e){document.getElementById('content').innerHTML=panel('Erreur',
+  e.message)}}
+async function caseWorkspace(id,
+  d){const w=d.workspace||{};let matrix={items:[]},
+  readiness={readiness:null};try{[matrix,
+  readiness]=await Promise.all([api(`/v1/cases/${encodeURIComponent(id)}/evidence-matrix`),
+  api(`/v1/cases/${encodeURIComponent(id)}/review-readiness`)])}catch(_){}const claims=w.claims||[],
+  policies=w.policies||[],
+  evidence=w.evidence||[],
+  tasks=d.evidence_tasks||[],
+  timeline=w.timeline||[],
+  rows=matrix.items||matrix.rows||[];const ready=readiness.readiness||{},
+  decision=d.decision||{};const review=w.review||{};const status=String(w.state||'UNKNOWN').toUpperCase();const decisionStatus=String(decision.status||'NONE').toUpperCase();const stat=(label,
+  value,
+  sub)=>'<div class="workspace-stat"><span>' +
+  label +
+  '</span><strong>' +
+  value +
+  '</strong><small>' +
+  sub +
+  '</small></div>';const canAct=['OWNER',
+  'ADMIN',
+  'ANALYST'].includes(state.me?.role);return '<div class="workspace-header"><div><button class="ghost" type="button" onclick="state.view=\'cases\';reviewDefenseRender()">← Dossiers</button><div class="eyebrow">CASE WORKSPACE</div><h1>Dossier ' +
+  esc(id) +
+  '</h1><p>Analyse structurée, preuves, contradictions et décision dans un espace traçable.</p></div><div class="workspace-header-actions"><span class="pill">' +
+  esc(status) +
+  '</span><span class="pill warning">' +
+  (d.requires_human_review?'Revue humaine requise':'Lecture contrôlée') +
+  '</span></div></div>' +
+  '<div class="workspace-stats">' +
+  stat('Priorité',
   esc(w.priority||'STANDARD'),
   'niveau du dossier')+stat('Claims',
   claims.length,
@@ -545,7 +1244,124 @@ async function caseWorkspace(id,d){const w=d.workspace||{};let matrix={items:[]}
   evidence.length,
   'éléments liés')+stat('Readiness',
   ready.ready?'PRÊT':'REVUE',
-  'état serveur')+'</div>'+'<section class="panel workspace-section next-action-panel"><div class="section-toolbar"><div><div class="eyebrow">PROCHAINE ACTION</div><h2>Ce qu’il reste à faire</h2><p>Une seule priorité visible pour éviter de chercher dans le dossier.</p></div><span class="pill warning">'+esc(decisionStatus==='PENDING_APPROVAL'?'Validation humaine':ready.ready?'Prêt':'À compléter')+'</span></div><div class="workspace-item"><span class="item-index">'+esc(decisionStatus==='PENDING_APPROVAL'?'VALIDER':ready.ready?'PRÉPARER':'VÉRIFIER')+'</span><div><strong>'+esc(decisionStatus==='PENDING_APPROVAL'?'Relire et approuver la décision avant toute préparation externe.':ready.ready?'Le dossier est prêt pour l’étape suivante autorisée.':'Compléter ou vérifier les éléments signalés avant de poursuivre.')+'</strong><small>'+esc(tasks.length?String(tasks.length)+' tâche(s) de preuve encore ouverte(s).':ready.ready?'Aucune tâche de preuve ouverte.':'La readiness serveur indique qu’une revue reste nécessaire.')+'</small></div></div></section>'+'<div class="workspace-main-grid"><div class="workspace-primary"><section class="panel workspace-review"><div class="section-toolbar"><div><div class="eyebrow">SOURCE REVIEW</div><h2>'+esc(review.review_id||'Avis')+'</h2></div><span class="rating">'+esc(review.rating||'—')+'/5</span></div><blockquote>'+esc(review.text||'Aucun texte disponible.')+'</blockquote><div class="workspace-review-meta"><span>'+esc(review.author_display_name||'Auteur non renseigné')+'</span><span>'+esc(review.source||'Source inconnue')+'</span></div></section>'+'<section class="panel workspace-section"><div class="section-toolbar"><div><h2>Claims</h2><p>Affirmations extraites et structurées pour analyse.</p></div><span class="pill">'+claims.length+'</span></div><div class="workspace-items">'+(claims.length?claims.map(c=>'<article class="workspace-item"><span class="item-index">'+esc(c.claim_type||'CLAIM')+'</span><div><strong>'+esc(c.text||'—')+'</strong><small>Claim à confronter aux preuves disponibles.</small></div></article>').join(''):'<div class="empty">Aucun claim.<small>Les affirmations structurées apparaîtront ici.</small></div>')+'</div></section>'+'<section class="panel workspace-section"><div class="section-toolbar"><div><h2>Preuves et justificatifs</h2><p>Ajoutez vos documents, captures, factures et échanges. L’analyse démarre automatiquement.</p></div><label class="primary compact" style="display:inline-flex;align-items:center;cursor:pointer">+ Ajouter un justificatif<input type="file" hidden onchange="uploadCaseEvidence(state.caseId,this)"></label></div>'+(evidence.length?'<div class="evidence-stack">'+evidence.map(e=>'<article class="evidence-row"><div><strong>'+esc(e.filename||'Preuve')+'</strong><span>'+esc(e.evidence_type||'Type inconnu')+' · '+esc(e.status||'UNKNOWN')+'</span></div><code>'+esc(e.sha256||'Empreinte documentaire indisponible')+'</code></article>').join('')+'</div>':'<div class="empty">Aucune preuve liée. Ajoutez votre premier justificatif.</div>')+'</section>'+'</div>'+'<aside class="workspace-sidebar"><section class="panel readiness-card"><div class="eyebrow">READINESS</div><div class="readiness '+(ready.ready?'ok':'warn')+'">'+(ready.ready?'PRÊT':'REVUE REQUISE')+'</div><p>'+esc(ready.reason||'État calculé côté serveur.')+'</p></section>'+'<section class="panel"><div class="section-toolbar"><div><h2>Policy signals</h2></div><span class="pill">'+policies.length+'</span></div><ul class="workspace-list">'+(policies.length?policies.map(p=>'<li><strong>'+esc(p.code)+'</strong><span>'+esc(p.justification)+'</span></li>').join(''):'<li>Aucun signal.</li>')+'</ul></section>'+'<section class="panel"><div class="section-toolbar"><div><h2>Tâches de preuve</h2></div><span class="pill">'+tasks.length+'</span></div><ul class="workspace-list">'+(tasks.length?tasks.map(t=>'<li><strong>'+esc(t.priority)+'</strong><span>'+esc(t.evidence_requirement)+(t.claim_id?' · '+esc(t.claim_id):'')+'</span></li>').join(''):'<li>Aucune tâche ouverte.</li>')+'</ul></section>'+'</aside></div>'+'<section class="panel workspace-section"><div class="section-toolbar"><div><h2>Matrice preuves ↔ claims</h2><p>Relations utilisées pour soutenir ou contredire les affirmations.</p></div><span class="pill">'+rows.length+' relations</span></div>'+(rows.length?'<div class="matrix-grid">'+rows.map(x=>'<div class="matrix-row"><span>'+esc(x.claim_id||'CLAIM')+'</span><strong>'+esc(x.claim_text||x.claim||'—')+'</strong><span>'+esc(x.evidence_id||'—')+'</span><b>'+esc(x.status||'UNKNOWN')+'</b></div>').join('')+'</div>':'<div class="empty">Aucune relation exploitable. Les liens restent soumis à revue humaine.</div>')+'</section>'+'<div class="workspace-bottom-grid"><section class="panel"><div class="section-toolbar"><div><h2>Timeline</h2><p>Historique chronologique du dossier.</p></div></div><ol class="workspace-timeline">'+(timeline.length?timeline.map(x=>'<li><time>'+esc(x.occurred_at)+'</time><strong>'+esc(x.kind)+'</strong><span>'+esc(x.actor)+'</span></li>').join(''):'<li>Aucun événement.</li>')+'</ol></section>'+'<section class="panel decision-card"><div class="section-toolbar"><div><div class="eyebrow">DECISION GATE</div><h2>Décision</h2></div><span class="pill warning">'+esc(decisionStatus)+'</span></div><p>'+esc(decision.rationale||'Aucune rationale enregistrée.')+'</p><div class="actions">'+(canAct&&decisionStatus==='DRAFT'?'<button class="primary" onclick="createDecision(\''+esc(id)+'\')">Créer la décision</button>':'')+(canAct&&decisionStatus==='FROZEN'?'<button class="primary" onclick="freezeCase(\''+esc(id)+'\')">Figer</button>':'')+(canAct&&decisionStatus==='PENDING_APPROVAL'?'<button class="primary" onclick="approveCase(\''+esc(id)+'\')">Approuver</button>':'')+(canAct&&decisionStatus==='APPROVED'?'<button class="primary" onclick="prepareSubmission(\''+esc(id)+'\')">Préparer la soumission</button>':'')+(canAct?'':'<span class="hint">Lecture client · les décisions sensibles sont réservées aux rôles habilités.</span>')+'</div><p class="human-note">Les actions sensibles restent soumises à validation humaine. Aucune action Google externe automatique.</p></section></div>'+'<div class="workspace-guardrail"><strong>Chaîne de contrôle conservée</strong><span>Décision → gel → approbation → préparation de soumission. Aucun contournement depuis le workspace.</span></div>'}
+    'état serveur') +
+    '</div>' +
+    '<section class="panel workspace-section next-action-panel"><div class="section-toolbar"><div><div class="eyebrow">PROCHAINE ACTION</div><h2>Ce qu’il reste à faire</h2><p>Une seule priorité visible pour éviter de chercher dans le dossier.</p></div><span class="pill warning">' +
+    esc(decisionStatus==='PENDING_APPROVAL'?'Validation humaine':ready.ready?'Prêt':'À compléter') +
+    '</span></div><div class="workspace-item"><span class="item-index">' +
+    esc(decisionStatus==='PENDING_APPROVAL'?'VALIDER':ready.ready?'PRÉPARER':'VÉRIFIER') +
+    '</span><div><strong>' +
+    esc(decisionStatus==='PENDING_APPROVAL'?'Relire et approuver la décision avant toute préparation externe.':ready.ready?'Le dossier est prêt pour l’étape suivante autorisée.':'Compléter ou vérifier les éléments signalés avant de poursuivre.') +
+    '</strong><small>' +
+    esc(tasks.length?String(tasks.length) +
+    ' tâche(s) de preuve encore ouverte(s).':ready.ready?'Aucune tâche de preuve ouverte.':'La readiness serveur indique qu’une revue reste nécessaire.') +
+    '</small></div></div></section>' +
+    '<div class="workspace-main-grid"><div class="workspace-primary"><section class="panel workspace-review"><div class="section-toolbar"><div><div class="eyebrow">SOURCE REVIEW</div><h2>' +
+    esc(review.review_id||'Avis') +
+    '</h2></div><span class="rating">' +
+    esc(review.rating||'—') +
+    '/5</span></div><blockquote>' +
+    esc(review.text||'Aucun texte disponible.') +
+    '</blockquote><div class="workspace-review-meta"><span>' +
+    esc(review.author_display_name||'Auteur non renseigné') +
+    '</span><span>' +
+    esc(review.source||'Source inconnue') +
+    '</span></div></section>' +
+    '<section class="panel workspace-section"><div class="section-toolbar"><div><h2>Claims</h2><p>Affirmations extraites et structurées pour analyse.</p></div><span class="pill">' +
+    claims.length +
+    '</span></div><div class="workspace-items">' +
+    (claims.length?claims.map(c=>'<article class="workspace-item"><span class="item-index">' +
+    esc(c.claim_type||'CLAIM') +
+    '</span><div><strong>' +
+    esc(c.text||'—') +
+    '</strong><small>Claim à confronter aux preuves disponibles.</small></div></article>').join(''):'<div class="empty">Aucun claim.<small>Les affirmations structurées apparaîtront ici.</small></div>') +
+    '</div></section>' +
+    '<section class="panel workspace-section"><div class="section-toolbar"><div><h2>Preuves et justificatifs</h2><p>Ajoutez vos documents, captures, factures et échanges. L’analyse démarre automatiquement.</p></div><label class="primary compact" style="display:inline-flex;align-items:center;cursor:pointer">+ Ajouter un justificatif<input type="file" hidden onchange="uploadCaseEvidence(state.caseId,this)"></label></div>' +
+    (evidence.length?'<div class="evidence-stack">' +
+    evidence.map(e=>'<article class="evidence-row"><div><strong>' +
+    esc(e.filename||'Preuve') +
+    '</strong><span>' +
+    esc(e.evidence_type||'Type inconnu') +
+    ' · ' +
+    esc(e.status||'UNKNOWN') +
+    '</span></div><code>' +
+    esc(e.sha256||'Empreinte documentaire indisponible') +
+    '</code></article>').join('') +
+    '</div>':'<div class="empty">Aucune preuve liée. Ajoutez votre premier justificatif.</div>') +
+    '</section>' +
+    '</div>' +
+    '<aside class="workspace-sidebar"><section class="panel readiness-card"><div class="eyebrow">READINESS</div><div class="readiness ' +
+    (ready.ready?'ok':'warn') +
+    '">' +
+    (ready.ready?'PRÊT':'REVUE REQUISE') +
+    '</div><p>' +
+    esc(ready.reason||'État calculé côté serveur.') +
+    '</p></section>' +
+    '<section class="panel"><div class="section-toolbar"><div><h2>Policy signals</h2></div><span class="pill">' +
+    policies.length +
+    '</span></div><ul class="workspace-list">' +
+    (policies.length?policies.map(p=>'<li><strong>' +
+    esc(p.code) +
+    '</strong><span>' +
+    esc(p.justification) +
+    '</span></li>').join(''):'<li>Aucun signal.</li>') +
+    '</ul></section>' +
+    '<section class="panel"><div class="section-toolbar"><div><h2>Tâches de preuve</h2></div><span class="pill">' +
+    tasks.length +
+    '</span></div><ul class="workspace-list">' +
+    (tasks.length?tasks.map(t=>'<li><strong>' +
+    esc(t.priority) +
+    '</strong><span>' +
+    esc(t.evidence_requirement) +
+    (t.claim_id?' · ' +
+    esc(t.claim_id):'') +
+    '</span></li>').join(''):'<li>Aucune tâche ouverte.</li>') +
+    '</ul></section>' +
+    '</aside></div>' +
+    '<section class="panel workspace-section"><div class="section-toolbar"><div><h2>Matrice preuves ↔ claims</h2><p>Relations utilisées pour soutenir ou contredire les affirmations.</p></div><span class="pill">' +
+    rows.length +
+    ' relations</span></div>' +
+    (rows.length?'<div class="matrix-grid">' +
+    rows.map(x=>'<div class="matrix-row"><span>' +
+    esc(x.claim_id||'CLAIM') +
+    '</span><strong>' +
+    esc(x.claim_text||x.claim||'—') +
+    '</strong><span>' +
+    esc(x.evidence_id||'—') +
+    '</span><b>' +
+    esc(x.status||'UNKNOWN') +
+    '</b></div>').join('') +
+    '</div>':'<div class="empty">Aucune relation exploitable. Les liens restent soumis à revue humaine.</div>') +
+    '</section>' +
+    '<div class="workspace-bottom-grid"><section class="panel"><div class="section-toolbar"><div><h2>Timeline</h2><p>Historique chronologique du dossier.</p></div></div><ol class="workspace-timeline">' +
+    (timeline.length?timeline.map(x=>'<li><time>' +
+    esc(x.occurred_at) +
+    '</time><strong>' +
+    esc(x.kind) +
+    '</strong><span>' +
+    esc(x.actor) +
+    '</span></li>').join(''):'<li>Aucun événement.</li>') +
+    '</ol></section>' +
+    '<section class="panel decision-card"><div class="section-toolbar"><div><div class="eyebrow">DECISION GATE</div><h2>Décision</h2></div><span class="pill warning">' +
+    esc(decisionStatus) +
+    '</span></div><p>' +
+    esc(decision.rationale||'Aucune rationale enregistrée.') +
+    '</p><div class="actions">' +
+    (canAct&&decisionStatus==='DRAFT'?'<button class="primary" onclick="createDecision(\'' +
+    esc(id) +
+    '\')">Créer la décision</button>':'') +
+    (canAct&&decisionStatus==='FROZEN'?'<button class="primary" onclick="freezeCase(\'' +
+    esc(id) +
+    '\')">Figer</button>':'') +
+    (canAct&&decisionStatus==='PENDING_APPROVAL'?'<button class="primary" onclick="approveCase(\'' +
+    esc(id) +
+    '\')">Approuver</button>':'') +
+    (canAct&&decisionStatus==='APPROVED'?'<button class="primary" onclick="prepareSubmission(\'' +
+    esc(id) +
+    '\')">Préparer la soumission</button>':'') +
+    (canAct?'':'<span class="hint">Lecture client · les décisions sensibles sont réservées aux rôles habilités.</span>') +
+    '</div><p class="human-note">Les actions sensibles restent soumises à validation humaine. Aucune action Google externe automatique.</p></section></div>' +
+    '<div class="workspace-guardrail"><strong>Chaîne de contrôle conservée</strong><span>Décision → gel → approbation → préparation de soumission. Aucun contournement depuis le workspace.</span></div>'}
 async function createDecision(id){const rationale=prompt(rdT('Rationale de la décision humaine :'));
   if(!rationale?.trim())return;
   try{await api(`/v1/cases/${encodeURIComponent(id)}/decision`,
@@ -628,7 +1444,19 @@ async function loadPrivacyAdmin(){
   RESTRICTION:'Limitation',
   OBJECTION:'Opposition',
   PORTABILITY:'Portabilité'};
-  root.innerHTML=d.items?.length?'<div class="table-wrap"><table class="table"><thead><tr><th>Type</th><th>Utilisateur</th><th>Statut</th><th>Échéance</th><th>Action</th></tr></thead><tbody>'+d.items.map(x=>'<tr><td>'+esc(labels[x.request_type]||x.request_type)+'</td><td>'+esc(x.requester_user_id)+'</td><td>'+esc(x.status)+'</td><td>'+esc(x.due_at||'—')+'</td><td><select onchange="updatePrivacyRequest(\''+esc(x.id)+'\',this.value)"><option value="">Choisir…</option><option value="IN_REVIEW">En revue</option><option value="COMPLETED">Terminée</option><option value="REJECTED">Rejetée</option></select></td></tr>').join('')+'</tbody></table></div>':'<div class="empty">Aucune demande organisationnelle.</div>';
+    root.innerHTML=d.items?.length?'<div class="table-wrap"><table class="table"><thead><tr><th>Type</th><th>Utilisateur</th><th>Statut</th><th>Échéance</th><th>Action</th></tr></thead><tbody>' +
+    d.items.map(x=>'<tr><td>' +
+    esc(labels[x.request_type]||x.request_type) +
+    '</td><td>' +
+    esc(x.requester_user_id) +
+    '</td><td>' +
+    esc(x.status) +
+    '</td><td>' +
+    esc(x.due_at||'—') +
+    '</td><td><select onchange="updatePrivacyRequest(\'' +
+    esc(x.id) +
+    '\',this.value)"><option value="">Choisir…</option><option value="IN_REVIEW">En revue</option><option value="COMPLETED">Terminée</option><option value="REJECTED">Rejetée</option></select></td></tr>').join('') +
+    '</tbody></table></div>':'<div class="empty">Aucune demande organisationnelle.</div>';
  }catch(e){toast(e.message||'Chargement impossible',
   'error')}
 }
@@ -686,7 +1514,9 @@ async function inviteOrganizationMember(){modal('Inviter un membre',
   body:JSON.stringify(Object.fromEntries(f))});
   closeModal();
   modal(rdT('Invitation créée'),
-  '<div class="stack"><p>Le jeton d’invitation est affiché une seule fois.</p><code class="secret">'+esc(d.invitation_token)+'</code><button class="primary" onclick="closeModal()">Fermer</button></div>');
+    '<div class="stack"><p>Le jeton d’invitation est affiché une seule fois.</p><code class="secret">' +
+    esc(d.invitation_token) +
+    '</code><button class="primary" onclick="closeModal()">Fermer</button></div>');
   await window.reviewDefenseRender()}catch(x){toast(x.message,
   'error')}}}
 function modal(title,
