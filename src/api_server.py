@@ -2155,7 +2155,7 @@ class ReviewDefenseAPI:
             if row is None and self.repository is not None and hasattr(self.repository, "get_evidence"):
                 dbrow = self.repository.get_evidence(user.organization_id, eid)
                 if dbrow:
-                                        row = dict(zip(("evidence_id",
+                    row = dict(zip(("evidence_id",
                         "organization_id",
                         "case_id",
                         "filename",
@@ -2182,7 +2182,7 @@ class ReviewDefenseAPI:
             if row is None and self.repository is not None and hasattr(self.repository, "get_evidence"):
                 dbrow = self.repository.get_evidence(user.organization_id, eid)
                 if dbrow:
-                                        row = dict(zip(("evidence_id",
+                    row = dict(zip(("evidence_id",
                         "organization_id",
                         "case_id",
                         "filename",
@@ -2219,7 +2219,7 @@ class ReviewDefenseAPI:
             if self.repository is not None and hasattr(self.repository, "get_evidence"):
                 dbrow = self.repository.get_evidence(user.organization_id, eid)
                 if dbrow:
-                                        row = dict(zip(("evidence_id",
+                    row = dict(zip(("evidence_id",
                         "organization_id",
                         "case_id",
                         "filename",
@@ -2265,7 +2265,7 @@ class ReviewDefenseAPI:
             if self.repository is not None:
                 for fact in facts:
                     self.repository.put_evidence_fact(user.organization_id, fact)
-                        self.store.audit_event(user.organization_id,
+            self.store.audit_event(user.organization_id,
                  user.user_id,
                  "EVIDENCE_FACTS_VERIFIED",
                  f"evidence:{eid}",
@@ -2285,7 +2285,7 @@ class ReviewDefenseAPI:
                 contradictions = self.store.contradictions.get((org, cid), [])
                 suggestions = self.store.fact_suggestions.get((org, cid), [])
                 evidence_rows = [e for (eo, _), e in self.store.evidence.items() if eo == org and e.get("case_id") == cid]
-                                evidence = tuple(EvidenceView(e["evidence_id"],
+                evidence = tuple(EvidenceView(e["evidence_id"],
                      e["filename"],
                      e.get("content_type") or "UNKNOWN",
                      e["sha256"],
@@ -2296,7 +2296,7 @@ class ReviewDefenseAPI:
                     tuple(Contradiction(c["contradiction_id"],c["description"],c["claim_id"],tuple(c["evidence_ids"]),True) for c in contradictions))
                 required = {c.claim_id: [] for c in claims}
                 missing = missing_evidence_tasks(ws, required)
-                                item = score_case(case_id=cid,
+                item = score_case(case_id=cid,
                      created_at=case.created_at,
                      policy_statuses=[s.status for s in signals],
                      contradiction_count=len(contradictions),
@@ -2322,7 +2322,7 @@ class ReviewDefenseAPI:
                 contradictions = self.store.contradictions.get((org, cid), [])
                 suggestions = self.store.fact_suggestions.get((org, cid), [])
                 evidence_rows = [e for (eo, _), e in self.store.evidence.items() if eo == org and e.get("case_id") == cid]
-                                evidence = tuple(EvidenceView(e["evidence_id"],
+                evidence = tuple(EvidenceView(e["evidence_id"],
                      e["filename"],
                      e.get("content_type") or "UNKNOWN",
                      e["sha256"],
@@ -2332,7 +2332,7 @@ class ReviewDefenseAPI:
                     tuple(PolicySignalView(s.code,s.status,s.justification) for s in signals), evidence, (),
                     tuple(Contradiction(c["contradiction_id"],c["description"],c["claim_id"],tuple(c["evidence_ids"]),True) for c in contradictions))
                 missing = missing_evidence_tasks(ws, {c.claim_id: [] for c in claims})
-                                item = score_case(case_id=cid,
+                item = score_case(case_id=cid,
                      created_at=case.created_at,
                      policy_statuses=[s.status for s in signals],
                      contradiction_count=len(contradictions),
@@ -2645,7 +2645,7 @@ class ReviewDefenseAPI:
                 contradictions = self.store.contradictions.get((user.organization_id, cid), [])
                 suggestions = self.store.fact_suggestions.get((user.organization_id, cid), [])
                 evidence_rows = [e for (eo, _), e in self.store.evidence.items() if eo == user.organization_id and e.get("case_id") == cid]
-                                evidence = tuple(EvidenceView(e["evidence_id"],
+                evidence = tuple(EvidenceView(e["evidence_id"],
                      e["filename"],
                      e.get("content_type") or "UNKNOWN",
                      e["sha256"],
@@ -2673,7 +2673,7 @@ class ReviewDefenseAPI:
                     tuple(c["evidence_ids"]),
                     True) for c in contradictions))
                 missing = missing_evidence_tasks(ws, {c.claim_id: [] for c in claims})
-                                item = score_case(case_id=cid,
+                item = score_case(case_id=cid,
                      created_at=case.created_at,
                      policy_statuses=[s.status for s in signals],
                      contradiction_count=len(contradictions),
@@ -2783,7 +2783,7 @@ class ReviewDefenseAPI:
                 for signal in signals:
                     for claim_id in signal.claim_ids:
                         required.setdefault(claim_id, []).extend(signal.evidence_required)
-                                evidence = tuple(EvidenceView(e["evidence_id"],
+                evidence = tuple(EvidenceView(e["evidence_id"],
                      e["filename"],
                      e.get("content_type") or "UNKNOWN",
                      e["sha256"],
