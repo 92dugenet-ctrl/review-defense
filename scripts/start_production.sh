@@ -20,7 +20,8 @@ python scripts/migrate.py
 # wsgi:app désigne l'objet app exposé dans le module racine wsgi.py.
 exec gunicorn \
     --bind "0.0.0.0:${PORT:-8080}" \
-    --workers "${WEB_CONCURRENCY:-2}" \
-    --timeout 60 \
+    --workers "${GUNICORN_WORKERS:-${WEB_CONCURRENCY:-2}}" \
+    --threads "${GUNICORN_THREADS:-4}" \
+    --timeout "${GUNICORN_TIMEOUT:-60}" \
     --access-logfile - \
     wsgi:app

@@ -22,10 +22,27 @@ class DeploymentConfig:
     @classmethod
     def from_env(cls) -> "DeploymentConfig":
         """Construit le contrat de déploiement à partir des variables runtime."""
+        public_base_url = os.getenv(
+            "REVIEW_DEFENSE_PUBLIC_BASE_URL",
+            "http://localhost:8080",
+        ).strip().rstrip("/")
+        configured_environment = os.getenv(
+            "REVIEW_DEFENSE_ENV",
+            "",
+        ).strip().lower()
+        # Keep environment inference identical to ProductionConfig: HTTPS is
+        # treated as production when no explicit environment is supplied.
+        environment = configured_environment or (
+            "production"
+            if public_base_url.startswith("https://")
+            else "development"
+        )
+
         return cls(
-            public_base_url=os.getenv("REVIEW_DEFENSE_PUBLIC_BASE_URL", "http://localhost:8080").rstrip("/"),
-            environment=os.getenv("REVIEW_DEFENSE_ENV", "development").lower(),
-            trust_proxy=os.getenv("TRUST_PROXY", "false").lower() in {"1", "true", "yes", "on"},
+            public_base_url=public_base_url,
+            environment=environment,
+            trust_proxy=os.getenv("TRUST_PROXY", "false").strip().lower()
+            in {"1", "true", "yes", "on"},
         )
 
     @property

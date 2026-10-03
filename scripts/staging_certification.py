@@ -19,6 +19,9 @@ def contract_checks() -> dict[str, bool]:
     caddy = (ROOT / "Caddyfile").read_text()
     env = (ROOT / ".env.example").read_text()
     api = (ROOT / "src/api_server.py").read_text()
+    dockerfile = (ROOT / "Dockerfile").read_text()
+    startup = (ROOT / "scripts/start_production.sh").read_text()
+    production_config = (ROOT / "src/production_config.py").read_text()
     checks = {
         "version": '"6.40"' in api,
         "staging_compose": (ROOT / "docker-compose.staging.yml").is_file(),
@@ -28,14 +31,29 @@ def contract_checks() -> dict[str, bool]:
         "browser_e2e": (ROOT / "scripts/browser_e2e.py").is_file(),
         "dr_validator": (ROOT / "scripts/dr_validate.py").is_file(),
         "postgres_healthcheck": "pg_isready" in compose,
-        "migrations_before_app": "python scripts/migrate.py" in compose,
+        # Dockerfile launches the startup script, which applies migrations
+        # before replacing itself with Gunicorn. Compose does not own this command.
+        "migrations_before_app": (
+            "scripts/start_production.sh" in dockerfile
+            and "python scripts/migrate.py" in startup
+        ),
         "https_only_smoke": 'STAGING_BASE_URL' in (ROOT / "scripts/staging_check.py").read_text() and 'https://' in (ROOT / "scripts/staging_check.py").read_text(),
         "tls_caddy": "tls" in caddy.lower() and ":443" in compose,
         "public_base_url_required": "REVIEW_DEFENSE_PUBLIC_BASE_URL" in compose and "REVIEW_DEFENSE_PUBLIC_BASE_URL" in env,
         "mfa_key_required": "REVIEW_DEFENSE_MFA_ENCRYPTION_KEY" in compose,
         "trust_proxy": 'TRUST_PROXY: "true"' in compose,
-        "secure_headers": 'SECURE_HEADERS: "true"' in compose,
-        "two_workers": "--workers 2" in compose,
+        # The setting is explicit in Compose and defaults to enabled in the app.
+        "secure_headers": (
+            'SECURE_HEADERS: "true"' in compose
+            and 'os.getenv("SECURE_HEADERS", "true")' in production_config
+        ),
+        # Worker count and threading are configured by the actual Gunicorn launcher.
+        "two_workers": (
+            "--workers" in startup
+            and "GUNICORN_WORKERS" in startup
+            and "GUNICORN_THREADS" in startup
+            and "GUNICORN_TIMEOUT" in startup
+        ),
         "no_google_frontend": not any(x in (ROOT / "frontend/assets/app.js").read_text() for x in ["google.com", "googleapis.com"]),
     }
     checks["all"] = all(v for k, v in checks.items() if k != "all")

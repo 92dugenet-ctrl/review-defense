@@ -122,3 +122,30 @@ Points à retenir :
 - Les workflows ont des déclencheurs et effets distincts ; certains lancent des tests ou déploient sur des environnements distants.
 
 Aucune configuration ni aucun comportement applicatif n'a été modifié dans le lot L.
+
+
+## 10. Configuration unifiée — lot M
+
+Les stacks Compose transmettent explicitement les variables facultatives SMTP,
+OAuth Google et PayPal webhook au processus `app`. `PAYPAL_ENV` sélectionne
+l'API PayPal : `production` pour la stack de production et `sandbox` pour
+staging. Le vérificateur de webhook historique utilise ce même environnement.
+L'envoi de courriels reste désactivé par défaut tant que SMTP n'est pas configuré.
+
+Le lanceur Docker `scripts/start_production.sh` accepte les réglages
+`GUNICORN_WORKERS`, `GUNICORN_THREADS` et `GUNICORN_TIMEOUT`.
+`WEB_CONCURRENCY` reste un alias de compatibilité pour le nombre de workers.
+
+`DeploymentConfig` applique la même inférence d'environnement que
+`ProductionConfig` : en l'absence de `REVIEW_DEFENSE_ENV`, une URL publique
+HTTPS implique la production.
+
+Le contrat de certification staging vérifie les fichiers propriétaires
+des paramètres : Dockerfile et script de démarrage pour l'ordre des migrations,
+Compose et configuration applicative pour les en-têtes, script de démarrage
+pour les paramètres Gunicorn.
+
+Aucun service worker n'est ajouté aux stacks : `scripts/worker.py` traite
+un seul job par invocation, et les handlers ainsi que le superviseur permanent
+ne sont pas encore spécifiés. Les variables du worker figurent dans le modèle
+d'environnement à titre de configuration d'un processus séparé.

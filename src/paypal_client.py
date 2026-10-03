@@ -52,7 +52,16 @@ def configuration_status():
 
 
 def base_url():
-    return "https://api-m.paypal.com"
+    """Choisit l'API PayPal correspondant à l'environnement configuré."""
+    environment = os.getenv("PAYPAL_ENV", "production").strip().lower()
+
+    if environment == "sandbox":
+        return "https://api-m.sandbox.paypal.com"
+
+    if environment in {"production", "live"}:
+        return "https://api-m.paypal.com"
+
+    raise PayPalError("PAYPAL_ENV must be sandbox or production")
 
 
 def request_json(
