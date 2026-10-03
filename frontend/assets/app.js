@@ -194,97 +194,379 @@ function setToken(t){state.token=t;localStorage.setItem('rd_token',t)}
 function authShell(inner){return `<main class="auth-page"><div class="auth-card"><div class="brand large">REVIEW<span>DEFENSE</span></div>${inner}<div class="auth-foot">Les actions externes restent soumises à approbation humaine.</div></div></main>`}
 function getSelectedPricingOffer(){try{return JSON.parse(localStorage.getItem('rd_selected_offer')||'null')}catch(e){return null}}
 function clearSelectedPricingOffer(){try{localStorage.removeItem('rd_selected_offer')}catch(e){}}
-function renderSignup(error=''){
- document.body.classList.remove('console-mode');
- const selected=getSelectedPricingOffer();
-  const selectedMarkup=selected?'<div class="pricing-selection-banner"><strong>Offre sélectionnée</strong><span>' +
-   esc(selected.name||'') +
-   (selected.price?' — ' +
-   esc(selected.price):'') +
-   '</span><button type="button" class="link-btn" id="clear-pricing-selection">Modifier</button></div>':'';
- document.body.innerHTML=authShell(`<div class="auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Création de votre espace</small></div></div><div class="auth-trust-row"><span>Inscription sécurisée</span><span>Votre organisation</span><span>MFA disponible</span></div>${selectedMarkup}<form id="signup" class="stack auth-form"><div><div class="eyebrow">GET STARTED</div><h1>Créer mon compte</h1><p>Créez directement votre espace Review Defense. Vous pourrez ensuite inviter les membres de votre équipe.</p></div><label>Nom de l’entreprise<input name="organization_name" autocomplete="organization" required maxlength="200" placeholder="Mon entreprise"></label><label>Email professionnel<input name="email" type="email" autocomplete="email" required></label><label>Mot de passe<input name="password" type="password" autocomplete="new-password" minlength="12" required></label><label>Confirmer le mot de passe<input name="password_confirmation" type="password" autocomplete="new-password" minlength="12" required></label><button class="primary auth-submit" type="submit">Créer mon espace gratuitement</button><div id="signup-error" class="error">${error?esc(error):''}</div><button type="button" class="link-btn" id="signup-back">J’ai déjà un compte</button></form><div class="auth-boundary(
-   "><strong>Compte entreprise</strong><span>Le premier compte créé devient OWNER de l’organisation. Les membres CLIENT peuvent ensuite être invités depuis l’espace organisationnel.</span>" +
-   "</div></div>`);
- document.getElementById('signup').onsubmit=async e=>{
-   e.preventDefault();
-   const f=new FormData(e.currentTarget), err=document.getElementById('signup-error');
-   const password=String(f.get('password')||''), confirmation=String(f.get('password_confirmation')||'');
-   if(password!==confirmation){err.textContent='Les deux mots de passe ne correspondent pas.';return}
-   try{
-          const d=await api('/v1/auth/register',
-       {method:'POST',
-       body:JSON.stringify({organization_name:String(f.get('organization_name')),
-       email:String(f.get('email')),
-       password})});
-     if(d.access_token){setToken(d.access_token);location.href='/app';return}
-     err.className='hint';err.textContent='Votre compte a été créé. Vérifiez votre e-mail avant de vous connecter.';
-   }catch(x){err.textContent=x.message||'Impossible de créer le compte.'}
- };
-  document.getElementById('signup-back').onclick=()=>renderLogin();document.getElementById('clear-pricing-selection')?.addEventListener('click',
-   ()=>{clearSelectedPricingOffer();renderSignup()});
+
+function renderSignup(error = '') {
+  document.body.classList.remove('console-mode');
+
+  const selected = getSelectedPricingOffer();
+  const selectedMarkup = selected
+    ? '<div class="pricing-selection-banner">' +
+      '<strong>Offre sélectionnée</strong>' +
+      '<span>' + esc(selected.name || '') +
+      (selected.price ? ' — ' + esc(selected.price) : '') +
+      '</span>' +
+      '<button type="button" class="link-btn" id="clear-pricing-selection">' +
+      'Modifier</button></div>'
+    : '';
+
+  const signupMarkup =
+    '<div class="auth-shell-premium">' +
+      '<div class="auth-brand-lockup">' +
+        '<span class="auth-mark">RD</span>' +
+        '<div><strong>REVIEW DEFENSE</strong>' +
+        '<small>Création de votre espace</small></div>' +
+      '</div>' +
+      '<div class="auth-trust-row">' +
+        '<span>Inscription sécurisée</span>' +
+        '<span>Votre organisation</span>' +
+        '<span>MFA disponible</span>' +
+      '</div>' +
+      selectedMarkup +
+      '<form id="signup" class="stack auth-form">' +
+        '<div><div class="eyebrow">GET STARTED</div>' +
+        '<h1>Créer mon compte</h1>' +
+        '<p>Créez directement votre espace Review Defense. ' +
+        'Vous pourrez ensuite inviter les membres de votre équipe.</p></div>' +
+        '<label>Nom de l’entreprise<input name="organization_name" ' +
+        'autocomplete="organization" required maxlength="200" ' +
+        'placeholder="Mon entreprise"></label>' +
+        '<label>Email professionnel<input name="email" type="email" ' +
+        'autocomplete="email" required></label>' +
+        '<label>Mot de passe<input name="password" type="password" ' +
+        'autocomplete="new-password" minlength="12" required></label>' +
+        '<label>Confirmer le mot de passe<input name="password_confirmation" ' +
+        'type="password" autocomplete="new-password" minlength="12" required></label>' +
+        '<button class="primary auth-submit" type="submit">' +
+        'Créer mon espace gratuitement</button>' +
+        '<div id="signup-error" class="error">' +
+        (error ? esc(error) : '') +
+        '</div>' +
+        '<button type="button" class="link-btn" id="signup-back">' +
+        'J’ai déjà un compte</button>' +
+      '</form>' +
+      '<div class="auth-boundary">' +
+        '<strong>Compte entreprise</strong>' +
+        '<span>Le premier compte créé devient OWNER de l’organisation. ' +
+        'Les membres CLIENT peuvent ensuite être invités depuis ' +
+        'l’espace organisationnel.</span>' +
+      '</div>' +
+    '</div>';
+
+  document.body.innerHTML = authShell(signupMarkup);
+
+  document.getElementById('signup').onsubmit = async (event) => {
+    event.preventDefault();
+
+    const form = new FormData(event.currentTarget);
+    const errorElement = document.getElementById('signup-error');
+    const password = String(form.get('password') || '');
+    const confirmation = String(
+      form.get('password_confirmation') || ''
+    );
+
+    if (password !== confirmation) {
+      errorElement.textContent =
+        'Les deux mots de passe ne correspondent pas.';
+      return;
+    }
+
+    try {
+      const response = await api(
+        '/v1/auth/register',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            organization_name: String(
+              form.get('organization_name')
+            ),
+            email: String(form.get('email')),
+            password
+          })
+        }
+      );
+
+      if (response.access_token) {
+        setToken(response.access_token);
+        location.href = '/app';
+        return;
+      }
+
+      errorElement.className = 'hint';
+      errorElement.textContent =
+        'Votre compte a été créé. Vérifiez votre e-mail avant de vous connecter.';
+    } catch (error) {
+      errorElement.textContent =
+        error.message || 'Impossible de créer le compte.';
+    }
+  };
+
+  document.getElementById('signup-back').onclick = () => {
+    renderLogin();
+  };
+
+  document
+    .getElementById('clear-pricing-selection')
+    ?.addEventListener('click', () => {
+      clearSelectedPricingOffer();
+      renderSignup();
+    });
 }
-function renderLogin(error=''){document.body.classList.remove('console-mode');
-  state.login.mfaRequired=false;
-  document.body.innerHTML=authShell(`<div class="
- )auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Console sécurisée</small></div></div><div class="auth-trust-row"><span>Connexion sécurisée</span><span>Compte protégé</span><span>Vérification renforcée</span></div><form id="login" class="stack auth-form"><div><div class="eyebrow">IDENTITY & ACCESS</div><h1>Connexion</h1><p>Accédez à votre espace organisationnel sécurisé.</p></div><label>Email<input name="email" type="email" autocomplete="username" required value="${esc(state.login.email)}"></label><label>Organisation<input name="organization_id" autocomplete="organization" required value="${esc(state.login.organization_id)}"></label><label>Mot de passe<div class="password-field"><input id="login-password" name="password" type="password" autocomplete="current-password" required><button type="button" class="ghost" onclick="togglePasswordVisibility('login-password',
-  this)" aria-label="Afficher le mot de passe">Afficher</button></div></label><div id="mfa-slot" hidden></div><button class="primary auth-submit" type="submit">Se connecter</button>${error?`<div class="error">${esc(error)}</div>`:''}<button type="button" class="link-btn" id="forgot">Mot de passe oublié ?</button><button type="button" class="link-btn" id="create-account">Créer un compte</button><button type="button" class="link-btn" id="invite-account">J’ai une invitation</button></form><div class="auth-boundary(
-    "><strong>Contrôle humain & serveur</strong><span>Aucune action Google externe n'est exécutée pendant l'authentification.</span>" +
-    "</div></div>`);document.getElementById('login').onsubmit=loginSubmit;document.getElementById('forgot').onclick=renderRecovery;document.getElementById('create-account').onclick=()=>renderSignup();document.getElementById('invite-account').onclick=()=>{location.href='/?page=accept-invitation'}}
-function togglePasswordVisibility(id,
-    button){const input=document.getElementById(id);
-    if(!input)return;
-    const visible=input.type==='text';
-    input.type=visible?'password':'text';
-    button.textContent=visible?'Afficher':'Masquer';
-    button.setAttribute('aria-label',
-  visible?'Afficher le mot de passe':'Masquer le mot de passe')}
-async function loginSubmit(e){e.preventDefault();
-  const f=new FormData(e.currentTarget);
-  state.login.email=String(f.get('email'));
-  state.login.organization_id=String(f.get('organization_id'));
-  const body={email:state.login.email,
-  organization_id:state.login.organization_id,
-  password:String(f.get('password'))};const code=f.get('mfa_code');if(code)body.mfa_code=String(code);try{const d=await api('/v1/auth/login',
-  {method:'POST',
-    body:JSON.stringify(body)});
-    setToken(d.access_token);
-    location.href='/app'}catch(x){if(String(x.message).toLowerCase().includes('mfa')){state.login.mfaRequired=true;
-    const slot=document.getElementById('mfa-slot');
-    if(slot){slot.hidden=false;
-    slot.innerHTML=(
-        '<label>Code MFA<input id="
-  )login-mfa" name="mfa_code" inputmode="numeric" autocomplete' +
-        '="one-time-code" pattern="\\d{6}" maxlength="6" placeholder="000000" required></label' +
-        '><p class="hint">Entrez le code de votre application d’authentification.</p>'
-            );
-        slot.querySelector('input')?.focus()}}const err=document.querySelector('#login .error');
-        if(err)err.textContent=x.message;
-        else document.querySelector('#login').insertAdjacentHTML('beforeend',
-  `<div class="error">${esc(x.message)}</div>`)}}
-function renderRecovery(){document.body.innerHTML=authShell(`<div class="auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Récupération sécurisée</small></div></div><form id="recovery" class="stack auth-form"><div><div class="eyebrow">ACCOUNT RECOVERY</div><h1>Récupérer l’accès</h1><p>La réponse reste générique afin de ne pas révéler l’existence d’un compte.</p></div><label>Email<input name="email" type="email" autocomplete="username" required></label><label>Organisation<input name="organization_id" autocomplete="organization" required></label><button class="primary auth-submit">Envoyer le lien</button><div id="recovery-msg" class="hint"></div><button type="button" class="link-btn" id="back">Retour à la connexion</button></form><div class="auth-boundary(
-  "><strong>Jeton à usage contrôlé</strong><span>Le lien de récupération est limité dans le temps et à usage unique.</span></div>" +
-  "</div>`);
-  document.getElementById('recovery').onsubmit=async e=>{e.preventDefault();
-  const f=new FormData(e.currentTarget);
-  try{await api('/v1/auth/recovery/request',
-  {method:'POST',
-  body:JSON.stringify({email:f.get('email'),
-    organization_id:f.get('organization_id')})});
-    document.getElementById('recovery-msg').textContent='Si les informations sont valides, un email de récupération a été envoyé.'}catch(x){document.getElementById('recovery-msg').textContent=x.message}};
-    document.getElementById('back').onclick=()=>renderLogin()}
-function renderReset(){const p=new URLSearchParams(location.search);
-  const token=p.get('token')||p.get('recovery_token');
-  const org=p.get('organization_id')||'';
-  document.body.innerHTML=authShell(`<form id="
-)reset" class="stack"><h1>Nouveau mot de passe</h1><p>Le lien est à usage unique et limité dans le temps.</p><label>Organisation<input name="organization_id" required value="${esc(org)}"></label><label>Token de récupération<input name="recovery_token" required value="${esc(token)}"></label><label>Nouveau mot de passe<input name="new_password" type="password" autocomplete="new-password" required minlength="12"></label><button class="primary">Changer le mot de passe</button><div id="reset-msg" class="hint"></div></form>`);
-  document.getElementById('reset').onsubmit=async e=>{e.preventDefault();
-  const f=new FormData(e.currentTarget);
-  try{await api('/v1/auth/recovery/reset',
-  {method:'POST',
-    body:JSON.stringify(Object.fromEntries(f))});
-    document.getElementById('reset-msg').textContent='Mot de passe modifié. Vous pouvez maintenant vous connecter.';
-    setTimeout(renderLogin,
-  1200)}catch(x){document.getElementById('reset-msg').textContent=x.message}}}
+
+function renderLogin(error = '') {
+  document.body.classList.remove('console-mode');
+  state.login.mfaRequired = false;
+
+  const loginMarkup =
+    '<div class="auth-shell-premium">' +
+      '<div class="auth-brand-lockup">' +
+        '<span class="auth-mark">RD</span>' +
+        '<div><strong>REVIEW DEFENSE</strong>' +
+        '<small>Console sécurisée</small></div>' +
+      '</div>' +
+      '<div class="auth-trust-row">' +
+        '<span>Connexion sécurisée</span>' +
+        '<span>Compte protégé</span>' +
+        '<span>Vérification renforcée</span>' +
+      '</div>' +
+      '<form id="login" class="stack auth-form">' +
+        '<div><div class="eyebrow">IDENTITY & ACCESS</div>' +
+        '<h1>Connexion</h1>' +
+        '<p>Accédez à votre espace organisationnel sécurisé.</p></div>' +
+        '<label>Email<input name="email" type="email" ' +
+        'autocomplete="username" required value="' +
+        esc(state.login.email) + '"></label>' +
+        '<label>Organisation<input name="organization_id" ' +
+        'autocomplete="organization" required value="' +
+        esc(state.login.organization_id) + '"></label>' +
+        '<label>Mot de passe<div class="password-field">' +
+        '<input id="login-password" name="password" type="password" ' +
+        'autocomplete="current-password" required>' +
+        '<button type="button" class="ghost" ' +
+        'onclick="togglePasswordVisibility(\'login-password\', this)" ' +
+        'aria-label="Afficher le mot de passe">Afficher</button>' +
+        '</div></label>' +
+        '<div id="mfa-slot" hidden></div>' +
+        '<button class="primary auth-submit" type="submit">Se connecter</button>' +
+        (error ? '<div class="error">' + esc(error) + '</div>' : '') +
+        '<button type="button" class="link-btn" id="forgot">' +
+        'Mot de passe oublié ?</button>' +
+        '<button type="button" class="link-btn" id="create-account">' +
+        'Créer un compte</button>' +
+        '<button type="button" class="link-btn" id="invite-account">' +
+        'J’ai une invitation</button>' +
+      '</form>' +
+      '<div class="auth-boundary">' +
+        '<strong>Contrôle humain & serveur</strong>' +
+        '<span>Aucune action Google externe n\'est exécutée pendant ' +
+        'l\'authentification.</span>' +
+      '</div>' +
+    '</div>';
+
+  document.body.innerHTML = authShell(loginMarkup);
+  document.getElementById('login').onsubmit = loginSubmit;
+  document.getElementById('forgot').onclick = renderRecovery;
+  document.getElementById('create-account').onclick = () => {
+    renderSignup();
+  };
+  document.getElementById('invite-account').onclick = () => {
+    location.href = '/?page=accept-invitation';
+  };
+}
+
+function togglePasswordVisibility(id, button) {
+  const input = document.getElementById(id);
+
+  if (!input) {
+    return;
+  }
+
+  const visible = input.type === 'text';
+  input.type = visible ? 'password' : 'text';
+  button.textContent = visible ? 'Afficher' : 'Masquer';
+  button.setAttribute(
+    'aria-label',
+    visible
+      ? 'Afficher le mot de passe'
+      : 'Masquer le mot de passe'
+  );
+}
+
+async function loginSubmit(event) {
+  event.preventDefault();
+
+  const form = new FormData(event.currentTarget);
+
+  state.login.email = String(form.get('email'));
+  state.login.organization_id = String(
+    form.get('organization_id')
+  );
+
+  const body = {
+    email: state.login.email,
+    organization_id: state.login.organization_id,
+    password: String(form.get('password'))
+  };
+
+  const code = form.get('mfa_code');
+
+  if (code) {
+    body.mfa_code = String(code);
+  }
+
+  try {
+    const response = await api(
+      '/v1/auth/login',
+      {
+        method: 'POST',
+        body: JSON.stringify(body)
+      }
+    );
+
+    setToken(response.access_token);
+    location.href = '/app';
+  } catch (error) {
+    if (String(error.message).toLowerCase().includes('mfa')) {
+      state.login.mfaRequired = true;
+
+      const slot = document.getElementById('mfa-slot');
+
+      if (slot) {
+        slot.hidden = false;
+        slot.innerHTML =
+          '<label>Code MFA<input id="login-mfa" name="mfa_code" ' +
+          'inputmode="numeric" autocomplete="one-time-code" ' +
+          'pattern="\\\\d{6}" maxlength="6" placeholder="000000" ' +
+          'required></label>' +
+          '<p class="hint">Entrez le code de votre application ' +
+          'd’authentification.</p>';
+
+        slot.querySelector('input')?.focus();
+      }
+    }
+
+    const errorElement = document.querySelector('#login .error');
+
+    if (errorElement) {
+      errorElement.textContent = error.message;
+    } else {
+      document
+        .querySelector('#login')
+        .insertAdjacentHTML(
+          'beforeend',
+          '<div class="error">' + esc(error.message) + '</div>'
+        );
+    }
+  }
+}
+
+function renderRecovery() {
+  const recoveryMarkup =
+    '<div class="auth-shell-premium">' +
+      '<div class="auth-brand-lockup">' +
+        '<span class="auth-mark">RD</span>' +
+        '<div><strong>REVIEW DEFENSE</strong>' +
+        '<small>Récupération sécurisée</small></div>' +
+      '</div>' +
+      '<form id="recovery" class="stack auth-form">' +
+        '<div><div class="eyebrow">ACCOUNT RECOVERY</div>' +
+        '<h1>Récupérer l’accès</h1>' +
+        '<p>La réponse reste générique afin de ne pas révéler ' +
+        'l’existence d’un compte.</p></div>' +
+        '<label>Email<input name="email" type="email" ' +
+        'autocomplete="username" required></label>' +
+        '<label>Organisation<input name="organization_id" ' +
+        'autocomplete="organization" required></label>' +
+        '<button class="primary auth-submit">Envoyer le lien</button>' +
+        '<div id="recovery-msg" class="hint"></div>' +
+        '<button type="button" class="link-btn" id="back">' +
+        'Retour à la connexion</button>' +
+      '</form>' +
+      '<div class="auth-boundary">' +
+        '<strong>Jeton à usage contrôlé</strong>' +
+        '<span>Le lien de récupération est limité dans le temps ' +
+        'et à usage unique.</span>' +
+      '</div>' +
+    '</div>';
+
+  document.body.innerHTML = authShell(recoveryMarkup);
+
+  document.getElementById('recovery').onsubmit = async (event) => {
+    event.preventDefault();
+
+    const form = new FormData(event.currentTarget);
+
+    try {
+      await api(
+        '/v1/auth/recovery/request',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            email: form.get('email'),
+            organization_id: form.get('organization_id')
+          })
+        }
+      );
+
+      document.getElementById('recovery-msg').textContent =
+        'Si les informations sont valides, un email de récupération a été envoyé.';
+    } catch (error) {
+      document.getElementById('recovery-msg').textContent =
+        error.message;
+    }
+  };
+
+  document.getElementById('back').onclick = () => {
+    renderLogin();
+  };
+}
+
+function renderReset() {
+  const params = new URLSearchParams(location.search);
+  const token = params.get('token') || params.get('recovery_token');
+  const organizationId = params.get('organization_id') || '';
+
+  const resetMarkup =
+    '<form id="reset" class="stack">' +
+      '<h1>Nouveau mot de passe</h1>' +
+      '<p>Le lien est à usage unique et limité dans le temps.</p>' +
+      '<label>Organisation<input name="organization_id" required ' +
+      'value="' + esc(organizationId) + '"></label>' +
+      '<label>Token de récupération<input name="recovery_token" required ' +
+      'value="' + esc(token) + '"></label>' +
+      '<label>Nouveau mot de passe<input name="new_password" ' +
+      'type="password" autocomplete="new-password" required ' +
+      'minlength="12"></label>' +
+      '<button class="primary">Changer le mot de passe</button>' +
+      '<div id="reset-msg" class="hint"></div>' +
+    '</form>';
+
+  document.body.innerHTML = authShell(resetMarkup);
+
+  document.getElementById('reset').onsubmit = async (event) => {
+    event.preventDefault();
+
+    const form = new FormData(event.currentTarget);
+
+    try {
+      await api(
+        '/v1/auth/recovery/reset',
+        {
+          method: 'POST',
+          body: JSON.stringify(Object.fromEntries(form))
+        }
+      );
+
+      document.getElementById('reset-msg').textContent =
+        'Mot de passe modifié. Vous pouvez maintenant vous connecter.';
+
+      setTimeout(renderLogin, 1200);
+    } catch (error) {
+      document.getElementById('reset-msg').textContent =
+        error.message;
+    }
+  };
+}
+
 function renderVerify(){const p=new URLSearchParams(location.search);
   document.body.innerHTML=authShell(`<div class="stack"><h1>Vérification de l’email</h1><p id="verify-msg">Validation du lien…</p><button class="primary" id="verify-btn">Vérifier</button></div>`);
   document.getElementById('verify-btn').onclick=async()=>{try{await api('/v1/auth/email-verification/verify',
