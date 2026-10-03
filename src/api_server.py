@@ -2150,7 +2150,13 @@ class ReviewDefenseAPI:
                 raise APIError(422, "VALIDATION_ERROR", str(exc)) from exc
             user = User(user.user_id, user.organization_id, user.email, new_hash, user.role)
             self.store.users[user.user_id] = user
-            current_hash = hash_token(environ.get("HTTP_AUTHORIZATION", "")[7:].strip())
+            current_header = environ.get("HTTP_AUTHORIZATION", "")
+            current_raw = (
+                current_header[7:].strip()
+                if current_header.startswith("Bearer ")
+                else self._cookie_session_token(environ) or ""
+            )
+            current_hash = hash_token(current_raw) if current_raw else ""
             for th, sess in list(self.store.sessions.items()):
                 if sess.user_id == user.user_id and sess.organization_id == user.organization_id:
                     self.store.sessions[th] = Session(sess.user_id, sess.organization_id, sess.role, sess.token_hash, sess.expires_at, utc_now())
@@ -2187,7 +2193,14 @@ class ReviewDefenseAPI:
             self.store.audit_event(user.organization_id, user.user_id, "PASSWORD_CHANGED", f"user:{user.user_id}")
             return self._json(200, {"status":"password_changed", "access_token":raw, "token_type":"Bearer", "expires_at":fresh.expires_at.isoformat()})
         if method == "POST" and path == "/v1/auth/rotate":
-            old_raw = environ.get("HTTP_AUTHORIZATION", "")[7:].strip()
+            old_header = environ.get("HTTP_AUTHORIZATION", "")
+            old_raw = (
+                old_header[7:].strip()
+                if old_header.startswith("Bearer ")
+                else self._cookie_session_token(environ) or ""
+            )
+            if not old_raw:
+                raise APIError(401, "AUTH_INVALID", "invalid session")
             old_hash = hash_token(old_raw)
             old = self.store.sessions.get(old_hash)
             if old is None:
@@ -3743,7 +3756,11 @@ class ReviewDefenseAPI:
             raise APIError(404, "NOT_FOUND", "case operation not found")
         if method == "POST" and path == "/v1/logout":
             header = environ.get("HTTP_AUTHORIZATION", "")
-            raw = header[7:].strip() if header.startswith("Bearer ") else ""
+            raw = (
+                header[7:].strip()
+                if header.startswith("Bearer ")
+                else self._cookie_session_token(environ) or ""
+            )
             th = __import__("hashlib").sha256(raw.encode()).hexdigest()
             old = self.store.sessions.get(th)
             if old:
