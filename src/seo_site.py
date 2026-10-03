@@ -1599,55 +1599,185 @@ def _services_html():
     .svc-cta{padding:85px 0}
     }
     
-    """"""
-    nav='<a href="/produit/">Produit</a><a href="/comment-ca-marche/">Comment ça fonctionne</a><a href="/services/">Services</a><a href="/tarifs/">Tarifs</a><a href="/ressources/">Ressources</a><a href="/contact/">Contact</a>'
-    services=[
-      ("01","Analyse des avis","Comprendre ce qui mérite d’être vérifié avant de décider quoi que ce soit.","Examinez le contenu, le contexte et les signaux disponibles. L’objectif est de séparer les faits observables des éléments qui restent à confirmer.","review"),
-      ("02","Dossier & preuves","Rassembler les éléments utiles dans un dossier clair.","Centralisez captures, URL, échanges, dates et pièces pertinentes. Chaque élément peut être relié à l’affirmation qu’il permet de vérifier.","evidence"),
-      ("03","Préparation des réponses","Préparer une réponse adaptée à la situation.","Structurez une réponse factuelle, cohérente avec le contexte et votre ton de communication. Vous gardez la main avant toute publication.","reply"),
-      ("04","Suivi des signalements","Ne perdez plus le fil d’un dossier.","Suivez les étapes, les décisions et les éléments transmis depuis une chronologie unique, avec un historique lisible.","timeline"),
-      ("05","Validation humaine","L’automatisation prépare. Vous décidez.","Les actions importantes restent soumises à une validation explicite. Review Defense ne transforme pas une analyse en action externe automatique.","approval"),
+    """
+    navigation = (
+        '<a href="/produit/">Produit</a>'
+        '<a href="/comment-ca-marche/">Comment ça fonctionne</a>'
+        '<a href="/services/">Services</a>'
+        '<a href="/tarifs/">Tarifs</a>'
+        '<a href="/ressources/">Ressources</a>'
+        '<a href="/contact/">Contact</a>'
+    )
+    services = [
+        (
+            "01",
+            "Analyse des avis",
+            "Comprendre ce qui mérite d’être vérifié avant de décider quoi que ce soit.",
+            "Examinez le contenu, le contexte et les signaux disponibles. "
+            "L’objectif est de séparer les faits observables des éléments "
+            "qui restent à confirmer.",
+            "review",
+        ),
+        (
+            "02",
+            "Dossier & preuves",
+            "Rassembler les éléments utiles dans un dossier clair.",
+            "Centralisez captures, URL, échanges, dates et pièces pertinentes. "
+            "Chaque élément peut être relié à l’affirmation qu’il permet "
+            "de vérifier.",
+            "evidence",
+        ),
+        (
+            "03",
+            "Préparation des réponses",
+            "Préparer une réponse adaptée à la situation.",
+            "Structurez une réponse factuelle, cohérente avec le contexte "
+            "et votre ton de communication. Vous gardez la main avant "
+            "toute publication.",
+            "reply",
+        ),
+        (
+            "04",
+            "Suivi des signalements",
+            "Ne perdez plus le fil d’un dossier.",
+            "Suivez les étapes, les décisions et les éléments transmis "
+            "depuis une chronologie unique, avec un historique lisible.",
+            "timeline",
+        ),
+        (
+            "05",
+            "Validation humaine",
+            "L’automatisation prépare. Vous décidez.",
+            "Les actions importantes restent soumises à une validation "
+            "explicite. Review Defense ne transforme pas une analyse "
+            "en action externe automatique.",
+            "approval",
+        ),
     ]
-    visuals={
-      "review":(
-          '<div class="svc-art-card"><span class="svc-art-meta">ANALYSE · AVIS #REV-88421</span><h4>Situation à examiner</h4><div class="svc-review-head">'
-          '<span class="svc-stars">★★★★★</span><span class="svc-badge">À VÉRIFIER</span></div><div class="svc-review">'
-          '<p>« Expérience très décevante, je n’ai jamais été client de cet établissement… »</p></div><div class="svc-kpis"><div class="svc-kpi"><b>03</b>'
-          '<span>signaux</span></div><div class="svc-kpi"><b>07</b><span>éléments</span></div><div class="svc-kpi"><b>01</b><span>dossier</span></div></div></div>'
-      ),
-      "evidence":(
-          '<div class="svc-art-card"><span class="svc-art-meta">DOSSIER · PREUVES</span><h4>Éléments associés</h4><div class="svc-evidence-row">'
-          '<div class="svc-evidence-icon">↗</div><div><b>URL de l’avis</b><small> · source publique</small></div><span class="svc-status">LIÉE</span></div>'
-          '<div class="svc-evidence-row"><div class="svc-evidence-icon">▣</div><div><b>Capture datée</b><small> · 30/09/2026</small></div>'
-          '<span class="svc-status">VÉRIFIÉE</span></div><div class="svc-evidence-row"><div class="svc-evidence-icon">✦</div><div><b>Échange client</b>'
-          '<small> · contexte</small></div><span class="svc-status">À LIRE</span></div></div>'
-      ),
-      "reply":(
-          '<div class="svc-art-card"><span class="svc-art-meta">RÉPONSE · BROUILLON</span><h4>Préparation assistée</h4><div class="svc-chat">'
-          '<div class="svc-bubble">Voici les éléments factuels disponibles dans le dossier.</div>'
-          '<div class="svc-bubble me">Prépare une réponse courte, professionnelle et factuelle.</div>'
-          '<div class="svc-bubble">Brouillon prêt. Vérifiez le contenu avant toute publication.</div></div>'
-          '<div class="svc-compose">Relire le brouillon… <b style="float:right">→</b></div></div>'
-      ),
-      "timeline":(
-          '<div class="svc-art-card"><span class="svc-art-meta">SUIVI · CHRONOLOGIE</span><h4>Un dossier, une vue claire</h4><div class="svc-timeline">'
-          '<div class="svc-step"><b>Analyse terminée</b><span>Les éléments disponibles ont été qualifiés.</span></div><div class="svc-step"><b>Dossier complété</b>'
-          '<span>Les preuves utiles ont été associées.</span></div><div class="svc-step"><b>Signalement préparé</b><span>Le contenu et le motif ont été revus.</span>'
-          '</div><div class="svc-step"><b>Validation requise</b><span>Une décision humaine reste nécessaire.</span></div></div></div>'
-      ),
-      "approval":(
-          '<div class="svc-approval"><div class="svc-approval-top"><small>ÉTAPE CONTRÔLÉE</small><span class="svc-badge">APPROBATION</span></div>'
-          '<h4>Prêt pour votre validation</h4><p>Le dossier est structuré. Aucune action externe n’est exécutée tant que vous n’avez pas validé explicitement la '
-          'suite.</p><div class="svc-approval-actions"><span class="selected">Valider</span><span>Modifier</span><span>Refuser</span></div></div>'
-      )
+    visuals = {
+        "review": (
+            '<div class="svc-art-card">'
+            '<span class="svc-art-meta">ANALYSE · AVIS #REV-88421</span>'
+            '<h4>Situation à examiner</h4>'
+            '<div class="svc-review-head">'
+            '<span class="svc-stars">★★★★★</span>'
+            '<span class="svc-badge">À VÉRIFIER</span></div>'
+            '<div class="svc-review">'
+            '<p>« Expérience très décevante, je n’ai jamais été client '
+            'de cet établissement… »</p></div>'
+            '<div class="svc-kpis"><div class="svc-kpi"><b>03</b>'
+            '<span>signaux</span></div>'
+            '<div class="svc-kpi"><b>07</b><span>éléments</span></div>'
+            '<div class="svc-kpi"><b>01</b><span>dossier</span></div>'
+            '</div></div>'
+        ),
+        "evidence": (
+            '<div class="svc-art-card">'
+            '<span class="svc-art-meta">DOSSIER · PREUVES</span>'
+            '<h4>Éléments associés</h4>'
+            '<div class="svc-evidence-row">'
+            '<div class="svc-evidence-icon">↗</div>'
+            '<div><b>URL de l’avis</b><small> · source publique</small></div>'
+            '<span class="svc-status">LIÉE</span></div>'
+            '<div class="svc-evidence-row">'
+            '<div class="svc-evidence-icon">▣</div>'
+            '<div><b>Capture datée</b><small> · 30/09/2026</small></div>'
+            '<span class="svc-status">VÉRIFIÉE</span></div>'
+            '<div class="svc-evidence-row">'
+            '<div class="svc-evidence-icon">✦</div>'
+            '<div><b>Échange client</b><small> · contexte</small></div>'
+            '<span class="svc-status">À LIRE</span></div></div>'
+        ),
+        "reply": (
+            '<div class="svc-art-card">'
+            '<span class="svc-art-meta">RÉPONSE · BROUILLON</span>'
+            '<h4>Préparation assistée</h4><div class="svc-chat">'
+            '<div class="svc-bubble">Voici les éléments factuels disponibles '
+            'dans le dossier.</div>'
+            '<div class="svc-bubble me">Prépare une réponse courte, '
+            'professionnelle et factuelle.</div>'
+            '<div class="svc-bubble">Brouillon prêt. Vérifiez le contenu '
+            'avant toute publication.</div></div>'
+            '<div class="svc-compose">Relire le brouillon… '
+            '<b style="float:right">→</b></div></div>'
+        ),
+        "timeline": (
+            '<div class="svc-art-card">'
+            '<span class="svc-art-meta">SUIVI · CHRONOLOGIE</span>'
+            '<h4>Un dossier, une vue claire</h4>'
+            '<div class="svc-timeline">'
+            '<div class="svc-step"><b>Analyse terminée</b>'
+            '<span>Les éléments disponibles ont été qualifiés.</span></div>'
+            '<div class="svc-step"><b>Dossier complété</b>'
+            '<span>Les preuves utiles ont été associées.</span></div>'
+            '<div class="svc-step"><b>Signalement préparé</b>'
+            '<span>Le contenu et le motif ont été revus.</span></div>'
+            '<div class="svc-step"><b>Validation requise</b>'
+            '<span>Une décision humaine reste nécessaire.</span></div>'
+            '</div></div>'
+        ),
+        "approval": (
+            '<div class="svc-approval">'
+            '<div class="svc-approval-top">'
+            '<small>ÉTAPE CONTRÔLÉE</small>'
+            '<span class="svc-badge">APPROBATION</span></div>'
+            '<h4>Prêt pour votre validation</h4>'
+            '<p>Le dossier est structuré. Aucune action externe n’est '
+            'exécutée tant que vous n’avez pas validé explicitement la suite.'
+            '</p><div class="svc-approval-actions">'
+            '<span class="selected">Valider</span><span>Modifier</span>'
+            '<span>Refuser</span></div></div>'
+        ),
     }
-    rows="".join((
-        f'<article class="svc-service-row"><div class="svc-copy"><span class="svc-number">{n} · SERVICE</span><h3>{_e(h)}</h3><p>{_e(d)}</p><p>{_e(t)}</p>'
-        f'<a href="/analyse-avis-google/">Démarrer une analyse →</a></div><div class="svc-media">{visuals[k]}</div></article>'
-    ) for n,h,d,t,k in services)
-    schema=json.dumps({"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":_url("/#organization"),"name":"Review Defense","url":_url("/")},{"@type":"WebSite","@id":_url("/#website"),"name":"Review Defense",
-        "url":_url("/"),"publisher":{"@id":_url("/#organization")}},{"@type":"Service","@id":_url("/services/")+"#service","name":"Services Review Defense","description":"Analyse d’avis, préparation de dossiers, suivi et validation humaine.",
-        "provider":{"@id":_url("/#organization")}}]},ensure_ascii=False,separators=(",",":"))
+    rows = "".join(
+        (
+            f'<article class="svc-service-row">'
+            f'<div class="svc-copy"><span class="svc-number">'
+            f'{number} · SERVICE</span><h3>{_e(heading)}</h3>'
+            f'<p>{_e(summary)}</p><p>{_e(description)}</p>'
+            f'<a href="/analyse-avis-google/">'
+            f'Démarrer une analyse →</a></div>'
+            f'<div class="svc-media">{visuals[visual_key]}</div></article>'
+        )
+        for number, heading, summary, description, visual_key in services
+    )
+
+
+    schema_data = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Organization",
+                "@id": _url("/#organization"),
+                "name": "Review Defense",
+                "url": _url("/"),
+            },
+            {
+                "@type": "WebSite",
+                "@id": _url("/#website"),
+                "name": "Review Defense",
+                "url": _url("/"),
+                "publisher": {"@id": _url("/#organization")},
+            },
+            {
+                "@type": "Service",
+                "@id": _url("/services/") + "#service",
+                "name": "Services Review Defense",
+                "description": (
+                    "Analyse d’avis, préparation de dossiers, suivi et "
+                    "validation humaine."
+                ),
+                "provider": {"@id": _url("/#organization")},
+            },
+        ],
+    }
+    schema = json.dumps(
+        schema_data,
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
+
+
     return (
         f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'''
         f'''<title>Services | Review Defense</title><meta name="description" content="Analysez les avis, préparez les dossiers, structurez les réponses et suivez les '''
