@@ -88,7 +88,7 @@ function recovery(){
    (resetting
      ? '<div class="field"><label>Nouveau mot de passe</label>' +
        '<input name="new_password" type="password" required minlength="12" ' +
-       '<input autocomplete="new-password" type="password" name="new_password" required minlength="12"></div>'
+        'autocomplete="new-password"></div>'
      : ''
    ) +
    (
