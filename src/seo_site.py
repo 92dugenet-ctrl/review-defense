@@ -313,11 +313,41 @@ def _sections(page):
     }.get(cluster,"Commencez par distinguer les faits observables, les éléments à vérifier et les options réellement disponibles.")
     if page["service"]:
         hs=["À quoi sert ce service ?","Ce qui est analysé","Comment le dossier est préparé","Validation et suivi","Limites du service"]
-    elif cluster=="Signalement": hs=["Réponse courte","Dans quels cas signaler ?","Identifier le motif pertinent","Préparer les éléments","Effectuer et suivre le signalement","Que faire après la décision ?","Quand demander une analyse ?"]
-    elif cluster=="Refus / appel": hs=["Réponse courte","Comprendre la décision","Vérifier le dossier","Conserver les éléments utiles","Préparer une éventuelle suite","Que faire si Google ne répond pas ?","Quand demander une analyse ?"]
-    elif cluster=="Faux avis": hs=["Réponse courte","Dans quels cas la situation peut-elle se présenter ?","Quels indices vérifier ?","Comment documenter les faits ?","Comment signaler la situation ?","Que faire si le signalement échoue ?","Quand demander une analyse ?"]
-    elif cluster=="Pillar / suppression": hs=["Réponse courte","Dans quels cas la question se pose ?","Quels éléments vérifier ?","Quels éléments factuels conserver ?","Quelles démarches sont possibles ?","Que faire en cas de refus ou d’absence de réponse ?","Quand demander une analyse professionnelle ?"]
-    else: hs=["Réponse courte","Dans quels cas cette situation peut-elle se présenter ?","Quels éléments faut-il vérifier ?","Quels éléments conserver ?","Quelles démarches sont possibles ?","Que faire si Google refuse ou ne répond pas ?","Quand demander une analyse professionnelle ?"]
+        elif cluster=="Signalement": hs=["Réponse courte",
+      "Dans quels cas signaler ?",
+      "Identifier le motif pertinent",
+      "Préparer les éléments",
+      "Effectuer et suivre le signalement",
+      "Que faire après la décision ?",
+      "Quand demander une analyse ?"]
+        elif cluster=="Refus / appel": hs=["Réponse courte",
+      "Comprendre la décision",
+      "Vérifier le dossier",
+      "Conserver les éléments utiles",
+      "Préparer une éventuelle suite",
+      "Que faire si Google ne répond pas ?",
+      "Quand demander une analyse ?"]
+        elif cluster=="Faux avis": hs=["Réponse courte",
+      "Dans quels cas la situation peut-elle se présenter ?",
+      "Quels indices vérifier ?",
+      "Comment documenter les faits ?",
+      "Comment signaler la situation ?",
+      "Que faire si le signalement échoue ?",
+      "Quand demander une analyse ?"]
+        elif cluster=="Pillar / suppression": hs=["Réponse courte",
+      "Dans quels cas la question se pose ?",
+      "Quels éléments vérifier ?",
+      "Quels éléments factuels conserver ?",
+      "Quelles démarches sont possibles ?",
+      "Que faire en cas de refus ou d’absence de réponse ?",
+      "Quand demander une analyse professionnelle ?"]
+        else: hs=["Réponse courte",
+      "Dans quels cas cette situation peut-elle se présenter ?",
+      "Quels éléments faut-il vérifier ?",
+      "Quels éléments conserver ?",
+      "Quelles démarches sont possibles ?",
+      "Que faire si Google refuse ou ne répond pas ?",
+      "Quand demander une analyse professionnelle ?"]
     out=[]
     for h in hs:
         if h=="Réponse courte":
@@ -354,15 +384,31 @@ def _schema(page):
     graph=[
       {"@type":"Organization","@id":_url("/#organization"),"name":"Review Defense","url":_url("/")},
       {"@type":"WebSite","@id":_url("/#website"),"name":"Review Defense","url":_url("/"),"publisher":{"@id":_url("/#organization")}},
-      {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":_url("/")},{"@type":"ListItem","position":2,"name":page["cluster"]},{"@type":"ListItem","position":3,"name":page["h1"],"item":c}]}
+            {"@type":"BreadcrumbList",
+        "itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":_url("/")},
+        {"@type":"ListItem","position":2,"name":page["cluster"]},
+        {"@type":"ListItem","position":3,"name":page["h1"],"item":c}]}
     ]
-    graph.append({"@type":"Service" if page["service"] else "Article","@id":c+"#content","name":page["h1"],"headline":page["h1"],"description":page["description"],"url":c,"dateModified":SITE_MODIFIED,"mainEntityOfPage":{"@type":"WebPage","@id":c},"author":{"@type":"Organization","name":"Review Defense"},"publisher":{"@type":"Organization","name":"Review Defense","url":_url("/")}})
+        graph.append({"@type":"Service" if page["service"] else "Article",
+      "@id":c+"#content",
+      "name":page["h1"],
+      "headline":page["h1"],
+      "description":page["description"],
+      "url":c,
+      "dateModified":SITE_MODIFIED,
+      "mainEntityOfPage":{"@type":"WebPage","@id":c},
+      "author":{"@type":"Organization","name":"Review Defense"},
+      "publisher":{"@type":"Organization","name":"Review Defense","url":_url("/")}})
     graph.append({"@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in _faq_items(page)]})
     return {"@context":"https://schema.org","@graph":graph}
 def _analysis_html():
     title="Analyse d’avis Google | Review Defense"
     description="Analysez une situation liée à un avis Google, structurez les faits disponibles et préparez un dossier avec validation humaine."
-    schema=json.dumps({"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":_url("/#organization"),"name":"Review Defense","url":_url("/")},{"@type":"WebSite","@id":_url("/#website"),"name":"Review Defense","url":_url("/"),"publisher":{"@id":_url("/#organization")}},{"@type":"Service","name":title,"description":description,"url":_url("/analyse-avis-google/"),"provider":{"@id":_url("/#organization")}}]},ensure_ascii=False,separators=(",",":"))
+        schema=json.dumps({"@context":"https://schema.org",
+      "@graph":[{"@type":"Organization","@id":_url("/#organization"),"name":"Review Defense","url":_url("/")},{"@type":"WebSite","@id":_url("/#website"),"name":"Review Defense","url":_url("/"),"publisher":{"@id":_url("/#organization")}},{"@type":"Service","name":title,"description":description,"url":_url("/analyse-avis-google/"),"provider":{"@id":_url("/#organization")}}]},
+      ensure_ascii=False,
+      separators=(",",
+      ":"))
     script="""<script>(function(){window.dataLayer=window.dataLayer||[];var f=document.getElementById("rd-analysis-form");if(f){var started=false;f.addEventListener("input",function(){if(!started){started=true;window.dataLayer.push({event:"analysis_start",page:location.pathname});}});f.addEventListener("submit",function(e){e.preventDefault();window.dataLayer.push({event:"analysis_submit",page:location.pathname});location.href="/app";});}})();</script>"""
     return (
         f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{_e(title)}</title>'''
@@ -395,17 +441,73 @@ def _analysis_html():
         f'''<span>Traçabilité complète</span></div></footer></div>{script}</body></html>'''
     )
 COMMERCIAL={
- "/":{"title":"Review Defense | Analyse et défense de votre réputation","description":"Analysez vos avis Google, documentez les éléments utiles et préparez vos dossiers avec une validation humaine.","eyebrow":"REPUTATION INTELLIGENCE · POUR LES ENTREPRISES","h1":(
+  "/":{"title":"Review Defense | Analyse et défense de votre réputation",
+   "description":"Analysez vos avis Google, documentez les éléments utiles et préparez vos dossiers avec une validation humaine.",
+   "eyebrow":"REPUTATION INTELLIGENCE · POUR LES ENTREPRISES",
+   "h1":(
             "Analysez vos avis Google.<br>" +
             "span>Préparez vos dossiers.</span>" +
             "br>Gardez le contrôle."
-        ),"lead":"Review Defense aide les entreprises à analyser, qualifier, documenter et suivre les situations liées aux avis Google.","sections":[("Analyse structurée","Examinez le contenu, le contexte et les éléments qui méritent une vérification."),("Preuves documentées","Reliez les éléments disponibles aux affirmations et conservez une trace claire."),("Décision humaine","Les étapes importantes restent soumises à une validation humaine explicite.")]},
- "/produit/":{"title":"Produit Review Defense | Analyse, preuves et traçabilité","description":"Une console B2B pour analyser les avis, structurer les preuves, suivre les dossiers et conserver une traçabilité complète.","eyebrow":"LE PRODUIT","h1":"Une console B2B pour<br><span>des dossiers maîtrisés.</span>","lead":"Une expérience opérationnelle qui rassemble analyse, preuves, dossiers, validations et suivi.","sections":[("Analyse","Qualifiez les éléments qui nécessitent une vérification."),("Preuves","Associez les éléments factuels au dossier concerné."),("Workflow contrôlé","Analyse → décision → gel → validation humaine → préparation contrôlée."),("Audit","Conservez une chronologie lisible des décisions et événements importants."),("Sécurité","Contrôle d’accès, MFA et garde-fous serveur.")]},
- "/comment-ca-marche/":{"title":"Comment ça fonctionne | Review Defense","description":"Découvrez le workflow Review Defense : analyse, décision, gel, validation humaine et préparation contrôlée.","eyebrow":"LE WORKFLOW","h1":"Une chaîne de contrôle<br><span>simple à suivre.</span>","lead":"L’automatisation prépare et structure. Les décisions importantes restent explicitement validées par un humain.","sections":[("01 · Analyse","Identifier les éléments à examiner."),("02 · Décision","Documenter le raisonnement et les points à vérifier."),("03 · Gel","Fixer le dossier avant toute étape contrôlée."),("04 · Human Approval","Valider explicitement la suite."),("05 · Préparation contrôlée","Préparer une démarche externe sans exécution automatique.")]},
- "/services/":{"title":"Services | Review Defense","description":"Analyse d’avis, préparation de dossiers et accompagnement structuré pour les situations liées à votre réputation en ligne.","eyebrow":"SERVICES","h1":"De l’analyse au dossier<br><span>prêt à être examiné.</span>","lead":"Un accompagnement structuré pour qualifier les situations, documenter les faits et suivre les démarches.","sections":[("Analyse d’avis","Examiner le contenu, le contexte et les éléments disponibles."),("Préparation de dossier","Organiser faits, preuves et chronologie."),("Suivi","Conserver l’historique des décisions et événements."),("Validation humaine","Aucune action externe importante sans validation explicite."),("Limites","Aucun résultat déterminé n’est garanti.")]},
- "/tarifs/":{"title":"Tarifs | Review Defense","description":"Découvrez les offres Review Defense pour surveiller, analyser et structurer vos dossiers de réputation.","eyebrow":"TARIFS","h1":"Des offres adaptées<br><span>à votre organisation.</span>","lead":"Des niveaux de service conçus pour différents volumes et organisations.","sections":[("Monitoring · à partir de 29 € / mois","Surveillance, alertes et tableau de bord."),("Professional · à partir de 79 € / mois","Analyse avancée, dossiers, preuves et suivi."),("Business · à partir de 149 € / mois","Multi-établissements, rôles et rapports."),("Enterprise · sur devis","Besoins organisationnels spécifiques.")]},
- "/ressources/":{"title":"Ressources | Review Defense","description":"Guides et ressources sur les avis Google, les preuves, le signalement et le suivi des dossiers.","eyebrow":"RESSOURCES","h1":"Comprendre les avis Google.<br><span>Décider avec méthode.</span>","lead":"Le centre de ressources relie les guides SEO aux parcours commerciaux et à l’analyse.","sections":[("Faux avis","Identifier les éléments à vérifier."),("Signalement","Comprendre les étapes et les motifs."),("Refus et suites","Documenter une décision et examiner les options disponibles."),("Analyse professionnelle","Structurer un dossier lorsque plusieurs faits doivent être rapprochés.")]},
- "/contact/":{"title":"Contact | Review Defense","description":"Contactez Review Defense pour une question, une démonstration ou un accompagnement sur votre dossier.","eyebrow":"CONTACT","h1":"Parlons de votre<br><span>situation.</span>","lead":"Une question produit, une demande de démonstration ou un besoin commercial ?","sections":[("Démonstration","Découvrez le produit et son workflow."),("Question commerciale","Échangez sur les offres et besoins spécifiques."),("Dossier","Présentez les éléments disponibles pour cadrer une analyse.")]},
+                ),"lead":"Review Defense aide les entreprises à analyser, qualifier, documenter et suivre les situations liées aux avis Google.","sections":[("Analyse structurée",
+          "Examinez le contenu, le contexte et les éléments qui méritent une vérification."),("Preuves documentées",
+          "Reliez les éléments disponibles aux affirmations et conservez une trace claire."),("Décision humaine",
+          "Les étapes importantes restent soumises à une validation humaine explicite.")]},
+  "/produit/":{"title":"Produit Review Defense | Analyse, preuves et traçabilité",
+   "description":"Une console B2B pour analyser les avis, structurer les preuves, suivre les dossiers et conserver une traçabilité complète.",
+   "eyebrow":"LE PRODUIT",
+   "h1":"Une console B2B pour<br><span>des dossiers maîtrisés.</span>",
+   "lead":"Une expérience opérationnelle qui rassemble analyse, preuves, dossiers, validations et suivi.",
+   "sections":[("Analyse","Qualifiez les éléments qui nécessitent une vérification."),
+   ("Preuves","Associez les éléments factuels au dossier concerné."),
+   ("Workflow contrôlé","Analyse → décision → gel → validation humaine → préparation contrôlée."),
+   ("Audit","Conservez une chronologie lisible des décisions et événements importants."),
+   ("Sécurité","Contrôle d’accès, MFA et garde-fous serveur.")]},
+  "/comment-ca-marche/":{"title":"Comment ça fonctionne | Review Defense",
+   "description":"Découvrez le workflow Review Defense : analyse, décision, gel, validation humaine et préparation contrôlée.",
+   "eyebrow":"LE WORKFLOW",
+   "h1":"Une chaîne de contrôle<br><span>simple à suivre.</span>",
+   "lead":"L’automatisation prépare et structure. Les décisions importantes restent explicitement validées par un humain.",
+   "sections":[("01 · Analyse","Identifier les éléments à examiner."),
+   ("02 · Décision","Documenter le raisonnement et les points à vérifier."),
+   ("03 · Gel","Fixer le dossier avant toute étape contrôlée."),
+   ("04 · Human Approval","Valider explicitement la suite."),
+   ("05 · Préparation contrôlée","Préparer une démarche externe sans exécution automatique.")]},
+  "/services/":{"title":"Services | Review Defense",
+   "description":"Analyse d’avis, préparation de dossiers et accompagnement structuré pour les situations liées à votre réputation en ligne.",
+   "eyebrow":"SERVICES",
+   "h1":"De l’analyse au dossier<br><span>prêt à être examiné.</span>",
+   "lead":"Un accompagnement structuré pour qualifier les situations, documenter les faits et suivre les démarches.",
+   "sections":[("Analyse d’avis","Examiner le contenu, le contexte et les éléments disponibles."),
+   ("Préparation de dossier","Organiser faits, preuves et chronologie."),
+   ("Suivi","Conserver l’historique des décisions et événements."),
+   ("Validation humaine","Aucune action externe importante sans validation explicite."),
+   ("Limites","Aucun résultat déterminé n’est garanti.")]},
+  "/tarifs/":{"title":"Tarifs | Review Defense",
+   "description":"Découvrez les offres Review Defense pour surveiller, analyser et structurer vos dossiers de réputation.",
+   "eyebrow":"TARIFS",
+   "h1":"Des offres adaptées<br><span>à votre organisation.</span>",
+   "lead":"Des niveaux de service conçus pour différents volumes et organisations.",
+   "sections":[("Monitoring · à partir de 29 € / mois","Surveillance, alertes et tableau de bord."),
+   ("Professional · à partir de 79 € / mois","Analyse avancée, dossiers, preuves et suivi."),
+   ("Business · à partir de 149 € / mois","Multi-établissements, rôles et rapports."),
+   ("Enterprise · sur devis","Besoins organisationnels spécifiques.")]},
+  "/ressources/":{"title":"Ressources | Review Defense",
+   "description":"Guides et ressources sur les avis Google, les preuves, le signalement et le suivi des dossiers.",
+   "eyebrow":"RESSOURCES",
+   "h1":"Comprendre les avis Google.<br><span>Décider avec méthode.</span>",
+   "lead":"Le centre de ressources relie les guides SEO aux parcours commerciaux et à l’analyse.",
+   "sections":[("Faux avis","Identifier les éléments à vérifier."),
+   ("Signalement","Comprendre les étapes et les motifs."),
+   ("Refus et suites","Documenter une décision et examiner les options disponibles."),
+   ("Analyse professionnelle","Structurer un dossier lorsque plusieurs faits doivent être rapprochés.")]},
+  "/contact/":{"title":"Contact | Review Defense",
+   "description":"Contactez Review Defense pour une question, une démonstration ou un accompagnement sur votre dossier.",
+   "eyebrow":"CONTACT",
+   "h1":"Parlons de votre<br><span>situation.</span>",
+   "lead":"Une question produit, une demande de démonstration ou un besoin commercial ?",
+   "sections":[("Démonstration","Découvrez le produit et son workflow."),
+   ("Question commerciale","Échangez sur les offres et besoins spécifiques."),
+   ("Dossier","Présentez les éléments disponibles pour cadrer une analyse.")]},
 }
 
 def _services_html():
@@ -415,25 +517,50 @@ def _services_html():
     .svc-hero{padding:clamp(80px,11vw,150px) 0 100px;background:linear-gradient(180deg,#fff,#f7f9fb)}.svc-hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(45px,7vw,110px);align-items:center}
     .svc-eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--svc-blue);font-size:12px;letter-spacing:.13em;font-weight:800}.svc-eyebrow:before{content:"";width:28px;height:1px;background:currentColor}
     .svc-hero h1{font-size:clamp(56px,7.3vw,112px);line-height:.91;letter-spacing:-.065em;margin:22px 0 30px;max-width:850px}.svc-hero h1 span,.svc-intro h2 span,.svc-cta h2 span{color:#6d7b8b}
-    .svc-lead{font-size:clamp(19px,2vw,25px);line-height:1.45;color:var(--svc-muted);max-width:720px;margin:0}.svc-hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:38px}.svc-hero-note{display:flex;gap:22px;flex-wrap:wrap;margin-top:38px;color:#465463;font-size:14px}
+        .svc-lead{font-size:clamp(19px,
+      2vw,
+      25px);line-height:1.45;color:var(--svc-muted);max-width:720px;margin:0}.svc-hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:38px}.svc-hero-note{display:flex;gap:22px;flex-wrap:wrap;margin-top:38px;color:#465463;font-size:14px}
     .svc-btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:14px 22px;font-size:14px;font-weight:750;text-decoration:none}.svc-btn-primary{background:#111820;color:#fff}.svc-btn-secondary{border:1px solid #cfd7df;color:#111820;background:#fff}
-    .svc-visual{position:relative;min-height:570px;border-radius:34px;background:#eef2f5;overflow:hidden;padding:30px;box-shadow:0 35px 80px rgba(23,44,64,.12)}.svc-visual:before{content:"";position:absolute;width:330px;height:330px;border-radius:50%;background:#dcecff;right:-110px;top:-110px}
-    .svc-window{position:relative;z-index:1;height:100%;min-height:510px;background:#fff;border:1px solid #e0e6eb;border-radius:24px;box-shadow:0 22px 60px rgba(27,43,58,.13);overflow:hidden}.svc-window-top{height:54px;border-bottom:1px solid #e8edf1;display:flex;align-items:center;gap:8px;padding:0 18px;font-size:12px;color:#718091}.svc-dot{width:8px;height:8px;border-radius:50%;background:#d5dce2}.svc-window-title{margin-left:8px;font-weight:700;color:#1c2731}
+        .svc-visual{position:relative;min-height:570px;border-radius:34px;background:#eef2f5;overflow:hidden;padding:30px;box-shadow:0 35px 80px rgba(23,
+      44,
+      64,
+      .12)}.svc-visual:before{content:"";position:absolute;width:330px;height:330px;border-radius:50%;background:#dcecff;right:-110px;top:-110px}
+        .svc-window{position:relative;z-index:1;height:100%;min-height:510px;background:#fff;border:1px solid #e0e6eb;border-radius:24px;box-shadow:0 22px 60px rgba(27,
+      43,
+      58,
+      .13);overflow:hidden}.svc-window-top{height:54px;border-bottom:1px solid #e8edf1;display:flex;align-items:center;gap:8px;padding:0 18px;font-size:12px;color:#718091}.svc-dot{width:8px;height:8px;border-radius:50%;background:#d5dce2}.svc-window-title{margin-left:8px;font-weight:700;color:#1c2731}
     .svc-window-body{display:grid;grid-template-columns:145px 1fr;height:calc(100% - 54px)}.svc-sidebar{background:#f7f8fa;padding:22px 15px;display:flex;flex-direction:column;gap:10px;font-size:11px;color:#728091}.svc-sidebar strong{color:#111820;margin-bottom:15px;font-size:12px}.svc-sidebar .active{background:#e7f2ff;color:#0878ee;border-radius:10px;padding:9px}
-    .svc-dashboard{padding:28px}.svc-dashboard small,.svc-art-meta{font-size:10px;letter-spacing:.12em;color:#83909c;font-weight:800}.svc-dashboard h3{font-size:28px;letter-spacing:-.04em;margin:8px 0 20px}.svc-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.svc-kpi{background:#f6f8fa;border-radius:14px;padding:14px}.svc-kpi b{display:block;font-size:24px}.svc-kpi span{font-size:10px;color:#788694}
+        .svc-dashboard{padding:28px}.svc-dashboard small,.svc-art-meta{font-size:10px;letter-spacing:.12em;color:#83909c;font-weight:800}.svc-dashboard h3{font-size:28px;letter-spacing:-.04em;margin:8px 0 20px}.svc-kpis{display:grid;grid-template-columns:repeat(3,
+      1fr);gap:10px}.svc-kpi{background:#f6f8fa;border-radius:14px;padding:14px}.svc-kpi b{display:block;font-size:24px}.svc-kpi span{font-size:10px;color:#788694}
     .svc-review{margin-top:18px;border:1px solid #e1e6ea;border-radius:15px;padding:16px}.svc-review-head{display:flex;justify-content:space-between;gap:10px}.svc-stars{letter-spacing:2px;color:#f2b01e}.svc-badge{font-size:9px;border-radius:999px;background:#e8f3ff;color:#0878ee;padding:6px 8px;font-weight:800}.svc-review p{font-size:12px;line-height:1.5;color:#667585;margin:13px 0}
-    .svc-service-list{padding:80px 0 20px}.svc-intro{max-width:900px;padding-bottom:70px}.svc-intro h2{font-size:clamp(43px,5.2vw,78px);line-height:.96;letter-spacing:-.06em;margin:20px 0}.svc-intro p{font-size:19px;line-height:1.6;color:var(--svc-muted);max-width:760px}
+        .svc-service-list{padding:80px 0 20px}.svc-intro{max-width:900px;padding-bottom:70px}.svc-intro h2{font-size:clamp(43px,
+      5.2vw,
+      78px);line-height:.96;letter-spacing:-.06em;margin:20px 0}.svc-intro p{font-size:19px;line-height:1.6;color:var(--svc-muted);max-width:760px}
     .svc-service-row{display:grid;grid-template-columns:1fr 1fr;gap:clamp(45px,8vw,130px);align-items:center;padding:105px 0;border-top:1px solid var(--svc-line)}.svc-service-row:last-child{border-bottom:1px solid var(--svc-line)}
     .svc-service-row:nth-child(even) .svc-copy{order:2}.svc-service-row:nth-child(even) .svc-media{order:1}.svc-number{font-size:12px;color:var(--svc-blue);font-weight:850;letter-spacing:.1em}
-    .svc-copy h3{font-size:clamp(38px,4.3vw,65px);line-height:.98;letter-spacing:-.055em;margin:17px 0 22px}.svc-copy p{font-size:18px;line-height:1.6;color:var(--svc-muted);max-width:620px;margin:0 0 18px}.svc-copy a{font-size:15px;font-weight:750;text-decoration:none}
-    .svc-media{min-height:490px;border-radius:30px;background:#f4f6f8;position:relative;overflow:hidden;padding:30px;display:flex;align-items:center;justify-content:center}.svc-media:after{content:"";position:absolute;inset:16px;border:1px solid rgba(17,24,32,.06);border-radius:22px;pointer-events:none}
-    .svc-art-card{position:relative;z-index:1;width:min(500px,100%);background:#fff;border:1px solid #e0e6eb;border-radius:22px;padding:24px;box-shadow:0 25px 60px rgba(20,40,60,.12)}.svc-art-card h4{margin:5px 0 18px;font-size:23px;letter-spacing:-.035em}
+        .svc-copy h3{font-size:clamp(38px,
+      4.3vw,
+      65px);line-height:.98;letter-spacing:-.055em;margin:17px 0 22px}.svc-copy p{font-size:18px;line-height:1.6;color:var(--svc-muted);max-width:620px;margin:0 0 18px}.svc-copy a{font-size:15px;font-weight:750;text-decoration:none}
+        .svc-media{min-height:490px;border-radius:30px;background:#f4f6f8;position:relative;overflow:hidden;padding:30px;display:flex;align-items:center;justify-content:center}.svc-media:after{content:"";position:absolute;inset:16px;border:1px solid rgba(17,
+      24,
+      32,
+      .06);border-radius:22px;pointer-events:none}
+        .svc-art-card{position:relative;z-index:1;width:min(500px,
+      100%);background:#fff;border:1px solid #e0e6eb;border-radius:22px;padding:24px;box-shadow:0 25px 60px rgba(20,
+      40,
+      60,
+      .12)}.svc-art-card h4{margin:5px 0 18px;font-size:23px;letter-spacing:-.035em}
     .svc-evidence-row{display:grid;grid-template-columns:38px 1fr auto;gap:12px;align-items:center;padding:13px 0;border-top:1px solid #edf0f3;font-size:12px}.svc-evidence-icon{width:34px;height:34px;border-radius:10px;background:#eef5ff;display:grid;place-items:center;color:#0878ee;font-weight:800}.svc-evidence-row small{color:#8794a0}.svc-status{font-size:9px;border-radius:999px;padding:5px 7px;background:#eef7f0;color:#38704a;font-weight:800}
     .svc-chat{display:flex;flex-direction:column;gap:11px}.svc-bubble{max-width:78%;padding:13px 15px;border-radius:17px;background:#f1f4f7;font-size:12px;line-height:1.45}.svc-bubble.me{margin-left:auto;background:#e4f1ff}.svc-compose{margin-top:12px;border:1px solid #e0e5ea;border-radius:999px;padding:12px 15px;color:#8a97a4;font-size:11px}
     .svc-timeline{position:relative;padding-left:25px}.svc-timeline:before{content:"";position:absolute;left:7px;top:7px;bottom:7px;width:1px;background:#dbe2e8}.svc-step{position:relative;padding:0 0 27px 22px}.svc-step:before{content:"";position:absolute;left:-1px;top:2px;width:15px;height:15px;border-radius:50%;background:#fff;border:3px solid #0878ee}.svc-step b{display:block;font-size:14px}.svc-step span{display:block;margin-top:5px;color:#778593;font-size:12px;line-height:1.45}
     .svc-approval{background:#101820;color:#fff;border-radius:22px;padding:27px}.svc-approval-top{display:flex;justify-content:space-between;gap:15px;align-items:center}.svc-approval small{color:#8ea1b1;letter-spacing:.1em}.svc-approval h4{font-size:27px;line-height:1.05;margin:30px 0 10px}.svc-approval p{font-size:12px;line-height:1.55;color:#b9c5cf}.svc-approval-actions{display:flex;gap:8px;margin-top:25px}.svc-approval-actions span{border:1px solid #3a4854;border-radius:999px;padding:8px 11px;font-size:10px}.svc-approval-actions .selected{background:#fff;color:#111820;border-color:#fff}
-    .svc-cta{padding:125px 0;background:#f4f8fb}.svc-cta-inner{display:grid;grid-template-columns:1fr auto;gap:50px;align-items:center}.svc-cta h2{font-size:clamp(45px,6vw,88px);line-height:.93;letter-spacing:-.06em;margin:0}.svc-cta p{font-size:18px;line-height:1.55;color:var(--svc-muted);max-width:720px;margin:25px 0 0}
-    @media(max-width:900px){.svc-hero-grid,.svc-service-row,.svc-cta-inner{grid-template-columns:1fr}.svc-service-row:nth-child(even) .svc-copy,.svc-service-row:nth-child(even) .svc-media{order:initial}.svc-visual{min-height:500px}.svc-media{min-height:390px}.svc-window{min-height:440px}.svc-cta-inner{gap:30px}}
+        .svc-cta{padding:125px 0;background:#f4f8fb}.svc-cta-inner{display:grid;grid-template-columns:1fr auto;gap:50px;align-items:center}.svc-cta h2{font-size:clamp(45px,
+      6vw,
+      88px);line-height:.93;letter-spacing:-.06em;margin:0}.svc-cta p{font-size:18px;line-height:1.55;color:var(--svc-muted);max-width:720px;margin:25px 0 0}
+        @media(max-width:900px){.svc-hero-grid,
+      .svc-service-row,
+      .svc-cta-inner{grid-template-columns:1fr}.svc-service-row:nth-child(even) .svc-copy,
+      .svc-service-row:nth-child(even) .svc-media{order:initial}.svc-visual{min-height:500px}.svc-media{min-height:390px}.svc-window{min-height:440px}.svc-cta-inner{gap:30px}}
     @media(max-width:620px){.svc-hero{padding-top:70px}.svc-hero h1{font-size:52px}.svc-hero-actions{flex-direction:column;align-items:stretch}.svc-btn{width:100%}.svc-visual{padding:16px;min-height:390px;border-radius:24px}.svc-window{min-height:350px}.svc-window-body{grid-template-columns:90px 1fr}.svc-sidebar{font-size:9px;padding:15px 8px}.svc-dashboard{padding:18px}.svc-dashboard h3{font-size:21px}.svc-kpis{grid-template-columns:1fr}.svc-service-list{padding-top:60px}.svc-service-row{padding:75px 0}.svc-media{padding:18px;min-height:340px}.svc-copy h3{font-size:40px}.svc-cta{padding:85px 0}}
     """
     nav=(
@@ -445,11 +572,27 @@ def _services_html():
             'a href="/contact/">Contact</a>'
         )
     services=[
-      ("01","Analyse des avis","Comprendre ce qui mérite d’être vérifié avant de décider quoi que ce soit.","Examinez le contenu, le contexte et les signaux disponibles. L’objectif est de séparer les faits observables des éléments qui restent à confirmer.","review"),
-      ("02","Dossier & preuves","Rassembler les éléments utiles dans un dossier clair.","Centralisez captures, URL, échanges, dates et pièces pertinentes. Chaque élément peut être relié à l’affirmation qu’il permet de vérifier.","evidence"),
-      ("03","Préparation des réponses","Préparer une réponse adaptée à la situation.","Structurez une réponse factuelle, cohérente avec le contexte et votre ton de communication. Vous gardez la main avant toute publication.","reply"),
+            ("01",
+        "Analyse des avis",
+        "Comprendre ce qui mérite d’être vérifié avant de décider quoi que ce soit.",
+        "Examinez le contenu, le contexte et les signaux disponibles. L’objectif est de séparer les faits observables des éléments qui restent à confirmer.",
+        "review"),
+            ("02",
+        "Dossier & preuves",
+        "Rassembler les éléments utiles dans un dossier clair.",
+        "Centralisez captures, URL, échanges, dates et pièces pertinentes. Chaque élément peut être relié à l’affirmation qu’il permet de vérifier.",
+        "evidence"),
+            ("03",
+        "Préparation des réponses",
+        "Préparer une réponse adaptée à la situation.",
+        "Structurez une réponse factuelle, cohérente avec le contexte et votre ton de communication. Vous gardez la main avant toute publication.",
+        "reply"),
       ("04","Suivi des signalements","Ne perdez plus le fil d’un dossier.","Suivez les étapes, les décisions et les éléments transmis depuis une chronologie unique, avec un historique lisible.","timeline"),
-      ("05","Validation humaine","L’automatisation prépare. Vous décidez.","Les actions importantes restent soumises à une validation explicite. Review Defense ne transforme pas une analyse en action externe automatique.","approval"),
+            ("05",
+        "Validation humaine",
+        "L’automatisation prépare. Vous décidez.",
+        "Les actions importantes restent soumises à une validation explicite. Review Defense ne transforme pas une analyse en action externe automatique.",
+        "approval"),
     ]
     visuals={
       "review":(
@@ -574,7 +717,11 @@ def _services_html():
             'div class="svc-media">{visuals[k]}</div>' +
             '/article>'
         ) for n,h,d,t,k in services)
-    schema=json.dumps({"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":_url("/#organization"),"name":"Review Defense","url":_url("/")},{"@type":"WebSite","@id":_url("/#website"),"name":"Review Defense","url":_url("/"),"publisher":{"@id":_url("/#organization")}},{"@type":"Service","@id":_url("/services/")+"#service","name":"Services Review Defense","description":"Analyse d’avis, préparation de dossiers, suivi et validation humaine.","provider":{"@id":_url("/#organization")}}]},ensure_ascii=False,separators=(",",":"))
+        schema=json.dumps({"@context":"https://schema.org",
+      "@graph":[{"@type":"Organization","@id":_url("/#organization"),"name":"Review Defense","url":_url("/")},{"@type":"WebSite","@id":_url("/#website"),"name":"Review Defense","url":_url("/"),"publisher":{"@id":_url("/#organization")}},{"@type":"Service","@id":_url("/services/")+"#service","name":"Services Review Defense","description":"Analyse d’avis, préparation de dossiers, suivi et validation humaine.","provider":{"@id":_url("/#organization")}}]},
+      ensure_ascii=False,
+      separators=(",",
+      ":"))
     return (
         f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Services | Review Defense</title>'''
         f'''<meta name="description" content="Analysez les avis, préparez les dossiers, structurez les réponses et suivez les démarches liées à votre réputation en ligne.">'''
@@ -623,7 +770,11 @@ def _commercial_html(path):
             'a href="/ressources/">Ressources</a>' +
             'a href="/contact/">Contact</a>'
         )
-    schema=json.dumps({"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":_url("/#organization"),"name":"Review Defense","url":_url("/")},{"@type":"WebSite","@id":_url("/#website"),"name":"Review Defense","url":_url("/"),"publisher":{"@id":_url("/#organization")}},{"@type":"WebPage","name":d["title"],"description":d["description"],"url":_url(path),"isPartOf":{"@id":_url("/#website")}}]},ensure_ascii=False,separators=(",",":"))
+        schema=json.dumps({"@context":"https://schema.org",
+      "@graph":[{"@type":"Organization","@id":_url("/#organization"),"name":"Review Defense","url":_url("/")},{"@type":"WebSite","@id":_url("/#website"),"name":"Review Defense","url":_url("/"),"publisher":{"@id":_url("/#organization")}},{"@type":"WebPage","name":d["title"],"description":d["description"],"url":_url(path),"isPartOf":{"@id":_url("/#website")}}]},
+      ensure_ascii=False,
+      separators=(",",
+      ":"))
     extra=""
     if path=="/ressources/":
         links=_related({"path":path,"cluster":"Faux avis"},_pages())[:5]
@@ -709,7 +860,8 @@ def render(path):
         return 200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"public, max-age=300"},_commercial_html(path).encode()
     pages=_pages()
     if path=="/robots.txt":
-        return 200,{"Content-Type":"text/plain; charset=utf-8","Cache-Control":"public, max-age=3600"},f"User-agent: *\nAllow: /\nDisallow: /app\nDisallow: /v1/\nDisallow: /reset-password\nDisallow: /verify-email\nDisallow: /accept-invitation\nSitemap: {_url('/sitemap.xml')}\n".encode()
+                return 200,{"Content-Type":"text/plain; charset=utf-8",
+          "Cache-Control":"public, max-age=3600"},f"User-agent: *\nAllow: /\nDisallow: /app\nDisallow: /v1/\nDisallow: /reset-password\nDisallow: /verify-email\nDisallow: /accept-invitation\nSitemap: {_url('/sitemap.xml')}\n".encode()
     if path=="/sitemap.xml":
         paths=list(dict.fromkeys(["/"]+[x for x in COMMERCIAL if x!="/"]+[p["path"] for p in pages]))
         body='<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(f(

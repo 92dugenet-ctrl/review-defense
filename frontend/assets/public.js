@@ -30,7 +30,26 @@ function publicPathPage(path){
  const match=Object.entries(PUBLIC_ROUTES).find(([,route])=>route===path);
  return match?.[0]||null;
 }
-const PUBLIC_ROUTES={home:'/',compliance:'/conformite/',features:'/produit/',how:'/comment-ca-marche/',services:'/services/',pricing:'/tarifs/',resources:'/ressources/',contact:'/contact/',analyze:'/analyse-avis-google/',legal:'/mentions-legales/',privacy:'/confidentialite/',cgv:'/cgv/',cgu:'/cgu/',cookies:'/cookies/',security:'/securite/',retention:'/conservation-donnees/',rights:'/droits-rgpd/',breach:'/violation-donnees/',subprocessors:'/sous-traitants/',ai:'/ia-et-controle-humain/'};
+const PUBLIC_ROUTES={home:'/',
+  compliance:'/conformite/',
+  features:'/produit/',
+  how:'/comment-ca-marche/',
+  services:'/services/',
+  pricing:'/tarifs/',
+  resources:'/ressources/',
+  contact:'/contact/',
+  analyze:'/analyse-avis-google/',
+  legal:'/mentions-legales/',
+  privacy:'/confidentialite/',
+  cgv:'/cgv/',
+  cgu:'/cgu/',
+  cookies:'/cookies/',
+  security:'/securite/',
+  retention:'/conservation-donnees/',
+  rights:'/droits-rgpd/',
+  breach:'/violation-donnees/',
+  subprocessors:'/sous-traitants/',
+  ai:'/ia-et-controle-humain/'};
 if(window.REVIEW_DEFENSE_SEO_ARTICLES){Object.keys(window.REVIEW_DEFENSE_SEO_ARTICLES).forEach(slug=>{PUBLIC_ROUTES[slug]='/'+slug+'/';});}
 const PUBLIC_META={
  home:['Review Defense | Analyse et défense de votre réputation','Analysez, qualifiez et documentez vos avis Google. Préparez des dossiers traçables avec validation humaine.'],
@@ -58,7 +77,10 @@ function setPublicMeta(page){
  const article=window.REVIEW_DEFENSE_ARTICLE_META?.(page);
  const m=article?[article.title,article.title+' — guide pratique Review Defense pour vérifier les faits, structurer les preuves et préparer la suite.']:(PUBLIC_META[page]||PUBLIC_META.home);
  document.title=m[0];
- const setMeta=(selector,attr,value)=>{let el=document.querySelector(selector);if(!el){el=document.createElement('meta');Object.entries(attr).forEach(([k,v])=>el.setAttribute(k,v));document.head.appendChild(el)}el.setAttribute('content',value)};
+  const setMeta=(selector,
+   attr,
+   value)=>{let el=document.querySelector(selector);if(!el){el=document.createElement('meta');Object.entries(attr).forEach(([k,v])=>el.setAttribute(k,v));document.head.appendChild(el)}el.setAttribute('content',
+   value)};
  let d=document.querySelector('meta[name="description"]'); if(!d){d=document.createElement('meta');d.name='description';document.head.appendChild(d)} d.content=m[1];
  let c=document.querySelector('link[rel="canonical"]'); if(!c){c=document.createElement('link');c.rel='canonical';document.head.appendChild(c)} c.href=location.origin+(PUBLIC_ROUTES[page]||'/');
  const canonical=c.href;
@@ -76,7 +98,13 @@ const PUBLIC_NAV_ITEMS=[
 const PUBLIC_FOOTER_GROUPS=[
  ['Produit',[['Fonctionnalités','/produit/'],['Comment ça marche','/comment-ca-marche/'],['Tarifs','/tarifs/']]],
  ['Ressources',[['Guides & SEO','/ressources/'],['Analyser un avis Google','/analyse-avis-google/'],['Contact','/contact/']]],
- ['Confiance',[['Centre conformité','/conformite/'],['Sécurité','/securite/'],['Confidentialité','/confidentialite/'],['Conservation des données','/conservation-donnees/'],['Sous-traitants','/sous-traitants/'],['IA & contrôle humain','/ia-et-controle-humain/']]],
+  ['Confiance',
+   [['Centre conformité','/conformite/'],
+   ['Sécurité','/securite/'],
+   ['Confidentialité','/confidentialite/'],
+   ['Conservation des données','/conservation-donnees/'],
+   ['Sous-traitants','/sous-traitants/'],
+   ['IA & contrôle humain','/ia-et-controle-humain/']]],
  ['Juridique',[['Mentions légales','/mentions-legales/'],['CGV','/cgv/'],['CGU','/cgu/'],['Cookies','/cookies/'],['Droits RGPD','/droits-rgpd/'],['Violations de données','/violation-donnees/']]]
 ];
 function publicHeader(active){
@@ -145,7 +173,30 @@ function homePage(){ /* HOME CONTRACT: hero + interface only. Pricing, articles,
 function renderSignup(){location.assign('/app')}
 
 function featuresPage(){
- const pillars=[['01','◈','Analyse intelligente','Centralisez vos avis Google et transformez chaque situation en éléments lisibles : contenu, contexte, signaux, contradictions et points à vérifier.'],['02','⌁','Qualification assistée','L’IA aide à distinguer les affirmations, les éléments factuels et les zones d’incertitude. L’utilisateur conserve la maîtrise de la qualification finale.'],['03','◇','Dossier de défense','Regroupez chronologie, captures, échanges, sources publiques et autres pièces utiles dans un dossier structuré et traçable.'],['04','✓','Validation humaine','La décision est explicite. Le dossier peut être gelé, relu et approuvé avant toute préparation d’une démarche externe.'],['05','◫','Suivi opérationnel','Retrouvez les dossiers ouverts, les éléments en attente, les validations demandées et les prochaines étapes depuis une même console.'],['06','◎','Traçabilité complète','Les décisions, validations et événements importants restent documentés afin de comprendre qui a fait quoi, quand et pourquoi.']];
+  const pillars=[['01',
+   '◈',
+   'Analyse intelligente',
+   'Centralisez vos avis Google et transformez chaque situation en éléments lisibles : contenu, contexte, signaux, contradictions et points à vérifier.'],
+   ['02',
+   '⌁',
+   'Qualification assistée',
+   'L’IA aide à distinguer les affirmations, les éléments factuels et les zones d’incertitude. L’utilisateur conserve la maîtrise de la qualification finale.'],
+   ['03',
+   '◇',
+   'Dossier de défense',
+   'Regroupez chronologie, captures, échanges, sources publiques et autres pièces utiles dans un dossier structuré et traçable.'],
+   ['04',
+   '✓',
+   'Validation humaine',
+   'La décision est explicite. Le dossier peut être gelé, relu et approuvé avant toute préparation d’une démarche externe.'],
+   ['05',
+   '◫',
+   'Suivi opérationnel',
+   'Retrouvez les dossiers ouverts, les éléments en attente, les validations demandées et les prochaines étapes depuis une même console.'],
+   ['06',
+   '◎',
+   'Traçabilité complète',
+   'Les décisions, validations et événements importants restent documentés afin de comprendre qui a fait quoi, quand et pourquoi.']];
  return (
    `<section class="product-hero product-page-hero"><div class="product-hero-glow"></div><div class="product-hero-copy"><span class="rd-eyebrow-pill">REVIEW DEFENSE · PRODUCT PLATFORM</span>` +
    `<h1>Votre avis arrive.<br><span>Le dossier prend forme.</span></h1><p>Un avis concentre souvent plusieurs questions. Review Defense les sépare, les relie aux bonnes preuves et construit progressivement un dossier que votre équipe peut relire, comprendre et valider.</p>` +
@@ -369,7 +420,26 @@ function selectPricingOffer(type,name,price,offerId){
 }
 function pricingPage(){
  const audits=[['1–9','79 €'],['10–49','149 €'],['50–99','249 €'],['100–249','399 €'],['250–499','599 €'],['500–999','899 €'],['1 000–2 499','1 290 €'],['2 500+','Sur devis']];
- const defense=[['01','Analyse initiale et qualification','Étude de l’avis et estimation du traitement.','49 €'],['02','Préparation du dossier','Collecte des éléments et rédaction.','+ 49 €'],['03','Préparation de la soumission','Préparation du contenu à soumettre après validation.','+ 59 €'],['04','Préparation d’une relance','Préparation d’un suivi après validation.','+ 49 €'],['05','Préparation avancée','Analyse complémentaire et dossier renforcé.','+ 69 €']];
+  const defense=[['01',
+   'Analyse initiale et qualification',
+   'Étude de l’avis et estimation du traitement.',
+   '49 €'],
+   ['02',
+   'Préparation du dossier',
+   'Collecte des éléments et rédaction.',
+   '+ 49 €'],
+   ['03',
+   'Préparation de la soumission',
+   'Préparation du contenu à soumettre après validation.',
+   '+ 59 €'],
+   ['04',
+   'Préparation d’une relance',
+   'Préparation d’un suivi après validation.',
+   '+ 49 €'],
+   ['05',
+   'Préparation avancée',
+   'Analyse complémentaire et dossier renforcé.',
+   '+ 69 €']];
  const packs=[['5 dossiers','490 €','98 €','starter'],['10 dossiers','990 €','99 €','plus'],['25 dossiers','1 990 €','80 €','pro'],['50 dossiers','3 490 €','70 €','business'],['100 dossiers','5 900 €','59 €','enterprise']];
  return '<section class="reference-pricing">'+
  (
@@ -378,8 +448,14 @@ function pricingPage(){
    '<span>↗</span></div></div>'
  )+
  '<div class="reference-pricing-grid">'+
- '<article class="reference-panel audit-panel"><div class="reference-panel-title"><div class="reference-icon blue">⌕</div><div><h2>Audit de réputation</h2><p>Un diagnostic complet de vos avis Google.</p></div></div><ul class="reference-checks">'+['Analyse de la note et des tendances','Identification des avis problématiques','Thèmes récurrents et axes d’amélioration','Recommandations personnalisées','Rapport détaillé et priorisation'].map(x=>'<li><i>✓</i>'+x+'</li>').join('')+'</ul><div class="reference-table"><div class="reference-table-head"><span>Nombre d’avis</span><b>Prix</b></div>'+audits.map(x=>'<button type="button" class="reference-table-row" onclick="selectPricingOffer(\'audit\',\'Audit '+x[0]+' avis\',\''+x[1]+'\',\'audit_'+x[0].replace(/[^0-9]/g,'_')+'\')"><span>'+x[0]+'</span><b>'+x[1]+'</b></button>').join('')+'</div><button class="reference-panel-cta blue-cta" type="button" onclick="selectPricingOffer(\'audit\',\'Audit de réputation\',\'Selon volume\',\'audit\')">Demander un audit <span>→</span></button></article>'+
- '<article class="reference-panel defense-panel"><div class="reference-panel-title"><div class="reference-icon red">◇</div><div><h2>Défense d’un avis</h2><p>Un traitement professionnel<br>et progressif.</p></div></div><div class="reference-steps">'+defense.map(x=>'<button type="button" class="reference-step" onclick="selectPricingOffer(\'defense_step\',\''+x[1]+'\',\''+x[3].replace('+ ','')+'\',\'defense_'+x[0]+'\')"><b>'+x[0]+'</b><span><strong>'+x[1]+'</strong><small>'+x[2]+'</small></span><em>'+x[3]+'</em></button>').join('')+(
+  '<article class="reference-panel audit-panel"><div class="reference-panel-title"><div class="reference-icon blue">⌕</div><div><h2>Audit de réputation</h2><p>Un diagnostic complet de vos avis Google.</p></div></div><ul class="reference-checks">'+['Analyse de la note et des tendances',
+   'Identification des avis problématiques',
+   'Thèmes récurrents et axes d’amélioration',
+   'Recommandations personnalisées',
+   'Rapport détaillé et priorisation'].map(x=>'<li><i>✓</i>'+x+'</li>').join('')+'</ul><div class="reference-table"><div class="reference-table-head"><span>Nombre d’avis</span><b>Prix</b></div>'+audits.map(x=>'<button type="button" class="reference-table-row" onclick="selectPricingOffer(\'audit\',\'Audit '+x[0]+' avis\',\''+x[1]+'\',\'audit_'+x[0].replace(/[^0-9]/g,
+   '_')+'\')"><span>'+x[0]+'</span><b>'+x[1]+'</b></button>').join('')+'</div><button class="reference-panel-cta blue-cta" type="button" onclick="selectPricingOffer(\'audit\',\'Audit de réputation\',\'Selon volume\',\'audit\')">Demander un audit <span>→</span></button></article>'+
+  '<article class="reference-panel defense-panel"><div class="reference-panel-title"><div class="reference-icon red">◇</div><div><h2>Défense d’un avis</h2><p>Un traitement professionnel<br>et progressif.</p></div></div><div class="reference-steps">'+defense.map(x=>'<button type="button" class="reference-step" onclick="selectPricingOffer(\'defense_step\',\''+x[1]+'\',\''+x[3].replace('+ ',
+   '')+'\',\'defense_'+x[0]+'\')"><b>'+x[0]+'</b><span><strong>'+x[1]+'</strong><small>'+x[2]+'</small></span><em>'+x[3]+'</em></button>').join('')+(
    '</div><div class="reference-total"><span>Estimation totale par dossier</span><strong>De 49 € à 275 €</strong><p>Vous ne payez que les étapes nécessaires,<br>avec votre validation à chaque étape.</p>' +
    '</div><button class="reference-panel-cta red-cta" type="button" onclick="selectPricingOffer(\'defense_step\',\'Analyse initiale et qualification\',\'49 €\',\'defense_01\')">Démarrer un dossier <span>→</span>' +
    '</button></article>'
@@ -401,7 +477,10 @@ function pricingPage(){
   )+[['Je sélectionne<br>un avis','Depuis mon espace<br>ou via l’audit','▤'],
    ['J’ouvre le dossier<br>49 €','Analyse et qualification','⌕'],
    ['Je valide<br>chaque étape','et ne paie que si besoin','✓'],
-   ['Suivi du dossier','et historique complet<br>dans mon espace','▥']].map((x,i)=>(i?'<span class="journey-arrow">→</span>':'')+'<button type="button" class="journey-card" onclick="'+(i===1?"selectPricingOffer('defense_step','Analyse initiale et qualification','49 €','defense_01')":"location.href='/app'")+'"><i>'+x[2]+'</i><strong>'+x[0]+'</strong><small>'+x[1]+'</small></button>').join('')+(
+      ['Suivi du dossier',
+     'et historique complet<br>dans mon espace',
+     '▥']].map((x,
+     i)=>(i?'<span class="journey-arrow">→</span>':'')+'<button type="button" class="journey-card" onclick="'+(i===1?"selectPricingOffer('defense_step','Analyse initiale et qualification','49 €','defense_01')":"location.href='/app'")+'"><i>'+x[2]+'</i><strong>'+x[0]+'</strong><small>'+x[1]+'</small></button>').join('')+(
    '</div></section><section class="reference-why"><div class="reference-lower-head"><div class="reference-lower-icon crown">♛</div>' +
    '<div><h3>Pourquoi choisir Review Defense ?</h3></div></div><ul><li>Une méthodologie professionnelle</li><li>Des prix transparents et sans surprise</li>' +
    '<li>Vous gardez le contrôle à chaque étape</li><li>Aucune promesse de suppression (Google reste décisionnaire)</li><li>Un suivi complet de tous vos dossiers</li>' +
@@ -489,16 +568,26 @@ function legalPage(kind){
  const pages={
   legal:{k:'ÉDITEUR',title:'Mentions légales',intro:'Informations légales relatives au site et à la plateforme Review Defense.',sections:[
    ['Éditeur','Review Defense — société en cours d’immatriculation. Les mentions d’identification définitives de l’éditeur seront publiées avant la mise en ligne commerciale définitive.','Contact : contact@review-defense.com.'],
-   ['Infrastructure','L’application sépare la couche applicative, les données structurées, les documents et les sauvegardes. Les fournisseurs techniques et leurs informations contractuelles sont documentés dans la page Sous-traitants.','Les paramètres d’hébergement, de localisation et de transfert sont vérifiés avant le lancement commercial.'],
-   ['Objet','Review Defense fournit un environnement d’analyse, de qualification, de documentation, de suivi et de préparation de dossiers liés aux avis en ligne.','Le service ne garantit pas la suppression d’un avis. La plateforme concernée conserve sa décision finale.']
+      ['Infrastructure',
+     'L’application sépare la couche applicative, les données structurées, les documents et les sauvegardes. Les fournisseurs techniques et leurs informations contractuelles sont documentés dans la page Sous-traitants.',
+     'Les paramètres d’hébergement, de localisation et de transfert sont vérifiés avant le lancement commercial.'],
+      ['Objet',
+     'Review Defense fournit un environnement d’analyse, de qualification, de documentation, de suivi et de préparation de dossiers liés aux avis en ligne.',
+     'Le service ne garantit pas la suppression d’un avis. La plateforme concernée conserve sa décision finale.']
   ]},
   privacy:{k:'CONFIDENTIALITÉ',title:'Politique de confidentialité',intro:'Principes applicables aux données personnelles traitées par Review Defense.',sections:[
    ['Responsable du traitement','Le responsable du traitement sera l’entité exploitante de Review Defense, dont l’identité complète sera publiée avant le lancement commercial. Contact : contact@review-defense.com.',''],
-   ['Données traitées','Selon l’usage : identité et coordonnées professionnelles, compte, organisation et rôle, avis et contenus transmis, pièces et preuves, métadonnées de dossiers, journaux de sécurité et d’audit, données de facturation et demandes d’assistance.',''],
+      ['Données traitées',
+     'Selon l’usage : identité et coordonnées professionnelles, compte, organisation et rôle, avis et contenus transmis, pièces et preuves, métadonnées de dossiers, journaux de sécurité et d’audit, données de facturation et demandes d’assistance.',
+     ''],
    ['Finalités','Fournir le service, sécuriser les comptes, gérer les organisations et permissions, analyser et structurer les dossiers, assurer la traçabilité, le support, la prévention des abus et les obligations légales.',''],
-   ['Architecture','eCloud Serve : application et accès. Supabase/PostgreSQL : données structurées. Cloudflare R2 : documents privés. Une destination séparée est prévue pour les sauvegardes.','Les localisations et mécanismes de transfert applicables sont vérifiés contractuellement avant lancement.'],
+      ['Architecture',
+     'eCloud Serve : application et accès. Supabase/PostgreSQL : données structurées. Cloudflare R2 : documents privés. Une destination séparée est prévue pour les sauvegardes.',
+     'Les localisations et mécanismes de transfert applicables sont vérifiés contractuellement avant lancement.'],
    ['Conservation','Les durées dépendent de la finalité, de la relation contractuelle, des obligations légales et des besoins de sécurité. Voir la Politique de conservation.',''],
-   ['Droits','Vous pouvez demander l’accès, la rectification, l’effacement, la limitation, l’opposition lorsque le droit s’applique et la portabilité lorsque les conditions sont réunies.','Contact : contact@review-defense.com. Une réclamation peut être adressée à la CNIL.'],
+      ['Droits',
+     'Vous pouvez demander l’accès, la rectification, l’effacement, la limitation, l’opposition lorsque le droit s’applique et la portabilité lorsque les conditions sont réunies.',
+     'Contact : contact@review-defense.com. Une réclamation peut être adressée à la CNIL.'],
    ['Sécurité','Mesures prévues : contrôle d’accès, MFA, RBAC, isolation organisationnelle, chiffrement approprié, stockage privé, journalisation, sauvegardes et gestion des incidents.','Aucune mesure ne garantit un risque nul.']
   ]},
   cgv:{k:'VENTE',title:'Conditions générales de vente',intro:'Cadre contractuel applicable aux offres commerciales Review Defense.',sections:[
@@ -506,10 +595,13 @@ function legalPage(kind){
    ['Compte et utilisateurs','Le client fournit des informations exactes et protège ses moyens d’accès. Les utilisateurs sont responsables de leur usage dans le cadre des permissions attribuées.',''],
    ['Prix et paiement','Les prix, taxes, échéances et modalités de paiement sont ceux indiqués lors de la souscription. Les offres Enterprise peuvent faire l’objet d’un devis ou contrat spécifique.',''],
    ['Service','Review Defense met en œuvre des moyens raisonnables pour assurer la disponibilité et la sécurité. Des maintenances, incidents ou dépendances fournisseurs peuvent affecter temporairement le service.',''],
-   ['Limites','Review Defense ne garantit ni la suppression d’un avis, ni l’acceptation d’un signalement, ni une décision favorable d’une plateforme tierce.','Aucune action externe sensible n’est exécutée automatiquement sans validation humaine explicite.'],
+      ['Limites',
+     'Review Defense ne garantit ni la suppression d’un avis, ni l’acceptation d’un signalement, ni une décision favorable d’une plateforme tierce.',
+     'Aucune action externe sensible n’est exécutée automatiquement sans validation humaine explicite.'],
    ['Résiliation','Les modalités de durée, renouvellement et résiliation dépendent de l’offre souscrite et des conditions communiquées au client.'],
    ['Données','Le traitement des données personnelles est régi par la Politique de confidentialité et, lorsque nécessaire, par un accord de sous-traitance.'],
-   ['Droit applicable','Les dispositions définitives relatives au droit applicable, à la juridiction compétente et aux éventuelles médiations seront finalisées avec les informations de l’entité exploitante avant le lancement commercial.']
+      ['Droit applicable',
+     'Les dispositions définitives relatives au droit applicable, à la juridiction compétente et aux éventuelles médiations seront finalisées avec les informations de l’entité exploitante avant le lancement commercial.']
   ]},
   cgu:{k:'UTILISATION',title:'Conditions générales d’utilisation',intro:'Règles d’utilisation de la plateforme Review Defense.',sections:[
    ['Accès','L’accès est réservé aux utilisateurs autorisés par leur organisation. Chaque utilisateur doit protéger ses identifiants et signaler toute compromission.'],
@@ -544,7 +636,8 @@ function legalPage(kind){
    ['1. Demande','Écrivez à contact@review-defense.com en précisant votre demande et, si nécessaire, l’organisation ou le compte concerné.'],
    ['2. Vérification','Des informations complémentaires peuvent être demandées lorsque cela est nécessaire pour éviter une divulgation à un tiers.'],
    ['3. Traitement','La demande est enregistrée, qualifiée et traitée dans les délais prévus par le RGPD. Les exceptions légales sont expliquées lorsqu’un droit ne peut pas être exercé intégralement.'],
-   ['4. Réponse','La réponse est adressée par un moyen approprié. Lorsque plusieurs systèmes sont concernés, la recherche couvre l’application, les données structurées, les documents et les éléments pertinents de sauvegarde selon leur cycle de vie.'],
+      ['4. Réponse',
+     'La réponse est adressée par un moyen approprié. Lorsque plusieurs systèmes sont concernés, la recherche couvre l’application, les données structurées, les documents et les éléments pertinents de sauvegarde selon leur cycle de vie.'],
    ['Réclamation','Vous pouvez saisir la CNIL si vous estimez que vos droits ne sont pas respectés.']
   ]},
   breach:{k:'INCIDENTS',title:'Violation de données',intro:'Organisation de Review Defense en cas de violation ou suspicion de violation de données personnelles.',sections:[
@@ -605,7 +698,8 @@ function compliancePage(){
   );
 }
 
-function submitPublicContact(event){event.preventDefault();const f=new FormData(event.currentTarget);const name=String(f.get('name')||'').trim();const email=String(f.get('email')||'').trim();const company=String(f.get('company')||'').trim();const message=String(f.get('message')||'').trim();const subject=encodeURIComponent('Contact Review Defense'+(company?' · '+company:''));const body=encodeURIComponent('Nom : '+name+'\nE-mail : '+email+'\nEntreprise : '+company+'\n\n'+message);location.href='mailto:contact@review-defense.com?subject='+subject+'&body='+body;toast('Votre client e-mail va s’ouvrir pour finaliser l’envoi.','success')}
+function submitPublicContact(event){event.preventDefault();const f=new FormData(event.currentTarget);const name=String(f.get('name')||'').trim();const email=String(f.get('email')||'').trim();const company=String(f.get('company')||'').trim();const message=String(f.get('message')||'').trim();const subject=encodeURIComponent('Contact Review Defense'+(company?' · '+company:''));const body=encodeURIComponent('Nom : '+name+'\nE-mail : '+email+'\nEntreprise : '+company+'\n\n'+message);location.href='mailto:contact@review-defense.com?subject='+subject+'&body='+body;toast('Votre client e-mail va s’ouvrir pour finaliser l’envoi.',
+  'success')}
 function contactPage(){return (
   '<section class="contact-layout premium-contact"><div class="page-mountain"></div><div><span>BESOIN D’AIDE ?</span><h1>Besoin de voir<br>' +
   '<span>comment le dossier fonctionne ?</span></h1><p>Présentez-nous votre besoin. L’équipe peut vous aider à comprendre le parcours et le périmètre de Review Defense.</p>' +
@@ -654,7 +748,28 @@ function clearPublicLoading(){
  document.querySelector('.marketing')?.classList.remove('is-navigating');
 }
 function commercialPage(page){
-const d={features:['PRODUIT','Le produit transforme un avis en dossier.',['Analyser','Qualifier','Documenter','Décider','Approuver','Suivre']],how:['PARCOURS','Commencez par l’avis. Terminez avec une décision claire.',['Collecter','Analyser','Qualifier','Documenter','Décider','Approuver']],services:['SERVICES','Du premier signal au dossier que votre équipe maîtrise.',['Analyse de situation','Qualification','Dossier de preuves','Validation','Suivi','Préparation contrôlée']],pricing:['TARIFS','Un dossier clair avant toute décision.',['1–9 · 79 €','10–49 · 149 €','50–99 · 249 €','100–249 · 399 €','250–499 · 599 €','500–999 · 899 €','1 000–2 499 · 1 290 €','2 500+ · Sur devis']],resources:['RESSOURCES','Comprendre le sujet avant de prendre position.',['Analyse d’avis','Preuves & chronologie','Gestion du dossier','Contrôle humain','Conformité','IA']],analyze:['ANALYSER UN AVIS','Un avis arrive. Comprenez-le avant d’agir.',['Examiner l’avis','Qualifier les éléments','Relier les preuves','Faire valider la suite']]}[page]||['REVIEW DEFENSE','Comprendre avant d’agir.',['Analyse','Preuves','Décision']];
+const d={features:['PRODUIT',
+  'Le produit transforme un avis en dossier.',
+  ['Analyser','Qualifier','Documenter','Décider','Approuver','Suivre']],
+  how:['PARCOURS',
+  'Commencez par l’avis. Terminez avec une décision claire.',
+  ['Collecter','Analyser','Qualifier','Documenter','Décider','Approuver']],
+  services:['SERVICES',
+  'Du premier signal au dossier que votre équipe maîtrise.',
+  ['Analyse de situation','Qualification','Dossier de preuves','Validation','Suivi','Préparation contrôlée']],
+  pricing:['TARIFS',
+  'Un dossier clair avant toute décision.',
+  ['1–9 · 79 €','10–49 · 149 €','50–99 · 249 €','100–249 · 399 €','250–499 · 599 €','500–999 · 899 €','1 000–2 499 · 1 290 €','2 500+ · Sur devis']],
+  resources:['RESSOURCES',
+  'Comprendre le sujet avant de prendre position.',
+  ['Analyse d’avis','Preuves & chronologie','Gestion du dossier','Contrôle humain','Conformité','IA']],
+  analyze:['ANALYSER UN AVIS',
+  'Un avis arrive. Comprenez-le avant d’agir.',
+  ['Examiner l’avis','Qualifier les éléments','Relier les preuves','Faire valider la suite']]}[page]||['REVIEW DEFENSE',
+  'Comprendre avant d’agir.',
+  ['Analyse',
+  'Preuves',
+  'Décision']];
 const cards=d[2].map((x,i)=>'<article><b>0'+(i+1)+'</b><small>'+x+'</small><span>→</span></article>').join('');
 return '<section class="rd-v3-hero rd-v3-subhero"><div><small>01 / '+d[0]+'</small><h1>'+d[1]+(
   '</h1><p>Review Defense rassemble analyse, contexte, preuves, décision et validation humaine dans une même expérience de travail.</p>' +
@@ -674,9 +789,28 @@ function showPublicPage(page,push=true){
 const navigationToken=++__publicNavigationToken;
 if(page==='accept-invitation'){clearPublicLoading();invitationSignupPage();return}
 const render=()=>{
-if(window.REVIEW_DEFENSE_RENDER_ARTICLE&&window.REVIEW_DEFENSE_ARTICLE_META&&window.REVIEW_DEFENSE_ARTICLE_META(page)){if(push&&PUBLIC_ROUTES[page]&&location.pathname!==PUBLIC_ROUTES[page])history.pushState({publicPage:page},'',PUBLIC_ROUTES[page]);marketingLayout('resources',window.REVIEW_DEFENSE_RENDER_ARTICLE(page));clearPublicLoading();return}
+if(window.REVIEW_DEFENSE_RENDER_ARTICLE&&window.REVIEW_DEFENSE_ARTICLE_META&&window.REVIEW_DEFENSE_ARTICLE_META(page)){if(push&&PUBLIC_ROUTES[page]&&location.pathname!==PUBLIC_ROUTES[page])history.pushState({publicPage:page},
+  '',
+  PUBLIC_ROUTES[page]);marketingLayout('resources',
+  window.REVIEW_DEFENSE_RENDER_ARTICLE(page));clearPublicLoading();return}
 const commercial=['features','how','services','pricing','resources','analyze'];
-const route=page==='home'?['',homePage]:commercial.includes(page)?[page,()=>commercialPage(page)]:page==='compliance'?['compliance',compliancePage]:page==='contact'?['contact',contactPage]:page==='legal'?['legal',()=>legalPage('legal')]:page==='privacy'?['privacy',()=>legalPage('privacy')]:page==='cgv'?['cgv',()=>legalPage('cgv')]:page==='cgu'?['cgu',()=>legalPage('cgu')]:page==='cookies'?['cookies',()=>legalPage('cookies')]:page==='security'?['security',()=>legalPage('security')]:page==='retention'?['retention',()=>legalPage('retention')]:page==='rights'?['rights',()=>legalPage('rights')]:page==='breach'?['breach',()=>legalPage('breach')]:page==='subprocessors'?['subprocessors',()=>legalPage('subprocessors')]:page==='ai'?['ai',()=>legalPage('ai')]:['',homePage];
+const route=page==='home'?['',
+  homePage]:commercial.includes(page)?[page,
+  ()=>commercialPage(page)]:page==='compliance'?['compliance',
+  compliancePage]:page==='contact'?['contact',
+  contactPage]:page==='legal'?['legal',
+  ()=>legalPage('legal')]:page==='privacy'?['privacy',
+  ()=>legalPage('privacy')]:page==='cgv'?['cgv',
+  ()=>legalPage('cgv')]:page==='cgu'?['cgu',
+  ()=>legalPage('cgu')]:page==='cookies'?['cookies',
+  ()=>legalPage('cookies')]:page==='security'?['security',
+  ()=>legalPage('security')]:page==='retention'?['retention',
+  ()=>legalPage('retention')]:page==='rights'?['rights',
+  ()=>legalPage('rights')]:page==='breach'?['breach',
+  ()=>legalPage('breach')]:page==='subprocessors'?['subprocessors',
+  ()=>legalPage('subprocessors')]:page==='ai'?['ai',
+  ()=>legalPage('ai')]:['',
+  homePage];
 if(push&&PUBLIC_ROUTES[page]&&location.pathname!==PUBLIC_ROUTES[page])history.pushState({publicPage:page},'',PUBLIC_ROUTES[page]);
 marketingLayout(route[0],route[1]());clearPublicLoading();
 };
@@ -792,8 +926,14 @@ function initPremiumInteractions(){
 }
 
 // Editorial resources page retained from feat/frontend-consistent-layout.
-function resourcesPage(){const cards=[['GUIDE','Comment supprimer un faux avis Google ?','/comment-supprimer-un-avis-google/'],['E-RÉPUTATION','Comment reconnaître un faux avis Google ?','/comment-reconnaitre-un-faux-avis-google/'],['DOSSIER','Comment prouver qu’un avis Google est faux ?','/comment-prouver-qu-un-avis-google-est-faux/'],['PROCÉDURE','Comment signaler un avis Google ?','/signaler-un-avis-google/'],['REFUS','Que faire quand Google refuse de supprimer un avis ?','/que-faire-quand-google-refuse-de-supprimer-un-avis/'],['PILIER','Analyse et qualification des avis Google','/analyse-avis-google/']];return (
+function resourcesPage(){const cards=[['GUIDE','Comment supprimer un faux avis Google ?','/comment-supprimer-un-avis-google/'],
+  ['E-RÉPUTATION','Comment reconnaître un faux avis Google ?','/comment-reconnaitre-un-faux-avis-google/'],
+  ['DOSSIER','Comment prouver qu’un avis Google est faux ?','/comment-prouver-qu-un-avis-google-est-faux/'],
+  ['PROCÉDURE','Comment signaler un avis Google ?','/signaler-un-avis-google/'],
+  ['REFUS','Que faire quand Google refuse de supprimer un avis ?','/que-faire-quand-google-refuse-de-supprimer-un-avis/'],
+  ['PILIER','Analyse et qualification des avis Google','/analyse-avis-google/']];return (
   '<section class="page-hero"><div class="page-mountain"></div><span>CONSEILS, GUIDES ET SEO</span><h1>Comprendre avant<br><span>d’agir.</span>' +
   '</h1><p>Un hub éditorial pour vérifier les faits, structurer les preuves et comprendre les procédures liées aux avis.</p></section>' +
   '<section class="article-grid premium-articles">'
-)+cards.map((x,i)=>'<article><div class="article-image article-'+i+'"></div><small>'+x[0]+'</small><h3>'+x[1]+'</h3><p>Vérifications, éléments utiles et étapes à connaître avant d’agir.</p><a href="'+x[2]+'">Lire le guide <span>→</span></a></article>').join('')+'</section><section class="newsletter-band"><div><span class="rd-eyebrow">RESSOURCES</span><h2>Recevez les prochains guides.</h2><p>Un contenu utile, sans promesses artificielles.</p></div><a class="btn-primary" href="/contact/">Nous contacter →</a></section>'}
+)+cards.map((x,
+  i)=>'<article><div class="article-image article-'+i+'"></div><small>'+x[0]+'</small><h3>'+x[1]+'</h3><p>Vérifications, éléments utiles et étapes à connaître avant d’agir.</p><a href="'+x[2]+'">Lire le guide <span>→</span></a></article>').join('')+'</section><section class="newsletter-band"><div><span class="rd-eyebrow">RESSOURCES</span><h2>Recevez les prochains guides.</h2><p>Un contenu utile, sans promesses artificielles.</p></div><a class="btn-primary" href="/contact/">Nous contacter →</a></section>'}
