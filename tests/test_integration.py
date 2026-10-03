@@ -1,3 +1,4 @@
+import base64
 import io
 import json
 import os
@@ -46,8 +47,8 @@ def make_app(dsn):
 def test_postgres_schema_and_rls_contract():
     dsn = os.environ["DATABASE_URL"]
     with psycopg.connect(dsn) as conn:
-        assert conn.execute("SELECT count(*) FROM schema_migrations").fetchone()[0] == 33
-        assert conn.execute("SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1").fetchone()[0] == "033_v645_client_hub_force_rls"
+        assert conn.execute("SELECT count(*) FROM schema_migrations").fetchone()[0] == 34
+        assert conn.execute("SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1").fetchone()[0] == "034_v646_force_privacy_billing_rls"
         rls = conn.execute("""
             SELECT count(*) FROM pg_class c
             JOIN pg_namespace n ON n.oid=c.relnamespace
@@ -56,6 +57,14 @@ def test_postgres_schema_and_rls_contract():
               AND c.relrowsecurity
         """).fetchone()[0]
         assert rls == 7
+        forced_rls = conn.execute("""
+            SELECT count(*) FROM pg_class c
+            JOIN pg_namespace n ON n.oid=c.relnamespace
+            WHERE n.nspname='public'
+              AND c.relname IN ('privacy_requests','privacy_consents','billing_transactions')
+              AND c.relrowsecurity AND c.relforcerowsecurity
+        """).fetchone()[0]
+        assert forced_rls == 3
 
 
 def test_end_to_end_persistent_client_analysis_result_history_and_permissions():
@@ -114,6 +123,16 @@ def test_end_to_end_persistent_client_analysis_result_history_and_permissions():
     assert case_result["review"]["review_id"] == review_id
     assert case_result["claims"]
 
+    evidence_payload = {
+        "case_id": case_id,
+        "filename": "proof.txt",
+        "content_type": "text/plain",
+        "content_base64": base64.b64encode(b"Invoice INV-2026-001 paid on 2026-09-30.").decode("ascii"),
+    }
+    status, _, evidence_response = request(app, "/v1/evidence", "POST", evidence_payload, token)
+    assert status == "201 Created", evidence_response
+    evidence_id = evidence_response["evidence"]["evidence_id"]
+
     status, _, history = request(app, f"/v1/cases/{case_id}/history", token=token)
     assert status == "200 OK"
     assert history["count"] >= 1
@@ -155,6 +174,12 @@ def test_end_to_end_persistent_client_analysis_result_history_and_permissions():
     status, _, missing_case = request(app, f"/v1/cases/{case_id}", token=other_token)
     assert status == "404 Not Found"
     assert missing_case["error"]["code"] == "NOT_FOUND"
+    status, _, missing_evidence = request(app, f"/v1/evidence/{evidence_id}", token=other_token)
+    assert status == "404 Not Found"
+    assert missing_evidence["error"]["code"] == "NOT_FOUND"
+    status, _, missing_evidence_content = request(app, f"/v1/evidence/{evidence_id}/content", token=other_token)
+    assert status == "404 Not Found"
+    assert missing_evidence_content["error"]["code"] == "NOT_FOUND"
 
 
 def test_admin_workspace_permissions_and_session_revocation():
