@@ -111,3 +111,7 @@ de lignes. Aucun test, build, suite de tests ou workflow de test ne doit être e
 ## Architecture métier transversale
 
 Pour suivre les parcours complets entre l'interface, l'API, les services métier, les intégrations et la persistance, consulter [BUSINESS_ARCHITECTURE.md](./BUSINESS_ARCHITECTURE.md). Ce document décrit notamment le parcours Google → avis → dossier → preuves → analyse → validation humaine → préparation locale, ainsi que les frontières des notifications, workers et paiements.
+
+## Cartographie technique exhaustive
+
+Pour l'inventaire des fichiers Python, TypeScript et SQL, les routes React, les familles d'API et les différences entre arborescences historiques et chemins actifs, consulter [TECHNICAL_MAP.md](./TECHNICAL_MAP.md).

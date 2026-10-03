@@ -189,3 +189,7 @@ Pour toute évolution, suivre cette séquence :
 9. **Audit et affichage** : suivre les événements conservés et la réponse affichée au membre.
 
 Ce chemin de lecture doit permettre de répondre à cinq questions pour chaque opération : qui l'a déclenchée, sur quelle organisation, quelles règles sont appliquées, quelles données changent et quels effets externes sont réellement exécutés.
+
+## Index technique complémentaire
+
+La cartographie exhaustive des fichiers, routes React, familles API, migrations et frontières runtime est disponible dans [TECHNICAL_MAP.md](./TECHNICAL_MAP.md).
