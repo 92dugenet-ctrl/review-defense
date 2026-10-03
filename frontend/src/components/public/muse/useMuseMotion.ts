@@ -2,9 +2,12 @@ import { useEffect } from "react";
 
 export function useMuseMotion() {
   useEffect(() => {
-    const header = document.querySelector<HTMLElement>("#header");
-    const progress = document.querySelector<HTMLElement>(".progress i");
-    const scenes = Array.from(document.querySelectorAll<HTMLElement>(".scene"));
+    const root = document.querySelector<HTMLElement>(".muse-site");
+    if (!root) return;
+
+    const header = root.querySelector<HTMLElement>("#header");
+    const progress = root.querySelector<HTMLElement>(".progress i");
+    const scenes = Array.from(root.querySelectorAll<HTMLElement>(".scene"));
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -15,7 +18,7 @@ export function useMuseMotion() {
 
     if (!prefersReducedMotion && supportsIntersectionObserver) {
       const revealTargets = Array.from(
-        document.querySelectorAll<HTMLElement>(
+        root.querySelectorAll<HTMLElement>(
           ".scene h1, .scene h2, .scene p, .scene .eyebrow, .product-card, .papers article, .chat-window, .phone, .social-main, .responsibility-image, .principles > div, .reveal",
         ),
       );
@@ -56,7 +59,7 @@ export function useMuseMotion() {
       scenes.forEach((scene) => sceneObserver?.observe(scene));
     } else {
       scenes.forEach((scene) => scene.classList.add("active"));
-      document
+      root
         .querySelectorAll<HTMLElement>(".reveal")
         .forEach((element) => element.classList.add("is-visible"));
     }
@@ -108,7 +111,7 @@ export function useMuseMotion() {
           element.style.removeProperty("transition-delay");
           element.classList.remove("reveal", "is-visible");
         });
-      document
+      root
         .querySelectorAll<HTMLElement>(".scene")
         .forEach((scene) => scene.style.removeProperty("--p"));
     };
