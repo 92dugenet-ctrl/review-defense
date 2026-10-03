@@ -5,6 +5,12 @@ Destructive by design: --confirm is mandatory and the target must be explicitly
 provided. Never defaults to the application's DATABASE_URL.
 """
 from __future__ import annotations
+
+# Exploitation : restaure une sauvegarde custom avec pg_restore en remplaçant les objets correspondants.
+# C'est une opération destructive : --confirm et une URL cible explicite sont obligatoires.
+# Le script ne choisit jamais DATABASE_URL automatiquement afin d'éviter une restauration involontaire
+# sur la base active. Vérifier la cible et la sauvegarde avant toute utilisation opérationnelle.
+
 import argparse
 import subprocess
 from pathlib import Path

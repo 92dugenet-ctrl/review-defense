@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 """Bounded hourly commercial-site maintenance for Review Defense."""
+
+# Maintenance automatisée du site public : applique quelques garde-fous HTML/CSS bornés,
+# écrit un rapport JSON et, si des changements existent, crée un commit Git local.
+# Le workflow GitHub Actions associé s'exécute sur un cron horaire et cible explicitement main,
+# pas develop. Il contient aussi une étape de tests frontend : ne pas déclencher ce workflow
+# dans le cadre des opérations manuelles soumises à la consigne « aucun test ».
 from pathlib import Path
 import json, re, subprocess
 

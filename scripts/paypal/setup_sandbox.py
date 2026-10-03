@@ -7,6 +7,12 @@ stored in the repository and no frontend code is changed.
 """
 from __future__ import annotations
 
+# Provisionnement hors-ligne du parcours de paiement : crée dans PayPal Sandbox le produit
+# et les plans d'abonnement, puis exporte leurs identifiants dans un artefact JSON.
+# Ce script n'est pas le checkout utilisateur : il prépare les ressources du fournisseur que
+# BillingPage et les services backend utiliseront ensuite. Les secrets proviennent de l'environnement.
+
+
 import json
 import os
 import sys

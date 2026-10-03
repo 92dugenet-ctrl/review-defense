@@ -5,6 +5,12 @@ must be present before a live browser E2E run is considered meaningful.
 """
 from __future__ import annotations
 
+# Contrôle statique de cohérence du paquet de livraison : présence des fichiers attendus et
+# absence de chaînes sensibles dans les ressources frontend publiques.
+# Il ne déploie rien et ne contacte pas le serveur ; certains workflows l'enchaînent avec d'autres
+# vérifications plus larges, qui peuvent inclure compilation, tests ou appels réseau.
+
+
 import re
 from pathlib import Path
 

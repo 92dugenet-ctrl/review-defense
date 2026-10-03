@@ -6,6 +6,12 @@ single PostgreSQL transaction. The plaintext password is never logged.
 """
 from __future__ import annotations
 
+# Exploitation : opération de bootstrap ponctuelle, exécutée par un opérateur lors de l'initialisation.
+# Elle crée l'organisation, l'utilisateur initial et son membership OWNER dans une transaction PostgreSQL.
+# Ce chemin est distinct de l'inscription publique ; il refuse de s'exécuter si des memberships existent.
+# La confirmation explicite protège contre une création accidentelle et le mot de passe n'est jamais journalisé.
+
+
 import os
 from typing import Callable
 

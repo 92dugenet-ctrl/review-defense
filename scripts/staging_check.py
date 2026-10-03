@@ -1,5 +1,10 @@
 """V6.34 bounded staging smoke check. No destructive actions."""
 from __future__ import annotations
+
+# Contrôle HTTP de préproduction : interroge uniquement /health et /ready sur STAGING_BASE_URL.
+# Il vérifie HTTPS, la version annoncée et l'état de disponibilité ; il ne crée ni ne modifie de données.
+# Ce contrôle réseau est différent des tests automatisés et peut être appelé par une procédure de certification.
+
 import json, os, sys, urllib.request
 
 base = os.environ.get("STAGING_BASE_URL", "").rstrip("/")

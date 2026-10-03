@@ -6,6 +6,11 @@ contract. It never contacts a remote host, uses SSH, or executes a deployment.
 """
 from __future__ import annotations
 
+# Pré-vol de déploiement staging : vérifie la présence des fichiers et variables nécessaires
+# au contrat de livraison GitHub Actions/eCloudServ. Ce module ne se connecte pas au serveur,
+# n'ouvre pas de session SSH et ne déclenche pas de déploiement ; il valide seulement la configuration.
+
+
 import json
 import os
 from pathlib import Path

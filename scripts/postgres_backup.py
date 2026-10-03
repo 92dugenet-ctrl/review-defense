@@ -2,6 +2,12 @@
 """Create a PostgreSQL custom-format backup without putting the password in argv."""
 from __future__ import annotations
 
+# Exploitation : exporte PostgreSQL au format custom via pg_dump pour permettre une restauration ciblée.
+# Le mot de passe de DATABASE_URL est déplacé dans l'environnement PGPASSWORD afin de ne pas apparaître
+# dans les arguments du processus. Le fichier de sortie est créé localement ; sa conservation hors
+# du serveur applicatif, son chiffrement et sa politique de rétention relèvent de l'exploitation.
+
+
 import argparse
 import os
 import subprocess
