@@ -8,10 +8,13 @@ services:
     volumes:
       - review_defense_pg:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U review_defense -d review_defense"]
+      test:
+        - CMD-SHELL
+        - pg_isready -U review_defense -d review_defense
       interval: 5s
       timeout: 5s
       retries: 10
+
   app:
     build: .
     environment:
@@ -19,9 +22,11 @@ services:
       HOST: 0.0.0.0
       PORT: 8080
       DATABASE_URL: postgresql://review_defense:${POSTGRES_PASSWORD:-change-me}@postgres:5432/review_defense
-    ports: ["8080:8080"]
+    ports:
+      - "8080:8080"
     depends_on:
       postgres:
         condition: service_healthy
+
 volumes:
   review_defense_pg:
