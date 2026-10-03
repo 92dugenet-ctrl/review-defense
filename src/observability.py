@@ -4,6 +4,9 @@ Framework-neutral telemetry for Review Defense: structured events, counters,
 latency measurements, correlation IDs, redaction, immutable audit hash-chain,
 and health/readiness checks. No network calls and no sensitive payload logging.
 """
+
+# Infrastructure de télémétrie sans dépendance HTTP : traces, métriques, événements structurés, masquage et audit. Les champs sensibles sont filtrés avant journalisation ; les données de preuve et contenus d'avis ne doivent pas être envoyés comme payloads de logs.
+
 from __future__ import annotations
 
 import hashlib

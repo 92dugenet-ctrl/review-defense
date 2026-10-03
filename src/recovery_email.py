@@ -3,6 +3,9 @@
 Recovery/verification emails are explicit SMTP sends. No Google mutation is
 performed and tokens are never persisted in clear text.
 """
+
+# Adaptateur SMTP dédié aux emails de vérification et de récupération. Il construit les liens et transmet le message ; la génération, le hash, l'expiration et la consommation des tokens restent gérés par les composants d'identité et leur repository.
+
 from __future__ import annotations
 from dataclasses import dataclass
 from email.message import EmailMessage

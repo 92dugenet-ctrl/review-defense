@@ -1,7 +1,5 @@
 """Cases decision/freeze/approval application seam.
 
-# Décision et gel : crée la décision, fige une photographie du dossier puis enregistre l'approbation explicite d'un humain. Le repository conserve l'état, tandis que l'audit rend chaque transition retraçable.
-
 Owns decision lifecycle orchestration and persistence side effects while keeping
 HTTP parsing, authorization and response serialization in the API layer.
 """

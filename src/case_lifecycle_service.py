@@ -1,7 +1,5 @@
 """Cases lifecycle application service.
 
-# Cycle de vie initial : création du dossier, persistance facultative et audit. La liste est toujours filtrée par organization_id ; l'API reste responsable de l'identité de l'acteur, des autorisations et de la réponse HTTP.
-
 Owns case creation and organization-scoped case listing. HTTP validation,
 authorization, response formatting and routing remain outside this module.
 """

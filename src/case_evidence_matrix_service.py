@@ -1,6 +1,4 @@
 """Application seam for the read-only Cases evidence matrix."""
-
-# Matrice en lecture seule : rapproche les affirmations d'un avis, les preuves du dossier et les contradictions déjà relevées pour produire une vue de couverture. La collecte des données et les contrôles d'accès restent en amont.
 from __future__ import annotations
 
 from typing import Any

@@ -1,6 +1,9 @@
 """V5.1 PostgreSQL persistence boundary.
 Requires psycopg (v3) in a deployed environment; imports are deferred.
 """
+
+# Couche basse PostgreSQL : ouverture des connexions et gestion des transactions. transaction(organization_id) installe le contexte tenant local à la transaction, utilisé par les politiques SQL ; transaction_without_tenant est réservé aux recherches de sécurité explicitement documentées.
+
 from __future__ import annotations
 from contextlib import contextmanager
 from typing import Iterator

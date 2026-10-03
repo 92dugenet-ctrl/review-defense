@@ -1,3 +1,5 @@
+// État d'authentification React : conserve le token dans sessionStorage, expose login/logout/refresh et recharge le profil depuis /v1/me. Ce contexte sert à l'expérience de navigation ; il ne remplace jamais les vérifications d'identité et de rôle effectuées par le serveur.
+
 import {
   createContext,
   useCallback,

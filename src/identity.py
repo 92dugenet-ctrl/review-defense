@@ -4,6 +4,9 @@ Ce module normalise les emails, valide les rôles et construit les sessions.
 Il ne route aucune requête HTTP : src.api_server appelle ces fonctions dans
 les endpoints d'authentification et de gestion des membres.
 """
+
+# Les règles d'identité sont des primitives appelées par la couche HTTP : normalisation, rôles, création de session et authentification. Les contrôles de droits fins restent à appliquer par les routes et services qui connaissent l'action demandée.
+
 from __future__ import annotations
 import re
 from dataclasses import dataclass

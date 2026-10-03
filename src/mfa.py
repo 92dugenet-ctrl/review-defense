@@ -1,4 +1,7 @@
 """V6.24 MFA and account-recovery primitives. Standard-library TOTP (RFC 6238)."""
+
+# Implémentation TOTP (RFC 6238) et chiffrement des secrets MFA. L'API orchestre l'enrôlement et la vérification ; la clé Fernet doit provenir de la configuration serveur et ne doit jamais être exposée au navigateur.
+
 from __future__ import annotations
 import base64, hashlib, hmac, os, secrets, struct, time
 from cryptography.fernet import Fernet, InvalidToken

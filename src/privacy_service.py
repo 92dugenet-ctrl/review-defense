@@ -1,4 +1,7 @@
 """Tenant-safe privacy workflow helpers shared by API and future frontend clients."""
+
+# Règles communes des demandes RGPD et préparation d'exports. Le service valide les catégories/statuts et masque les secrets ; l'API reste responsable de l'identification du demandeur, des autorisations et de l'accès aux données source.
+
 from __future__ import annotations
 
 from dataclasses import dataclass

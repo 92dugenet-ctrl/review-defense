@@ -4,6 +4,9 @@ Le module fournit le hachage des mots de passe et tokens, le modèle de session,
 le rate limiting et la validation des fichiers. src.api_server orchestre ces
 fonctions dans les contrôles HTTP ; ce module ne définit pas de routes.
 """
+
+# Socle partagé de sécurité : hachage, sessions opaques, contrôle du tenant, limitation de débit et validation d'upload. Ces fonctions sont des primitives ; l'API les compose dans le parcours HTTP et doit toujours vérifier les autorisations métier.
+
 from __future__ import annotations
 
 import hashlib

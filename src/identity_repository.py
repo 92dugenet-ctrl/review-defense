@@ -1,5 +1,8 @@
 """PostgreSQL identity and session repository extensions."""
 
+# Ce repository persiste les comptes, appartenances, invitations, sessions, MFA et événements de sécurité. Il hérite des transactions tenant-scoped ; la recherche initiale d'une session est l'exception contrôlée qui utilise uniquement le hash du token avant de connaître l'organisation.
+
+
 from __future__ import annotations
 
 import json

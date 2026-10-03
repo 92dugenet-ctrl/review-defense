@@ -1,3 +1,5 @@
+// Adaptateur de persistance de l'API : traduit les opérations applicatives en SQL et délègue la connexion/transaction à PostgresRepository. Il ne décide ni des permissions HTTP ni des actions externes ; l'identifiant d'organisation doit accompagner les opérations tenant-scoped.
+
 """V6.1 persistent application repository.
 
 The repository is the persistence boundary used by the production API adapter.
