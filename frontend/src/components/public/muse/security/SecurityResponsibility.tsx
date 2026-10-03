@@ -1,1 +1,35 @@
-import{MuseScene,Reveal}from"../MuseScene";export function SecurityResponsibility(){return <MuseScene><Reveal><div className="muse-two"><div><div className="muse-eyebrow">RESPONSABILITÉ</div><h2>Le logiciel prépare.<br/><em>L'humain valide.</em></h2></div><div className="muse-principles large"><div><b>Logiciel</b><span>Analyse et organise.</span></div><div><b>Logiciel</b><span>Prépare une étape.</span></div><div><b>Humain</b><span>Valide l'action sensible.</span></div></div></div></Reveal></MuseScene>}
+import { MuseScene, Reveal } from "../MuseScene";
+
+export function SecurityResponsibility() {
+  return (
+    <MuseScene>
+      <Reveal>
+        <div className="muse-two">
+          <div>
+            <div className="muse-eyebrow">RESPONSABILITÉ</div>
+            <h2>
+              Le logiciel prépare.
+              <br />
+              <em>L'humain valide.</em>
+            </h2>
+          </div>
+
+          <div className="muse-principles large">
+            <div>
+              <b>Logiciel</b>
+              <span>Analyse et organise.</span>
+            </div>
+            <div>
+              <b>Logiciel</b>
+              <span>Prépare une étape.</span>
+            </div>
+            <div>
+              <b>Humain</b>
+              <span>Valide l'action sensible.</span>
+            </div>
+          </div>
+        </div>
+      </Reveal>
+    </MuseScene>
+  );
+}

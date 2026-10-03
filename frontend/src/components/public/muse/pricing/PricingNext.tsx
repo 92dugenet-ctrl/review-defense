@@ -1,1 +1,12 @@
-import{NextMuseScene}from"../PageBlocks";export function PricingNext(){return <NextMuseScene eyebrow="COMMENCER" title="Vous pouvez commencer progressivement." to="/register" label="Créer mon espace →"/>}
+import { NextMuseScene } from "../PageBlocks";
+
+export function PricingNext() {
+  return (
+    <NextMuseScene
+      eyebrow="COMMENCER"
+      title="Vous pouvez commencer progressivement."
+      to="/register"
+      label="Créer mon espace →"
+    />
+  );
+}
