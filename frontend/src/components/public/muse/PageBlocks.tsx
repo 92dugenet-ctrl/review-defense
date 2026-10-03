@@ -9,6 +9,10 @@ type NextMuseSceneProps = {
   dark?: boolean;
 };
 
+/**
+ * Reusable end-of-page section that points visitors to the next public step.
+ * Individual pages supply the copy and route; this component owns the layout.
+ */
 export function NextMuseScene({
   eyebrow,
   title,
