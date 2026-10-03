@@ -83,6 +83,14 @@ def test_evidence_download_uses_authenticated_tenant_scoped_content_route():
     assert '"/v1/evidence/"+encodeURIComponent(id)+"/content"' in FRONTEND
     assert 'download-evidence:' in FRONTEND
 
+def test_password_recovery_and_invitation_handlers_are_wired():
+    assert 'if(location.pathname==="/reset-password")return recovery()' in FRONTEND
+    assert 'if(location.pathname==="/accept-invitation")return acceptInvitation()' in FRONTEND
+    assert 'post("/v1/auth/recovery/request"' in FRONTEND
+    assert 'post("/v1/auth/recovery/reset"' in FRONTEND
+    assert 'post("/v1/organization/invitations/accept"' in FRONTEND
+
+
 def test_password_recovery_link_is_visible_on_login():
     assert 'href="/reset-password">Mot de passe oublié ?' in FRONTEND
 
