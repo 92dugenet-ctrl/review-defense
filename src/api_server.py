@@ -1435,27 +1435,67 @@ class ReviewDefenseAPI:
                 raise APIError(422, "INVALID_UPLOAD", str(exc)) from exc
             document_id = str(uuid.uuid4())
             try:
-                                stored = self.store.vault.put(organization_id=user.organization_id,
-                     evidence_id=document_id,
-                     content=content,
-                     content_type=content_type,
-                    filename=filename)
+                stored = self.store.vault.put(
+                    organization_id=user.organization_id,
+                    evidence_id=document_id,
+                    content=content,
+                    content_type=content_type,
+                    filename=filename,
+                )
             except (ValueError, PermissionError) as exc:
                 raise APIError(422, "INVALID_UPLOAD", str(exc)) from exc
-            document = {"document_id": document_id, "organization_id": user.organization_id, "filename": filename, "content_type": content_type,
-                        "size_bytes": stored.size_bytes, "sha256": stored.sha256, "object_key": stored.object_key, "category": category,
-                        "created_by": user.user_id, "created_at": stored.created_at.isoformat()}
+            document = {
+                "document_id": document_id,
+                "organization_id": user.organization_id,
+                "filename": filename,
+                "content_type": content_type,
+                "size_bytes": stored.size_bytes,
+                "sha256": stored.sha256,
+                "object_key": stored.object_key,
+                "category": category,
+                "created_by": user.user_id,
+                "created_at": stored.created_at.isoformat(),
+            }
             try:
-                if self.repository is not None and hasattr(self.repository, "put_client_document"):
-                    self.repository.put_client_document(user.organization_id, document)
-                self.store.client_documents[(user.organization_id, document_id)] = document
+                if self.repository is not None and hasattr(
+                    self.repository,
+                    "put_client_document",
+                ):
+                    self.repository.put_client_document(
+                        user.organization_id,
+                        document,
+                    )
+                self.store.client_documents[
+                    (user.organization_id, document_id)
+                ] = document
             except Exception:
-                self.store.vault.delete(organization_id=user.organization_id, object_key=stored.object_key)
+                self.store.vault.delete(
+                    organization_id=user.organization_id,
+                    object_key=stored.object_key,
+                )
                 raise
-            self.store.audit_event(user.organization_id, user.user_id, "CLIENT_DOCUMENT_UPLOADED", "client_document:" + document_id,
-                                   filename=filename, size_bytes=stored.size_bytes, sha256=stored.sha256)
-            return self._json(201, {"document": {"document_id": document_id, "filename": filename, "content_type": content_type,
-                                                   "size_bytes": stored.size_bytes, "sha256": stored.sha256, "category": category}})
+            self.store.audit_event(
+                user.organization_id,
+                user.user_id,
+                "CLIENT_DOCUMENT_UPLOADED",
+                f"client_document:{document_id}",
+                filename=filename,
+                size_bytes=stored.size_bytes,
+                sha256=stored.sha256,
+            )
+            return self._json(
+                201,
+                {
+                    "document": {
+                        "document_id": document_id,
+                        "filename": filename,
+                        "content_type": content_type,
+                        "size_bytes": stored.size_bytes,
+                        "sha256": stored.sha256,
+                        "category": category,
+                    }
+                },
+            )
 
         if method == "GET" and path.startswith("/v1/client/documents/") and path.endswith("/download"):
             document_id = path.split("/")[-2]
@@ -2677,25 +2717,59 @@ class ReviewDefenseAPI:
                     case, review, evidence_rows, audit_rows, stored_contradictions
                 )
                 review_payload = asdict(workspace.review)
-                                review_payload.update({"author_display_name": review.author_display_name,
-                     "source": review.source,
-                     "language": review.language,
-                    "review_url": review.review_url})
-                return self._json(200, {
-                    "workspace": {**asdict(workspace), "review": review_payload},
-                    "evidence_tasks": [asdict(t) for t in tasks],
-                    "requires_human_review": case_requires_human_review(workspace),
-                                        "decision": asdict(self.store.decisions[(user.organization_id,
-                         case.decision_id)]) if case.decision_id and (user.organization_id,
-                        case.decision_id) in self.store.decisions else None,
-                    "snapshot": asdict(self.store.snapshots[(user.organization_id, cid)]) if (user.organization_id, cid) in self.store.snapshots else None,
-                    "approvals": [asdict(a) for a in self.store.approvals if a.organization_id == user.organization_id and a.decision_id == case.decision_id],
-                                        "fact_suggestions": [s for (org,
-                         _),
-                         rows in self.store.fact_suggestions.items() if org == user.organization_id for s in rows if self.store.evidence.get((org,
-                         s["evidence_id"]),
-                        {}).get("case_id") == cid],
-                })
+                review_payload.update(
+                    {
+                        "author_display_name": review.author_display_name,
+                        "source": review.source,
+                        "language": review.language,
+                        "review_url": review.review_url,
+                    }
+                )
+                decision = (
+                    self.store.decisions.get(
+                        (user.organization_id, case.decision_id)
+                    )
+                    if case.decision_id
+                    else None
+                )
+                snapshot = self.store.snapshots.get(
+                    (user.organization_id, cid)
+                )
+                approvals = [
+                    asdict(approval)
+                    for approval in self.store.approvals
+                    if approval.organization_id == user.organization_id
+                    and approval.decision_id == case.decision_id
+                ]
+                fact_suggestions = [
+                    suggestion
+                    for (organization_id, _), suggestions in (
+                        self.store.fact_suggestions.items()
+                    )
+                    if organization_id == user.organization_id
+                    for suggestion in suggestions
+                    if self.store.evidence.get(
+                        (organization_id, suggestion["evidence_id"]),
+                        {},
+                    ).get("case_id") == cid
+                ]
+                return self._json(
+                    200,
+                    {
+                        "workspace": {
+                            **asdict(workspace),
+                            "review": review_payload,
+                        },
+                        "evidence_tasks": [asdict(task) for task in tasks],
+                        "requires_human_review": case_requires_human_review(
+                            workspace
+                        ),
+                        "decision": asdict(decision) if decision else None,
+                        "snapshot": asdict(snapshot) if snapshot else None,
+                        "approvals": approvals,
+                        "fact_suggestions": fact_suggestions,
+                    },
+                )
             if method == "POST" and len(parts) == 5 and parts[4] == "pause-sla":
                 self._require_role(user, "OWNER", "ADMIN")
                 if case.sla_paused_at:
@@ -2812,44 +2886,66 @@ class ReviewDefenseAPI:
                     try:
                         extracted = extract_readable_text(content=content, content_type=e["content_type"], filename=e["filename"])
                     except (ExtractionError, UnicodeDecodeError, ValueError) as exc:
-                        # Unsupported/unreadable evidence remains available for manual review;
-                        # extraction failure must never become a false fact.
-                                                self.store.audit_event(user.organization_id,
-                             user.user_id,
-                             "EVIDENCE_TEXT_EXTRACTION_FAILED",
-                             f"evidence:{eid}",
-                             case_id=cid,
-                            reason=str(exc)[:240])
+                        # Unsupported or unreadable evidence remains available
+                        # for manual review; extraction failure is never a fact.
+                        self.store.audit_event(
+                            user.organization_id,
+                            user.user_id,
+                            "EVIDENCE_TEXT_EXTRACTION_FAILED",
+                            f"evidence:{eid}",
+                            case_id=cid,
+                            reason=str(exc)[:240],
+                        )
                         continue
-                                        suggestions = [asdict(x) for x in extract_text_fact_suggestions(evidence_id=eid,
-                         content=extracted.text.encode("utf-8"),
-                        content_type="text/plain")]
+
+                    suggestions = [
+                        asdict(suggestion)
+                        for suggestion in extract_text_fact_suggestions(
+                            evidence_id=eid,
+                            content=extracted.text.encode("utf-8"),
+                            content_type="text/plain",
+                        )
+                    ]
                     for suggestion in suggestions:
                         suggestion["case_id"] = cid
                         suggestion["extraction_method"] = extracted.method
                         if self.repository is not None:
-                            self.repository.put_fact_suggestion(user.organization_id, suggestion)
-                    self.store.fact_suggestions[(user.organization_id, eid)] = suggestions
+                            self.repository.put_fact_suggestion(
+                                user.organization_id,
+                                suggestion,
+                            )
+                    self.store.fact_suggestions[
+                        (user.organization_id, eid)
+                    ] = suggestions
                     all_suggestions.extend(suggestions)
-                                        self.store.audit_event(user.organization_id,
-                         user.user_id,
-                         "EVIDENCE_TEXT_EXTRACTED",
-                         f"evidence:{eid}",
-                         case_id=cid,
-                         method=extracted.method,
-                         character_count=len(extracted.text),
-                        suggestion_count=len(suggestions))
-                                self.store.audit_event(user.organization_id,
-                     user.user_id,
-                     "EVIDENCE_FACTS_SUGGESTED",
-                     f"case:{cid}",
-                     suggestion_count=len(all_suggestions),
-                    evidence_ids=selected)
-                                return self._json(200,
-                     {"suggestions": all_suggestions,
-                     "count": len(all_suggestions),
-                     "requires_human_review": bool(all_suggestions),
-                    "verified": False})
+                    self.store.audit_event(
+                        user.organization_id,
+                        user.user_id,
+                        "EVIDENCE_TEXT_EXTRACTED",
+                        f"evidence:{eid}",
+                        case_id=cid,
+                        method=extracted.method,
+                        character_count=len(extracted.text),
+                        suggestion_count=len(suggestions),
+                    )
+
+                self.store.audit_event(
+                    user.organization_id,
+                    user.user_id,
+                    "EVIDENCE_FACTS_SUGGESTED",
+                    f"case:{cid}",
+                    suggestion_count=len(all_suggestions),
+                    evidence_ids=selected,
+                )
+                return self._json(
+                    200,
+                    {
+                        "suggestions": all_suggestions,
+                        "count": len(all_suggestions),
+                        "requires_human_review": bool(all_suggestions),
+                        "verified": False,
+                    },
+                )
             if method == "GET" and len(parts) == 5 and parts[4] == "review-checklist":
                 self._require_role(user, "OWNER", "ADMIN", "ANALYST", "CLIENT", "VIEWER")
                 review = self.store.reviews[(user.organization_id, case.review_id)]
