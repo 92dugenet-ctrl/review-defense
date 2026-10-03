@@ -1,11 +1,31 @@
+import { useEffect, useRef } from "react";
+
 import { PublicActionLink } from "../PublicActionLink";
 
 export function HomeHero() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncPlayback = () => {
+      if (motionPreference.matches) {
+        video?.pause();
+        return;
+      }
+      void video?.play().catch(() => undefined);
+    };
+
+    syncPlayback();
+    motionPreference.addEventListener("change", syncPlayback);
+    return () => motionPreference.removeEventListener("change", syncPlayback);
+  }, []);
+
   return (
     <section className="scene hero" id="hero">
       <div className="hero-video-bg" aria-hidden="true">
         <video
-          autoPlay
+          ref={videoRef}
           muted
           loop
           playsInline
