@@ -174,3 +174,19 @@ Précautions :
 - Certaines références dossier/preuve sont des identifiants sans clé étrangère. Leur intégrité dépend donc des services applicatifs.
 - Ne pas ajouter de cascade ou modifier une contrainte publiée sans inventorier les données et contraintes déjà présentes dans les environnements.
 - Une suppression coordonnée doit être durable, idempotente et reprenable, car PostgreSQL et le stockage de fichiers ne partagent pas une transaction atomique.
+
+
+## 13. Traitements asynchrones et effets de bord — lot P
+
+Consulter [ASYNC_PROCESSING_AUDIT.md](./ASYNC_PROCESSING_AUDIT.md) avant toute modification des files, workers, notifications, synchronisations Google ou webhooks PayPal.
+
+Points de vigilance :
+- Les leases PostgreSQL expirés remettent les jobs en attente sans appliquer `max_attempts`.
+- Un handler peut réussir un effet externe puis tomber avant que le job soit marqué `completed`.
+- Le worker PostgreSQL notification conserve une transaction et les verrous SQL pendant l'appel réseau.
+- La route HTTP de worker notification utilise le worker applicatif mémoire, pas `PostgresNotificationWorker`.
+- La déduplication SQL outbox reste unique après `SENT` ou `CANCELLED`, alors que le service ne vérifie en mémoire que les doublons `PENDING`.
+- Le webhook PayPal persiste l'identifiant d'événement avant les écritures secondaires du compte et du journal ; un retry peut ne pas réparer ces écritures.
+- `scripts/worker.py` traite un job par invocation et ne lance pas le worker PostgreSQL de notifications.
+
+Les effets externes doivent être idempotents et rapprochés ; les réservations doivent être durables et courtes ; les reprises doivent rester bornées après expiration d'un lease. Aucun changement runtime n'est inclus dans ce lot.

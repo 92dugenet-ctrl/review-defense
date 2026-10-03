@@ -13,6 +13,7 @@ Cette documentation décrit le code présent et les chemins d'exécution observ�
 - [Audit des modules inutilisés et redondants](./UNUSED_AND_REDUNDANT_MODULES_AUDIT.md) — arborescences parallèles, duplications, candidats à arbitrage et limites des conclusions statiques.
 - [Audit du cycle de vie des données](./DATA_LIFECYCLE_AUDIT.md) — migrations, sauvegardes PostgreSQL, preuves, isolation tenant, conservation et effacement.
 - [Audit des suppressions et de l'intégrité référentielle](./DELETION_INTEGRITY_AUDIT.md) — cascades SQL, références orphelines potentielles, suppressions de comptes et organisations, preuves et effacement.
+- [Audit des traitements asynchrones](./ASYNC_PROCESSING_AUDIT.md) — files, leases, retries, notifications, Google Pub/Sub, PayPal et idempotence des effets externes.
 
 ## Règles de maintenance
 
