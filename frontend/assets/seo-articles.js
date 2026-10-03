@@ -293,115 +293,191 @@ window.REVIEW_DEFENSE_SEO_ARTICLES = {
   function topic(a){
     const t=lc(a.title+' '+a.keyword);
         if(t.includes('concurrent')) return {label:'CONCURRENT',
-      focus:'Un concurrent supposé ne doit pas être présenté comme tel sans éléments vérifiables. Le bon réflexe consiste à séparer ce que vous savez, ce que vous soupçonnez et ce que vous pouvez documenter.',
+      focus:(
+        'Un concurrent supposé ne doit pas être présenté comme tel sans éléments vérifiables. ' +
+        'Le bon réflexe consiste à séparer ce que vous savez, ce que vous soupçonnez et ce que' +
+        ' vous pouvez documenter.'
+      ),
       checks:['Identifier précisément le contenu contesté',
       'Conserver les éléments datés disponibles',
       'Éviter de publier l’identité supposée de l’auteur',
       'Relier chaque affirmation à une pièce vérifiable']};
         if(t.includes('ancien salarié')) return {label:'ANCIEN SALARIÉ',
-      focus:'Le fait qu’un auteur soit un ancien salarié ne suffit pas, à lui seul, à déterminer le traitement de l’avis. Il faut examiner le contenu, son contexte et les règles applicables.',
+      focus:(
+        'Le fait qu’un auteur soit un ancien salarié ne suffit pas, à lui seul, à déterminer l' +
+        'e traitement de l’avis. Il faut examiner le contenu, son contexte et les règles appli' +
+        'cables.'
+      ),
       checks:['Documenter la relation de travail sans exposer de données inutiles',
       'Distinguer opinion professionnelle et contenu problématique',
       'Conserver les échanges ou éléments utiles',
       'Préparer une qualification factuelle']};
         if(t.includes('ancien client')) return {label:'ANCIEN CLIENT',
-      focus:'Un avis peut rester pertinent même si la relation commerciale est ancienne. La question centrale est le contenu de l’avis et sa conformité aux règles applicables, pas seulement son ancienneté.',
+      focus:(
+        'Un avis peut rester pertinent même si la relation commerciale est ancienne. La questi' +
+        'on centrale est le contenu de l’avis et sa conformité aux règles applicables, pas seu' +
+        'lement son ancienneté.'
+      ),
       checks:['Retrouver le contexte commercial disponible',
       'Vérifier les dates et faits évoqués',
       'Séparer expérience réelle et éléments contestables',
       'Conserver les justificatifs utiles']};
         if(t.includes('jamais été client')||t.includes('sans être client')||t.includes('faux client')) return {label:'RELATION CLIENT',
-      focus:'L’absence apparente de relation client peut constituer un élément à examiner, mais elle doit être étayée. Une recherche interne, une chronologie et les informations disponibles permettent de construire un dossier plus solide.',
+      focus:(
+        'L’absence apparente de relation client peut constituer un élément à examiner, mais el' +
+        'le doit être étayée. Une recherche interne, une chronologie et les informations dispo' +
+        'nibles permettent de construire un dossier plus solide.'
+      ),
       checks:['Vérifier les systèmes internes pertinents',
       'Documenter la période et le périmètre de recherche',
       'Conserver les éléments sans exposer de données personnelles',
       'Présenter l’absence de trace comme un constat, pas comme une certitude absolue']};
         if(t.includes('diffamatoire')||t.includes('accusation')) return {label:'ACCUSATION',
-      focus:'Une accusation grave mérite une qualification prudente. Il faut distinguer une opinion, un récit d’expérience, une affirmation factuelle et une accusation qui pourrait avoir une portée juridique.',
+      focus:(
+        'Une accusation grave mérite une qualification prudente. Il faut distinguer une opinio' +
+        'n, un récit d’expérience, une affirmation factuelle et une accusation qui pourrait av' +
+        'oir une portée juridique.'
+      ),
       checks:['Isoler les phrases factuelles',
       'Vérifier les éléments qui les contredisent',
       'Conserver les sources et documents pertinents',
       'Éviter les qualifications juridiques non vérifiées']};
         if(t.includes('discriminatoire')) return {label:'PROPOS DISCRIMINATOIRES',
-      focus:'Des propos discriminatoires peuvent relever de règles spécifiques de modération. La formulation exacte compte : conservez le contenu concerné et décrivez précisément le problème sans reproduire inutilement des données sensibles.',
+      focus:(
+        'Des propos discriminatoires peuvent relever de règles spécifiques de modération. La f' +
+        'ormulation exacte compte : conservez le contenu concerné et décrivez précisément le p' +
+        'roblème sans reproduire inutilement des données sensibles.'
+      ),
       checks:['Conserver une copie du contenu concerné',
       'Identifier précisément le passage problématique',
       'Limiter la diffusion de données sensibles',
       'Documenter le contexte et le motif de signalement']};
         if(t.includes('insultant')||t.includes('menace')||t.includes('chantage')) return {label:'CONTENU SENSIBLE',
-      focus:'Les insultes, menaces ou tentatives de pression doivent être traitées avec prudence. Le dossier doit rester factuel et conserver les éléments qui permettent de comprendre la chronologie.',
+      focus:(
+        'Les insultes, menaces ou tentatives de pression doivent être traitées avec prudence. ' +
+        'Le dossier doit rester factuel et conserver les éléments qui permettent de comprendre' +
+        ' la chronologie.'
+      ),
       checks:['Capturer le contenu et son contexte',
       'Conserver les échanges associés',
       'Documenter la chronologie',
       'Distinguer signalement de l’avis et autres démarches éventuelles']};
         if(t.includes('informations personnelles')) return {label:'DONNÉES PERSONNELLES',
-      focus:'Lorsqu’un avis expose des informations personnelles, il est préférable de limiter la circulation de ces informations. Le dossier peut décrire la nature du problème sans recopier davantage de données que nécessaire.',
+      focus:(
+        'Lorsqu’un avis expose des informations personnelles, il est préférable de limiter la ' +
+        'circulation de ces informations. Le dossier peut décrire la nature du problème sans r' +
+        'ecopier davantage de données que nécessaire.'
+      ),
       checks:['Identifier la donnée concernée',
       'Conserver uniquement la preuve nécessaire',
       'Éviter de publier la donnée dans une réponse publique',
       'Documenter le motif et la démarche engagée']};
         if(t.includes('mauvais établissement')) return {label:'ÉTABLISSEMENT',
-      focus:'Un avis placé sur le mauvais établissement appelle d’abord une vérification d’identification : nom, adresse, activité et contexte. Le dossier doit montrer pourquoi l’avis semble ne pas concerner la fiche visée.',
+      focus:(
+        'Un avis placé sur le mauvais établissement appelle d’abord une vérification d’identif' +
+        'ication : nom, adresse, activité et contexte. Le dossier doit montrer pourquoi l’avis' +
+        ' semble ne pas concerner la fiche visée.'
+      ),
       checks:['Vérifier l’établissement concerné',
       'Comparer les informations de lieu et d’activité',
       'Conserver les éléments de contexte',
       'Présenter clairement la contradiction']};
         if(t.includes('fausse identité')) return {label:'IDENTITÉ',
-      focus:'Une identité qui semble fausse ne permet pas, à elle seule, de conclure à une fraude. Il est plus utile de documenter les incohérences observables que de tenter d’identifier publiquement l’auteur.',
+      focus:(
+        'Une identité qui semble fausse ne permet pas, à elle seule, de conclure à une fraude.' +
+        ' Il est plus utile de documenter les incohérences observables que de tenter d’identif' +
+        'ier publiquement l’auteur.'
+      ),
       checks:['Relever les incohérences visibles',
       'Ne pas enquêter de manière intrusive',
       'Conserver les informations publiques utiles',
       'Rester factuel dans le signalement']};
         if(t.includes('plusieurs')||t.includes('comptes similaires')) return {label:'SCHÉMA MULTIPLE',
-      focus:'Plusieurs avis similaires doivent être analysés comme un ensemble : dates, formulations, profils, répétitions et contexte. Un dossier groupé peut être plus lisible qu’une série de signalements isolés, tout en respectant les procédures disponibles.',
+      focus:(
+        'Plusieurs avis similaires doivent être analysés comme un ensemble : dates, formulatio' +
+        'ns, profils, répétitions et contexte. Un dossier groupé peut être plus lisible qu’une' +
+        ' série de signalements isolés, tout en respectant les procédures disponibles.'
+      ),
       checks:['Construire une chronologie',
       'Comparer les formulations et signaux communs',
       'Relier les avis sans affirmer un lien non établi',
       'Conserver une preuve distincte pour chaque avis']};
         if(t.includes('argent')||t.includes('avantage')||t.includes('promotionnel')) return {label:'INCITATION',
-      focus:'Les avis liés à une rémunération, un avantage ou une promotion doivent être replacés dans leur contexte. Le dossier doit documenter l’offre, la sollicitation ou le contenu observable, sans inventer le lien entre les personnes.',
+      focus:(
+        'Les avis liés à une rémunération, un avantage ou une promotion doivent être replacés ' +
+        'dans leur contexte. Le dossier doit documenter l’offre, la sollicitation ou le conten' +
+        'u observable, sans inventer le lien entre les personnes.'
+      ),
       checks:['Conserver les éléments de sollicitation disponibles',
       'Identifier précisément l’avantage ou la promotion',
       'Séparer les faits des hypothèses',
       'Préparer un signalement documenté']};
         if(t.includes('hors sujet')) return {label:'HORS SUJET',
-      focus:'Un avis négatif n’est pas automatiquement hors sujet. La question est de savoir si son contenu concerne réellement l’établissement, le produit ou l’expérience décrite et s’il entre dans un motif de signalement pertinent.',
+      focus:(
+        'Un avis négatif n’est pas automatiquement hors sujet. La question est de savoir si so' +
+        'n contenu concerne réellement l’établissement, le produit ou l’expérience décrite et ' +
+        's’il entre dans un motif de signalement pertinent.'
+      ),
       checks:['Identifier le sujet réel de l’avis',
       'Comparer avec l’activité de l’établissement',
       'Conserver les éléments de contexte',
       'Éviter de confondre avis négatif et avis hors sujet']};
         if(t.includes('conflit')||t.includes('litige')) return {label:'CONFLIT / LITIGE',
-      focus:'Après un conflit ou un litige, la meilleure base de travail reste une chronologie neutre. Un différend commercial ne suffit pas à établir qu’un avis est contraire aux règles.',
+      focus:(
+        'Après un conflit ou un litige, la meilleure base de travail reste une chronologie neu' +
+        'tre. Un différend commercial ne suffit pas à établir qu’un avis est contraire aux règ' +
+        'les.'
+      ),
       checks:['Construire une chronologie des échanges',
       'Séparer les faits vérifiables des ressentis',
       'Conserver contrats, échanges ou documents utiles',
       'Éviter de divulguer des informations confidentielles']};
         if(t.includes('signalement')||t.includes('signaler')) return {label:'SIGNALEMENT',
-      focus:'Le signalement doit être relié à un motif identifiable et à des éléments vérifiables. L’objectif est de présenter clairement le problème, pas de multiplier les arguments génériques.',
+      focus:(
+        'Le signalement doit être relié à un motif identifiable et à des éléments vérifiables.' +
+        ' L’objectif est de présenter clairement le problème, pas de multiplier les arguments ' +
+        'génériques.'
+      ),
       checks:['Identifier le motif pertinent',
       'Conserver la preuve du contenu',
       'Rédiger une explication courte et factuelle',
       'Suivre la demande et documenter la suite']};
         if(t.includes('refuse')||t.includes('reste en ligne')||t.includes('appel')||t.includes('contester')) return {label:'REFUS / SUITE',
-      focus:'Un refus ou une absence de changement ne signifie pas nécessairement que tous les éléments ont été examinés comme vous le souhaitez. Il faut relire le motif, vérifier le dossier et distinguer les voies de suivi disponibles.',
+      focus:(
+        'Un refus ou une absence de changement ne signifie pas nécessairement que tous les élé' +
+        'ments ont été examinés comme vous le souhaitez. Il faut relire le motif, vérifier le ' +
+        'dossier et distinguer les voies de suivi disponibles.'
+      ),
       checks:['Conserver la décision ou notification',
       'Relire le motif initial',
       'Compléter les éléments réellement utiles',
       'Documenter toute nouvelle démarche']};
         if(t.includes('délai')||t.includes('temps')) return {label:'DÉLAI',
-      focus:'Le traitement d’un signalement peut varier selon le contexte et la procédure concernée. Il est préférable de distinguer le temps de transmission, le temps de traitement et le temps nécessaire à une éventuelle suite.',
+      focus:(
+        'Le traitement d’un signalement peut varier selon le contexte et la procédure concerné' +
+        'e. Il est préférable de distinguer le temps de transmission, le temps de traitement e' +
+        't le temps nécessaire à une éventuelle suite.'
+      ),
       checks:['Noter la date du signalement',
       'Conserver les références disponibles',
       'Éviter de multiplier les demandes identiques sans raison',
       'Prévoir une étape de suivi documentée']};
         if(t.includes('répondre')||t.includes('réponse publique')) return {label:'CHOIX DE RÉPONSE',
-      focus:'Le signalement et la réponse publique ne poursuivent pas le même objectif. L’un concerne l’examen d’un contenu au regard des règles de la plateforme ; l’autre concerne la relation visible avec les internautes.',
+      focus:(
+        'Le signalement et la réponse publique ne poursuivent pas le même objectif. L’un conce' +
+        'rne l’examen d’un contenu au regard des règles de la plateforme ; l’autre concerne la' +
+        ' relation visible avec les internautes.'
+      ),
       checks:['Déterminer l’objectif prioritaire',
       'Évaluer les risques d’une réponse publique',
       'Ne pas révéler d’informations confidentielles',
       'Conserver la trace de la décision prise']};
         return {label:'ANALYSE',
-      focus:'La première étape consiste à comprendre précisément la situation avant de choisir une démarche. Un avis négatif, contesté ou inhabituel doit être examiné à partir de faits disponibles et du contexte.',
+      focus:(
+        'La première étape consiste à comprendre précisément la situation avant de choisir une' +
+        ' démarche. Un avis négatif, contesté ou inhabituel doit être examiné à partir de fait' +
+        's disponibles et du contexte.'
+      ),
       checks:['Lire l’avis dans son intégralité',
       'Vérifier les éléments de contexte disponibles',
       'Identifier ce qui est factuel et ce qui relève de l’opinion',
@@ -410,19 +486,38 @@ window.REVIEW_DEFENSE_SEO_ARTICLES = {
   function procedure(a){
     const t=lc(a.title+' '+a.keyword);
         if(t.includes('signaler')||t.includes('signalement')) return ['Identifier le motif',
-      'Choisissez le motif qui correspond réellement au contenu observé. Un motif précis et étayé est préférable à une accumulation d’arguments.',
+      (
+        'Choisissez le motif qui correspond réellement au contenu observé. Un motif précis et ' +
+        'étayé est préférable à une accumulation d’arguments.'
+      ),
       'Préparer les éléments',
       'Conservez le lien, une copie du contenu, la date et les éléments qui permettent de comprendre le contexte.',
       'Effectuer le signalement',
-      'Utilisez le parcours prévu par Google pour la fiche ou l’outil concerné. Review Defense peut aider à préparer le dossier ; l’action externe reste validée par l’utilisateur.',
+      (
+        'Utilisez le parcours prévu par Google pour la fiche ou l’outil concerné. Review Defen' +
+        'se peut aider à préparer le dossier ; l’action externe reste validée par l’utilisateu' +
+        'r.'
+      ),
       'Suivre la suite',
-      'Conservez la référence ou la confirmation disponible et notez la prochaine étape à effectuer si aucune évolution n’intervient.'];
+      (
+        'Conservez la référence ou la confirmation disponible et notez la prochaine étape à ef' +
+        'fectuer si aucune évolution n’intervient.'
+      )];
         if(t.includes('refuse')||t.includes('appel')||t.includes('contester')) return ['Relire la décision',
-      'Commencez par conserver le message ou le statut reçu et vérifiez exactement ce qui a été refusé ou laissé inchangé.',
+      (
+        'Commencez par conserver le message ou le statut reçu et vérifiez exactement ce qui a ' +
+        'été refusé ou laissé inchangé.'
+      ),
       'Requalifier le dossier',
-      'Ne rajoutez pas des éléments sans rapport. Identifiez plutôt les faits nouveaux, contradictions ou pièces qui répondent au problème.',
+      (
+        'Ne rajoutez pas des éléments sans rapport. Identifiez plutôt les faits nouveaux, cont' +
+        'radictions ou pièces qui répondent au problème.'
+      ),
       'Préparer la suite',
-      'Selon la procédure disponible, préparez une nouvelle démarche ou un appel. Toute action externe doit rester sous validation humaine.',
+      (
+        'Selon la procédure disponible, préparez une nouvelle démarche ou un appel. Toute acti' +
+        'on externe doit rester sous validation humaine.'
+      ),
       'Documenter',
       'Gardez une chronologie des démarches, réponses et pièces utilisées.'];
         if(t.includes('délai')||t.includes('temps')) return ['Jour 0 : conserver',
@@ -446,15 +541,33 @@ window.REVIEW_DEFENSE_SEO_ARTICLES = {
     const t=lc(a.title);
     return [
             ['Peut-on supprimer cet avis Google ?',
-         'La possibilité dépend du contenu de l’avis et des règles applicables. Un avis simplement négatif n’est pas automatiquement supprimable. Google conserve la décision finale.'],
+         (
+        'La possibilité dépend du contenu de l’avis et des règles applicables. Un avis simplem' +
+        'ent négatif n’est pas automatiquement supprimable. Google conserve la décision finale' +
+        '.'
+      )],
             ['Quels éléments faut-il vérifier ?',
-         'Vérifiez le contenu exact, le contexte, les dates, les éléments internes disponibles et toute contradiction objectivement documentable.'],
+         (
+        'Vérifiez le contenu exact, le contexte, les dates, les éléments internes disponibles ' +
+        'et toute contradiction objectivement documentable.'
+      )],
             ['Comment signaler l’avis ?',
-         'Le signalement se fait via les parcours proposés par Google. Review Defense sert à analyser et préparer le dossier ; l’utilisateur valide l’action externe.'],
+         (
+        'Le signalement se fait via les parcours proposés par Google. Review Defense sert à an' +
+        'alyser et préparer le dossier ; l’utilisateur valide l’action externe.'
+      )],
             ['Que faire si Google refuse ?',
-         'Conservez la décision, relisez le motif et examinez les possibilités de suivi ou d’appel disponibles. Une nouvelle démarche est plus utile lorsqu’elle apporte des éléments pertinents.'],
+         (
+        'Conservez la décision, relisez le motif et examinez les possibilités de suivi ou d’ap' +
+        'pel disponibles. Une nouvelle démarche est plus utile lorsqu’elle apporte des élément' +
+        's pertinents.'
+      )],
             [t.includes('répond')?'Faut-il répondre publiquement ?':'Faut-il répondre à l’auteur ?',
-        'Pas nécessairement. Une réponse publique répond à un objectif relationnel et doit éviter de révéler des informations confidentielles. Elle ne remplace pas un signalement lorsque celui-ci est pertinent.']
+        (
+        'Pas nécessairement. Une réponse publique répond à un objectif relationnel et doit évi' +
+        'ter de révéler des informations confidentielles. Elle ne remplace pas un signalement ' +
+        'lorsque celui-ci est pertinent.'
+      )]
     ];
   }
   function articleHTML(a){
@@ -467,15 +580,39 @@ window.REVIEW_DEFENSE_SEO_ARTICLES = {
         esc(c.label) +
         ' · GUIDE REVIEW DEFENSE</div><h1>' +
         esc(a.title) +
-        '</h1><p class="seo-lead">Réponse claire, vérifications concrètes et méthode pour traiter un problème lié aux avis Google sans confondre soupçon, preuve et décision de la plateforme.</p><div class="seo-article-meta"><span>Mot-clé : ' +
+        (
+        '</h1><p class="seo-lead">Réponse claire, vérifications concrètes et méthode pour trai' +
+        'ter un problème lié aux avis Google sans confondre soupçon, preuve et décision de la ' +
+        'plateforme.</p><div class="seo-article-meta"><span>Mot-clé : '
+      ) +
         esc(a.keyword) +
         '</span><span>Lecture : 7–10 min</span><span>Mis à jour : 2026</span></div></div></header>'+
       '<div class="seo-article-layout"><main class="seo-article-content">'+
-      '<div class="seo-answer"><strong>Réponse courte</strong><p>La bonne démarche consiste d’abord à vérifier la situation, puis à réunir les éléments factuels qui permettent de l’expliquer. Selon le cas, l’avis peut être signalé à Google avec un motif pertinent. Cela ne garantit pas sa suppression : la plateforme concernée prend la décision finale.</p></div>'+
-            '<h2>1. Que faut-il comprendre avant d’agir ?</h2><p>Lorsqu’un avis paraît faux, injuste, agressif ou simplement incohérent avec ce que votre entreprise connaît, la première réaction est souvent de vouloir le faire disparaître immédiatement. Pour constituer un dossier utile, il est pourtant préférable de ralentir cette première étape. L’objectif est de décrire précisément le problème et de distinguer les faits vérifiables des interprétations.</p><p>' +
+      (
+        '<div class="seo-answer"><strong>Réponse courte</strong><p>La bonne démarche consiste ' +
+        'd’abord à vérifier la situation, puis à réunir les éléments factuels qui permettent d' +
+        'e l’expliquer. Selon le cas, l’avis peut être signalé à Google avec un motif pertinen' +
+        't. Cela ne garantit pas sa suppression : la plateforme concernée prend la décision fi' +
+        'nale.</p></div>'
+      )+
+            (
+        '<h2>1. Que faut-il comprendre avant d’agir ?</h2><p>Lorsqu’un avis paraît faux, injus' +
+        'te, agressif ou simplement incohérent avec ce que votre entreprise connaît, la premiè' +
+        're réaction est souvent de vouloir le faire disparaître immédiatement. Pour constitue' +
+        'r un dossier utile, il est pourtant préférable de ralentir cette première étape. L’ob' +
+        'jectif est de décrire précisément le problème et de distinguer les faits vérifiables ' +
+        'des interprétations.</p><p>'
+      ) +
         esc(c.focus) +
         '</p>'+
-            '<h2>2. Quels éléments vérifier dans cette situation ?</h2><p>Examinez l’avis dans son intégralité : formulation, faits avancés, date de publication, contexte commercial et éventuels éléments publics associés. Comparez ensuite ces informations avec les données auxquelles votre entreprise a légitimement accès. Cette comparaison doit rester proportionnée et ne pas conduire à rechercher ou publier des informations personnelles sur l’auteur.</p><div class="seo-checklist">' +
+            (
+        '<h2>2. Quels éléments vérifier dans cette situation ?</h2><p>Examinez l’avis dans son' +
+        ' intégralité : formulation, faits avancés, date de publication, contexte commercial e' +
+        't éventuels éléments publics associés. Comparez ensuite ces informations avec les don' +
+        'nées auxquelles votre entreprise a légitimement accès. Cette comparaison doit rester ' +
+        'proportionnée et ne pas conduire à rechercher ou publier des informations personnelle' +
+        's sur l’auteur.</p><div class="seo-checklist">'
+      ) +
         c.checks.map((x,
         i)=>'<div><b>0' +
         (i +
@@ -484,8 +621,26 @@ window.REVIEW_DEFENSE_SEO_ARTICLES = {
         esc(x) +
         '</span></div>').join('') +
         '</div>'+
-      '<h2>3. Comment constituer un dossier solide ?</h2><p>Un dossier utile n’est pas nécessairement volumineux. Il doit surtout être lisible. Commencez par une chronologie courte, puis reliez chaque point contesté à la pièce qui permet de le vérifier. Une capture seule peut montrer le contenu d’un avis ; une capture accompagnée de la date, du lien et d’un élément de contexte permet généralement de mieux comprendre le dossier.</p><div class="seo-evidence-grid"><div><strong>Contenu</strong><span>Copie ou capture de l’avis et lien vers la fiche.</span></div><div><strong>Contexte</strong><span>Dates, relation commerciale et éléments internes pertinents.</span></div><div><strong>Contradictions</strong><span>Faits précis qui méritent une vérification.</span></div><div><strong>Chronologie</strong><span>Signalement, réponses et décisions successives.</span></div></div>'+
-      '<h2>4. Quelle démarche suivre ?</h2><p>La procédure dépend du problème rencontré. Le principe reste toutefois constant : identifier le motif pertinent, préparer une explication factuelle et conserver la preuve de la démarche. Évitez les formulations absolues comme « cet avis est forcément frauduleux » lorsque vous ne disposez pas d’éléments permettant de l’établir.</p>'+
+      (
+        '<h2>3. Comment constituer un dossier solide ?</h2><p>Un dossier utile n’est pas néces' +
+        'sairement volumineux. Il doit surtout être lisible. Commencez par une chronologie cou' +
+        'rte, puis reliez chaque point contesté à la pièce qui permet de le vérifier. Une capt' +
+        'ure seule peut montrer le contenu d’un avis ; une capture accompagnée de la date, du ' +
+        'lien et d’un élément de contexte permet généralement de mieux comprendre le dossier.<' +
+        '/p><div class="seo-evidence-grid"><div><strong>Contenu</strong><span>Copie ou capture' +
+        ' de l’avis et lien vers la fiche.</span></div><div><strong>Contexte</strong><span>Dat' +
+        'es, relation commerciale et éléments internes pertinents.</span></div><div><strong>Co' +
+        'ntradictions</strong><span>Faits précis qui méritent une vérification.</span></div><d' +
+        'iv><strong>Chronologie</strong><span>Signalement, réponses et décisions successives.<' +
+        '/span></div></div>'
+      )+
+      (
+        '<h2>4. Quelle démarche suivre ?</h2><p>La procédure dépend du problème rencontré. Le ' +
+        'principe reste toutefois constant : identifier le motif pertinent, préparer une expli' +
+        'cation factuelle et conserver la preuve de la démarche. Évitez les formulations absol' +
+        'ues comme « cet avis est forcément frauduleux » lorsque vous ne disposez pas d’élémen' +
+        'ts permettant de l’établir.</p>'
+      )+
             '<div class="seo-steps">' +
         [0,
         1,
@@ -501,9 +656,38 @@ window.REVIEW_DEFENSE_SEO_ARTICLES = {
         1]) +
         '</p></div>').join('') +
         '</div>'+
-      '<h2>5. Que faire si Google refuse ou ne répond pas ?</h2><p>Un refus doit être traité comme une nouvelle étape du dossier, pas comme une preuve que votre analyse initiale était nécessairement correcte ou incorrecte. Conservez la notification, relisez le motif et vérifiez si des éléments pertinents manquent. Si une procédure d’appel ou de suivi est disponible, préparez-la à partir de faits nouveaux ou mieux documentés plutôt que de répéter exactement la même demande.</p><p>Dans tous les cas, gardez une chronologie : date du signalement, contenu transmis, réponse reçue et prochaine action envisagée. Cette traçabilité évite les démarches contradictoires et permet à une autre personne de reprendre le dossier.</p>'+
-      '<h2>6. Répondre publiquement ou signaler : ce sont deux démarches différentes</h2><p>Une réponse publique peut être utile pour préserver la relation avec les internautes et montrer qu’une entreprise prend les remarques au sérieux. Elle ne doit toutefois pas exposer de données personnelles, de documents internes ou d’informations confidentielles. Le signalement poursuit un autre objectif : demander à la plateforme d’examiner un contenu au regard de ses règles.</p><p>Les deux démarches peuvent parfois coexister, mais aucune ne doit être utilisée mécaniquement. Le choix dépend du contenu, du contexte et de l’objectif recherché.</p>'+
-      '<h2>7. Quand demander une analyse professionnelle ?</h2><p>Une analyse peut être utile lorsque plusieurs éléments doivent être rapprochés : historique client, captures, échanges, répétition de contenus, plusieurs avis ou refus successifs. Le bénéfice attendu n’est pas une promesse de suppression, mais une meilleure lecture du dossier et une préparation plus structurée de la suite.</p><div class="seo-boundary"><div><strong>Le rôle de Review Defense</strong><span>Analyser, qualifier, structurer les preuves et préparer le dossier. Les actions externes sensibles restent sous validation humaine explicite.</span></div><a href="/analyse-avis-google/">Analyser mon avis →</a></div>'+
+      (
+        '<h2>5. Que faire si Google refuse ou ne répond pas ?</h2><p>Un refus doit être traité' +
+        ' comme une nouvelle étape du dossier, pas comme une preuve que votre analyse initiale' +
+        ' était nécessairement correcte ou incorrecte. Conservez la notification, relisez le m' +
+        'otif et vérifiez si des éléments pertinents manquent. Si une procédure d’appel ou de ' +
+        'suivi est disponible, préparez-la à partir de faits nouveaux ou mieux documentés plut' +
+        'ôt que de répéter exactement la même demande.</p><p>Dans tous les cas, gardez une chr' +
+        'onologie : date du signalement, contenu transmis, réponse reçue et prochaine action e' +
+        'nvisagée. Cette traçabilité évite les démarches contradictoires et permet à une autre' +
+        ' personne de reprendre le dossier.</p>'
+      )+
+      (
+        '<h2>6. Répondre publiquement ou signaler : ce sont deux démarches différentes</h2><p>' +
+        'Une réponse publique peut être utile pour préserver la relation avec les internautes ' +
+        'et montrer qu’une entreprise prend les remarques au sérieux. Elle ne doit toutefois p' +
+        'as exposer de données personnelles, de documents internes ou d’informations confident' +
+        'ielles. Le signalement poursuit un autre objectif : demander à la plateforme d’examin' +
+        'er un contenu au regard de ses règles.</p><p>Les deux démarches peuvent parfois coexi' +
+        'ster, mais aucune ne doit être utilisée mécaniquement. Le choix dépend du contenu, du' +
+        ' contexte et de l’objectif recherché.</p>'
+      )+
+      (
+        '<h2>7. Quand demander une analyse professionnelle ?</h2><p>Une analyse peut être util' +
+        'e lorsque plusieurs éléments doivent être rapprochés : historique client, captures, é' +
+        'changes, répétition de contenus, plusieurs avis ou refus successifs. Le bénéfice atte' +
+        'ndu n’est pas une promesse de suppression, mais une meilleure lecture du dossier et u' +
+        'ne préparation plus structurée de la suite.</p><div class="seo-boundary"><div><strong' +
+        '>Le rôle de Review Defense</strong><span>Analyser, qualifier, structurer les preuves ' +
+        'et préparer le dossier. Les actions externes sensibles restent sous validation humain' +
+        'e explicite.</span></div><a href="/analyse-avis-google/">Analyser mon avis →</a></div' +
+        '>'
+      )+
             '<section class="seo-faq"><h2>Questions fréquentes</h2>' +
         f.map(x=>'<details><summary>' +
         esc(x[0]) +
@@ -520,7 +704,15 @@ window.REVIEW_DEFENSE_SEO_ARTICLES = {
         esc(x.title) +
         '</strong><span>Lire le guide →</span></a>').join('') +
         '</div></section>'+
-      '</main><aside class="seo-article-aside"><div class="seo-toc"><strong>Dans ce guide</strong><a href="#top">Réponse courte</a><a href="#top">Vérifications</a><a href="#top">Preuves</a><a href="#top">Démarche</a><a href="#top">Après un refus</a><a href="#top">FAQ</a></div><div class="seo-aside-cta"><small>REVIEW DEFENSE</small><strong>Un avis à analyser ?</strong><p>Structurez les faits, les preuves et les prochaines étapes dans un dossier clair.</p><a href="/analyse-avis-google/">Analyser mon avis</a></div></aside></div></article>';
+      (
+        '</main><aside class="seo-article-aside"><div class="seo-toc"><strong>Dans ce guide</s' +
+        'trong><a href="#top">Réponse courte</a><a href="#top">Vérifications</a><a href="#top"' +
+        '>Preuves</a><a href="#top">Démarche</a><a href="#top">Après un refus</a><a href="#top' +
+        '">FAQ</a></div><div class="seo-aside-cta"><small>REVIEW DEFENSE</small><strong>Un avi' +
+        's à analyser ?</strong><p>Structurez les faits, les preuves et les prochaines étapes ' +
+        'dans un dossier clair.</p><a href="/analyse-avis-google/">Analyser mon avis</a></div>' +
+        '</aside></div></article>'
+      );
   }
   function englishTitle(slug){
     const map={
@@ -585,21 +777,47 @@ window.REVIEW_DEFENSE_SEO_ARTICLES = {
   }
   function englishArticleHTML(a){
     const title=englishTitle(a.slug);
-    const intro="A practical guide to reviewing the facts, documenting evidence and preparing a traceable case without confusing suspicion, evidence and the platform's final decision.";
+    const intro=(
+        "A practical guide to reviewing the facts, documenting evidence and preparing a tracea" +
+        "ble case without confusing suspicion, evidence and the platform's final decision."
+      );
         const checks=["Review the exact content and context",
       "Preserve dated screenshots, links and relevant records",
       "Separate verified facts from assumptions",
       "Keep personal and confidential information appropriately protected"];
     return '<article class="seo-article-page">'+
-            '<header class="seo-article-hero"><div class="seo-article-hero-inner"><div class="seo-breadcrumb">Resources · Review Defense</div><div class="seo-kicker">GOOGLE REVIEW · REVIEW DEFENSE GUIDE</div><h1>' +
+            (
+        '<header class="seo-article-hero"><div class="seo-article-hero-inner"><div class="seo-' +
+        'breadcrumb">Resources · Review Defense</div><div class="seo-kicker">GOOGLE REVIEW · R' +
+        'EVIEW DEFENSE GUIDE</div><h1>'
+      ) +
         esc(title) +
         '</h1><p class="seo-lead">' +
         intro +
-        '</p><div class="seo-article-meta"><span>Topic: Google reviews</span><span>Reading time: 7–10 min</span><span>Updated: 2026</span></div></div></header>'+
+        (
+        '</p><div class="seo-article-meta"><span>Topic: Google reviews</span><span>Reading tim' +
+        'e: 7–10 min</span><span>Updated: 2026</span></div></div></header>'
+      )+
       '<div class="seo-article-layout"><main class="seo-article-content">'+
-      '<div class="seo-answer"><strong>Short answer</strong><p>Start by verifying the situation and gathering the factual elements that explain it. When appropriate, a review can be reported to Google using a relevant reason. Reporting does not guarantee removal: the platform makes the final decision.</p></div>'+
-      '<h2>1. What should you understand before taking action?</h2><p>When a review appears false, unfair, aggressive or inconsistent with what a business knows, the first reaction is often to remove it immediately. A useful case file starts with a precise description of the issue and a clear separation between verifiable facts and interpretations.</p>'+
-      '<h2>2. What should you verify?</h2><p>Review the complete content, publication date, business context and any relevant public information. Compare those elements with records the business is legitimately entitled to access. Keep the investigation proportionate and avoid exposing personal information about the author.</p>'+
+      (
+        '<div class="seo-answer"><strong>Short answer</strong><p>Start by verifying the situat' +
+        'ion and gathering the factual elements that explain it. When appropriate, a review ca' +
+        'n be reported to Google using a relevant reason. Reporting does not guarantee removal' +
+        ': the platform makes the final decision.</p></div>'
+      )+
+      (
+        '<h2>1. What should you understand before taking action?</h2><p>When a review appears ' +
+        'false, unfair, aggressive or inconsistent with what a business knows, the first react' +
+        'ion is often to remove it immediately. A useful case file starts with a precise descr' +
+        'iption of the issue and a clear separation between verifiable facts and interpretatio' +
+        'ns.</p>'
+      )+
+      (
+        '<h2>2. What should you verify?</h2><p>Review the complete content, publication date, ' +
+        'business context and any relevant public information. Compare those elements with rec' +
+        'ords the business is legitimately entitled to access. Keep the investigation proporti' +
+        'onate and avoid exposing personal information about the author.</p>'
+      )+
             '<div class="seo-checklist">' +
         checks.map((x,
         i)=>'<div><b>0' +
@@ -609,16 +827,77 @@ window.REVIEW_DEFENSE_SEO_ARTICLES = {
         esc(x) +
         '</span></div>').join('') +
         '</div>'+
-      '<h2>3. How do you build a clear case file?</h2><p>A useful case file does not need to be large. It needs to be readable. Start with a short timeline and link each disputed point to the evidence that supports it. A screenshot shows the review; a screenshot combined with the date, link and relevant context makes the record easier to assess.</p>'+
-      '<div class="seo-evidence-grid"><div><strong>Content</strong><span>Copy or screenshot of the review and link to the business profile.</span></div><div><strong>Context</strong><span>Dates, customer relationship and relevant internal records.</span></div><div><strong>Contradictions</strong><span>Specific facts that require verification.</span></div><div><strong>Timeline</strong><span>Report, responses and subsequent decisions.</span></div></div>'+
-      '<h2>4. What process should you follow?</h2><p>Identify the relevant reporting reason, prepare a concise factual explanation and preserve evidence of the process. Avoid absolute claims when the available evidence does not establish them.</p>'+
-      '<div class="seo-steps"><div><b>1</b><h3>Qualify the situation</h3><p>Describe the issue precisely without assuming the author’s identity or intent.</p></div><div><b>2</b><h3>Gather evidence</h3><p>Preserve screenshots, links, dates, messages and records that help verify the facts.</p></div><div><b>3</b><h3>Choose the process</h3><p>Compare the situation with the applicable platform rules and available procedures.</p></div><div><b>4</b><h3>Track the outcome</h3><p>Document the response and reassess the case if the platform refuses or requests further information.</p></div></div>'+
-      '<h2>5. What if Google refuses or does not respond?</h2><p>Treat a refusal as another case step. Keep the notification, review the stated reason and determine whether relevant evidence is missing. If an appeal or follow-up path is available, prepare it from new or better-documented facts rather than repeating the same request.</p>'+
-      '<h2>6. Public response and reporting are different actions</h2><p>A public response can address the relationship with readers, while a report asks the platform to review content against its rules. A public response should never expose confidential or unnecessary personal information.</p>'+
-      '<div class="seo-boundary"><div><strong>The role of Review Defense</strong><span>Analyze, qualify, structure evidence and prepare the case file. Sensitive external actions remain subject to explicit human approval.</span></div><a href="/analyse-avis-google/">Analyze my review →</a></div>'+
-      '<section class="seo-faq"><h2>Frequently asked questions</h2><details><summary>Can a Google review be removed?<span>+</span></summary><p>It depends on the review content and the applicable platform rules. A negative review is not automatically removable.</p></details><details><summary>What evidence should I keep?<span>+</span></summary><p>Keep the review content, link, date, relevant context and objective records that support your explanation.</p></details><details><summary>What if Google refuses?<span>+</span></summary><p>Keep the decision, review the reason and use an available follow-up or appeal process when appropriate.</p></details></section>'+
-      '<section class="seo-related"><h2>More resources</h2><div><a href="/ressources/"><small>REVIEW DEFENSE</small><strong>Review Defense resources</strong><span>Explore resources →</span></a></div></section>'+
-      '</main><aside class="seo-article-aside"><div class="seo-toc"><strong>In this guide</strong><a href="#top">Short answer</a><a href="#top">Verification</a><a href="#top">Evidence</a><a href="#top">Process</a><a href="#top">After a refusal</a><a href="#top">FAQ</a></div><div class="seo-aside-cta"><small>REVIEW DEFENSE</small><strong>Need to analyze a review?</strong><p>Structure facts, evidence and next steps in a clear case file.</p><a href="/analyse-avis-google/">Analyze my review</a></div></aside></div></article>';
+      (
+        '<h2>3. How do you build a clear case file?</h2><p>A useful case file does not need to' +
+        ' be large. It needs to be readable. Start with a short timeline and link each dispute' +
+        'd point to the evidence that supports it. A screenshot shows the review; a screenshot' +
+        ' combined with the date, link and relevant context makes the record easier to assess.' +
+        '</p>'
+      )+
+      (
+        '<div class="seo-evidence-grid"><div><strong>Content</strong><span>Copy or screenshot ' +
+        'of the review and link to the business profile.</span></div><div><strong>Context</str' +
+        'ong><span>Dates, customer relationship and relevant internal records.</span></div><di' +
+        'v><strong>Contradictions</strong><span>Specific facts that require verification.</spa' +
+        'n></div><div><strong>Timeline</strong><span>Report, responses and subsequent decision' +
+        's.</span></div></div>'
+      )+
+      (
+        '<h2>4. What process should you follow?</h2><p>Identify the relevant reporting reason,' +
+        ' prepare a concise factual explanation and preserve evidence of the process. Avoid ab' +
+        'solute claims when the available evidence does not establish them.</p>'
+      )+
+      (
+        '<div class="seo-steps"><div><b>1</b><h3>Qualify the situation</h3><p>Describe the iss' +
+        'ue precisely without assuming the author’s identity or intent.</p></div><div><b>2</b>' +
+        '<h3>Gather evidence</h3><p>Preserve screenshots, links, dates, messages and records t' +
+        'hat help verify the facts.</p></div><div><b>3</b><h3>Choose the process</h3><p>Compar' +
+        'e the situation with the applicable platform rules and available procedures.</p></div' +
+        '><div><b>4</b><h3>Track the outcome</h3><p>Document the response and reassess the cas' +
+        'e if the platform refuses or requests further information.</p></div></div>'
+      )+
+      (
+        '<h2>5. What if Google refuses or does not respond?</h2><p>Treat a refusal as another ' +
+        'case step. Keep the notification, review the stated reason and determine whether rele' +
+        'vant evidence is missing. If an appeal or follow-up path is available, prepare it fro' +
+        'm new or better-documented facts rather than repeating the same request.</p>'
+      )+
+      (
+        '<h2>6. Public response and reporting are different actions</h2><p>A public response c' +
+        'an address the relationship with readers, while a report asks the platform to review ' +
+        'content against its rules. A public response should never expose confidential or unne' +
+        'cessary personal information.</p>'
+      )+
+      (
+        '<div class="seo-boundary"><div><strong>The role of Review Defense</strong><span>Analy' +
+        'ze, qualify, structure evidence and prepare the case file. Sensitive external actions' +
+        ' remain subject to explicit human approval.</span></div><a href="/analyse-avis-google' +
+        '/">Analyze my review →</a></div>'
+      )+
+      (
+        '<section class="seo-faq"><h2>Frequently asked questions</h2><details><summary>Can a G' +
+        'oogle review be removed?<span>+</span></summary><p>It depends on the review content a' +
+        'nd the applicable platform rules. A negative review is not automatically removable.</' +
+        'p></details><details><summary>What evidence should I keep?<span>+</span></summary><p>' +
+        'Keep the review content, link, date, relevant context and objective records that supp' +
+        'ort your explanation.</p></details><details><summary>What if Google refuses?<span>+</' +
+        'span></summary><p>Keep the decision, review the reason and use an available follow-up' +
+        ' or appeal process when appropriate.</p></details></section>'
+      )+
+      (
+        '<section class="seo-related"><h2>More resources</h2><div><a href="/ressources/"><smal' +
+        'l>REVIEW DEFENSE</small><strong>Review Defense resources</strong><span>Explore resour' +
+        'ces →</span></a></div></section>'
+      )+
+      (
+        '</main><aside class="seo-article-aside"><div class="seo-toc"><strong>In this guide</s' +
+        'trong><a href="#top">Short answer</a><a href="#top">Verification</a><a href="#top">Ev' +
+        'idence</a><a href="#top">Process</a><a href="#top">After a refusal</a><a href="#top">' +
+        'FAQ</a></div><div class="seo-aside-cta"><small>REVIEW DEFENSE</small><strong>Need to ' +
+        'analyze a review?</strong><p>Structure facts, evidence and next steps in a clear case' +
+        ' file.</p><a href="/analyse-avis-google/">Analyze my review</a></div></aside></div></' +
+        'article>'
+      );
   }
   Object.keys(A).forEach(slug=>{A[slug].slug=slug;A[slug].html=localStorage.getItem('rd_locale')==='en'?englishArticleHTML(A[slug]):articleHTML(A[slug]);});
   window.REVIEW_DEFENSE_RENDER_ARTICLE=slug=>A[slug]?.html||'';

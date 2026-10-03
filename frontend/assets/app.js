@@ -7,7 +7,10 @@ async function reviewDefenseRender(){
   document.getElementById('title').textContent=navItems.find(x=>x[0]===v)?.[1]||v;
   document.getElementById('subtitle').textContent=m[1];
  try{
-  document.getElementById('content').innerHTML='<div class="loading-state"><div class="loading-bar"></div><div class="loading-bar short"></div><div class="loading-bar"></div></div>';
+  document.getElementById('content').innerHTML=(
+        '<div class="loading-state"><div class="loading-bar"></div><div class="loading-bar sho' +
+        'rt"></div><div class="loading-bar"></div></div>'
+      );
   document.getElementById('content').innerHTML=await views[v]();
   if(v==='client-monitoring'){
    const form=document.getElementById('client-profile-form');
@@ -219,7 +222,11 @@ async function loginSubmit(e){e.preventDefault();const f=new FormData(e.currentT
   organization_id:state.login.organization_id,
   password:String(f.get('password'))};const code=f.get('mfa_code');if(code)body.mfa_code=String(code);try{const d=await api('/v1/auth/login',
   {method:'POST',
-  body:JSON.stringify(body)});setToken(d.access_token);location.href='/app'}catch(x){if(String(x.message).toLowerCase().includes('mfa')){state.login.mfaRequired=true;const slot=document.getElementById('mfa-slot');if(slot){slot.hidden=false;slot.innerHTML='<label>Code MFA<input id="login-mfa" name="mfa_code" inputmode="numeric" autocomplete="one-time-code" pattern="\\d{6}" maxlength="6" placeholder="000000" required></label><p class="hint">Entrez le code de votre application d’authentification.</p>';slot.querySelector('input')?.focus()}}const err=document.querySelector('#login .error');if(err)err.textContent=x.message;else document.querySelector('#login').insertAdjacentHTML('beforeend',
+  body:JSON.stringify(body)});setToken(d.access_token);location.href='/app'}catch(x){if(String(x.message).toLowerCase().includes('mfa')){state.login.mfaRequired=true;const slot=document.getElementById('mfa-slot');if(slot){slot.hidden=false;slot.innerHTML=(
+        '<label>Code MFA<input id="login-mfa" name="mfa_code" inputmode="numeric" autocomplete' +
+        '="one-time-code" pattern="\\d{6}" maxlength="6" placeholder="000000" required></label' +
+        '><p class="hint">Entrez le code de votre application d’authentification.</p>'
+      );slot.querySelector('input')?.focus()}}const err=document.querySelector('#login .error');if(err)err.textContent=x.message;else document.querySelector('#login').insertAdjacentHTML('beforeend',
   `<div class="error">${esc(x.message)}</div>`)}}
 function renderRecovery(){document.body.innerHTML=authShell(`<div class="auth-shell-premium"><div class="auth-brand-lockup"><span class="auth-mark">RD</span><div><strong>REVIEW DEFENSE</strong><small>Récupération sécurisée</small></div></div><form id="recovery" class="stack auth-form"><div><div class="eyebrow">ACCOUNT RECOVERY</div><h1>Récupérer l’accès</h1><p>La réponse reste générique afin de ne pas révéler l’existence d’un compte.</p></div><label>Email<input name="email" type="email" autocomplete="username" required></label><label>Organisation<input name="organization_id" autocomplete="organization" required></label><button class="primary auth-submit">Envoyer le lien</button><div id="recovery-msg" class="hint"></div><button type="button" class="link-btn" id="back">Retour à la connexion</button></form><div class="auth-boundary"><strong>Jeton à usage contrôlé</strong><span>Le lien de récupération est limité dans le temps et à usage unique.</span></div></div>`);document.getElementById('recovery').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.currentTarget);try{await api('/v1/auth/recovery/request',
   {method:'POST',
@@ -347,14 +354,24 @@ const views={
      '" ' +
      (!canEdit?'disabled':'') +
      '></label>';
-      const profileForm='<form id="client-profile-form" class="panel stack"><div class="section-toolbar"><div><div class="eyebrow">ORGANISATION</div><h2>Profil de l’entreprise</h2><p>Ces informations restent dans votre espace organisationnel.</p></div></div><div class="card-grid three">' +
+      const profileForm=(
+        '<form id="client-profile-form" class="panel stack"><div class="section-toolbar"><div>' +
+        '<div class="eyebrow">ORGANISATION</div><h2>Profil de l’entreprise</h2><p>Ces informat' +
+        'ions restent dans votre espace organisationnel.</p></div></div><div class="card-grid ' +
+        'three">'
+      ) +
      fields.map(([name,
      label])=>input(name,
      label)).join('') +
      '</div><div class="form-actions"><button class="primary" type="submit" ' +
      (!canEdit?'disabled':'') +
      '>Enregistrer le profil</button></div></form>';
-      const googlePanel='<section class="panel stack"><div class="section-toolbar"><div><div class="eyebrow">GOOGLE BUSINESS PROFILE</div><h2>Connexion Google</h2><p>Synchronisation en lecture seule des établissements et des avis. Aucune réponse ni modification ne sera envoyée.</p></div><span class="pill">' +
+      const googlePanel=(
+        '<section class="panel stack"><div class="section-toolbar"><div><div class="eyebrow">G' +
+        'OOGLE BUSINESS PROFILE</div><h2>Connexion Google</h2><p>Synchronisation en lecture se' +
+        'ule des établissements et des avis. Aucune réponse ni modification ne sera envoyée.</' +
+        'p></div><span class="pill">'
+      ) +
      connections.length +
      ' connexion(s)</span></div><div><button class="primary" type="button" onclick="connectGoogle()" ' +
      (!canEdit?'disabled':'') +
@@ -382,7 +399,11 @@ const views={
      '</button></div></div></article>').join('') +
      '</div>':'<div class="empty">Aucun établissement détecté. Connectez un compte Google pour afficher ses fiches.</div>') +
      '</section>';
-      const documentPanel='<section class="panel stack"><div class="section-toolbar"><div><div class="eyebrow">DOCUMENTS</div><h2>Documents de l’organisation</h2><p>PDF, images et fichiers texte — 25 Mo maximum par fichier.</p></div><span class="pill">' +
+      const documentPanel=(
+        '<section class="panel stack"><div class="section-toolbar"><div><div class="eyebrow">D' +
+        'OCUMENTS</div><h2>Documents de l’organisation</h2><p>PDF, images et fichiers texte — ' +
+        '25 Mo maximum par fichier.</p></div><span class="pill">'
+      ) +
      docs.length +
      ' document(s)</span></div>' +
      (canEdit?'<label>Ajouter un document<input id="client-document-input" type="file" accept="application/pdf,image/jpeg,image/png,image/webp,text/plain,text/csv" multiple></label>':'') +
@@ -410,7 +431,11 @@ const views={
   const items=d.items||[];
   return pageHead('activity',
     'Suivi') +
-    '<div class="panel"><div class="section-toolbar"><div><div class="eyebrow">SUIVI</div><h2>Suivi de vos dossiers</h2><p>État d’avancement de vos dossiers et prochaine étape.</p></div><span class="pill">' +
+    (
+        '<div class="panel"><div class="section-toolbar"><div><div class="eyebrow">SUIVI</div>' +
+        '<h2>Suivi de vos dossiers</h2><p>État d’avancement de vos dossiers et prochaine étape' +
+        '.</p></div><span class="pill">'
+      ) +
     items.length +
     ' dossiers</span></div>' +
     (items.length?'<div class="case-list">' +
@@ -430,11 +455,23 @@ const views={
   views.escalations()]);
   return pageHead('activity',
     'Activité') +
-    '<div class="activity-grid"><section class="panel"><div class="section-toolbar"><div><div class="eyebrow">ALERTES</div><h2>Alertes</h2><p>Événements opérationnels nécessitant une attention.</p></div></div>' +
+    (
+        '<div class="activity-grid"><section class="panel"><div class="section-toolbar"><div><' +
+        'div class="eyebrow">ALERTES</div><h2>Alertes</h2><p>Événements opérationnels nécessit' +
+        'ant une attention.</p></div></div>'
+      ) +
     alerts +
-    '</section><section class="panel"><div class="section-toolbar"><div><div class="eyebrow">ESCALADES</div><h2>Escalades</h2><p>Dossiers dont le SLA ou le niveau de risque nécessite une revue.</p></div></div>' +
+    (
+        '</section><section class="panel"><div class="section-toolbar"><div><div class="eyebro' +
+        'w">ESCALADES</div><h2>Escalades</h2><p>Dossiers dont le SLA ou le niveau de risque né' +
+        'cessite une revue.</p></div></div>'
+      ) +
     escalations +
-    '</section><section class="panel"><div class="section-toolbar"><div><div class="eyebrow">JOURNAL</div><h2>Historique</h2><p>Chronologie des actions et événements enregistrés.</p></div></div>' +
+    (
+        '</section><section class="panel"><div class="section-toolbar"><div><div class="eyebro' +
+        'w">JOURNAL</div><h2>Historique</h2><p>Chronologie des actions et événements enregistr' +
+        'és.</p></div></div>'
+      ) +
     audit +
     '</section></div>'},
  dashboard:async()=>{const [r,
@@ -446,7 +483,17 @@ const views={
   api('/v1/notifications/metrics').catch(()=>({}))]);
   return pageHead('dashboard',
     'Pilotage') +
-    `<div class="hero-grid"><div class="hero-card"><div class="eyebrow">REVIEW DEFENSE</div><h2>Décider avec des preuves. Soumettre avec contrôle humain.</h2><p>Chaque dossier reste suivi et protégé par des étapes explicites.</p><div class="hero-actions">${state.me?.role==='CLIENT'?'<button class="primary" onclick="showNewClientCase()">+ Nouveau dossier</button><button class="ghost" onclick="state.view=\'cases\';reviewDefenseRender()">Suivre mes dossiers</button>':'<button class="primary" onclick="state.view=\'cases\';reviewDefenseRender()">Ouvrir les dossiers</button><button class="ghost" onclick="state.view=\'approvals\';reviewDefenseRender()">Voir les validations</button>'}</div></div><div class="card"><div class="label">Reviews</div><div class="metric">${r.items?.length??0}</div><span class="metric-caption">Avis ingérés</span></div><div class="card"><div class="label">Dossiers</div><div class="metric">${c.items?.length??0}</div><span class="metric-caption">Dossiers suivis</span></div><div class="card"><div class="label">Approvals</div><div class="metric">${a.items?.length??0}</div><span class="metric-caption">Contrôles humains</span></div></div><div class="panel client-focus-panel"><div class="section-toolbar"><div><div class="eyebrow">À TRAITER MAINTENANT</div><h3>Votre prochaine action</h3><p>Le tableau de bord met en avant ce qui mérite votre attention avant le reste.</p></div><span class="pill warning">${a.items?.filter(x=>String(x.status||'').toUpperCase()==='PENDING').length||0} validation(s)</span></div><div class="client-focus-grid"><button class="client-focus-item" type="button" onclick="state.view='cases';reviewDefenseRender()"><span class="item-index">01</span><span><strong>Suivre les dossiers actifs</strong><small>${c.items?.filter(x=>['OPEN','IN_REVIEW','PENDING'].includes(String(x.status||'').toUpperCase())).length||0} dossier(s) en cours</small></span><b>→</b></button>${state.me?.role==='CLIENT'?'<button class="client-focus-item" type="button" onclick="state.view=\'cases\';reviewDefenseRender()"><span class="item-index">02</span><span><strong>Compléter un dossier</strong><small>Ajouter les justificatifs manquants</small></span><b>→</b></button>':"<button class=\"client-focus-item\" type=\"button\" onclick=\"state.view='approvals';reviewDefenseRender()\"><span class=\"item-index\">02</span><span><strong>Vérifier les validations</strong><small>${a.items?.filter(x=>String(x.status||'').toUpperCase()==='PENDING').length||0} décision(s) humaine(s) en attente</small></span><b>→</b></button>"}<button class="client-focus-item" type="button" onclick="state.view='evidence';reviewDefenseRender()"><span class="item-index">03</span><span><strong>Contrôler les preuves</strong><small>Accéder au registre d’intégrité documentaire</small></span><b>→</b></button></div></div><div class="card-grid three"><div class="panel"><h3>Pipeline</h3><p>Analyse → preuves → validation humaine → préparation.</p><div class="pipeline"><span>Analyse</span><i>→</i><span>Preuves</span><i>→</i><span>Humain</span><i>→</i><span>Gel</span></div></div><div class="panel"><h3>Garde-fous</h3><p>Des contrôles de sécurité et une validation humaine encadrent les étapes sensibles.</p><div class="guardrail">Revue humaine requise avant toute action externe.</div></div><div class="panel"><h3>Notifications</h3><p class="metric-inline">${n.total!==undefined?esc(n.total):'—'} <small>événements</small></p><span class="metric-caption">${n.unread!==undefined?esc(n.unread):'—'} non lus</span></div></div>`},
+    `<div class="hero-grid"><div class="hero-card"><div class="eyebrow">REVIEW DEFENSE</div><h2>Décider avec des preuves. Soumettre avec contrôle humain.</h2><p>Chaque dossier reste suivi et protégé par des étapes explicites.</p><div class="hero-actions">${state.me?.role==='CLIENT'?'<button class="primary" onclick="showNewClientCase()">+ Nouveau dossier</button><button class="ghost" onclick="state.view=\'cases\';reviewDefenseRender()">Suivre mes dossiers</button>':(
+        '<button class="primary" onclick="state.view=\'cases\';reviewDefenseRender()">Ouvrir l' +
+        'es dossiers</button><button class="ghost" onclick="state.view=\'approvals\';reviewDef' +
+        'enseRender()">Voir les validations</button>'
+      )}</div></div><div class="card"><div class="label">Reviews</div><div class="metric">${r.items?.length??0}</div><span class="metric-caption">Avis ingérés</span></div><div class="card"><div class="label">Dossiers</div><div class="metric">${c.items?.length??0}</div><span class="metric-caption">Dossiers suivis</span></div><div class="card"><div class="label">Approvals</div><div class="metric">${a.items?.length??0}</div><span class="metric-caption">Contrôles humains</span></div></div><div class="panel client-focus-panel"><div class="section-toolbar"><div><div class="eyebrow">À TRAITER MAINTENANT</div><h3>Votre prochaine action</h3><p>Le tableau de bord met en avant ce qui mérite votre attention avant le reste.</p></div><span class="pill warning">${a.items?.filter(x=>String(x.status||'').toUpperCase()==='PENDING').length||0} validation(s)</span></div><div class="client-focus-grid"><button class="client-focus-item" type="button" onclick="state.view='cases';reviewDefenseRender()"><span class="item-index">01</span><span><strong>Suivre les dossiers actifs</strong><small>${c.items?.filter(x=>['OPEN','IN_REVIEW','PENDING'].includes(String(x.status||'').toUpperCase())).length||0} dossier(s) en cours</small></span><b>→</b></button>${state.me?.role==='CLIENT'?'<button class="client-focus-item" type="button" onclick="state.view=\'cases\';reviewDefenseRender()"><span class="item-index">02</span><span><strong>Compléter un dossier</strong><small>Ajouter les justificatifs manquants</small></span><b>→</b></button>':(
+        "<button class=\"client-focus-item\" type=\"button\" onclick=\"state.view='approvals';" +
+        "reviewDefenseRender()\"><span class=\"item-index\">02</span><span><strong>Vérifier le" +
+        "s validations</strong><small>${a.items?.filter(x=>String(x.status||'').toUpperCase()=" +
+        "=='PENDING').length||0} décision(s) humaine(s) en attente</small></span><b>→</b></but" +
+        "ton>"
+      )}<button class="client-focus-item" type="button" onclick="state.view='evidence';reviewDefenseRender()"><span class="item-index">03</span><span><strong>Contrôler les preuves</strong><small>Accéder au registre d’intégrité documentaire</small></span><b>→</b></button></div></div><div class="card-grid three"><div class="panel"><h3>Pipeline</h3><p>Analyse → preuves → validation humaine → préparation.</p><div class="pipeline"><span>Analyse</span><i>→</i><span>Preuves</span><i>→</i><span>Humain</span><i>→</i><span>Gel</span></div></div><div class="panel"><h3>Garde-fous</h3><p>Des contrôles de sécurité et une validation humaine encadrent les étapes sensibles.</p><div class="guardrail">Revue humaine requise avant toute action externe.</div></div><div class="panel"><h3>Notifications</h3><p class="metric-inline">${n.total!==undefined?esc(n.total):'—'} <small>événements</small></p><span class="metric-caption">${n.unread!==undefined?esc(n.unread):'—'} non lus</span></div></div>`},
  reviews:async()=>{const d=await api('/v1/reviews');
   const items=d.items||[];
   const avg=items.length?(items.reduce((sum,
@@ -458,18 +505,39 @@ const views={
   return pageHead('reviews',
     String(items.length) +
     ' avis') +
-    '<div class="review-overview"><div class="panel review-summary"><div><div class="eyebrow">REVIEW INTAKE</div><h3>Qualification des avis</h3><p>Identifier rapidement les avis à examiner, sans déclencher d’action externe automatique.</p></div><div class="review-summary-score"><strong>' +
+    (
+        '<div class="review-overview"><div class="panel review-summary"><div><div class="eyebr' +
+        'ow">REVIEW INTAKE</div><h3>Qualification des avis</h3><p>Identifier rapidement les av' +
+        'is à examiner, sans déclencher d’action externe automatique.</p></div><div class="rev' +
+        'iew-summary-score"><strong>'
+      ) +
     esc(String(avg)) +
-    '</strong><span>note moyenne</span></div></div><div class="review-mini-grid"><div class="card"><span class="label">À examiner</span><strong>' +
+    (
+        '</strong><span>note moyenne</span></div></div><div class="review-mini-grid"><div clas' +
+        's="card"><span class="label">À examiner</span><strong>'
+      ) +
     low +
     '</strong><small>avis ≤ 2 étoiles</small></div><div class="card"><span class="label">Positifs</span><strong>' +
     high +
     '</strong><small>avis ≥ 4 étoiles</small></div><div class="card"><span class="label">Sources</span><strong>' +
     sourceCount +
     '</strong><small>sources représentées</small></div></div></div>' +
-    '<div class="panel reviews-panel"><div class="section-toolbar"><div><h3>Inbox des avis</h3><p>Recherche et lecture des éléments disponibles.</p></div><span class="pill">' +
+    (
+        '<div class="panel reviews-panel"><div class="section-toolbar"><div><h3>Inbox des avis' +
+        '</h3><p>Recherche et lecture des éléments disponibles.</p></div><span class="pill">'
+      ) +
     items.length +
-    ' résultats</span></div><div class="review-toolbar"><input aria-label="Rechercher un avis" placeholder="Rechercher auteur, texte, source ou identifiant…" oninput="filterReviewCards(this)"><select aria-label="Filtrer par note" onchange="filterReviewCards(this)"><option value="">Toutes les notes</option><option value="1">1 étoile</option><option value="2">2 étoiles</option><option value="3">3 étoiles</option><option value="4">4 étoiles</option><option value="5">5 étoiles</option></select><select aria-label="Filtrer par priorité" onchange="filterReviewCards(this)"><option value="">Toutes les priorités</option><option value="low">À examiner</option><option value="high">Positif</option></select></div>' +
+    (
+        ' résultats</span></div><div class="review-toolbar"><input aria-label="Rechercher un a' +
+        'vis" placeholder="Rechercher auteur, texte, source ou identifiant…" oninput="filterRe' +
+        'viewCards(this)"><select aria-label="Filtrer par note" onchange="filterReviewCards(th' +
+        'is)"><option value="">Toutes les notes</option><option value="1">1 étoile</option><op' +
+        'tion value="2">2 étoiles</option><option value="3">3 étoiles</option><option value="4' +
+        '">4 étoiles</option><option value="5">5 étoiles</option></select><select aria-label="' +
+        'Filtrer par priorité" onchange="filterReviewCards(this)"><option value="">Toutes les ' +
+        'priorités</option><option value="low">À examiner</option><option value="high">Positif' +
+        '</option></select></div>'
+      ) +
     (items.length?'<div class="review-list">' +
     items.map(x=>{const rating=Number(x.rating||0);const priority=rating<=2?'low':rating>=4?'high':'neutral';return '<article class="review-card" data-rating="' +
     rating +
@@ -507,7 +575,10 @@ const views={
     esc(x.review_id||'') +
     '\')">Créer le dossier</button>':'') +
     '</div></div></article>'}).join('') +
-    '</div>':'<div class="empty">Aucun avis disponible.<small>Les avis ingérés apparaîtront ici après synchronisation.</small></div>') +
+    '</div>':(
+        '<div class="empty">Aucun avis disponible.<small>Les avis ingérés apparaîtront ici apr' +
+        'ès synchronisation.</small></div>'
+      )) +
     '</div></div>'},
    cases:async()=>{const d=await api('/v1/cases');
   const items=d.items||[];
@@ -519,20 +590,39 @@ const views={
   return pageHead('cases',
     String(items.length) +
     ' dossiers') +
-    '<div class="case-overview"><div class="panel case-summary"><div><div class="eyebrow">CASE MANAGEMENT</div><h3>Centre des dossiers</h3><p>Transformer chaque signal en dossier traçable, avec priorité, état et prochaine action clairement visibles.</p></div><div class="case-summary-count"><strong>' +
+    (
+        '<div class="case-overview"><div class="panel case-summary"><div><div class="eyebrow">' +
+        'CASE MANAGEMENT</div><h3>Centre des dossiers</h3><p>Transformer chaque signal en doss' +
+        'ier traçable, avec priorité, état et prochaine action clairement visibles.</p></div><' +
+        'div class="case-summary-count"><strong>'
+      ) +
     items.length +
-    '</strong><span>dossiers</span></div></div><div class="case-mini-grid"><div class="card"><span class="label">Actifs</span><strong>' +
+    (
+        '</strong><span>dossiers</span></div></div><div class="case-mini-grid"><div class="car' +
+        'd"><span class="label">Actifs</span><strong>'
+      ) +
     open +
     '</strong><small>dossiers en cours</small></div><div class="card"><span class="label">Critiques</span><strong>' +
     critical +
     '</strong><small>priorité critique</small></div><div class="card"><span class="label">SLA</span><strong>' +
     overdue +
     '</strong><small>en dépassement</small></div></div></div>' +
-    '<div class="panel cases-panel"><div class="section-toolbar"><div><h3>Mes dossiers</h3><p>Déposez vos demandes, complétez les justificatifs et suivez leur avancement.</p></div>' +
+    (
+        '<div class="panel cases-panel"><div class="section-toolbar"><div><h3>Mes dossiers</h3' +
+        '><p>Déposez vos demandes, complétez les justificatifs et suivez leur avancement.</p><' +
+        '/div>'
+      ) +
      (state.me?.role==='CLIENT'?'<button class="primary" type="button" onclick="showNewClientCase()">+ Nouveau dossier</button>':'<span class="pill">' +
     items.length +
     ' dossiers</span>') +
-    '</div><div class="case-toolbar"><input aria-label="Rechercher un dossier" placeholder="Rechercher ID, avis, statut ou priorité…" oninput="filterCaseCards(this)"><select aria-label="Filtrer les dossiers" onchange="filterCaseCards(this)"><option value="">Tous les statuts</option><option value="OPEN">Ouverts</option><option value="IN_REVIEW">En revue</option><option value="PENDING">En attente</option><option value="CLOSED">Clôturés</option></select></div>' +
+    (
+        '</div><div class="case-toolbar"><input aria-label="Rechercher un dossier" placeholder' +
+        '="Rechercher ID, avis, statut ou priorité…" oninput="filterCaseCards(this)"><select a' +
+        'ria-label="Filtrer les dossiers" onchange="filterCaseCards(this)"><option value="">To' +
+        'us les statuts</option><option value="OPEN">Ouverts</option><option value="IN_REVIEW"' +
+        '>En revue</option><option value="PENDING">En attente</option><option value="CLOSED">C' +
+        'lôturés</option></select></div>'
+      ) +
     (items.length?'<div class="case-list">' +
     items.map(x=>'<article class="case-card" data-status="' +
     esc(String(x.status||'').toUpperCase()) +
@@ -552,9 +642,16 @@ const views={
     esc(x.priority||x.level||'STANDARD') +
     '</span><span class="status">' +
     esc(x.status||'UNKNOWN') +
-    '</span></div></button></article>').join(''):'<div class="empty">Aucun dossier pour le moment.<small>Les nouveaux dossiers apparaîtront ici après ingestion.</small></div>') +
+    '</span></div></button></article>').join(''):(
+        '<div class="empty">Aucun dossier pour le moment.<small>Les nouveaux dossiers apparaît' +
+        'ront ici après ingestion.</small></div>'
+      )) +
     '</div></div>' +
-    '<div class="case-guardrail"><span class="guardrail-icon">✓</span><div><strong>Traçabilité conservée</strong><p>Les décisions et actions sensibles restent soumises aux contrôles humains et aux règles de sécurité.</p></div></div>'},
+    (
+        '<div class="case-guardrail"><span class="guardrail-icon">✓</span><div><strong>Traçabi' +
+        'lité conservée</strong><p>Les décisions et actions sensibles restent soumises aux con' +
+        'trôles humains et aux règles de sécurité.</p></div></div>'
+      )},
    workload:async()=>{const d=await api('/v1/review-queue/workload');
   const items=d.items||[];
   const total=items.reduce((n,
@@ -575,7 +672,12 @@ const views={
   return pageHead('workload',
     String(items.length) +
     ' analystes') +
-    '<div class="sla-overview"><div class="panel sla-hero"><div><div class="eyebrow">SLA CONTROL CENTER</div><h2>Charge & délais</h2><p>Visualiser la capacité opérationnelle et les signaux SLA sans modifier automatiquement l’affectation des dossiers.</p></div><div class="sla-health"><span class="health-dot ' +
+    (
+        '<div class="sla-overview"><div class="panel sla-hero"><div><div class="eyebrow">SLA C' +
+        'ONTROL CENTER</div><h2>Charge & délais</h2><p>Visualiser la capacité opérationnelle e' +
+        't les signaux SLA sans modifier automatiquement l’affectation des dossiers.</p></div>' +
+        '<div class="sla-health"><span class="health-dot '
+      ) +
     (overdue?'warning':'good') +
     '"></span><strong>' +
     (overdue?'Attention SLA':'SLA sous contrôle') +
@@ -587,7 +689,11 @@ const views={
     due +
     '</strong><small>due soon</small></div><div class="card"><span class="label">Critiques</span><strong>' +
     critical +
-    '</strong><small>priorité élevée</small></div></div></div><div class="panel workload-panel"><div class="section-toolbar"><div><h3>Charge par analyste</h3><p>Répartition actuelle issue du moteur de file SLA.</p></div><span class="pill">' +
+    (
+        '</strong><small>priorité élevée</small></div></div></div><div class="panel workload-p' +
+        'anel"><div class="section-toolbar"><div><h3>Charge par analyste</h3><p>Répartition ac' +
+        'tuelle issue du moteur de file SLA.</p></div><span class="pill">'
+      ) +
     items.length +
     ' analystes</span></div><div class="workload-list">' +
     (items.length?items.map(x=>{const count=Number(x.case_count||0);const max=Math.max(...items.map(y=>Number(y.case_count||0)),
@@ -612,8 +718,15 @@ const views={
     (Number(x.due_soon_count||0)?'warn':'') +
     '">Due soon ' +
     esc(x.due_soon_count||0) +
-    '</span></div></article>'}).join(''):'<div class="empty">Aucune charge analyste disponible.<small>Les données apparaîtront lorsque la file SLA sera alimentée.</small></div>') +
-    '</div></div><div class="panel sla-note"><strong>Contrôle humain</strong><span>Cette vue expose les signaux de charge et de délai. Les affectations et escalades restent régies par les contrôles serveur et les règles existantes.</span><b>Score global ' +
+    '</span></div></article>'}).join(''):(
+        '<div class="empty">Aucune charge analyste disponible.<small>Les données apparaîtront ' +
+        'lorsque la file SLA sera alimentée.</small></div>'
+      )) +
+    (
+        '</div></div><div class="panel sla-note"><strong>Contrôle humain</strong><span>Cette v' +
+        'ue expose les signaux de charge et de délai. Les affectations et escalades restent ré' +
+        'gies par les contrôles serveur et les règles existantes.</span><b>Score global '
+      ) +
     score +
     '</b></div>'},
  escalations:async()=>{const d=await api('/v1/escalations');
@@ -632,7 +745,10 @@ const views={
   return pageHead('evidence',
     String(items.length) +
     ' éléments') +
-    '<div class="evidence-overview"><div class="panel evidence-hero"><div><div class="eyebrow">EVIDENCE CONTROL</div><h2>Preuves et justificatifs</h2><p>' +
+    (
+        '<div class="evidence-overview"><div class="panel evidence-hero"><div><div class="eyeb' +
+        'row">EVIDENCE CONTROL</div><h2>Preuves et justificatifs</h2><p>'
+      ) +
      (state.me?.role==='CLIENT' ? 'Déposez et consultez vos justificatifs. Leur vérification est réalisée par Review Defense.' : 'Conserver, vérifier et relier les éléments de preuve avec une intégrité documentaire explicite.') +
     '</p></div><div class="integrity-badge"><span class="health-dot ' +
     (items.length&&verified===items.length?'good':'warning') +
@@ -640,15 +756,29 @@ const views={
     (items.length&&verified===items.length?'Intégrité vérifiée':'Vérification requise') +
     '</strong></div></div><div class="evidence-kpis"><div class="card"><span class="label">Éléments</span><strong>' +
     items.length +
-    '</strong><small>preuves enregistrées</small></div><div class="card"><span class="label">Vérifiées</span><strong>' +
+    (
+        '</strong><small>preuves enregistrées</small></div><div class="card"><span class="labe' +
+        'l">Vérifiées</span><strong>'
+      ) +
     verified +
     '</strong><small>intégrité validée</small></div><div class="card"><span class="label">À vérifier</span><strong>' +
     pending +
     '</strong><small>statut non final</small></div><div class="card"><span class="label">Types</span><strong>' +
     types +
-    '</strong><small>formats représentés</small></div></div></div><div class="panel evidence-registry"><div class="section-toolbar"><div><h3>Registre</h3><p>Recherche et consultation des justificatifs.</p></div><span class="pill">' +
+    (
+        '</strong><small>formats représentés</small></div></div></div><div class="panel eviden' +
+        'ce-registry"><div class="section-toolbar"><div><h3>Registre</h3><p>Recherche et consu' +
+        'ltation des justificatifs.</p></div><span class="pill">'
+      ) +
     items.length +
-    ' preuves</span></div><div class="evidence-toolbar"><input aria-label="Rechercher une preuve" placeholder="Rechercher ID, type, statut ou Empreinte documentaire…" oninput="filterEvidenceCards(this)"><select aria-label="Filtrer les preuves" onchange="filterEvidenceCards(this)"><option value="">Tous les statuts</option><option value="VERIFIED">Vérifiées</option><option value="PENDING">À vérifier</option><option value="REJECTED">Rejetées</option></select></div>' +
+    (
+        ' preuves</span></div><div class="evidence-toolbar"><input aria-label="Rechercher une ' +
+        'preuve" placeholder="Rechercher ID, type, statut ou Empreinte documentaire…" oninput=' +
+        '"filterEvidenceCards(this)"><select aria-label="Filtrer les preuves" onchange="filter' +
+        'EvidenceCards(this)"><option value="">Tous les statuts</option><option value="VERIFIE' +
+        'D">Vérifiées</option><option value="PENDING">À vérifier</option><option value="REJECT' +
+        'ED">Rejetées</option></select></div>'
+      ) +
     (items.length?'<div class="evidence-list">' +
     items.map(x=>'<article class="evidence-card" data-status="' +
     esc(String(x.status||'').toUpperCase()) +
@@ -669,7 +799,11 @@ const views={
     esc(x.sha256||'Empreinte indisponible') +
     '</code><button class="link-btn" type="button" onclick="copyEvidenceHash(this)">Copier</button></div></article>').join('') +
     '</div>':'<div class="empty">Aucune preuve enregistrée.<small>Les éléments ingérés apparaîtront ici.</small></div>') +
-    '</div><div class="evidence-integrity-note"><strong>Intégrité documentaire</strong><span>Chaque preuve conserve son empreinte Empreinte documentaire. La présentation ne modifie jamais le contenu source.</span></div>'},
+    (
+        '</div><div class="evidence-integrity-note"><strong>Intégrité documentaire</strong><sp' +
+        'an>Chaque preuve conserve son empreinte Empreinte documentaire. La présentation ne mo' +
+        'difie jamais le contenu source.</span></div>'
+      )},
  approvals:async()=>{const d=await api('/v1/approvals');
   const items=d.items||[];
   const pending=items.filter(x=>String(x.status||'').toUpperCase()==='PENDING').length;
@@ -678,15 +812,39 @@ const views={
   return pageHead('approvals',
     String(pending) +
     ' en attente') +
-    '<div class="approval-overview"><div class="panel approval-hero"><div><div class="eyebrow">HUMAN APPROVAL GATE</div><h2>Centre de validation</h2><p>Chaque action sensible reste bloquée jusqu’à une validation humaine explicite et traçable.</p></div><span class="approval-lock">🔒 HUMAN GATE</span></div><div class="approval-kpis"><div class="card"><span class="label">En attente</span><strong>' +
+    (
+        '<div class="approval-overview"><div class="panel approval-hero"><div><div class="eyeb' +
+        'row">HUMAN APPROVAL GATE</div><h2>Centre de validation</h2><p>Chaque action sensible ' +
+        'reste bloquée jusqu’à une validation humaine explicite et traçable.</p></div><span cl' +
+        'ass="approval-lock">🔒 HUMAN GATE</span></div><div class="approval-kpis"><div class="' +
+        'card"><span class="label">En attente</span><strong>'
+      ) +
     pending +
-    '</strong><small>requiert une décision</small></div><div class="card"><span class="label">Approuvées</span><strong>' +
+    (
+        '</strong><small>requiert une décision</small></div><div class="card"><span class="lab' +
+        'el">Approuvées</span><strong>'
+      ) +
     approved +
-    '</strong><small>validation enregistrée</small></div><div class="card"><span class="label">Refusées</span><strong>' +
+    (
+        '</strong><small>validation enregistrée</small></div><div class="card"><span class="la' +
+        'bel">Refusées</span><strong>'
+      ) +
     rejected +
-    '</strong><small>contrôle négatif</small></div></div></div><div class="panel approvals-panel"><div class="section-toolbar"><div><h3>File de validation</h3><p>Examiner les demandes avant toute préparation d’action externe.</p></div><span class="pill warning">' +
+    (
+        '</strong><small>contrôle négatif</small></div></div></div><div class="panel approvals' +
+        '-panel"><div class="section-toolbar"><div><h3>File de validation</h3><p>Examiner les ' +
+        'demandes avant toute préparation d’action externe.</p></div><span class="pill warning' +
+        '">'
+      ) +
     pending +
-    ' à traiter</span></div><div class="approval-toolbar"><input aria-label="Rechercher une approbation" placeholder="Rechercher ID, dossier ou statut…" oninput="filterApprovalCards(this)"><select aria-label="Filtrer les approbations" onchange="filterApprovalCards(this)"><option value="">Tous les statuts</option><option value="PENDING">En attente</option><option value="APPROVED">Approuvées</option><option value="REJECTED">Refusées</option></select></div>' +
+    (
+        ' à traiter</span></div><div class="approval-toolbar"><input aria-label="Rechercher un' +
+        'e approbation" placeholder="Rechercher ID, dossier ou statut…" oninput="filterApprova' +
+        'lCards(this)"><select aria-label="Filtrer les approbations" onchange="filterApprovalC' +
+        'ards(this)"><option value="">Tous les statuts</option><option value="PENDING">En atte' +
+        'nte</option><option value="APPROVED">Approuvées</option><option value="REJECTED">Refu' +
+        'sées</option></select></div>'
+      ) +
     (items.length?'<div class="approval-list">' +
     items.map(x=>'<article class="approval-card" data-status="' +
     esc(String(x.status||'').toUpperCase()) +
@@ -702,11 +860,25 @@ const views={
     esc(x.status||'UNKNOWN') +
     '</span></div><div class="approval-gate"><div><span>État de la chaîne</span><strong>' +
     (String(x.status||'').toUpperCase()==='PENDING'?'Décision humaine requise':String(x.status||'').toUpperCase()==='APPROVED'?'Validation enregistrée':'Contrôle clôturé') +
-    '</strong></div><div class="approval-steps"><span class="done">Décision</span><span class="current">Gel</span><span class="locked">Approbation</span><span class="locked">Soumission</span></div></div><div class="approval-card-footer"><span class="human-note">Aucune action externe automatique</span><button class="link-btn" type="button" onclick="openApprovalCase(\'' +
+    (
+        '</strong></div><div class="approval-steps"><span class="done">Décision</span><span cl' +
+        'ass="current">Gel</span><span class="locked">Approbation</span><span class="locked">S' +
+        'oumission</span></div></div><div class="approval-card-footer"><span class="human-note' +
+        '">Aucune action externe automatique</span><button class="link-btn" type="button" oncl' +
+        'ick="openApprovalCase(\''
+      ) +
     esc(x.case_id||'') +
     '\')">Ouvrir le dossier →</button></div></article>').join('') +
-    '</div>':'<div class="empty">Aucune demande de validation.<small>Les demandes nécessitant une décision humaine apparaîtront ici.</small></div>') +
-    '</div><div class="approval-guardrail"><strong>Validation explicite obligatoire</strong><span>Revue humaine requise. Aucune de ces actions n’envoie ou ne supprime automatiquement un avis Google. Une approbation n’exécute pas une action Google. Elle autorise uniquement la progression vers l’étape contrôlée suivante.</span></div>'},
+    '</div>':(
+        '<div class="empty">Aucune demande de validation.<small>Les demandes nécessitant une d' +
+        'écision humaine apparaîtront ici.</small></div>'
+      )) +
+    (
+        '</div><div class="approval-guardrail"><strong>Validation explicite obligatoire</stron' +
+        'g><span>Revue humaine requise. Aucune de ces actions n’envoie ou ne supprime automati' +
+        'quement un avis Google. Une approbation n’exécute pas une action Google. Elle autoris' +
+        'e uniquement la progression vers l’étape contrôlée suivante.</span></div>'
+      )},
  submissions:async()=>{const d=await api('/v1/submissions');
   const items=d.items||[];
   const prepared=items.filter(x=>['PREPARED',
@@ -716,15 +888,37 @@ const views={
   const executed=items.filter(x=>x.external_call===true).length;
   return pageHead('submissions',
     'Human gate') +
-    '<div class="submission-overview"><div class="panel submission-hero"><div><div class="eyebrow">CONTROLLED SUBMISSION</div><h2>Préparation des soumissions</h2><p>Préparer une action documentée après approbation, sans exécuter automatiquement d\'action externe.</p></div><div class="submission-lock"><span>●</span><strong>Exécution désactivée</strong></div></div><div class="submission-kpis"><div class="card"><span class="label">Préparées</span><strong>' +
+    (
+        '<div class="submission-overview"><div class="panel submission-hero"><div><div class="' +
+        'eyebrow">CONTROLLED SUBMISSION</div><h2>Préparation des soumissions</h2><p>Préparer u' +
+        'ne action documentée après approbation, sans exécuter automatiquement d\'action exter' +
+        'ne.</p></div><div class="submission-lock"><span>●</span><strong>Exécution désactivée<' +
+        '/strong></div></div><div class="submission-kpis"><div class="card"><span class="label' +
+        '">Préparées</span><strong>'
+      ) +
     prepared +
-    '</strong><small>prêtes sous contrôle</small></div><div class="card"><span class="label">En attente</span><strong>' +
+    (
+        '</strong><small>prêtes sous contrôle</small></div><div class="card"><span class="labe' +
+        'l">En attente</span><strong>'
+      ) +
     pending +
     '</strong><small>chaîne incomplète</small></div><div class="card"><span class="label">Externe</span><strong>' +
     executed +
-    '</strong><small>appels exécutés</small></div></div></div><div class="panel submissions-panel"><div class="section-toolbar"><div><h3>Registre des soumissions</h3><p>Chaque préparation reste associée à son dossier et à son état de contrôle.</p></div><span class="pill">' +
+    (
+        '</strong><small>appels exécutés</small></div></div></div><div class="panel submission' +
+        's-panel"><div class="section-toolbar"><div><h3>Registre des soumissions</h3><p>Chaque' +
+        ' préparation reste associée à son dossier et à son état de contrôle.</p></div><span c' +
+        'lass="pill">'
+      ) +
     items.length +
-    ' éléments</span></div><div class="submission-toolbar"><input aria-label="Rechercher une soumission" placeholder="Rechercher ID, dossier ou statut…" oninput="filterSubmissionCards(this)"><select aria-label="Filtrer les soumissions" onchange="filterSubmissionCards(this)"><option value="">Tous les statuts</option><option value="PREPARED">Préparées</option><option value="PENDING">En attente</option><option value="APPROVED">Approuvées</option></select></div>' +
+    (
+        ' éléments</span></div><div class="submission-toolbar"><input aria-label="Rechercher u' +
+        'ne soumission" placeholder="Rechercher ID, dossier ou statut…" oninput="filterSubmiss' +
+        'ionCards(this)"><select aria-label="Filtrer les soumissions" onchange="filterSubmissi' +
+        'onCards(this)"><option value="">Tous les statuts</option><option value="PREPARED">Pré' +
+        'parées</option><option value="PENDING">En attente</option><option value="APPROVED">Ap' +
+        'prouvées</option></select></div>'
+      ) +
     (items.length?'<div class="submission-list">' +
     items.map(x=>'<article class="submission-card" data-status="' +
     esc(String(x.status||'').toUpperCase()) +
@@ -738,7 +932,10 @@ const views={
     esc(x.case_id||'—') +
     '</span></div><span class="submission-status">' +
     esc(x.status||'UNKNOWN') +
-    '</span></div><div class="submission-chain"><span class="done">Décision</span><span class="done">Gel</span><span class="' +
+    (
+        '</span></div><div class="submission-chain"><span class="done">Décision</span><span cl' +
+        'ass="done">Gel</span><span class="'
+      ) +
     (String(x.status||'').toUpperCase()==='PREPARED'?'done':'current') +
     '">Approbation</span><span class="' +
     (x.external_call?'done':'locked') +
@@ -747,8 +944,15 @@ const views={
     '</span><button class="link-btn" type="button" onclick="openSubmissionCase(\'' +
     esc(x.case_id||'') +
     '\')">Ouvrir le dossier →</button></div></article>').join('') +
-    '</div>':'<div class="empty">Aucune préparation de soumission.<small>Les préparations approuvées apparaîtront ici.</small></div>') +
-    '</div><div class="submission-guardrail"><strong>Dernier verrou</strong><span>La préparation ne déclenche ni publication, ni suppression, ni réponse automatique sur Google.</span></div>'},
+    '</div>':(
+        '<div class="empty">Aucune préparation de soumission.<small>Les préparations approuvée' +
+        's apparaîtront ici.</small></div>'
+      )) +
+    (
+        '</div><div class="submission-guardrail"><strong>Dernier verrou</strong><span>La prépa' +
+        'ration ne déclenche ni publication, ni suppression, ni réponse automatique sur Google' +
+        '.</span></div>'
+      )},
  alerts:async()=>{const d=await api('/v1/notifications');
   const items=d.items||[];
   const open=items.filter(x=>!['SENT',
@@ -763,7 +967,12 @@ const views={
   return pageHead('alerts',
     String(items.length) +
     ' alertes') +
-    '<div class="alert-overview"><div class="panel alert-hero"><div><div class="eyebrow">ALERT & AUDIT CONTROL</div><h2>Alertes opérationnelles</h2><p>Surveiller les notifications, les signaux critiques et leur état de traitement avec une traçabilité lisible.</p></div><div class="alert-health"><span class="health-dot ' +
+    (
+        '<div class="alert-overview"><div class="panel alert-hero"><div><div class="eyebrow">A' +
+        'LERT & AUDIT CONTROL</div><h2>Alertes opérationnelles</h2><p>Surveiller les notificat' +
+        'ions, les signaux critiques et leur état de traitement avec une traçabilité lisible.<' +
+        '/p></div><div class="alert-health"><span class="health-dot '
+      ) +
     (critical?'warning':'good') +
     '"></span><strong>' +
     (critical?critical +
@@ -776,9 +985,21 @@ const views={
     delivered +
     '</strong><small>envoyées / lues</small></div><div class="card"><span class="label">Canaux</span><strong>' +
     channels +
-    '</strong><small>canaux utilisés</small></div></div></div><div class="panel alerts-panel"><div class="section-toolbar"><div><h3>Centre d’alertes</h3><p>Prioriser les signaux sans déclencher d’action externe depuis cette vue.</p></div><span class="pill warning">' +
+    (
+        '</strong><small>canaux utilisés</small></div></div></div><div class="panel alerts-pan' +
+        'el"><div class="section-toolbar"><div><h3>Centre d’alertes</h3><p>Prioriser les signa' +
+        'ux sans déclencher d’action externe depuis cette vue.</p></div><span class="pill warn' +
+        'ing">'
+      ) +
     open +
-    ' actives</span></div><div class="alert-toolbar"><input aria-label="Rechercher une alerte" placeholder="Rechercher ID, niveau, canal ou statut…" oninput="filterAlertCards(this)"><select aria-label="Filtrer les alertes" onchange="filterAlertCards(this)"><option value="">Tous les niveaux</option><option value="CRITICAL">Critiques</option><option value="HIGH">Élevées</option><option value="WARNING">Avertissements</option><option value="INFO">Information</option></select></div>' +
+    (
+        ' actives</span></div><div class="alert-toolbar"><input aria-label="Rechercher une ale' +
+        'rte" placeholder="Rechercher ID, niveau, canal ou statut…" oninput="filterAlertCards(' +
+        'this)"><select aria-label="Filtrer les alertes" onchange="filterAlertCards(this)"><op' +
+        'tion value="">Tous les niveaux</option><option value="CRITICAL">Critiques</option><op' +
+        'tion value="HIGH">Élevées</option><option value="WARNING">Avertissements</option><opt' +
+        'ion value="INFO">Information</option></select></div>'
+      ) +
     (items.length?'<div class="alert-list">' +
     items.map(x=>'<article class="alert-card" data-level="' +
     esc(String(x.level||'').toUpperCase()) +
@@ -798,8 +1019,15 @@ const views={
     '</strong></div><div class="alert-card-footer"><span class="alert-audit-dot">Traçable</span><span>' +
     esc(x.created_at||'') +
     '</span></div></article>').join('') +
-    '</div>':'<div class="empty">Aucune alerte enregistrée.<small>Les notifications opérationnelles apparaîtront ici.</small></div>') +
-    '</div><div class="alert-guardrail"><strong>Observabilité uniquement</strong><span>Cette interface ne supprime, ne publie et ne répond à aucun avis Google automatiquement.</span></div>'},
+    '</div>':(
+        '<div class="empty">Aucune alerte enregistrée.<small>Les notifications opérationnelles' +
+        ' apparaîtront ici.</small></div>'
+      )) +
+    (
+        '</div><div class="alert-guardrail"><strong>Observabilité uniquement</strong><span>Cet' +
+        'te interface ne supprime, ne publie et ne répond à aucun avis Google automatiquement.' +
+        '</span></div>'
+      )},
  audit:async()=>{const events=[{time:'2026-09-21 11:08',
   type:'HUMAN_REVIEW',
   actor:'Analyst',
@@ -886,7 +1114,10 @@ const views={
    (list.length?list.map(offerCard).join(''):'<div class="empty">Aucune offre disponible.</div>') +
    '</div></section>'}).join('');
  const rows=b.items||[],
-    rowsHtml=rows.length?'<div class="table-wrap"><table class="table"><thead><tr><th>Offre</th><th>Montant</th><th>Statut</th><th>Date</th></tr></thead><tbody>' +
+    rowsHtml=rows.length?(
+        '<div class="table-wrap"><table class="table"><thead><tr><th>Offre</th><th>Montant</th' +
+        '><th>Statut</th><th>Date</th></tr></thead><tbody>'
+      ) +
     rows.map(x=>'<tr><td>' +
     esc(x.offer_id||'—') +
     '</td><td>' +
@@ -913,7 +1144,10 @@ const views={
     ((catalog.items||[]).some(x=>x.paypal_hosted_button_id||x.paypal_plan_id)?(en?'Payment available':'Paiement disponible'):(en?'Payment setup pending':'Paiement en attente de configuration')) +
     '</span></div><div class="billing-categories">' +
     sections +
-    '</div><section class="panel billing-payments"><div class="section-toolbar"><div><div class="eyebrow">PAIEMENTS</div><h3>' +
+    (
+        '</div><section class="panel billing-payments"><div class="section-toolbar"><div><div ' +
+        'class="eyebrow">PAIEMENTS</div><h3>'
+      ) +
      (en?'History':'Historique') +
     '</h3><p>' +
      (en?'Statuses are recorded server-side.':'Les statuts sont enregistrés côté serveur.') +
@@ -924,7 +1158,10 @@ const views={
     '</section><div class="billing-guardrail"><strong>' +
      (en?'Server-validated checkout':'Paiement contrôlé et validé côté serveur') +
     '</strong><span>' +
-     (en?'The browser only selects an offer published by the server. Subscription plans and Hosted Button prices are configured in PayPal.':'Le navigateur sélectionne uniquement une offre publiée par le serveur. Les plans d’abonnement et les tarifs des Hosted Buttons sont configurés dans PayPal.') +
+     (en?'The browser only selects an offer published by the server. Subscription plans and Hosted Button prices are configured in PayPal.':(
+        'Le navigateur sélectionne uniquement une offre publiée par le serveur. Les plans d’ab' +
+        'onnement et les tarifs des Hosted Buttons sont configurés dans PayPal.'
+      )) +
     '</span></div>';
 },
   settings:async()=>{
@@ -951,19 +1188,44 @@ const views={
   PORTABILITY:'Portabilité'};
  return pageHead('settings',
   members.length+' membres')+
-  '<div class="org-overview"><div class="panel org-hero"><div><div class="eyebrow">IDENTITY & ACCESS</div><h2>Organisation</h2><p>Gérer les membres, les rôles, la sécurité et les demandes relatives aux données. Les contrôles d’accès sont appliqués côté serveur.</p></div><span class="org-role-badge">' +
+  (
+        '<div class="org-overview"><div class="panel org-hero"><div><div class="eyebrow">IDENT' +
+        'ITY & ACCESS</div><h2>Organisation</h2><p>Gérer les membres, les rôles, la sécurité e' +
+        't les demandes relatives aux données. Les contrôles d’accès sont appliqués côté serve' +
+        'ur.</p></div><span class="org-role-badge">'
+      ) +
    esc(state.me?.role||'—') +
    '</span></div>'+
   '<div class="org-kpis"><div class="card"><span class="label">Membres</span><strong>' +
    members.length +
-   '</strong><small>dans l’organisation</small></div><div class="card"><span class="label">Administrateurs</span><strong>' +
+   (
+        '</strong><small>dans l’organisation</small></div><div class="card"><span class="label' +
+        '">Administrateurs</span><strong>'
+      ) +
    members.filter(x=>['OWNER',
     'ADMIN'].includes(x.role)).length +
-    '</strong><small>accès de gestion</small></div><div class="card"><span class="label">Demandes RGPD</span><strong>' +
+    (
+        '</strong><small>accès de gestion</small></div><div class="card"><span class="label">D' +
+        'emandes RGPD</span><strong>'
+      ) +
     requests.length +
     '</strong><small>vos demandes</small></div></div></div>'+
- '<div class="panel privacy-center"><div class="section-toolbar"><div><div class="eyebrow">RGPD</div><h3>Centre de confidentialité</h3><p>Exercer vos droits, récupérer vos données de compte et conserver la trace des demandes.</p></div><button class="primary" type="button" onclick="downloadPrivacyExport()">Exporter mes données</button></div>'+
- '<div class="privacy-actions"><button class="ghost" onclick="createPrivacyRequest(\'ACCESS\')">Demander l’accès</button><button class="ghost" onclick="createPrivacyRequest(\'RECTIFICATION\')">Demander une rectification</button><button class="ghost" onclick="createPrivacyRequest(\'ERASURE\')">Demander l’effacement</button><button class="ghost" onclick="createPrivacyRequest(\'RESTRICTION\')">Demander la limitation</button><button class="ghost" onclick="createPrivacyRequest(\'OBJECTION\')">Exercer une opposition</button><button class="ghost" onclick="createPrivacyRequest(\'PORTABILITY\')">Demander la portabilité</button></div>'+
+ (
+        '<div class="panel privacy-center"><div class="section-toolbar"><div><div class="eyebr' +
+        'ow">RGPD</div><h3>Centre de confidentialité</h3><p>Exercer vos droits, récupérer vos ' +
+        'données de compte et conserver la trace des demandes.</p></div><button class="primary' +
+        '" type="button" onclick="downloadPrivacyExport()">Exporter mes données</button></div>'
+      )+
+ (
+        '<div class="privacy-actions"><button class="ghost" onclick="createPrivacyRequest(\'AC' +
+        'CESS\')">Demander l’accès</button><button class="ghost" onclick="createPrivacyRequest' +
+        '(\'RECTIFICATION\')">Demander une rectification</button><button class="ghost" onclick' +
+        '="createPrivacyRequest(\'ERASURE\')">Demander l’effacement</button><button class="gho' +
+        'st" onclick="createPrivacyRequest(\'RESTRICTION\')">Demander la limitation</button><b' +
+        'utton class="ghost" onclick="createPrivacyRequest(\'OBJECTION\')">Exercer une opposit' +
+        'ion</button><button class="ghost" onclick="createPrivacyRequest(\'PORTABILITY\')">Dem' +
+        'ander la portabilité</button></div>'
+      )+
   '<div class="privacy-grid"><div><h4>Mes demandes</h4>' +
    (requests.length?'<div class="privacy-request-list">' +
    requests.map(x=>'<div class="privacy-request"><div><strong>' +
@@ -973,7 +1235,10 @@ const views={
    '</span></div><small>Échéance indicative : ' +
    esc(x.due_at||'—') +
    '</small></div>').join('') +
-   '</div>':'<div class="empty">Aucune demande enregistrée.<small>Les demandes sont journalisées côté serveur.</small></div>') +
+   '</div>':(
+        '<div class="empty">Aucune demande enregistrée.<small>Les demandes sont journalisées c' +
+        'ôté serveur.</small></div>'
+      )) +
    '</div><div><h4>Consentements optionnels</h4>' +
    (consents.length?'<div class="privacy-request-list">' +
    consents.map(x=>'<div class="privacy-request"><div><strong>' +
@@ -986,7 +1251,10 @@ const views={
    '</div></div></div>'+
  (canManage?'<div class="privacy-admin"><div class="section-toolbar"><div><h4>Traitement organisationnel</h4><p>Réservé aux OWNER / ADMIN. Les changements d’état sont audités.</p></div><button class="ghost" onclick="loadPrivacyAdmin()">Voir les demandes de l’organisation</button></div><div id="privacy-admin-results"></div></div>':'')+
  '</div>'+
-  '<div class="panel org-members"><div class="section-toolbar"><div><h3>Membres & rôles</h3><p>Chaque changement est contrôlé et journalisé côté serveur.</p></div>' +
+  (
+        '<div class="panel org-members"><div class="section-toolbar"><div><h3>Membres & rôles<' +
+        '/h3><p>Chaque changement est contrôlé et journalisé côté serveur.</p></div>'
+      ) +
    (canManage?'<button class="primary" type="button" onclick="inviteOrganizationMember()">Inviter un membre</button>':'') +
    '</div><div class="org-member-list">' +
    (members.length?members.map(x=>'<article class="org-member"><div class="org-member-main"><div class="org-avatar">' +
@@ -1013,7 +1281,11 @@ const views={
    '>OWNER</option></select>':'') +
    '</div></article>').join(''):'<div class="empty">Aucun membre.</div>') +
    '</div></div>'+
-  '<div class="org-bottom-grid"><div class="panel"><div class="section-toolbar"><div><h3>Calendrier SLA</h3><p>Référence utilisée pour les échéances opérationnelles.</p></div><span class="pill">' +
+  (
+        '<div class="org-bottom-grid"><div class="panel"><div class="section-toolbar"><div><h3' +
+        '>Calendrier SLA</h3><p>Référence utilisée pour les échéances opérationnelles.</p></di' +
+        'v><span class="pill">'
+      ) +
    esc(cal.calendar?.timezone||'UTC') +
    '</span></div><div class="org-calendar"><div><span>Jours actifs</span><strong>' +
    ((cal.calendar?.workdays?.length??'—') +
@@ -1025,11 +1297,21 @@ const views={
     ':00'):'—') +
     '</strong></div><div><span>Jours fériés</span><strong>' +
     ((cal.calendar?.holidays?.length)??0) +
-    '</strong></div></div></div><div class="panel"><div class="section-toolbar"><div><h3>Contrôles d’accès</h3><p>Session et authentification de votre compte.</p></div></div><div class="settings-actions"><button class="ghost" onclick="showPasswordChange()">Changer le mot de passe</button>' +
+    (
+        '</strong></div></div></div><div class="panel"><div class="section-toolbar"><div><h3>C' +
+        'ontrôles d’accès</h3><p>Session et authentification de votre compte.</p></div></div><' +
+        'div class="settings-actions"><button class="ghost" onclick="showPasswordChange()">Cha' +
+        'nger le mot de passe</button>'
+      ) +
     (["OWNER",
     "ADMIN"].includes(state.me?.role)?'<button class="ghost" onclick="showMfa()">Configurer MFA</button>':'') +
     '</div></div></div>'+
- '<div class="org-guardrail"><strong>Isolation organisationnelle</strong><span>Les membres affichés appartiennent uniquement à votre organisation. Les données et demandes RGPD restent isolées côté serveur. Les demandes RGPD ne déclenchent aucune suppression irréversible automatiquement.</span></div>'
+ (
+        '<div class="org-guardrail"><strong>Isolation organisationnelle</strong><span>Les memb' +
+        'res affichés appartiennent uniquement à votre organisation. Les données et demandes R' +
+        'GPD restent isolées côté serveur. Les demandes RGPD ne déclenchent aucune suppression' +
+        ' irréversible automatiquement.</span></div>'
+      )
 }};
 function table(title,
   heads,
@@ -1071,7 +1353,17 @@ async function createClientCase(){
   openCase(d.case.case_id)}catch(e){toast(e.message,
   'error')}}
 function showNewClientCase(){modal('Nouveau dossier',
-  '<form id="new-case" class="stack"><label>Lien de l’avis Google<input id="new-case-review-url" type="url" placeholder="Collez ici le lien public de l’avis" required></label><label>Texte de l’avis<textarea id="new-case-review-text" rows="5" required></textarea></label><label>Note<select id="new-case-rating" required><option value="">Choisir</option><option value="1">1/5</option><option value="2">2/5</option><option value="3">3/5</option><option value="4">4/5</option><option value="5">5/5</option></select></label><button class="primary" type="submit">Créer le dossier</button><p class="hint">Vous pourrez ensuite déposer tous vos justificatifs. La validation finale reste réservée à Review Defense.</p></form>');
+  (
+        '<form id="new-case" class="stack"><label>Lien de l’avis Google<input id="new-case-rev' +
+        'iew-url" type="url" placeholder="Collez ici le lien public de l’avis" required></labe' +
+        'l><label>Texte de l’avis<textarea id="new-case-review-text" rows="5" required></texta' +
+        'rea></label><label>Note<select id="new-case-rating" required><option value="">Choisir' +
+        '</option><option value="1">1/5</option><option value="2">2/5</option><option value="3' +
+        '">3/5</option><option value="4">4/5</option><option value="5">5/5</option></select></' +
+        'label><button class="primary" type="submit">Créer le dossier</button><p class="hint">' +
+        'Vous pourrez ensuite déposer tous vos justificatifs. La validation finale reste réser' +
+        'vée à Review Defense.</p></form>'
+      ));
   document.getElementById('new-case').onsubmit=e=>{e.preventDefault();
   createClientCase()}}
 async function uploadCaseEvidence(id,
@@ -1228,9 +1520,16 @@ async function caseWorkspace(id,
   sub +
   '</small></div>';const canAct=['OWNER',
   'ADMIN',
-  'ANALYST'].includes(state.me?.role);return '<div class="workspace-header"><div><button class="ghost" type="button" onclick="state.view=\'cases\';reviewDefenseRender()">← Dossiers</button><div class="eyebrow">CASE WORKSPACE</div><h1>Dossier ' +
+  'ANALYST'].includes(state.me?.role);return (
+        '<div class="workspace-header"><div><button class="ghost" type="button" onclick="state' +
+        '.view=\'cases\';reviewDefenseRender()">← Dossiers</button><div class="eyebrow">CASE W' +
+        'ORKSPACE</div><h1>Dossier '
+      ) +
   esc(id) +
-  '</h1><p>Analyse structurée, preuves, contradictions et décision dans un espace traçable.</p></div><div class="workspace-header-actions"><span class="pill">' +
+  (
+        '</h1><p>Analyse structurée, preuves, contradictions et décision dans un espace traçab' +
+        'le.</p></div><div class="workspace-header-actions"><span class="pill">'
+      ) +
   esc(status) +
   '</span><span class="pill warning">' +
   (d.requires_human_review?'Revue humaine requise':'Lecture contrôlée') +
@@ -1246,7 +1545,12 @@ async function caseWorkspace(id,
   ready.ready?'PRÊT':'REVUE',
     'état serveur') +
     '</div>' +
-    '<section class="panel workspace-section next-action-panel"><div class="section-toolbar"><div><div class="eyebrow">PROCHAINE ACTION</div><h2>Ce qu’il reste à faire</h2><p>Une seule priorité visible pour éviter de chercher dans le dossier.</p></div><span class="pill warning">' +
+    (
+        '<section class="panel workspace-section next-action-panel"><div class="section-toolba' +
+        'r"><div><div class="eyebrow">PROCHAINE ACTION</div><h2>Ce qu’il reste à faire</h2><p>' +
+        'Une seule priorité visible pour éviter de chercher dans le dossier.</p></div><span cl' +
+        'ass="pill warning">'
+      ) +
     esc(decisionStatus==='PENDING_APPROVAL'?'Validation humaine':ready.ready?'Prêt':'À compléter') +
     '</span></div><div class="workspace-item"><span class="item-index">' +
     esc(decisionStatus==='PENDING_APPROVAL'?'VALIDER':ready.ready?'PRÉPARER':'VÉRIFIER') +
@@ -1256,7 +1560,11 @@ async function caseWorkspace(id,
     esc(tasks.length?String(tasks.length) +
     ' tâche(s) de preuve encore ouverte(s).':ready.ready?'Aucune tâche de preuve ouverte.':'La readiness serveur indique qu’une revue reste nécessaire.') +
     '</small></div></div></section>' +
-    '<div class="workspace-main-grid"><div class="workspace-primary"><section class="panel workspace-review"><div class="section-toolbar"><div><div class="eyebrow">SOURCE REVIEW</div><h2>' +
+    (
+        '<div class="workspace-main-grid"><div class="workspace-primary"><section class="panel' +
+        ' workspace-review"><div class="section-toolbar"><div><div class="eyebrow">SOURCE REVI' +
+        'EW</div><h2>'
+      ) +
     esc(review.review_id||'Avis') +
     '</h2></div><span class="rating">' +
     esc(review.rating||'—') +
@@ -1267,7 +1575,11 @@ async function caseWorkspace(id,
     '</span><span>' +
     esc(review.source||'Source inconnue') +
     '</span></div></section>' +
-    '<section class="panel workspace-section"><div class="section-toolbar"><div><h2>Claims</h2><p>Affirmations extraites et structurées pour analyse.</p></div><span class="pill">' +
+    (
+        '<section class="panel workspace-section"><div class="section-toolbar"><div><h2>Claims' +
+        '</h2><p>Affirmations extraites et structurées pour analyse.</p></div><span class="pil' +
+        'l">'
+      ) +
     claims.length +
     '</span></div><div class="workspace-items">' +
     (claims.length?claims.map(c=>'<article class="workspace-item"><span class="item-index">' +
@@ -1276,7 +1588,13 @@ async function caseWorkspace(id,
     esc(c.text||'—') +
     '</strong><small>Claim à confronter aux preuves disponibles.</small></div></article>').join(''):'<div class="empty">Aucun claim.<small>Les affirmations structurées apparaîtront ici.</small></div>') +
     '</div></section>' +
-    '<section class="panel workspace-section"><div class="section-toolbar"><div><h2>Preuves et justificatifs</h2><p>Ajoutez vos documents, captures, factures et échanges. L’analyse démarre automatiquement.</p></div><label class="primary compact" style="display:inline-flex;align-items:center;cursor:pointer">+ Ajouter un justificatif<input type="file" hidden onchange="uploadCaseEvidence(state.caseId,this)"></label></div>' +
+    (
+        '<section class="panel workspace-section"><div class="section-toolbar"><div><h2>Preuve' +
+        's et justificatifs</h2><p>Ajoutez vos documents, captures, factures et échanges. L’an' +
+        'alyse démarre automatiquement.</p></div><label class="primary compact" style="display' +
+        ':inline-flex;align-items:center;cursor:pointer">+ Ajouter un justificatif<input type=' +
+        '"file" hidden onchange="uploadCaseEvidence(state.caseId,this)"></label></div>'
+      ) +
     (evidence.length?'<div class="evidence-stack">' +
     evidence.map(e=>'<article class="evidence-row"><div><strong>' +
     esc(e.filename||'Preuve') +
@@ -1290,7 +1608,10 @@ async function caseWorkspace(id,
     '</div>':'<div class="empty">Aucune preuve liée. Ajoutez votre premier justificatif.</div>') +
     '</section>' +
     '</div>' +
-    '<aside class="workspace-sidebar"><section class="panel readiness-card"><div class="eyebrow">READINESS</div><div class="readiness ' +
+    (
+        '<aside class="workspace-sidebar"><section class="panel readiness-card"><div class="ey' +
+        'ebrow">READINESS</div><div class="readiness '
+      ) +
     (ready.ready?'ok':'warn') +
     '">' +
     (ready.ready?'PRÊT':'REVUE REQUISE') +
@@ -1318,7 +1639,11 @@ async function caseWorkspace(id,
     '</span></li>').join(''):'<li>Aucune tâche ouverte.</li>') +
     '</ul></section>' +
     '</aside></div>' +
-    '<section class="panel workspace-section"><div class="section-toolbar"><div><h2>Matrice preuves ↔ claims</h2><p>Relations utilisées pour soutenir ou contredire les affirmations.</p></div><span class="pill">' +
+    (
+        '<section class="panel workspace-section"><div class="section-toolbar"><div><h2>Matric' +
+        'e preuves ↔ claims</h2><p>Relations utilisées pour soutenir ou contredire les affirma' +
+        'tions.</p></div><span class="pill">'
+      ) +
     rows.length +
     ' relations</span></div>' +
     (rows.length?'<div class="matrix-grid">' +
@@ -1333,7 +1658,11 @@ async function caseWorkspace(id,
     '</b></div>').join('') +
     '</div>':'<div class="empty">Aucune relation exploitable. Les liens restent soumis à revue humaine.</div>') +
     '</section>' +
-    '<div class="workspace-bottom-grid"><section class="panel"><div class="section-toolbar"><div><h2>Timeline</h2><p>Historique chronologique du dossier.</p></div></div><ol class="workspace-timeline">' +
+    (
+        '<div class="workspace-bottom-grid"><section class="panel"><div class="section-toolbar' +
+        '"><div><h2>Timeline</h2><p>Historique chronologique du dossier.</p></div></div><ol cl' +
+        'ass="workspace-timeline">'
+      ) +
     (timeline.length?timeline.map(x=>'<li><time>' +
     esc(x.occurred_at) +
     '</time><strong>' +
@@ -1342,7 +1671,10 @@ async function caseWorkspace(id,
     esc(x.actor) +
     '</span></li>').join(''):'<li>Aucun événement.</li>') +
     '</ol></section>' +
-    '<section class="panel decision-card"><div class="section-toolbar"><div><div class="eyebrow">DECISION GATE</div><h2>Décision</h2></div><span class="pill warning">' +
+    (
+        '<section class="panel decision-card"><div class="section-toolbar"><div><div class="ey' +
+        'ebrow">DECISION GATE</div><h2>Décision</h2></div><span class="pill warning">'
+      ) +
     esc(decisionStatus) +
     '</span></div><p>' +
     esc(decision.rationale||'Aucune rationale enregistrée.') +
@@ -1360,8 +1692,15 @@ async function caseWorkspace(id,
     esc(id) +
     '\')">Préparer la soumission</button>':'') +
     (canAct?'':'<span class="hint">Lecture client · les décisions sensibles sont réservées aux rôles habilités.</span>') +
-    '</div><p class="human-note">Les actions sensibles restent soumises à validation humaine. Aucune action Google externe automatique.</p></section></div>' +
-    '<div class="workspace-guardrail"><strong>Chaîne de contrôle conservée</strong><span>Décision → gel → approbation → préparation de soumission. Aucun contournement depuis le workspace.</span></div>'}
+    (
+        '</div><p class="human-note">Les actions sensibles restent soumises à validation humai' +
+        'ne. Aucune action Google externe automatique.</p></section></div>'
+      ) +
+    (
+        '<div class="workspace-guardrail"><strong>Chaîne de contrôle conservée</strong><span>D' +
+        'écision → gel → approbation → préparation de soumission. Aucun contournement depuis l' +
+        'e workspace.</span></div>'
+      )}
 async function createDecision(id){const rationale=prompt(rdT('Rationale de la décision humaine :'));
   if(!rationale?.trim())return;
   try{await api(`/v1/cases/${encodeURIComponent(id)}/decision`,
@@ -1444,7 +1783,10 @@ async function loadPrivacyAdmin(){
   RESTRICTION:'Limitation',
   OBJECTION:'Opposition',
   PORTABILITY:'Portabilité'};
-    root.innerHTML=d.items?.length?'<div class="table-wrap"><table class="table"><thead><tr><th>Type</th><th>Utilisateur</th><th>Statut</th><th>Échéance</th><th>Action</th></tr></thead><tbody>' +
+    root.innerHTML=d.items?.length?(
+        '<div class="table-wrap"><table class="table"><thead><tr><th>Type</th><th>Utilisateur<' +
+        '/th><th>Statut</th><th>Échéance</th><th>Action</th></tr></thead><tbody>'
+      ) +
     d.items.map(x=>'<tr><td>' +
     esc(labels[x.request_type]||x.request_type) +
     '</td><td>' +
@@ -1455,7 +1797,11 @@ async function loadPrivacyAdmin(){
     esc(x.due_at||'—') +
     '</td><td><select onchange="updatePrivacyRequest(\'' +
     esc(x.id) +
-    '\',this.value)"><option value="">Choisir…</option><option value="IN_REVIEW">En revue</option><option value="COMPLETED">Terminée</option><option value="REJECTED">Rejetée</option></select></td></tr>').join('') +
+    (
+        '\',this.value)"><option value="">Choisir…</option><option value="IN_REVIEW">En revue<' +
+        '/option><option value="COMPLETED">Terminée</option><option value="REJECTED">Rejetée</' +
+        'option></select></td></tr>'
+      )).join('') +
     '</tbody></table></div>':'<div class="empty">Aucune demande organisationnelle.</div>';
  }catch(e){toast(e.message||'Chargement impossible',
   'error')}
@@ -1506,7 +1852,13 @@ async function changeOrganizationRole(userId,
   'error');
   await window.reviewDefenseRender()}}
 async function inviteOrganizationMember(){modal('Inviter un membre',
-  '<form id="invite-member" class="stack"><label>Email<input name="email" type="email" required autocomplete="email"></label><label>Rôle<select name="role"><option value="CLIENT">CLIENT</option><option value="ANALYST">ANALYST</option><option value="ADMIN">ADMIN</option></select></label><button class="primary">Créer l’invitation</button></form>');
+  (
+        '<form id="invite-member" class="stack"><label>Email<input name="email" type="email" r' +
+        'equired autocomplete="email"></label><label>Rôle<select name="role"><option value="CL' +
+        'IENT">CLIENT</option><option value="ANALYST">ANALYST</option><option value="ADMIN">AD' +
+        'MIN</option></select></label><button class="primary">Créer l’invitation</button></for' +
+        'm>'
+      ));
   document.getElementById('invite-member').onsubmit=async e=>{e.preventDefault();
   const f=new FormData(e.currentTarget);
   try{const d=await api('/v1/organization/invitations',

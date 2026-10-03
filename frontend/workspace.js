@@ -37,14 +37,26 @@ function verifyEmail(){
  const params=new URLSearchParams(location.search);
  const organizationId=params.get("organization_id")||localStorage.getItem("rd_org_id")||"";
  const token=params.get("token")||"";
- app.innerHTML='<main class="login"><section class="loginbox"><div><b style="color:#0878ee">◆</b> Review Defense</div><h1>Vérifier votre adresse email</h1><p>Confirmez votre adresse pour activer votre espace Review Defense.</p><div class="err" id="verify-error" role="alert"></div><button class="btn primary" id="verify-submit" style="width:100%">Vérifier mon adresse</button><p><a href="/connexion">Retour à la connexion</a></p></section></main>';
+ app.innerHTML=(
+        '<main class="login"><section class="loginbox"><div><b style="color:#0878ee">◆</b> Rev' +
+        'iew Defense</div><h1>Vérifier votre adresse email</h1><p>Confirmez votre adresse pour' +
+        ' activer votre espace Review Defense.</p><div class="err" id="verify-error" role="ale' +
+        'rt"></div><button class="btn primary" id="verify-submit" style="width:100%">Vérifier ' +
+        'mon adresse</button><p><a href="/connexion">Retour à la connexion</a></p></section></' +
+        'main>'
+      );
  const submit=document.getElementById("verify-submit");
  submit.disabled=!organizationId||!token;
  if(!organizationId||!token){document.getElementById("verify-error").textContent="Lien incomplet. Ouvrez le lien de vérification reçu par email.";return}
   submit.onclick=async()=>{submit.disabled=true;const err=document.getElementById("verify-error");err.textContent="";try{await post("/v1/auth/email-verification/verify",
    {organization_id:organizationId,
    verification_token:token});localStorage.setItem("rd_org_id",
-   organizationId);app.querySelector(".loginbox").innerHTML='<div><b style="color:#0878ee">◆</b> Review Defense</div><h1>Adresse vérifiée</h1><p>Votre adresse email est confirmée. Vous pouvez maintenant vous connecter.</p><a class="btn primary" style="display:block;text-align:center" href="/connexion">Continuer vers la connexion</a>'}catch(e){err.textContent=e.message;submit.disabled=false}};
+   organizationId);app.querySelector(".loginbox").innerHTML=(
+        '<div><b style="color:#0878ee">◆</b> Review Defense</div><h1>Adresse vérifiée</h1><p>V' +
+        'otre adresse email est confirmée. Vous pouvez maintenant vous connecter.</p><a class=' +
+        '"btn primary" style="display:block;text-align:center" href="/connexion">Continuer ver' +
+        's la connexion</a>'
+      )}catch(e){err.textContent=e.message;submit.disabled=false}};
 }
 
 function recovery(){
@@ -57,12 +69,18 @@ function recovery(){
    '</h1><p>' +
    (resetting?'Définissez un nouveau mot de passe.':'Indiquez votre organisation et votre adresse email. Si le compte existe, un lien sera envoyé.') +
    '</p><form id="recovery-form">' +
-   (resetting?'':'<div class="field"><label>Identifiant de votre organisation</label><input name="organization_id" required value="' +
+   (resetting?'':(
+        '<div class="field"><label>Identifiant de votre organisation</label><input name="organ' +
+        'ization_id" required value="'
+      ) +
    esc(organizationId) +
    '"></div>') +
    '<div class="field"><label>Email</label><input name="email" type="email" required autocomplete="email"></div>' +
    (resetting?'<div class="field"><label>Nouveau mot de passe</label><input name="new_password" type="password" required minlength="12" autocomplete="new-password"></div>':'') +
-   '<div class="err" id="recovery-error" role="alert"></div><button class="btn primary" type="submit" style="width:100%">' +
+   (
+        '<div class="err" id="recovery-error" role="alert"></div><button class="btn primary" t' +
+        'ype="submit" style="width:100%">'
+      ) +
    (resetting?'Enregistrer le mot de passe':'Envoyer le lien de récupération') +
    '</button></form><p><a href="/connexion">Retour à la connexion</a></p></section></main>';
  const form=document.getElementById("recovery-form");
@@ -71,7 +89,11 @@ function recovery(){
   try{const data=Object.fromEntries(new FormData(form));if(resetting){await post("/v1/auth/recovery/reset",
    {organization_id:organizationId,
    recovery_token:token,
-   new_password:data.new_password});app.querySelector(".loginbox").innerHTML='<div><b style="color:#0878ee">◆</b> Review Defense</div><h1>Mot de passe modifié</h1><p>Votre mot de passe a été mis à jour.</p><a class="btn primary" href="/connexion">Se connecter</a>'}else{localStorage.setItem("rd_org_id",
+   new_password:data.new_password});app.querySelector(".loginbox").innerHTML=(
+        '<div><b style="color:#0878ee">◆</b> Review Defense</div><h1>Mot de passe modifié</h1>' +
+        '<p>Votre mot de passe a été mis à jour.</p><a class="btn primary" href="/connexion">S' +
+        'e connecter</a>'
+      )}else{localStorage.setItem("rd_org_id",
    data.organization_id);await post("/v1/auth/recovery/request",
    data);err.textContent="Si un compte correspond à ces informations, un email de récupération sera envoyé."}}
  catch(error){err.textContent=error.message}finally{if(button.isConnected)button.disabled=false}};
@@ -81,19 +103,40 @@ function acceptInvitation(){
    organizationId=params.get("organization_id")||"",
    token=params.get("token")||params.get("invitation_token")||"",
    invitedEmail=params.get("email")||"";
-  app.innerHTML='<main class="login"><section class="loginbox"><div><b style="color:#0878ee">◆</b> Review Defense</div><h1>Accepter une invitation</h1><p>Confirmez votre adresse et choisissez un mot de passe.</p><form id="invitation-form"><div class="field"><label>Identifiant de l’organisation</label><input name="organization_id" required value="' +
+  app.innerHTML=(
+        '<main class="login"><section class="loginbox"><div><b style="color:#0878ee">◆</b> Rev' +
+        'iew Defense</div><h1>Accepter une invitation</h1><p>Confirmez votre adresse et choisi' +
+        'ssez un mot de passe.</p><form id="invitation-form"><div class="field"><label>Identif' +
+        'iant de l’organisation</label><input name="organization_id" required value="'
+      ) +
    esc(organizationId) +
-   '"></div><div class="field"><label>Adresse email invitée</label><input name="email" type="email" required value="' +
+   (
+        '"></div><div class="field"><label>Adresse email invitée</label><input name="email" ty' +
+        'pe="email" required value="'
+      ) +
    esc(invitedEmail) +
-   '" autocomplete="email"></div><div class="field"><label>Jeton d’invitation</label><input name="invitation_token" required value="' +
+   (
+        '" autocomplete="email"></div><div class="field"><label>Jeton d’invitation</label><inp' +
+        'ut name="invitation_token" required value="'
+      ) +
    esc(token) +
-   '" autocomplete="off"></div><div class="field"><label>Mot de passe</label><input name="password" type="password" required minlength="12" autocomplete="new-password"></div><div class="err" id="invitation-error" role="alert"></div><button class="btn primary" type="submit" style="width:100%">Accepter l’invitation</button></form><p><a href="/connexion">Retour à la connexion</a></p></section></main>';
+   (
+        '" autocomplete="off"></div><div class="field"><label>Mot de passe</label><input name=' +
+        '"password" type="password" required minlength="12" autocomplete="new-password"></div>' +
+        '<div class="err" id="invitation-error" role="alert"></div><button class="btn primary"' +
+        ' type="submit" style="width:100%">Accepter l’invitation</button></form><p><a href="/c' +
+        'onnexion">Retour à la connexion</a></p></section></main>'
+      );
  const form=document.getElementById("invitation-form");
   form.onsubmit=async ev=>{ev.preventDefault();const button=form.querySelector('button[type="submit"]'),
    err=document.getElementById("invitation-error");button.disabled=true;err.textContent="";
   try{const result=await post("/v1/organization/invitations/accept",
    Object.fromEntries(new FormData(form)));if(result.status==="verification_required"){localStorage.setItem("rd_org_id",
-   organizationId);app.querySelector(".loginbox").innerHTML='<div><b style="color:#0878ee">◆</b> Review Defense</div><h1>Vérifiez votre adresse email</h1><p>Une confirmation vous a été envoyée avant l’activation de votre accès.</p><a href="/connexion">Retour à la connexion</a>';return}
+   organizationId);app.querySelector(".loginbox").innerHTML=(
+        '<div><b style="color:#0878ee">◆</b> Review Defense</div><h1>Vérifiez votre adresse em' +
+        'ail</h1><p>Une confirmation vous a été envoyée avant l’activation de votre accès.</p>' +
+        '<a href="/connexion">Retour à la connexion</a>'
+      );return}
   if(!result.access_token)throw Error("L’invitation a été acceptée, mais aucune session n’a été délivrée.");localStorage.setItem("rd_org_id",
    organizationId);S.token=result.access_token;S.role=result.role;localStorage.setItem("rd_token",
    S.token);localStorage.setItem("rd_role",
@@ -115,14 +158,24 @@ function login(){
     '" id="auth-login">Connexion</button><button type="button" class="btn ' +
     (registering?'primary':'') +
     '" id="auth-register">Créer un compte</button></div><form id="auth-form">' +
-    (registering?'<div class="field"><label>Nom de votre entreprise</label><input name="organization_name" required maxlength="200" autocomplete="organization"></div>':'<div class="field"><label>Identifiant de votre organisation</label><input name="organization_id" required value="' +
+    (registering?'<div class="field"><label>Nom de votre entreprise</label><input name="organization_name" required maxlength="200" autocomplete="organization"></div>':(
+        '<div class="field"><label>Identifiant de votre organisation</label><input name="organ' +
+        'ization_id" required value="'
+      ) +
     esc(localStorage.getItem("rd_org_id")||"") +
     '"></div>') +
-    '<div class="field"><label>Email</label><input name="email" type="email" required autocomplete="email"></div><div class="field"><label>Mot de passe</label><input name="password" type="password" required autocomplete="' +
+    (
+        '<div class="field"><label>Email</label><input name="email" type="email" required auto' +
+        'complete="email"></div><div class="field"><label>Mot de passe</label><input name="pas' +
+        'sword" type="password" required autocomplete="'
+      ) +
     (registering?'new-password':'current-password') +
     '"></div>' +
     (registering?'':'<div class="field"><label>Code MFA si demandé</label><input name="mfa_code" inputmode="numeric"></div>') +
-    '<div class="err" id="auth-error" role="alert"></div><button class="btn primary" style="width:100%;text-align:center" type="submit">' +
+    (
+        '<div class="err" id="auth-error" role="alert"></div><button class="btn primary" style' +
+        '="width:100%;text-align:center" type="submit">'
+      ) +
     (registering?'Créer mon compte':'Se connecter') +
     '</button></form></section></main>';
     if(!registering)app.querySelector(".loginbox").insertAdjacentHTML("beforeend",
@@ -187,7 +240,13 @@ app.innerHTML='<div class="shell"><aside class="side"><a class="brand" href="/">
   '</button>').join("") +
   '</nav><div class="role">Accès<br><strong>' +
   esc(S.role) +
-  '</strong></div></aside><main class="main"><header class="top"><div class="top-left"><button class="btn menu" id="menu">☰</button><div><h1 id="page-title">Vue d’ensemble</h1><p>Votre activité au même endroit.</p></div></div><div class="actions"><button class="btn" id="refresh">Actualiser</button><button class="btn" id="logout">Déconnexion</button></div></header><section class="content">' +
+  (
+        '</strong></div></aside><main class="main"><header class="top"><div class="top-left"><' +
+        'button class="btn menu" id="menu">☰</button><div><h1 id="page-title">Vue d’ensemble</' +
+        'h1><p>Votre activité au même endroit.</p></div></div><div class="actions"><button cla' +
+        'ss="btn" id="refresh">Actualiser</button><button class="btn" id="logout">Déconnexion<' +
+        '/button></div></header><section class="content">'
+      ) +
   items.map(x=>'<div class="view" id="view-' +
   x[0] +
   '"></div>').join("") +
@@ -356,13 +415,22 @@ async function clientMonitoring(el){
    '</td><td><button type="button" class="btn" data-document-download="' +
    esc(d.document_id) +
    '">Télécharger</button></td></tr>').join("");
-  el.innerHTML='<div class="client-hub-grid"><section class="card panel"><div class="panel-head"><div><h2>Profil de l’entreprise</h2><p>Informations de votre organisation, partagées dans cet espace.</p></div></div><form id="client-profile-form"><div class="detail-grid">' +
+  el.innerHTML=(
+        '<div class="client-hub-grid"><section class="card panel"><div class="panel-head"><div' +
+        '><h2>Profil de l’entreprise</h2><p>Informations de votre organisation, partagées dans' +
+        ' cet espace.</p></div></div><form id="client-profile-form"><div class="detail-grid">'
+      ) +
    inputs +
    '</div>' +
    description +
    '<button class="btn primary" type="submit" ' +
    (!editable?'disabled':'') +
-   '>Enregistrer le profil</button></form></section><section class="card panel"><div class="panel-head"><div><h2>Google Business Profile</h2><p>Connexion et synchronisation en lecture seule. Aucune réponse ni modification ne sera envoyée à Google.</p></div><span class="pill">' +
+   (
+        '>Enregistrer le profil</button></form></section><section class="card panel"><div clas' +
+        's="panel-head"><div><h2>Google Business Profile</h2><p>Connexion et synchronisation e' +
+        'n lecture seule. Aucune réponse ni modification ne sera envoyée à Google.</p></div><s' +
+        'pan class="pill">'
+      ) +
    connections.length +
    ' connexion(s)</span></div>' +
    notice +
@@ -371,11 +439,19 @@ async function clientMonitoring(el){
    '>Connecter un compte Google</button>' +
    googleErrors +
    (googleRows||'<p class="muted">Aucun établissement disponible. Connectez votre compte Google pour afficher ses fiches.</p>') +
-   '</section><section class="card panel"><div class="panel-head"><div><h2>Documents de l’organisation</h2><p>PDF, images et fichiers texte, 25 Mo maximum par document.</p></div><span class="pill">' +
+   (
+        '</section><section class="card panel"><div class="panel-head"><div><h2>Documents de l' +
+        '’organisation</h2><p>PDF, images et fichiers texte, 25 Mo maximum par document.</p></' +
+        'div><span class="pill">'
+      ) +
    documents.length +
    ' document(s)</span></div>' +
    (editable?'<div class="field"><label>Ajouter des documents</label><input id="client-document-input" type="file" multiple accept="application/pdf,image/jpeg,image/png,image/webp,text/plain,text/csv"></div>':'') +
-   '<div id="client-document-status" class="muted" aria-live="polite"></div><div class="table"><table><thead><tr><th>Nom</th><th>Catégorie</th><th>Taille</th><th>Ajouté le</th><th></th></tr></thead><tbody>' +
+   (
+        '<div id="client-document-status" class="muted" aria-live="polite"></div><div class="t' +
+        'able"><table><thead><tr><th>Nom</th><th>Catégorie</th><th>Taille</th><th>Ajouté le</t' +
+        'h><th></th></tr></thead><tbody>'
+      ) +
    (documentRows||'<tr><td colspan="5" class="empty">Aucun document déposé.</td></tr>') +
    '</tbody></table></div></section></div>';
  const form=el.querySelector("#client-profile-form");
@@ -404,7 +480,11 @@ async function clientMonitoring(el){
    encodeURIComponent(button.dataset.documentDownload) +
    "/download",
    {headers});if(!response.ok){const data=await response.json().catch(()=>({}));throw Error(data?.error?.message||"Téléchargement impossible")}const blob=await response.blob();const disposition=response.headers.get("Content-Disposition")||"";const filename=disposition.match(/filename="([^"] +
-   )"/)?.[1]||"document";const url=URL.createObjectURL(blob);const link=document.createElement("a");link.href=url;link.download=filename;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000)}catch(err){el.querySelector("#client-document-status").textContent=err.message}});
+   )"/)?.[1]||"document";const url=URL.createObjectURL(blob);const link=document.createElement("a(
+        ");link.href=url;link.download=filename;document.body.appendChild(link);link.click();l" +
+        "ink.remove();setTimeout(()=>URL.revokeObjectURL(url),30000)}catch(err){el.querySelect" +
+        "or("
+      )#client-document-status").textContent=err.message}});
 }
 function formatClientBytes(value){const n=Number(value||0);if(n<1024)return n +
   " o";if(n<1048576)return (n/1024).toFixed(1) +
@@ -546,7 +626,12 @@ async function dashboard(el){
    '</span></div>').join("") +
    '</div>'+
   panel("Votre parcours Review Defense",
-   '<p>Retrouvez les principales étapes du traitement. Les actions restent soumises aux autorisations de votre compte et aux validations prévues.</p><div class="steps"><span><b>01</b> Analyse</span><span><b>02</b> Dossier</span><span><b>03</b> Preuves</span><span><b>04</b> Validation humaine</span><span><b>05</b> Suivi</span></div>')+
+   (
+        '<p>Retrouvez les principales étapes du traitement. Les actions restent soumises aux a' +
+        'utorisations de votre compte et aux validations prévues.</p><div class="steps"><span>' +
+        '<b>01</b> Analyse</span><span><b>02</b> Dossier</span><span><b>03</b> Preuves</span><' +
+        'span><b>04</b> Validation humaine</span><span><b>05</b> Suivi</span></div>'
+      ))+
   panel("Accès rapides",
    '<div class="service-strip">' +
    shortcuts.map(x=>'<button type="button" class="dashboard-shortcut" data-dashboard-view="' +
@@ -620,7 +705,10 @@ if(kind==="notifications"){data=(S.cache.notifications||[]).find(x=>(x.notificat
 if(kind==="team"){data=(S.cache.team||[]).find(x=>(x.member_id||x.user_id)===id)||{};title="Membre"}
 if(kind==="escalations"){const parts=id.split("::");data=(S.cache.escalations||[]).find(x=>x.case_id===parts[0]&&(!parts[1]||x.level===parts[1]))||{};title="Escalade SLA"}
 renderDetail(root,kind,id,title,data)
-}catch(e){root.innerHTML='<div class="overlay"><section class="card drawer"><button class="btn close" data-action="close">×</button><div class="notice">' +
+}catch(e){root.innerHTML=(
+        '<div class="overlay"><section class="card drawer"><button class="btn close" data-acti' +
+        'on="close">×</button><div class="notice">'
+      ) +
   esc(e.message) +
   '</div></section></div>'}}
 function jsonBlock(x){return '<pre class="data-fallback">'+esc(JSON.stringify(x,null,2))+'</pre>'}
@@ -676,7 +764,10 @@ function keyValueList(x){const rows=objectRows(x);if(!rows.length)return '<div c
   '</div>'}
 function factsMarkup(rows,
   evidenceRows,
-  caseId){if(!rows.length)return '<p class="muted">Aucun fait extrait pour le moment.</p>';return '<div class="table"><table><thead><tr><th>Fait</th><th>Valeur proposée</th><th>Source</th><th>État</th><th></th></tr></thead><tbody>' +
+  caseId){if(!rows.length)return '<p class="muted">Aucun fait extrait pour le moment.</p>';return (
+        '<div class="table"><table><thead><tr><th>Fait</th><th>Valeur proposée</th><th>Source<' +
+        '/th><th>État</th><th></th></tr></thead><tbody>'
+      ) +
   rows.map(x=>{const evidence=(evidenceRows||[]).find(e=>e.evidence_id===x.evidence_id);return '<tr><td>' +
   esc(x.key) +
   '</td><td>' +
@@ -770,7 +861,10 @@ else if(kind==="cases"){const c=d.detail?.case||{},w=d.workspace?.workspace||{};
    field("Publié le",
    fmt(d.detail?.review?.published_at||w.review?.published_at)) +
    '</div></section>'+
-  '<section class="detail-section"><h3>Analyse de l’avis</h3><div class="detail-subsection"><b>Affirmations identifiées</b>' +
+  (
+        '<section class="detail-section"><h3>Analyse de l’avis</h3><div class="detail-subsecti' +
+        'on"><b>Affirmations identifiées</b>'
+      ) +
    recordList(claims,
    "Aucune affirmation structurée disponible.") +
    '</div><div class="detail-subsection"><b>Signaux de politique</b>' +
@@ -907,7 +1001,10 @@ else if(kind==="evidence"){const e=d.evidence||{};body='<div class="detail-grid"
 else body=jsonBlock(d);
 root.innerHTML='<div class="overlay"><section class="card drawer"><button class="btn close" data-action="close">×</button><h2>' +
   esc(title) +
-  '</h2><p class="muted">Données et opérations issues du backend Review Defense.</p><div class="actions" style="flex-wrap:wrap;margin:14px 0">' +
+  (
+        '</h2><p class="muted">Données et opérations issues du backend Review Defense.</p><div' +
+        ' class="actions" style="flex-wrap:wrap;margin:14px 0">'
+      ) +
   actions +
   '</div>' +
   body +
@@ -921,9 +1018,20 @@ function modal(title,
 async function onAction(e){const b=e.target.closest("[data-action]");if(!b)return;const action=b.dataset.action;if(action==="close"){document.getElementById("modal-root").innerHTML="";return}
 const [op,id]=action.split(":");try{
 if(op==="invite-member"){modal("Inviter un membre",
-  '<form id="invite-form"><div class="field"><label>Adresse email</label><input name="email" type="email" required></div><div class="field"><label>Rôle</label><select name="role"><option value="CLIENT">Client</option><option value="ANALYST">Analyste</option><option value="VIEWER">Lecture seule</option><option value="ADMIN">Administrateur</option></select></div><button class="btn primary">Créer l’invitation</button><p class="notice">Le backend crée un jeton à usage unique. Cette action n’envoie pas d’email.</p></form>');document.getElementById("invite-form").onsubmit=async ev=>{ev.preventDefault();const result=await post("/v1/organization/invitations",
+  (
+        '<form id="invite-form"><div class="field"><label>Adresse email</label><input name="em' +
+        'ail" type="email" required></div><div class="field"><label>Rôle</label><select name="' +
+        'role"><option value="CLIENT">Client</option><option value="ANALYST">Analyste</option>' +
+        '<option value="VIEWER">Lecture seule</option><option value="ADMIN">Administrateur</op' +
+        'tion></select></div><button class="btn primary">Créer l’invitation</button><p class="' +
+        'notice">Le backend crée un jeton à usage unique. Cette action n’envoie pas d’email.</' +
+        'p></form>'
+      ));document.getElementById("invite-form").onsubmit=async ev=>{ev.preventDefault();const result=await post("/v1/organization/invitations",
   Object.fromEntries(new FormData(ev.currentTarget)));S.lastInvitationToken=result.invitation_token;modal("Invitation créée",
-  '<p>Copiez et transmettez ce jeton à la personne invitée. Il ne sera affiché qu’une fois.</p><pre style="white-space:pre-wrap;overflow-wrap:anywhere">' +
+  (
+        '<p>Copiez et transmettez ce jeton à la personne invitée. Il ne sera affiché qu’une fo' +
+        'is.</p><pre style="white-space:pre-wrap;overflow-wrap:anywhere">'
+      ) +
   esc(result.invitation_token) +
   '</pre><p class="muted">Expiration : ' +
   esc(fmt(result.expires_at)) +
@@ -932,15 +1040,30 @@ if(op==="copy-token"){await navigator.clipboard.writeText(S.lastInvitationToken|
 if(op==="edit-role"){const member=(S.cache.team||[]).find(x=>x.user_id===id);if(!member)return;modal("Modifier le rôle",
   '<form id="role-form"><div class="field"><label>Membre</label><input value="' +
   esc(member.email) +
-  '" disabled></div><div class="field"><label>Nouveau rôle</label><select name="role"><option value="CLIENT">Client</option><option value="ANALYST">Analyste</option><option value="VIEWER">Lecture seule</option><option value="ADMIN">Administrateur</option><option value="OWNER">Propriétaire</option></select></div><button class="btn primary">Enregistrer</button></form>');if(S.role!=="OWNER")document.querySelector("#role-form [value=OWNER]")?.remove();document.querySelector("#role-form [name=role]").value=member.role;document.getElementById("role-form").onsubmit=async ev=>{ev.preventDefault();await post("/v1/organization/members/" +
+  (
+        '" disabled></div><div class="field"><label>Nouveau rôle</label><select name="role"><o' +
+        'ption value="CLIENT">Client</option><option value="ANALYST">Analyste</option><option ' +
+        'value="VIEWER">Lecture seule</option><option value="ADMIN">Administrateur</option><op' +
+        'tion value="OWNER">Propriétaire</option></select></div><button class="btn primary">En' +
+        'registrer</button></form>'
+      ));if(S.role!=="OWNER")document.querySelector("#role-form [value=OWNER]")?.remove();document.querySelector("#role-form [name=role]").value=member.role;document.getElementById("role-form").onsubmit=async ev=>{ev.preventDefault();await post("/v1/organization/members/" +
   encodeURIComponent(id) +
   "/role",
   Object.fromEntries(new FormData(ev.currentTarget)));S.cache.team=arr(await api("/v1/organization/members"));await load("team");document.getElementById("modal-root").innerHTML="";};return}
 if(op==="notify-escalation"){const [caseId,
   level]=id.split("~");modal("Créer une notification d’escalade",
-  '<form id="notify-form"><div class="field"><label>Canal</label><select name="channel"><option value="IN_APP">Dans l’application</option><option value="EMAIL">Email</option><option value="WEBHOOK">Webhook</option></select></div><div class="field"><label>Destinataire</label><input id="notify-target" name="target" required value="' +
+  (
+        '<form id="notify-form"><div class="field"><label>Canal</label><select name="channel">' +
+        '<option value="IN_APP">Dans l’application</option><option value="EMAIL">Email</option' +
+        '><option value="WEBHOOK">Webhook</option></select></div><div class="field"><label>Des' +
+        'tinataire</label><input id="notify-target" name="target" required value="'
+      ) +
   esc(S.userId) +
-  '" placeholder="Identifiant du membre"></div><small id="notify-target-help" class="muted">Pour IN_APP, indiquez l’identifiant du membre destinataire.</small><div class="field"><label>Objet</label><input name="subject" required value="' +
+  (
+        '" placeholder="Identifiant du membre"></div><small id="notify-target-help" class="mut' +
+        'ed">Pour IN_APP, indiquez l’identifiant du membre destinataire.</small><div class="fi' +
+        'eld"><label>Objet</label><input name="subject" required value="'
+      ) +
   esc("Escalade SLA " +
   level +
   " — " +
@@ -951,7 +1074,11 @@ if(op==="notify-escalation"){const [caseId,
   " concerne le dossier " +
   caseId +
   ".") +
-  '</textarea></div><button class="btn primary">Mettre en file d’envoi</button><p class="notice">La notification est créée selon la politique de l’organisation. Aucun envoi externe n’est déclenché par cette étape.</p></form>');document.getElementById("notify-form").elements.channel.onchange=ev=>{const target=document.getElementById("notify-target"),
+  (
+        '</textarea></div><button class="btn primary">Mettre en file d’envoi</button><p class=' +
+        '"notice">La notification est créée selon la politique de l’organisation. Aucun envoi ' +
+        'externe n’est déclenché par cette étape.</p></form>'
+      ));document.getElementById("notify-form").elements.channel.onchange=ev=>{const target=document.getElementById("notify-target"),
   help=document.getElementById("notify-target-help"),
   channel=ev.target.value;if(channel==="EMAIL"){if(!target.value||target.value===S.userId)target.value=S.userEmail||"";target.placeholder="destinataire@entreprise.fr";help.textContent="Adresse email destinataire. L’envoi nécessite une configuration SMTP et une politique autorisant l’email."}else if(channel==="WEBHOOK"){if(target.value===S.userId||target.value===S.userEmail)target.value="";target.placeholder="https://exemple.fr/webhook";help.textContent="URL HTTPS publique. Les adresses privées et locales sont refusées par le serveur."}else{if(!target.value||target.value===S.userEmail)target.value=S.userId||"";target.placeholder="Identifiant du membre";help.textContent="Identifiant du membre destinataire dans l’organisation."}};document.getElementById("notify-form").onsubmit=async ev=>{ev.preventDefault();const payload=Object.fromEntries(new FormData(ev.currentTarget));payload.level=level;const result=await post("/v1/escalations/" +
   encodeURIComponent(decodeURIComponent(caseId)) +
@@ -994,7 +1121,13 @@ if(op==="verify-fact"){const parts=action.split(":");const evidenceId=parts[1],
   caseId)}
 if(op==="disposition"){const parts=action.split(":");const caseId=parts[1],
   contradictionId=parts[2];modal("Qualifier la contradiction",
-  '<form id="disposition-form"><div class="field"><label>Qualification</label><select name="status" required><option value="CONFIRMED">Confirmée</option><option value="DISMISSED">Écartée</option><option value="NEEDS_REVIEW">À approfondir</option></select></div><div class="field"><label>Justification</label><textarea name="rationale" required rows="4"></textarea></div><button class="btn primary">Enregistrer</button></form>');document.getElementById("disposition-form").onsubmit=async ev=>{ev.preventDefault();await post("/v1/cases/" +
+  (
+        '<form id="disposition-form"><div class="field"><label>Qualification</label><select na' +
+        'me="status" required><option value="CONFIRMED">Confirmée</option><option value="DISMI' +
+        'SSED">Écartée</option><option value="NEEDS_REVIEW">À approfondir</option></select></d' +
+        'iv><div class="field"><label>Justification</label><textarea name="rationale" required' +
+        ' rows="4"></textarea></div><button class="btn primary">Enregistrer</button></form>'
+      ));document.getElementById("disposition-form").onsubmit=async ev=>{ev.preventDefault();await post("/v1/cases/" +
   caseId +
   "/contradictions/" +
   contradictionId +
@@ -1006,7 +1139,12 @@ if(op==="claim-case"){const row=(S.cache.queue||[]).find(x=>x.case_id===id);cons
   (assignedTo?"/unclaim":"/claim"));return openDetail("cases",
   id)}
 if(op==="upload-evidence"){modal("Ajouter une preuve",
-  '<form id="evidence-form"><div class="field"><label>Fichier</label><input type="file" name="file" required></div><button class="btn primary">Envoyer la preuve</button><p class="notice">Le fichier est transmis au serveur via le endpoint sécurisé de dépôt.</p></form>');document.getElementById("evidence-form").onsubmit=async ev=>{ev.preventDefault();const file=ev.currentTarget.elements.file.files[0];const b64=await new Promise((resolve,
+  (
+        '<form id="evidence-form"><div class="field"><label>Fichier</label><input type="file" ' +
+        'name="file" required></div><button class="btn primary">Envoyer la preuve</button><p c' +
+        'lass="notice">Le fichier est transmis au serveur via le endpoint sécurisé de dépôt.</' +
+        'p></form>'
+      ));document.getElementById("evidence-form").onsubmit=async ev=>{ev.preventDefault();const file=ev.currentTarget.elements.file.files[0];const b64=await new Promise((resolve,
   reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(",")[1]);reader.onerror=reject;reader.readAsDataURL(file)});await post("/v1/evidence",
   {case_id:id,
   filename:file.name,
@@ -1014,7 +1152,13 @@ if(op==="upload-evidence"){modal("Ajouter une preuve",
   content_base64:b64});await openDetail("cases",
   id)};return}
 if(op==="decision"){modal("Créer une décision",
-  '<form id="decision-form"><div class="field"><label>Type</label><select name="kind"><option value="HUMAN_REVIEW">Examen humain</option><option value="NO_ACTION">Aucune action</option></select></div><div class="field"><label>Motif obligatoire</label><textarea name="rationale" required rows="5"></textarea></div><button class="btn primary">Enregistrer la décision</button></form>');document.getElementById("decision-form").onsubmit=async ev=>{ev.preventDefault();await post("/v1/cases/" +
+  (
+        '<form id="decision-form"><div class="field"><label>Type</label><select name="kind"><o' +
+        'ption value="HUMAN_REVIEW">Examen humain</option><option value="NO_ACTION">Aucune act' +
+        'ion</option></select></div><div class="field"><label>Motif obligatoire</label><textar' +
+        'ea name="rationale" required rows="5"></textarea></div><button class="btn primary">En' +
+        'registrer la décision</button></form>'
+      ));document.getElementById("decision-form").onsubmit=async ev=>{ev.preventDefault();await post("/v1/cases/" +
   id +
   "/decision",
   Object.fromEntries(new FormData(ev.currentTarget)));await openDetail("cases",
@@ -1033,7 +1177,11 @@ if(op==="submit"){if(!confirm("Préparer la soumission ? Cette action sera enreg
   {});return openDetail("cases",
   id)}
 if(op==="pause-sla"||op==="resume-sla"){if(op==="pause-sla"){modal("Mettre en pause le SLA",
-  '<form id="sla-form"><div class="field"><label>Motif obligatoire</label><textarea name="reason" required maxlength="500" rows="4"></textarea></div><button class="btn primary">Confirmer la pause</button></form>');document.getElementById("sla-form").onsubmit=async ev=>{ev.preventDefault();await post("/v1/cases/" +
+  (
+        '<form id="sla-form"><div class="field"><label>Motif obligatoire</label><textarea name' +
+        '="reason" required maxlength="500" rows="4"></textarea></div><button class="btn prima' +
+        'ry">Confirmer la pause</button></form>'
+      ));document.getElementById("sla-form").onsubmit=async ev=>{ev.preventDefault();await post("/v1/cases/" +
   id +
   "/pause-sla",
   Object.fromEntries(new FormData(ev.currentTarget)));await openDetail("cases",
