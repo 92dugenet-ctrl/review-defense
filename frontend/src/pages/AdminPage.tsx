@@ -1,6 +1,6 @@
 import{useEffect,useState}from"react";import{useNavigate}from"react-router-dom";import{api}from"@/services/api/client";import{useAuth}from"@/auth/AuthContext";
 import { PageHeading } from "@/components/layout/PageHeading";
-import { FeedbackMessage } from "@/components/common/FeedbackMessage";
+import { FeedbackMessage } from "@/components/layout/FeedbackMessage";
 type Member={user_id:string;email:string;role:string};
 type Invitation={invitation_id:string;email:string;role:string;expires_at?:string};
 export function AdminPage(){
