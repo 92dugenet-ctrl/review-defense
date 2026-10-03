@@ -4,15 +4,20 @@ The API remains available under /v1/* and operational endpoints stay at their
 canonical root paths. Public SEO pages are rendered by src.seo_site; the
 existing workspace shell continues to serve authenticated client/admin flows.
 """
+# Path sert à construire des chemins absolus indépendants du répertoire courant.
 from pathlib import Path
+# parse_qs permet de gérer les anciennes URLs qui transportaient une page en query string.
 from urllib.parse import parse_qs
 import mimetypes
 
+# Le moteur SEO rend les pages publiques canoniques ; l'API fournit les routes métier.
 from src import seo_site
 from src.api_server import create_app
 
+# L'application API est construite une seule fois au chargement du module WSGI.
 _application = create_app()
 
+# Toutes les ressources frontend sont résolues depuis la racine du dépôt.
 ROOT = Path(__file__).resolve().parent
 FRONTEND_ROOT = (ROOT / "frontend").resolve()
 _API_PREFIXES = ("/v1/",)
@@ -84,6 +89,7 @@ _PATH_REDIRECTS = {
 
 
 def _redirect(location, start_response):
+    """Répond par une redirection permanente vers l'URL canonique."""
     start_response(
         "301 Moved Permanently",
         [
@@ -96,6 +102,7 @@ def _redirect(location, start_response):
 
 
 def _json_404(start_response):
+    """Retourne une erreur JSON uniforme lorsqu'aucune ressource ne correspond."""
     body = b'{"error":{"code":"NOT_FOUND","message":"resource not found"}}'
     start_response(
         "404 Not Found",
@@ -112,6 +119,11 @@ def _json_404(start_response):
 
 
 def _seo_response(path, start_response):
+    """Demande le rendu SEO et adapte sa réponse au protocole WSGI.
+
+    Le moteur SEO conserve la responsabilité du contenu et du statut ; cette
+    fonction ajoute les en-têtes HTTP communs avant de transmettre le corps.
+    """
     rendered = seo_site.render(path)
     if rendered is None:
         return None
@@ -127,6 +139,11 @@ def _seo_response(path, start_response):
 
 
 def _frontend_response(path, start_response):
+    """Sert les pages et ressources frontend autorisées.
+
+    Le chemin public est converti en chemin relatif, puis résolu et vérifié
+    pour empêcher toute sortie du répertoire frontend (traversée de chemin).
+    """
     if path == "/":
         relative = "index.html"
     elif path in _ROUTE_PAGES:
@@ -138,6 +155,8 @@ def _frontend_response(path, start_response):
     else:
         return None
 
+    # La résolution canonique suivie de relative_to empêche un chemin manipulé
+    # d'accéder à des fichiers situés en dehors de frontend/.
     candidate = (FRONTEND_ROOT / relative).resolve()
     try:
         candidate.relative_to(FRONTEND_ROOT)
@@ -171,9 +190,17 @@ def _frontend_response(path, start_response):
 
 
 def app(environ, start_response):
+    """Route chaque requête vers le bon sous-système HTTP.
+
+    Ordre de traitement des GET : compatibilité/redirections, pages SEO,
+    fichiers frontend, puis API et endpoints opérationnels. Cet ordre évite
+    qu'une ancienne route statique masque une URL SEO canonique.
+    """
     path = environ.get("PATH_INFO", "/") or "/"
     method = environ.get("REQUEST_METHOD", "GET").upper()
 
+    # Les redirections et les pages web sont des traitements GET ; les autres
+    # verbes sont transmis à l'application API après contrôle du préfixe.
     if method == "GET":
         query = parse_qs(environ.get("QUERY_STRING", ""), keep_blank_values=True)
         legacy_page = query.get("page", [None])[0]
@@ -186,6 +213,8 @@ def app(environ, start_response):
 
         # Canonical public SEO pages and the SEO network take precedence over
         # legacy static-page aliases so only one public URL family is indexed.
+        # Les URLs SEO passent avant le frontend historique afin de conserver
+        # une seule famille d'URLs publiques indexables.
         if seo_site.is_seo_path(path):
             response = _seo_response(path, start_response)
             if response is not None:
@@ -195,6 +224,8 @@ def app(environ, start_response):
         if frontend is not None:
             return frontend
 
+    # Seuls les endpoints API versionnés et les endpoints de santé/supervision
+    # peuvent atteindre l'application backend. Tout le reste reçoit un 404 JSON.
     if not (path.startswith(_API_PREFIXES) or path in _NON_API_PATHS):
         return _json_404(start_response)
 
