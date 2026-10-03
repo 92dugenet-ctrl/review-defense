@@ -4,7 +4,34 @@ TERMINAL_STATUSES={'CANCELLED','SUSPENDED','EXPIRED','PAYMENT_FAILED','DENIED','
 @dataclass(frozen=True)
 class PlanPolicy:
  code:str; rank:int; max_cases:int|None; features:frozenset[str]
-PLANS={'essential':PlanPolicy('essential',1,10,frozenset({'dashboard','reviews','basic_cases'})),'professional':PlanPolicy('professional',2,100,frozenset({'dashboard','reviews','basic_cases','evidence','review_queue','advanced_cases','exports'})),'business':PlanPolicy('business',3,None,frozenset({'dashboard','reviews','basic_cases','evidence','review_queue','advanced_cases','exports','team','priority_support'}))}
+PLANS={'essential':PlanPolicy('essential',
+    1,
+    10,
+    frozenset({'dashboard',
+    'reviews',
+    'basic_cases'})),
+    'professional':PlanPolicy('professional',
+    2,
+    100,
+    frozenset({'dashboard',
+    'reviews',
+    'basic_cases',
+    'evidence',
+    'review_queue',
+    'advanced_cases',
+    'exports'})),
+    'business':PlanPolicy('business',
+    3,
+    None,
+    frozenset({'dashboard',
+    'reviews',
+    'basic_cases',
+    'evidence',
+    'review_queue',
+    'advanced_cases',
+    'exports',
+    'team',
+    'priority_support'}))}
 OFFER_TO_PLAN={'monitoring_essential':'essential','monitoring_professional':'professional','monitoring_business':'business'}
 def plan_for_offer(offer_id): return PLANS[OFFER_TO_PLAN.get(str(offer_id),'essential')]
 def account_status(subscription):

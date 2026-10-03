@@ -167,7 +167,8 @@ def _review_from_row(row: Any) -> ReviewContext:
 class ReviewDefenseAPI:
     """Small WSGI API with explicit human-gated state transitions."""
     def __init__(self, store: MemoryStore | None = None, *, session_ttl: int = 3600,
-                 limiter: RateLimiter | None = None, repository=None, delivery_email_config: dict[str, Any] | None = None, delivery_func=deliver, config: ProductionConfig | None = None):
+                                  limiter: RateLimiter | None = None, repository=None, delivery_email_config: dict[str,
+                     Any] | None = None, delivery_func=deliver, config: ProductionConfig | None = None):
         self.store = store or MemoryStore()
         self.config = config or ProductionConfig.from_env()
         self.config.validate_startup(require_database=(repository is not None or self.config.production))
@@ -181,7 +182,13 @@ class ReviewDefenseAPI:
             }
         self.delivery_func = delivery_func
         self.notification_worker = NotificationWorker(delivery_func=delivery_func, email_config=self.delivery_email_config)
-        self.notifications = NotificationService(store=self.store, repository=self.repository, audit_event=self.store.audit_event, delivery_func=self.delivery_func, email_config=self.delivery_email_config, policy_provider=self._notification_policy, worker=self.notification_worker)
+                self.notifications = NotificationService(store=self.store,
+             repository=self.repository,
+             audit_event=self.store.audit_event,
+             delivery_func=self.delivery_func,
+             email_config=self.delivery_email_config,
+             policy_provider=self._notification_policy,
+            worker=self.notification_worker)
         self.session_ttl = session_ttl
         self.limiter = limiter or RateLimiter(limit=120, window_seconds=60)
         self.auth_limiter = RateLimiter(limit=8, window_seconds=300)
@@ -190,7 +197,9 @@ class ReviewDefenseAPI:
         self.billing_events = self.store.billing_events
         self._idem_lock = __import__("threading").RLock()
         self.telemetry = InMemoryTelemetry()
-        DeploymentConfig(public_base_url=self.config.public_base_url, environment=self.config.environment, trust_proxy=self.config.trust_proxy).validate() if self.config.production else None
+                DeploymentConfig(public_base_url=self.config.public_base_url,
+             environment=self.config.environment,
+            trust_proxy=self.config.trust_proxy).validate() if self.config.production else None
         self.store.sla_calendars = self.store.sla_calendars
         self.store.escalations = self.store.escalations
         self.store.notifications = self.store.notifications
@@ -638,7 +647,18 @@ class ReviewDefenseAPI:
         if self.repository is not None and hasattr(self.repository, "get_organization_profile"):
             row = self.repository.get_organization_profile(organization_id)
             if row:
-                profile = dict(zip(("legal_name", "website", "phone", "address", "city", "postal_code", "country", "sector", "employee_count", "description", "updated_at"), row))
+                                profile = dict(zip(("legal_name",
+                     "website",
+                     "phone",
+                     "address",
+                     "city",
+                     "postal_code",
+                     "country",
+                     "sector",
+                     "employee_count",
+                     "description",
+                     "updated_at"),
+                    row))
                 self.store.organization_profiles[organization_id] = profile
                 return profile
         return self.store.organization_profiles.get(organization_id, {})
@@ -690,7 +710,9 @@ class ReviewDefenseAPI:
         user_id = str(state_row["user_id"])
         oauth_client, _ = self._google_oauth()
         try:
-            token = oauth_client.exchange_code(code=code, redirect_uri=self.config.public_base_url.rstrip("/") + "/v1/integrations/google/callback", code_verifier=str(state_row["code_verifier"]))
+                        token = oauth_client.exchange_code(code=code,
+                 redirect_uri=self.config.public_base_url.rstrip("/") + "/v1/integrations/google/callback",
+                code_verifier=str(state_row["code_verifier"]))
         except (GoogleAPIError, GoogleIntegrationError) as exc:
             raise APIError(502, "GOOGLE_TOKEN_EXCHANGE_FAILED", "Google authorization could not be completed") from exc
         from datetime import datetime, timezone
@@ -721,7 +743,12 @@ class ReviewDefenseAPI:
             raise APIError(429, "RATE_LIMITED", "rate limit exceeded")
         if method == "GET" and path == "/health":
             result = health_check(checks={"store": lambda: self.store is not None})
-            return self._json(200 if result.status == "ok" else 503, {"status": result.status, "service": "review-defense", "version": "6.40", "checks": result.checks, "checked_at": result.checked_at})
+                        return self._json(200 if result.status == "ok" else 503,
+                 {"status": result.status,
+                 "service": "review-defense",
+                 "version": "6.40",
+                 "checks": result.checks,
+                "checked_at": result.checked_at})
         if method == "GET" and path == "/metrics":
             # Prometheus-compatible metrics contain only aggregate operational data.
             configured = os.getenv("REVIEW_DEFENSE_METRICS_TOKEN")
@@ -763,7 +790,10 @@ class ReviewDefenseAPI:
             if user is not None:
                 raw, token_hash = recovery_token()
                 expires = utc_now() + __import__("datetime").timedelta(minutes=30)
-                self.store.recovery_tokens[token_hash] = {"organization_id":organization_id,"user_id":user.user_id,"expires_at":expires.isoformat(),"used_at":None}
+                                self.store.recovery_tokens[token_hash] = {"organization_id":organization_id,
+                    "user_id":user.user_id,
+                    "expires_at":expires.isoformat(),
+                    "used_at":None}
                 if self.repository is not None and hasattr(self.repository, "create_recovery_token"):
                     self.repository.create_recovery_token(organization_id, user.user_id, token_hash, expires.isoformat())
                 self.store.audit_event(organization_id, None, "PASSWORD_RECOVERY_REQUESTED", f"user:{user.user_id}")
@@ -815,7 +845,11 @@ class ReviewDefenseAPI:
                 if hasattr(self.repository,"revoke_all_sessions"): self.repository.revoke_all_sessions(organization_id,user.user_id)
                 if hasattr(self.repository,"update_password"): self.repository.update_password(organization_id,user.user_id,new_hash)
                 if hasattr(self.repository,"consume_recovery_token"): self.repository.consume_recovery_token(organization_id,token_hash)
-                if hasattr(self.repository,"security_event"): self.repository.security_event(organization_id,user.user_id,"PASSWORD_RECOVERED",user.user_id)
+                                if hasattr(self.repository,
+                    "security_event"): self.repository.security_event(organization_id,
+                    user.user_id,
+                    "PASSWORD_RECOVERED",
+                    user.user_id)
             row["used_at"] = utc_now().isoformat()
             self.store.audit_event(organization_id,user.user_id,"PASSWORD_RECOVERED",f"user:{user.user_id}")
             return self._json(200,{"status":"password_reset"})
@@ -845,7 +879,9 @@ class ReviewDefenseAPI:
             row["used_at"] = utc_now().isoformat()
             if self.repository is not None:
                 if hasattr(self.repository, "mark_email_verified"): self.repository.mark_email_verified(organization_id, user_id)
-                if hasattr(self.repository, "consume_email_verification_token"): self.repository.consume_email_verification_token(organization_id, token_hash)
+                                if hasattr(self.repository,
+                     "consume_email_verification_token"): self.repository.consume_email_verification_token(organization_id,
+                    token_hash)
                 if hasattr(self.repository, "security_event"): self.repository.security_event(organization_id, user_id, "EMAIL_VERIFIED", user_id)
             self.store.audit_event(organization_id, user_id, "EMAIL_VERIFIED", f"user:{user_id}")
             return self._json(200, {"status": "email_verified"})
@@ -1000,7 +1036,15 @@ class ReviewDefenseAPI:
             else:
                 uid=str(uuid.uuid4()); new_user=User(uid,invitation["organization_id"],email,ph,invitation["role"]); self.store.users[uid]=new_user
                 if self.repository is not None and hasattr(self.repository,"create_user"):
-                    rid,*_=self.repository.create_user(invitation["organization_id"],email,ph,invitation["role"]); uid=str(rid); self.store.users.pop(uid,None); self.store.users[rid]=User(rid,invitation["organization_id"],email,ph,invitation["role"])
+                                        rid,*_=self.repository.create_user(invitation["organization_id"],
+                        email,
+                        ph,
+                        invitation["role"]); uid=str(rid); self.store.users.pop(uid,
+                        None); self.store.users[rid]=User(rid,
+                        invitation["organization_id"],
+                        email,
+                        ph,
+                        invitation["role"])
             invitation["accepted_at"]=utc_now().isoformat()
             if self.repository is not None and hasattr(self.repository, "mark_invitation_accepted"):
                 if not self.repository.mark_invitation_accepted(invitation["organization_id"], invitation["invitation_id"]):
@@ -1024,14 +1068,22 @@ class ReviewDefenseAPI:
             if self.repository is not None and hasattr(self.repository,"put_session"):
                 self.repository.put_session(invitation["organization_id"],session.token_hash,uid,invitation["role"],session.expires_at.isoformat())
             self.store.audit_event(invitation["organization_id"],uid,"INVITATION_ACCEPTED",f"invitation:{invitation['invitation_id']}")
-            return self._json(200,{"status":"accepted","access_token":raw,"token_type":"Bearer","expires_at":session.expires_at.isoformat(),"role":invitation["role"]})
+                        return self._json(200,
+                {"status":"accepted",
+                "access_token":raw,
+                "token_type":"Bearer",
+                "expires_at":session.expires_at.isoformat(),
+                "role":invitation["role"]})
 
         if method == "POST" and path == "/v1/paypal/webhook":
             length=int(environ.get("CONTENT_LENGTH") or 0)
             if length > 1000000: raise APIError(413,"PAYLOAD_TOO_LARGE","webhook payload too large")
             raw=environ["wsgi.input"].read(length)
             try:
-                verified,event=paypal_verify_webhook(raw_body=raw,headers={"paypal-"+k[len("HTTP_PAYPAL_"):].lower().replace("_","-"):v for k,v in environ.items() if k.startswith("HTTP_PAYPAL_")})
+                                verified,event=paypal_verify_webhook(raw_body=raw,
+                    headers={"paypal-"+k[len("HTTP_PAYPAL_"):].lower().replace("_",
+                    "-"):v for k,
+                    v in environ.items() if k.startswith("HTTP_PAYPAL_")})
             except (PayPalError,ValueError,KeyError) as exc:
                 raise APIError(400,"PAYPAL_WEBHOOK_INVALID","invalid PayPal webhook") from exc
             if not verified: raise APIError(400,"PAYPAL_WEBHOOK_INVALID","PayPal webhook signature verification failed")
@@ -1072,7 +1124,9 @@ class ReviewDefenseAPI:
                     try:
                         self.repository.update_billing_transaction(tx["organization_id"],tx)
                     except Exception as exc:
-                        raise APIError(500,"BILLING_WEBHOOK_PERSIST_FAILED","PayPal webhook was verified but billing state could not be persisted; PayPal should retry.") from exc
+                                                raise APIError(500,
+                            "BILLING_WEBHOOK_PERSIST_FAILED",
+                            "PayPal webhook was verified but billing state could not be persisted; PayPal should retry.") from exc
                 if tx.get("kind") == "subscription" and tx.get("offer_id"):
                     acct={"organization_id":tx["organization_id"],"plan_code":plan_for_offer(tx["offer_id"]).code,
                           "status":account_status({"status":tx.get("status")}),
@@ -1089,7 +1143,12 @@ class ReviewDefenseAPI:
                             self.repository.upsert_billing_account(tx["organization_id"],acct)
                         if hasattr(self.repository,"create_billing_event"):
                             self.repository.create_billing_event(tx["organization_id"],event_row)
-                self.store.audit_event(tx["organization_id"],None,"PAYPAL_WEBHOOK_PROCESSED",f"billing:{tx['id']}",event_type=event_type,paypal_id=paypal_id)
+                                self.store.audit_event(tx["organization_id"],
+                    None,
+                    "PAYPAL_WEBHOOK_PROCESSED",
+                    f"billing:{tx['id']}",
+                    event_type=event_type,
+                    paypal_id=paypal_id)
             return self._json(200,{"status":"accepted"})
         if method == "GET" and path == "/v1/integrations/google/callback":
             return self._google_callback(environ)
@@ -1101,7 +1160,8 @@ class ReviewDefenseAPI:
         if method in {"GET", "POST"} and path == "/v1/integrations/google/start":
             self._require_role(user, "OWNER", "ADMIN", "CLIENT")
             oauth_client, state_manager = self._google_oauth()
-            authorization = state_manager.create(client_id=oauth_client.client_id, redirect_uri=self.config.public_base_url.rstrip("/") + "/v1/integrations/google/callback")
+                        authorization = state_manager.create(client_id=oauth_client.client_id,
+                redirect_uri=self.config.public_base_url.rstrip("/") + "/v1/integrations/google/callback")
             from datetime import timedelta
             expires_at = (utc_now() + timedelta(seconds=state_manager.ttl_seconds)).isoformat()
             state_row = {"state": authorization.state, "organization_id": user.organization_id, "user_id": user.user_id,
@@ -1143,7 +1203,12 @@ class ReviewDefenseAPI:
                     errors.append({"connection_id": connection_id, "code": exc.code, "message": exc.message})
                 except (GoogleAPIError, GoogleIntegrationError) as exc:
                     errors.append({"connection_id": connection_id, "code": "GOOGLE_UPSTREAM_ERROR", "message": "Google locations could not be loaded"})
-            return self._json(200, {"items": items, "connections": [{"connection_id": x["connection_id"], "status": x.get("status"), "location_title": x.get("location_title")} for x in connections], "errors": errors})
+                        return self._json(200,
+                 {"items": items,
+                 "connections": [{"connection_id": x["connection_id"],
+                 "status": x.get("status"),
+                 "location_title": x.get("location_title")} for x in connections],
+                "errors": errors})
 
         if method == "POST" and path == "/v1/integrations/google/select-location":
             self._require_role(user, "OWNER", "ADMIN", "CLIENT")
@@ -1202,7 +1267,16 @@ class ReviewDefenseAPI:
             body = self._body(environ)
             fields = ("legal_name", "website", "phone", "address", "city", "postal_code", "country", "sector", "employee_count", "description")
             profile = {}
-            limits = {"legal_name": 200, "website": 500, "phone": 60, "address": 300, "city": 120, "postal_code": 30, "country": 100, "sector": 120, "employee_count": 60, "description": 2000}
+                        limits = {"legal_name": 200,
+                 "website": 500,
+                 "phone": 60,
+                 "address": 300,
+                 "city": 120,
+                 "postal_code": 30,
+                 "country": 100,
+                 "sector": 120,
+                 "employee_count": 60,
+                "description": 2000}
             for key in fields:
                 value = str(body.get(key, "")).strip()
                 if len(value) > limits[key]:
@@ -1255,7 +1329,11 @@ class ReviewDefenseAPI:
                 raise APIError(422, "INVALID_UPLOAD", str(exc)) from exc
             document_id = str(uuid.uuid4())
             try:
-                stored = self.store.vault.put(organization_id=user.organization_id, evidence_id=document_id, content=content, content_type=content_type, filename=filename)
+                                stored = self.store.vault.put(organization_id=user.organization_id,
+                     evidence_id=document_id,
+                     content=content,
+                     content_type=content_type,
+                    filename=filename)
             except (ValueError, PermissionError) as exc:
                 raise APIError(422, "INVALID_UPLOAD", str(exc)) from exc
             document = {"document_id": document_id, "organization_id": user.organization_id, "filename": filename, "content_type": content_type,
@@ -1309,7 +1387,11 @@ class ReviewDefenseAPI:
             items = public_catalog()
             return self._json(200, {"items": items, "count": len(items)})
         if method == "GET" and path == "/v1/paypal/config":
-            return self._json(200,{"configured":paypal_configured(),"client_id":PAYPAL_SUBSCRIPTION_CLIENT_ID,"environment":"live","diagnostics":paypal_configuration_status()})
+                        return self._json(200,
+                {"configured":paypal_configured(),
+                "client_id":PAYPAL_SUBSCRIPTION_CLIENT_ID,
+                "environment":"live",
+                "diagnostics":paypal_configuration_status()})
         if method == "GET" and path == "/v1/paypal/subscription/config":
             offer_id=str(parse_qs(environ.get("QUERY_STRING","")).get("offer_id",[""])[0])
             try: offer=get_offer(offer_id)
@@ -1317,12 +1399,19 @@ class ReviewDefenseAPI:
             if offer.kind!="subscription": raise APIError(422,"INVALID_OFFER","not a subscription offer")
             plan_id=paypal_plan_id(offer)
             if not paypal_configured() or not plan_id: raise APIError(503,"PAYPAL_NOT_CONFIGURED","PayPal subscription plan is not configured")
-            return self._json(200,{"offer_id":offer.offer_id,"plan_id":plan_id,"client_id":PAYPAL_SUBSCRIPTION_CLIENT_ID,"currency":offer.currency,"amount":str(offer.amount)})
+                        return self._json(200,
+                {"offer_id":offer.offer_id,
+                "plan_id":plan_id,
+                "client_id":PAYPAL_SUBSCRIPTION_CLIENT_ID,
+                "currency":offer.currency,
+                "amount":str(offer.amount)})
         if method == "POST" and path == "/v1/paypal/subscription/confirm":
             body=self._body(environ); offer_id=str(body.get("offer_id","")).strip(); subscription_id=str(body.get("subscription_id","")).strip()
             try: offer=get_offer(offer_id)
             except ValueError as exc: raise APIError(422,"INVALID_OFFER","unknown subscription offer") from exc
-            if offer.kind!="subscription" or not subscription_id: raise APIError(422,"INVALID_SUBSCRIPTION","subscription and subscription offer are required")
+                        if offer.kind!="subscription" or not subscription_id: raise APIError(422,
+                "INVALID_SUBSCRIPTION",
+                "subscription and subscription offer are required")
             plan_id=paypal_plan_id(offer)
             if not plan_id: raise APIError(503,"PAYPAL_NOT_CONFIGURED","subscription plan is not configured")
             existing_tx=next((x for x in self.store.billing.values() if x.get("paypal_subscription_id")==subscription_id),None)
@@ -1331,21 +1420,58 @@ class ReviewDefenseAPI:
             if existing_tx is not None:
                 if str(existing_tx.get("organization_id","")) != str(user.organization_id):
                     raise APIError(409,"SUBSCRIPTION_ALREADY_LINKED","PayPal subscription is already linked to another organization")
-                return self._json(200,{"status":existing_tx.get("status","CREATED"),"subscription_id":subscription_id,"offer_id":existing_tx.get("offer_id",offer.offer_id),"existing":True})
+                                return self._json(200,
+                    {"status":existing_tx.get("status",
+                    "CREATED"),
+                    "subscription_id":subscription_id,
+                    "offer_id":existing_tx.get("offer_id",
+                    offer.offer_id),
+                    "existing":True})
             try: pp=paypal_request_json("GET",f"/v1/billing/subscriptions/{subscription_id}",access_token=paypal_access_token())
             except PayPalError as exc: raise APIError(502,"PAYPAL_SUBSCRIPTION_LOOKUP_FAILED","PayPal subscription lookup failed",exc.payload)
             if str(pp.get("plan_id",""))!=plan_id: raise APIError(409,"SUBSCRIPTION_PLAN_MISMATCH","subscription plan does not match the selected offer")
-            tx_id=str(uuid.uuid4()); row={"id":tx_id,"organization_id":user.organization_id,"user_id":user.user_id,"offer_id":offer.offer_id,"kind":"subscription","status":pp.get("status","CREATED"),"currency":offer.currency,"amount":str(offer.amount),"paypal_order_id":None,"paypal_subscription_id":subscription_id,"metadata":{"subscription":pp}}
+                        tx_id=str(uuid.uuid4()); row={"id":tx_id,
+                "organization_id":user.organization_id,
+                "user_id":user.user_id,
+                "offer_id":offer.offer_id,
+                "kind":"subscription",
+                "status":pp.get("status",
+                "CREATED"),
+                "currency":offer.currency,
+                "amount":str(offer.amount),
+                "paypal_order_id":None,
+                "paypal_subscription_id":subscription_id,
+                "metadata":{"subscription":pp}}
             try:
-                if self.repository is not None and hasattr(self.repository,"create_billing_transaction"): self.repository.create_billing_transaction(user.organization_id,row)
+                                if self.repository is not None and hasattr(self.repository,
+                    "create_billing_transaction"): self.repository.create_billing_transaction(user.organization_id,
+                    row)
             except Exception as exc:
-                self.store.audit_event(user.organization_id,user.user_id,"PAYPAL_SUBSCRIPTION_LEDGER_FAILED",f"billing:{tx_id}",offer_id=offer.offer_id,error_type=type(exc).__name__)
-                raise APIError(500,"BILLING_LEDGER_FAILED","PayPal subscription was created but could not be recorded. Please retry; the subscription was not cancelled automatically.") from exc
+                                self.store.audit_event(user.organization_id,
+                    user.user_id,
+                    "PAYPAL_SUBSCRIPTION_LEDGER_FAILED",
+                    f"billing:{tx_id}",
+                    offer_id=offer.offer_id,
+                    error_type=type(exc).__name__)
+                                raise APIError(500,
+                    "BILLING_LEDGER_FAILED",
+                    "PayPal subscription was created but could not be recorded. Please retry; the subscription was not cancelled automatically.") from exc
             self.store.billing[tx_id]=row
-            acct={"organization_id":user.organization_id,"plan_code":plan_for_offer(offer.offer_id).code,"status":account_status({"status":row["status"]}),"paypal_subscription_id":subscription_id,"offer_id":offer.offer_id}
+                        acct={"organization_id":user.organization_id,
+                "plan_code":plan_for_offer(offer.offer_id).code,
+                "status":account_status({"status":row["status"]}),
+                "paypal_subscription_id":subscription_id,
+                "offer_id":offer.offer_id}
             self.billing_accounts[user.organization_id]=acct
-            if self.repository is not None and hasattr(self.repository,"upsert_billing_account"): self.repository.upsert_billing_account(user.organization_id,acct)
-            self.store.audit_event(user.organization_id,user.user_id,"PAYPAL_SUBSCRIPTION_CONFIRMED",f"billing:{tx_id}",paypal_subscription_id=subscription_id,offer_id=offer.offer_id)
+                        if self.repository is not None and hasattr(self.repository,
+                "upsert_billing_account"): self.repository.upsert_billing_account(user.organization_id,
+                acct)
+                        self.store.audit_event(user.organization_id,
+                user.user_id,
+                "PAYPAL_SUBSCRIPTION_CONFIRMED",
+                f"billing:{tx_id}",
+                paypal_subscription_id=subscription_id,
+                offer_id=offer.offer_id)
             return self._json(201,{"status":row["status"],"subscription_id":subscription_id,"offer_id":offer.offer_id})
 
         if method == "POST" and path == "/v1/auth/email-verification/request":
@@ -1380,7 +1506,11 @@ class ReviewDefenseAPI:
             secret=decrypt_secret(state["secret_enc"],self._mfa_key())
             if not self._consume_mfa_code(user, str(self._body(environ).get("code",""))): raise APIError(401,"MFA_INVALID","invalid MFA code")
             state={"enabled":True,"secret_enc":state["secret_enc"]}; self.store.mfa[user.user_id]=state
-            if self.repository is not None and hasattr(self.repository,"set_mfa_secret"): self.repository.set_mfa_secret(user.organization_id,user.user_id,state["secret_enc"],True)
+                        if self.repository is not None and hasattr(self.repository,
+                "set_mfa_secret"): self.repository.set_mfa_secret(user.organization_id,
+                user.user_id,
+                state["secret_enc"],
+                True)
             self.store.audit_event(user.organization_id,user.user_id,"MFA_ENABLED",f"user:{user.user_id}")
             return self._json(200,{"status":"enabled"})
 
@@ -1478,7 +1608,11 @@ class ReviewDefenseAPI:
                     row["details"] = details
                     row["response_note"] = None
             self.store.privacy_requests[request_id] = row
-            self.store.audit_event(user.organization_id, user.user_id, "PRIVACY_REQUEST_CREATED", f"privacy_request:{row['id']}", request_type=request_type)
+                        self.store.audit_event(user.organization_id,
+                 user.user_id,
+                 "PRIVACY_REQUEST_CREATED",
+                 f"privacy_request:{row['id']}",
+                request_type=request_type)
             return self._json(201, {"request": row})
 
         if method == "GET" and path == "/v1/privacy/consents":
@@ -1517,7 +1651,13 @@ class ReviewDefenseAPI:
                     row["organization_id"] = user.organization_id
                     row["user_id"] = user.user_id
             self.store.privacy_consents.append(row)
-            self.store.audit_event(user.organization_id, user.user_id, "PRIVACY_CONSENT_RECORDED", f"consent:{row['id']}", purpose=purpose, granted=granted, policy_version=policy_version)
+                        self.store.audit_event(user.organization_id,
+                 user.user_id,
+                 "PRIVACY_CONSENT_RECORDED",
+                 f"consent:{row['id']}",
+                 purpose=purpose,
+                 granted=granted,
+                policy_version=policy_version)
             return self._json(201, {"consent": row})
 
         if method == "GET" and path == "/v1/me":
@@ -1544,8 +1684,17 @@ class ReviewDefenseAPI:
             if self.repository is not None:
                 if hasattr(self.repository, "revoke_all_sessions"): self.repository.revoke_all_sessions(user.organization_id, user.user_id)
                 if hasattr(self.repository, "update_password"): self.repository.update_password(user.organization_id, user.user_id, new_hash)
-                if hasattr(self.repository, "put_session"): self.repository.put_session(user.organization_id, fresh.token_hash, user.user_id, user.role, fresh.expires_at.isoformat())
-                if hasattr(self.repository, "security_event"): self.repository.security_event(user.organization_id, user.user_id, "PASSWORD_CHANGED", user.user_id)
+                                if hasattr(self.repository,
+                     "put_session"): self.repository.put_session(user.organization_id,
+                     fresh.token_hash,
+                     user.user_id,
+                     user.role,
+                    fresh.expires_at.isoformat())
+                                if hasattr(self.repository,
+                     "security_event"): self.repository.security_event(user.organization_id,
+                     user.user_id,
+                     "PASSWORD_CHANGED",
+                    user.user_id)
             self.store.audit_event(user.organization_id, user.user_id, "PASSWORD_CHANGED", f"user:{user.user_id}")
             return self._json(200, {"status":"password_changed", "access_token":raw, "token_type":"Bearer", "expires_at":fresh.expires_at.isoformat()})
         if method == "POST" and path == "/v1/auth/rotate":
@@ -1589,7 +1738,15 @@ class ReviewDefenseAPI:
             ttl = int(body.get("ttl_seconds", 7*24*3600))
             if ttl < 300 or ttl > 30*24*3600: raise APIError(422, "VALIDATION_ERROR", "invalid invitation ttl")
             token = secrets.token_urlsafe(32); token_hash = hash_token(token); expires = utc_now() + timedelta(seconds=ttl); iid=str(uuid.uuid4())
-            row={"invitation_id":iid,"organization_id":user.organization_id,"email":email,"role":role,"expires_at":expires.isoformat(),"invited_by":user.user_id,"accepted_at":None,"revoked_at":None,"token_hash":token_hash}
+                        row={"invitation_id":iid,
+                "organization_id":user.organization_id,
+                "email":email,
+                "role":role,
+                "expires_at":expires.isoformat(),
+                "invited_by":user.user_id,
+                "accepted_at":None,
+                "revoked_at":None,
+                "token_hash":token_hash}
             self.store.invitations[iid]=row
             if self.repository is not None and hasattr(self.repository, "create_invitation"):
                 self.repository.create_invitation(user.organization_id,email,role,token_hash,user.user_id,expires.isoformat())
@@ -1615,7 +1772,12 @@ class ReviewDefenseAPI:
             if target.role=="OWNER" and role!="OWNER" and user.role!="OWNER": raise APIError(403,"FORBIDDEN","only an owner can demote an owner")
             target=User(target.user_id,target.organization_id,target.email,target.password_hash,role); self.store.users[target.user_id]=target
             for th,sess in list(self.store.sessions.items()):
-                if sess.user_id==target.user_id and sess.organization_id==user.organization_id: self.store.sessions[th]=Session(sess.user_id,sess.organization_id,role,sess.token_hash,sess.expires_at,utc_now())
+                                if sess.user_id==target.user_id and sess.organization_id==user.organization_id: self.store.sessions[th]=Session(sess.user_id,
+                    sess.organization_id,
+                    role,
+                    sess.token_hash,
+                    sess.expires_at,
+                    utc_now())
             if self.repository is not None and hasattr(self.repository,"update_role"):
                 self.repository.update_role(user.organization_id,target.user_id,role)
                 if hasattr(self.repository,"revoke_all_sessions"):
@@ -1623,7 +1785,20 @@ class ReviewDefenseAPI:
             self.store.audit_event(user.organization_id,user.user_id,"ROLE_CHANGED",f"user:{target.user_id}",role=role)
             return self._json(200,{"user_id":target.user_id,"role":role})
         if method == "GET" and path == "/v1/organization/sla-calendar":
-            return self._json(200, {"calendar": self.store.sla_calendars.get(user.organization_id, {"timezone":"UTC","workdays":[0,1,2,3,4,5,6],"start_hour":0,"end_hour":24,"holidays":[]}), "business_calendar_configured": user.organization_id in self.store.sla_calendars})
+                        return self._json(200,
+                 {"calendar": self.store.sla_calendars.get(user.organization_id,
+                 {"timezone":"UTC",
+                "workdays":[0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6],
+                "start_hour":0,
+                "end_hour":24,
+                "holidays":[]}),
+                "business_calendar_configured": user.organization_id in self.store.sla_calendars})
         if method == "POST" and path == "/v1/organization/sla-calendar":
             self._require_role(user, "OWNER", "ADMIN")
             body = self._body(environ)
@@ -1631,7 +1806,11 @@ class ReviewDefenseAPI:
                 cal = calendar_from_dict(body)
             except (TypeError, ValueError) as exc:
                 raise APIError(422, "VALIDATION_ERROR", str(exc)) from exc
-            payload = {"timezone":cal.timezone,"workdays":list(cal.workdays),"start_hour":cal.start_hour,"end_hour":cal.end_hour,"holidays":list(cal.holidays)}
+                        payload = {"timezone":cal.timezone,
+                "workdays":list(cal.workdays),
+                "start_hour":cal.start_hour,
+                "end_hour":cal.end_hour,
+                "holidays":list(cal.holidays)}
             self.store.sla_calendars[user.organization_id] = payload
             if self.repository is not None and hasattr(self.repository, "upsert_sla_calendar"):
                 self.repository.upsert_sla_calendar(user.organization_id, payload)
@@ -1648,7 +1827,19 @@ class ReviewDefenseAPI:
                 raise APIError(422, "VALIDATION_ERROR", "rating must be an integer") from exc
             if rating < 1 or rating > 5:
                 raise APIError(422, "VALIDATION_ERROR", "rating must be between 1 and 5")
-            review = ReviewContext(rid, user.organization_id, str(body.get("location_id", "")), body.get("author_display_name"), rating, str(body["text"]), str(body.get("published_at", "")), body.get("updated_at"), body.get("language"), "GOOGLE", body.get("review_url"))
+                        review = ReviewContext(rid,
+                 user.organization_id,
+                 str(body.get("location_id",
+                 "")),
+                 body.get("author_display_name"),
+                 rating,
+                 str(body["text"]),
+                 str(body.get("published_at",
+                 "")),
+                 body.get("updated_at"),
+                 body.get("language"),
+                 "GOOGLE",
+                body.get("review_url"))
             key = (user.organization_id, rid)
             self.store.reviews[key] = review
             if self.repository is not None:
@@ -1694,7 +1885,11 @@ class ReviewDefenseAPI:
                 raise APIError(422, "VALIDATION_ERROR", "content_base64 is invalid") from exc
             evidence_id = str(uuid.uuid4())
             try:
-                obj = self.store.vault.put(organization_id=user.organization_id, evidence_id=evidence_id, content=content, content_type=content_type, filename=filename)
+                                obj = self.store.vault.put(organization_id=user.organization_id,
+                     evidence_id=evidence_id,
+                     content=content,
+                     content_type=content_type,
+                    filename=filename)
             except (ValueError, PermissionError) as exc:
                 raise APIError(422, "VALIDATION_ERROR", str(exc)) from exc
             raw_facts = body.get("facts", [])
@@ -1706,10 +1901,28 @@ class ReviewDefenseAPI:
                 key, kind, value = str(f.get("key", "")), str(f.get("kind", "")), str(f.get("value", ""))
                 if not key or not kind or not value or len(key) > 200 or len(kind) > 80 or len(value) > 5000:
                     raise APIError(422, "VALIDATION_ERROR", "each fact requires bounded key, kind and value")
-                facts.append({"fact_id": str(uuid.uuid4()), "evidence_id": evidence_id, "case_id": case_id, "organization_id": user.organization_id, "key": key, "kind": kind, "value": value, "source_location": str(f.get("source_location", "")), "verified": False, "verified_by": None, "verified_at": None})
+                                facts.append({"fact_id": str(uuid.uuid4()),
+                     "evidence_id": evidence_id,
+                     "case_id": case_id,
+                     "organization_id": user.organization_id,
+                     "key": key,
+                     "kind": kind,
+                     "value": value,
+                     "source_location": str(f.get("source_location",
+                     "")),
+                     "verified": False,
+                     "verified_by": None,
+                    "verified_at": None})
             extracted_text = ""
             extraction_method = "not-run"
-            if not facts and content_type.lower().split(";", 1)[0].strip() in {"text/plain", "text/csv", "application/json", "application/pdf", "image/jpeg", "image/png", "image/webp"}:
+                        if not facts and content_type.lower().split(";",
+                 1)[0].strip() in {"text/plain",
+                 "text/csv",
+                 "application/json",
+                 "application/pdf",
+                 "image/jpeg",
+                 "image/png",
+                "image/webp"}:
                 try:
                     extracted = extract_readable_text(content=content, content_type=content_type, filename=filename)
                     extracted_text = extracted.text
@@ -1736,7 +1949,19 @@ class ReviewDefenseAPI:
                         })
                 except ExtractionError:
                     extraction_method = "failed"
-            row = {"evidence_id": evidence_id, "organization_id": user.organization_id, "case_id": case_id, "filename": filename, "content_type": content_type, "size_bytes": obj.size_bytes, "sha256": obj.sha256, "object_key": obj.object_key, "verified": False, "status": "PENDING", "created_by": user.user_id, "extraction_method": extraction_method, "extracted_chars": len(extracted_text)}
+                        row = {"evidence_id": evidence_id,
+                 "organization_id": user.organization_id,
+                 "case_id": case_id,
+                 "filename": filename,
+                 "content_type": content_type,
+                 "size_bytes": obj.size_bytes,
+                 "sha256": obj.sha256,
+                 "object_key": obj.object_key,
+                 "verified": False,
+                 "status": "PENDING",
+                 "created_by": user.user_id,
+                 "extraction_method": extraction_method,
+                "extracted_chars": len(extracted_text)}
             self.store.evidence[(user.organization_id, evidence_id)] = row
             self.store.evidence_facts[(user.organization_id, evidence_id)] = facts
             if self.repository is not None:
@@ -1744,10 +1969,15 @@ class ReviewDefenseAPI:
                 for fact in facts:
                     self.repository.put_evidence_fact(user.organization_id, fact)
             self.store.audit_event(user.organization_id, user.user_id, "EVIDENCE_UPLOADED", f"evidence:{evidence_id}", sha256=obj.sha256, case_id=case_id)
-            row = dict(row); row["download_url"] = sign_download_url(object_key=obj.object_key, organization_id=user.organization_id, secret=self.store.download_secret)
+                        row = dict(row); row["download_url"] = sign_download_url(object_key=obj.object_key,
+                 organization_id=user.organization_id,
+                secret=self.store.download_secret)
             return self._json(201, {"evidence": row})
         if method == "GET" and path == "/v1/evidence":
-            rows = [dict(e, status=("VERIFIED" if e.get("verified") else "PENDING")) for (org, _), e in self.store.evidence.items() if org == user.organization_id]
+                        rows = [dict(e,
+                 status=("VERIFIED" if e.get("verified") else "PENDING")) for (org,
+                 _),
+                e in self.store.evidence.items() if org == user.organization_id]
             return self._json(200, {"items": rows, "count": len(rows)})
         if method == "GET" and path.startswith("/v1/evidence/") and path.endswith("/content") and len(path.split("/")) == 5:
             eid = path.split("/")[3]
@@ -1755,7 +1985,19 @@ class ReviewDefenseAPI:
             if row is None and self.repository is not None and hasattr(self.repository, "get_evidence"):
                 dbrow = self.repository.get_evidence(user.organization_id, eid)
                 if dbrow:
-                    row = dict(zip(("evidence_id","organization_id","case_id","filename","content_type","size_bytes","sha256","object_key","verified","created_by","verified_by","verified_at"), dbrow))
+                                        row = dict(zip(("evidence_id",
+                        "organization_id",
+                        "case_id",
+                        "filename",
+                        "content_type",
+                        "size_bytes",
+                        "sha256",
+                        "object_key",
+                        "verified",
+                        "created_by",
+                        "verified_by",
+                        "verified_at"),
+                        dbrow))
                     self.store.evidence[(user.organization_id, eid)] = row
             if not row: raise APIError(404, "NOT_FOUND", "evidence not found")
             content = self.store.vault.get(organization_id=user.organization_id, object_key=row["object_key"])
@@ -1773,7 +2015,19 @@ class ReviewDefenseAPI:
             if row is None and self.repository is not None and hasattr(self.repository, "get_evidence"):
                 dbrow = self.repository.get_evidence(user.organization_id, eid)
                 if dbrow:
-                    row = dict(zip(("evidence_id","organization_id","case_id","filename","content_type","size_bytes","sha256","object_key","verified","created_by","verified_by","verified_at"), dbrow))
+                                        row = dict(zip(("evidence_id",
+                        "organization_id",
+                        "case_id",
+                        "filename",
+                        "content_type",
+                        "size_bytes",
+                        "sha256",
+                        "object_key",
+                        "verified",
+                        "created_by",
+                        "verified_by",
+                        "verified_at"),
+                        dbrow))
                     self.store.evidence[(user.organization_id, eid)] = row
             if not row: raise APIError(404, "NOT_FOUND", "evidence not found")
             if not verify_integrity(self.store.vault.get(organization_id=user.organization_id, object_key=row["object_key"]), row["sha256"]):
@@ -1786,7 +2040,19 @@ class ReviewDefenseAPI:
             if row is None and self.repository is not None and hasattr(self.repository, "get_evidence"):
                 dbrow = self.repository.get_evidence(user.organization_id, eid)
                 if dbrow:
-                    row = dict(zip(("evidence_id","organization_id","case_id","filename","content_type","size_bytes","sha256","object_key","verified","created_by","verified_by","verified_at"), dbrow))
+                                        row = dict(zip(("evidence_id",
+                        "organization_id",
+                        "case_id",
+                        "filename",
+                        "content_type",
+                        "size_bytes",
+                        "sha256",
+                        "object_key",
+                        "verified",
+                        "created_by",
+                        "verified_by",
+                        "verified_at"),
+                        dbrow))
                     self.store.evidence[(user.organization_id, eid)] = row
             if not row: raise APIError(404, "NOT_FOUND", "evidence not found")
             if not verify_integrity(self.store.vault.get(organization_id=user.organization_id, object_key=row["object_key"]), row["sha256"]):
@@ -1808,7 +2074,19 @@ class ReviewDefenseAPI:
             if self.repository is not None and hasattr(self.repository, "get_evidence"):
                 dbrow = self.repository.get_evidence(user.organization_id, eid)
                 if dbrow:
-                    row = dict(zip(("evidence_id","organization_id","case_id","filename","content_type","size_bytes","sha256","object_key","verified","created_by","verified_by","verified_at"), dbrow))
+                                        row = dict(zip(("evidence_id",
+                        "organization_id",
+                        "case_id",
+                        "filename",
+                        "content_type",
+                        "size_bytes",
+                        "sha256",
+                        "object_key",
+                        "verified",
+                        "created_by",
+                        "verified_by",
+                        "verified_at"),
+                        dbrow))
                     self.store.evidence[key] = row
             if not row: raise APIError(404, "NOT_FOUND", "evidence not found")
             if not row.get("verified"):
@@ -1838,7 +2116,12 @@ class ReviewDefenseAPI:
             if self.repository is not None:
                 for fact in facts:
                     self.repository.put_evidence_fact(user.organization_id, fact)
-            self.store.audit_event(user.organization_id, user.user_id, "EVIDENCE_FACTS_VERIFIED", f"evidence:{eid}", fact_ids=sorted(selected), count=changed)
+                        self.store.audit_event(user.organization_id,
+                 user.user_id,
+                 "EVIDENCE_FACTS_VERIFIED",
+                 f"evidence:{eid}",
+                 fact_ids=sorted(selected),
+                count=changed)
             return self._json(200, {"facts": facts, "verified_count": changed})
         if method == "GET" and path == "/v1/review-queue":
             items = []
@@ -1852,14 +2135,24 @@ class ReviewDefenseAPI:
                 contradictions = self.store.contradictions.get((org, cid), [])
                 suggestions = self.store.fact_suggestions.get((org, cid), [])
                 evidence_rows = [e for (eo, _), e in self.store.evidence.items() if eo == org and e.get("case_id") == cid]
-                evidence = tuple(EvidenceView(e["evidence_id"], e["filename"], e.get("content_type") or "UNKNOWN", e["sha256"], "VERIFIED" if e.get("verified") else "UNVERIFIED") for e in evidence_rows)
+                                evidence = tuple(EvidenceView(e["evidence_id"],
+                     e["filename"],
+                     e.get("content_type") or "UNKNOWN",
+                     e["sha256"],
+                    "VERIFIED" if e.get("verified") else "UNVERIFIED") for e in evidence_rows)
                 ws = CaseWorkspace(cid, org, case.status, "NORMAL", ReviewSummary(review.review_id, review.rating, review.text, review.published_at),
                     tuple(ClaimView(c.claim_id,c.text,c.claim_type,"UNVERIFIED") for c in claims),
                     tuple(PolicySignalView(s.code,s.status,s.justification) for s in signals), evidence, (),
                     tuple(Contradiction(c["contradiction_id"],c["description"],c["claim_id"],tuple(c["evidence_ids"]),True) for c in contradictions))
                 required = {c.claim_id: [] for c in claims}
                 missing = missing_evidence_tasks(ws, required)
-                item = score_case(case_id=cid, created_at=case.created_at, policy_statuses=[s.status for s in signals], contradiction_count=len(contradictions), missing_evidence_count=len(missing), unverified_suggestion_count=len([x for x in suggestions if not x.get("verified")]), assigned_to=case.assigned_to)
+                                item = score_case(case_id=cid,
+                     created_at=case.created_at,
+                     policy_statuses=[s.status for s in signals],
+                     contradiction_count=len(contradictions),
+                     missing_evidence_count=len(missing),
+                     unverified_suggestion_count=len([x for x in suggestions if not x.get("verified")]),
+                    assigned_to=case.assigned_to)
                 payload = asdict(item)
                 payload["sla"] = asdict(self.case_sla.calculate(case, item.priority, self._calendar(user.organization_id)))
                 items.append(payload)
@@ -1878,15 +2171,32 @@ class ReviewDefenseAPI:
                 contradictions = self.store.contradictions.get((org, cid), [])
                 suggestions = self.store.fact_suggestions.get((org, cid), [])
                 evidence_rows = [e for (eo, _), e in self.store.evidence.items() if eo == org and e.get("case_id") == cid]
-                evidence = tuple(EvidenceView(e["evidence_id"], e["filename"], e.get("content_type") or "UNKNOWN", e["sha256"], "VERIFIED" if e.get("verified") else "UNVERIFIED") for e in evidence_rows)
+                                evidence = tuple(EvidenceView(e["evidence_id"],
+                     e["filename"],
+                     e.get("content_type") or "UNKNOWN",
+                     e["sha256"],
+                    "VERIFIED" if e.get("verified") else "UNVERIFIED") for e in evidence_rows)
                 ws = CaseWorkspace(cid, org, case.status, "NORMAL", ReviewSummary(review.review_id, review.rating, review.text, review.published_at),
                     tuple(ClaimView(c.claim_id,c.text,c.claim_type,"UNVERIFIED") for c in claims),
                     tuple(PolicySignalView(s.code,s.status,s.justification) for s in signals), evidence, (),
                     tuple(Contradiction(c["contradiction_id"],c["description"],c["claim_id"],tuple(c["evidence_ids"]),True) for c in contradictions))
                 missing = missing_evidence_tasks(ws, {c.claim_id: [] for c in claims})
-                item = score_case(case_id=cid, created_at=case.created_at, policy_statuses=[s.status for s in signals], contradiction_count=len(contradictions), missing_evidence_count=len(missing), unverified_suggestion_count=len([x for x in suggestions if not x.get("verified")]), assigned_to=case.assigned_to)
+                                item = score_case(case_id=cid,
+                     created_at=case.created_at,
+                     policy_statuses=[s.status for s in signals],
+                     contradiction_count=len(contradictions),
+                     missing_evidence_count=len(missing),
+                     unverified_suggestion_count=len([x for x in suggestions if not x.get("verified")]),
+                    assigned_to=case.assigned_to)
                 key = case.assigned_to or "UNASSIGNED"
-                row = rows.setdefault(key, {"user_id": case.assigned_to, "case_count": 0, "priority_score_total": 0, "critical_count": 0, "high_count": 0, "overdue_count": 0, "due_soon_count": 0})
+                                row = rows.setdefault(key,
+                     {"user_id": case.assigned_to,
+                     "case_count": 0,
+                     "priority_score_total": 0,
+                     "critical_count": 0,
+                     "high_count": 0,
+                     "overdue_count": 0,
+                    "due_soon_count": 0})
                 row["case_count"] += 1; row["priority_score_total"] += item.priority_score
                 if item.priority == "CRITICAL": row["critical_count"] += 1
                 elif item.priority == "HIGH": row["high_count"] += 1
@@ -1922,7 +2232,10 @@ class ReviewDefenseAPI:
             return self._json(200, {"items": items, "count": len(items)})
         if method == "POST" and path.startswith("/v1/escalations/") and path.endswith("/acknowledge"):
             self._require_role(user,"OWNER","ADMIN","ANALYST")
-            parts=path.split("/"); cid=parts[3]; level=str(self._body(environ).get("level","DUE")); esc=self.store.escalations.get((user.organization_id,cid,level))
+                        parts=path.split("/"); cid=parts[3]; level=str(self._body(environ).get("level",
+                "DUE")); esc=self.store.escalations.get((user.organization_id,
+                cid,
+                level))
             if esc is None: raise APIError(404,"NOT_FOUND","escalation not found")
             if esc.status == "RESOLVED": raise APIError(409,"STATE_CONFLICT","escalation is already resolved")
             try:
@@ -1937,7 +2250,10 @@ class ReviewDefenseAPI:
             return self._json(200, {"escalation": esc.payload()})
         if method == "POST" and path.startswith("/v1/escalations/") and path.endswith("/resolve"):
             self._require_role(user,"OWNER","ADMIN","ANALYST")
-            parts=path.split("/"); cid=parts[3]; level=str(self._body(environ).get("level","DUE")); esc=self.store.escalations.get((user.organization_id,cid,level))
+                        parts=path.split("/"); cid=parts[3]; level=str(self._body(environ).get("level",
+                "DUE")); esc=self.store.escalations.get((user.organization_id,
+                cid,
+                level))
             if esc is None: raise APIError(404,"NOT_FOUND","escalation not found")
             if esc.status == "RESOLVED": raise APIError(409,"STATE_CONFLICT","escalation is already resolved")
             try:
@@ -2080,7 +2396,11 @@ class ReviewDefenseAPI:
             if method == "GET" and len(parts) == 4:
                 review = self.store.reviews[(user.organization_id, case.review_id)]
                 claims = extract_claims(review); signals = classify_policy_signals(claims)
-                return self._json(200, {"case": asdict(case), "review": asdict(review), "claims": [asdict(c) for c in claims], "policy_signals": [asdict(s) for s in signals]})
+                                return self._json(200,
+                     {"case": asdict(case),
+                     "review": asdict(review),
+                     "claims": [asdict(c) for c in claims],
+                    "policy_signals": [asdict(s) for s in signals]})
             if method == "GET" and len(parts) == 5 and parts[4] == "history":
                 events = []
                 if self.repository is not None and hasattr(self.repository, "list_case_events"):
@@ -2117,15 +2437,24 @@ class ReviewDefenseAPI:
                     case, review, evidence_rows, audit_rows, stored_contradictions
                 )
                 review_payload = asdict(workspace.review)
-                review_payload.update({"author_display_name": review.author_display_name, "source": review.source, "language": review.language, "review_url": review.review_url})
+                                review_payload.update({"author_display_name": review.author_display_name,
+                     "source": review.source,
+                     "language": review.language,
+                    "review_url": review.review_url})
                 return self._json(200, {
                     "workspace": {**asdict(workspace), "review": review_payload},
                     "evidence_tasks": [asdict(t) for t in tasks],
                     "requires_human_review": case_requires_human_review(workspace),
-                    "decision": asdict(self.store.decisions[(user.organization_id, case.decision_id)]) if case.decision_id and (user.organization_id, case.decision_id) in self.store.decisions else None,
+                                        "decision": asdict(self.store.decisions[(user.organization_id,
+                         case.decision_id)]) if case.decision_id and (user.organization_id,
+                        case.decision_id) in self.store.decisions else None,
                     "snapshot": asdict(self.store.snapshots[(user.organization_id, cid)]) if (user.organization_id, cid) in self.store.snapshots else None,
                     "approvals": [asdict(a) for a in self.store.approvals if a.organization_id == user.organization_id and a.decision_id == case.decision_id],
-                    "fact_suggestions": [s for (org, _), rows in self.store.fact_suggestions.items() if org == user.organization_id for s in rows if self.store.evidence.get((org, s["evidence_id"]), {}).get("case_id") == cid],
+                                        "fact_suggestions": [s for (org,
+                         _),
+                         rows in self.store.fact_suggestions.items() if org == user.organization_id for s in rows if self.store.evidence.get((org,
+                         s["evidence_id"]),
+                        {}).get("case_id") == cid],
                 })
             if method == "POST" and len(parts) == 5 and parts[4] == "pause-sla":
                 self._require_role(user, "OWNER", "ADMIN")
@@ -2154,10 +2483,41 @@ class ReviewDefenseAPI:
                 contradictions = self.store.contradictions.get((user.organization_id, cid), [])
                 suggestions = self.store.fact_suggestions.get((user.organization_id, cid), [])
                 evidence_rows = [e for (eo, _), e in self.store.evidence.items() if eo == user.organization_id and e.get("case_id") == cid]
-                evidence = tuple(EvidenceView(e["evidence_id"], e["filename"], e.get("content_type") or "UNKNOWN", e["sha256"], "VERIFIED" if e.get("verified") else "UNVERIFIED") for e in evidence_rows)
-                ws = CaseWorkspace(cid, user.organization_id, case.status, "NORMAL", ReviewSummary(review.review_id, review.rating, review.text, review.published_at), tuple(ClaimView(c.claim_id,c.text,c.claim_type,"UNVERIFIED") for c in claims), tuple(PolicySignalView(s.code,s.status,s.justification) for s in signals), evidence, (), tuple(Contradiction(c["contradiction_id"],c["description"],c["claim_id"],tuple(c["evidence_ids"]),True) for c in contradictions))
+                                evidence = tuple(EvidenceView(e["evidence_id"],
+                     e["filename"],
+                     e.get("content_type") or "UNKNOWN",
+                     e["sha256"],
+                    "VERIFIED" if e.get("verified") else "UNVERIFIED") for e in evidence_rows)
+                                ws = CaseWorkspace(cid,
+                     user.organization_id,
+                     case.status,
+                     "NORMAL",
+                     ReviewSummary(review.review_id,
+                     review.rating,
+                     review.text,
+                     review.published_at),
+                     tuple(ClaimView(c.claim_id,
+                    c.text,
+                    c.claim_type,
+                    "UNVERIFIED") for c in claims),
+                     tuple(PolicySignalView(s.code,
+                    s.status,
+                    s.justification) for s in signals),
+                     evidence,
+                     (),
+                     tuple(Contradiction(c["contradiction_id"],
+                    c["description"],
+                    c["claim_id"],
+                    tuple(c["evidence_ids"]),
+                    True) for c in contradictions))
                 missing = missing_evidence_tasks(ws, {c.claim_id: [] for c in claims})
-                item = score_case(case_id=cid, created_at=case.created_at, policy_statuses=[s.status for s in signals], contradiction_count=len(contradictions), missing_evidence_count=len(missing), unverified_suggestion_count=len([x for x in suggestions if not x.get("verified")]), assigned_to=case.assigned_to)
+                                item = score_case(case_id=cid,
+                     created_at=case.created_at,
+                     policy_statuses=[s.status for s in signals],
+                     contradiction_count=len(contradictions),
+                     missing_evidence_count=len(missing),
+                     unverified_suggestion_count=len([x for x in suggestions if not x.get("verified")]),
+                    assigned_to=case.assigned_to)
                 sla = self.case_sla.calculate(case, item.priority, self._calendar(user.organization_id))
                 return self._json(200, {"case_id": cid, "sla": asdict(sla), "pause_reason": case.sla_pause_reason})
             if method == "POST" and len(parts) == 5 and parts[4] == "contradictions":
@@ -2168,7 +2528,9 @@ class ReviewDefenseAPI:
                 requested_eids = body.get("evidence_ids")
                 if requested_eids is not None and not isinstance(requested_eids, list):
                     raise APIError(422, "VALIDATION_ERROR", "evidence_ids must be a list")
-                selected = set(str(x) for x in requested_eids) if requested_eids is not None else {eid for (org, eid), e in self.store.evidence.items() if org == user.organization_id and e["case_id"] == cid}
+                                selected = set(str(x) for x in requested_eids) if requested_eids is not None else {eid for (org,
+                     eid),
+                    e in self.store.evidence.items() if org == user.organization_id and e["case_id"] == cid}
                 facts: list[EvidenceFact] = []
                 for eid in sorted(selected):
                     e = self.store.evidence.get((user.organization_id, eid))
@@ -2192,7 +2554,9 @@ class ReviewDefenseAPI:
                 requested = body.get("evidence_ids")
                 if requested is not None and not isinstance(requested, list):
                     raise APIError(422, "VALIDATION_ERROR", "evidence_ids must be a list")
-                selected = [str(x) for x in requested] if requested is not None else [eid for (org, eid), e in self.store.evidence.items() if org == user.organization_id and e["case_id"] == cid]
+                                selected = [str(x) for x in requested] if requested is not None else [eid for (org,
+                     eid),
+                    e in self.store.evidence.items() if org == user.organization_id and e["case_id"] == cid]
                 all_suggestions = []
                 for eid in selected:
                     e = self.store.evidence.get((user.organization_id, eid))
@@ -2209,9 +2573,16 @@ class ReviewDefenseAPI:
                     except (ExtractionError, UnicodeDecodeError, ValueError) as exc:
                         # Unsupported/unreadable evidence remains available for manual review;
                         # extraction failure must never become a false fact.
-                        self.store.audit_event(user.organization_id, user.user_id, "EVIDENCE_TEXT_EXTRACTION_FAILED", f"evidence:{eid}", case_id=cid, reason=str(exc)[:240])
+                                                self.store.audit_event(user.organization_id,
+                             user.user_id,
+                             "EVIDENCE_TEXT_EXTRACTION_FAILED",
+                             f"evidence:{eid}",
+                             case_id=cid,
+                            reason=str(exc)[:240])
                         continue
-                    suggestions = [asdict(x) for x in extract_text_fact_suggestions(evidence_id=eid, content=extracted.text.encode("utf-8"), content_type="text/plain")]
+                                        suggestions = [asdict(x) for x in extract_text_fact_suggestions(evidence_id=eid,
+                         content=extracted.text.encode("utf-8"),
+                        content_type="text/plain")]
                     for suggestion in suggestions:
                         suggestion["case_id"] = cid
                         suggestion["extraction_method"] = extracted.method
@@ -2219,9 +2590,25 @@ class ReviewDefenseAPI:
                             self.repository.put_fact_suggestion(user.organization_id, suggestion)
                     self.store.fact_suggestions[(user.organization_id, eid)] = suggestions
                     all_suggestions.extend(suggestions)
-                    self.store.audit_event(user.organization_id, user.user_id, "EVIDENCE_TEXT_EXTRACTED", f"evidence:{eid}", case_id=cid, method=extracted.method, character_count=len(extracted.text), suggestion_count=len(suggestions))
-                self.store.audit_event(user.organization_id, user.user_id, "EVIDENCE_FACTS_SUGGESTED", f"case:{cid}", suggestion_count=len(all_suggestions), evidence_ids=selected)
-                return self._json(200, {"suggestions": all_suggestions, "count": len(all_suggestions), "requires_human_review": bool(all_suggestions), "verified": False})
+                                        self.store.audit_event(user.organization_id,
+                         user.user_id,
+                         "EVIDENCE_TEXT_EXTRACTED",
+                         f"evidence:{eid}",
+                         case_id=cid,
+                         method=extracted.method,
+                         character_count=len(extracted.text),
+                        suggestion_count=len(suggestions))
+                                self.store.audit_event(user.organization_id,
+                     user.user_id,
+                     "EVIDENCE_FACTS_SUGGESTED",
+                     f"case:{cid}",
+                     suggestion_count=len(all_suggestions),
+                    evidence_ids=selected)
+                                return self._json(200,
+                     {"suggestions": all_suggestions,
+                     "count": len(all_suggestions),
+                     "requires_human_review": bool(all_suggestions),
+                    "verified": False})
             if method == "GET" and len(parts) == 5 and parts[4] == "review-checklist":
                 self._require_role(user, "OWNER", "ADMIN", "ANALYST", "CLIENT", "VIEWER")
                 review = self.store.reviews[(user.organization_id, case.review_id)]
@@ -2233,27 +2620,101 @@ class ReviewDefenseAPI:
                 for signal in signals:
                     for claim_id in signal.claim_ids:
                         required.setdefault(claim_id, []).extend(signal.evidence_required)
-                evidence = tuple(EvidenceView(e["evidence_id"], e["filename"], e.get("content_type") or "UNKNOWN", e["sha256"], "VERIFIED" if e.get("verified") else "UNVERIFIED") for e in evidence_rows)
-                ws = CaseWorkspace(cid, user.organization_id, case.status, "NORMAL", ReviewSummary(review.review_id, review.rating, review.text, review.published_at), tuple(ClaimView(c.claim_id,c.text,c.claim_type,"UNVERIFIED") for c in claims), tuple(PolicySignalView(s.code,s.status,s.justification) for s in signals), evidence, (), tuple(Contradiction(c["contradiction_id"],c["description"],c["claim_id"],tuple(c["evidence_ids"]),True) for c in contradictions))
+                                evidence = tuple(EvidenceView(e["evidence_id"],
+                     e["filename"],
+                     e.get("content_type") or "UNKNOWN",
+                     e["sha256"],
+                    "VERIFIED" if e.get("verified") else "UNVERIFIED") for e in evidence_rows)
+                                ws = CaseWorkspace(cid,
+                     user.organization_id,
+                     case.status,
+                     "NORMAL",
+                     ReviewSummary(review.review_id,
+                     review.rating,
+                     review.text,
+                     review.published_at),
+                     tuple(ClaimView(c.claim_id,
+                    c.text,
+                    c.claim_type,
+                    "UNVERIFIED") for c in claims),
+                     tuple(PolicySignalView(s.code,
+                    s.status,
+                    s.justification) for s in signals),
+                     evidence,
+                     (),
+                     tuple(Contradiction(c["contradiction_id"],
+                    c["description"],
+                    c["claim_id"],
+                    tuple(c["evidence_ids"]),
+                    True) for c in contradictions))
                 missing = missing_evidence_tasks(ws, required)
                 key=(user.organization_id,cid)
-                items=self.case_review.ensure_checklist(organization_id=user.organization_id, case_id=cid, has_policy_signals=bool(signals), contradiction_count=len(contradictions), unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")), missing_evidence_count=len(missing))
-                readiness=self.case_review.readiness(case_id=cid, organization_id=user.organization_id, items=items, contradiction_count=len(contradictions), unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")), missing_evidence_count=len(missing))
+                                items=self.case_review.ensure_checklist(organization_id=user.organization_id,
+                     case_id=cid,
+                     has_policy_signals=bool(signals),
+                     contradiction_count=len(contradictions),
+                     unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")),
+                    missing_evidence_count=len(missing))
+                                readiness=self.case_review.readiness(case_id=cid,
+                     organization_id=user.organization_id,
+                     items=items,
+                     contradiction_count=len(contradictions),
+                     unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")),
+                    missing_evidence_count=len(missing))
                 return self._json(200, {"items":items, "readiness":asdict(readiness)})
             if method == "POST" and len(parts) == 5 and parts[4] == "review-checklist":
                 self._require_role(user, "OWNER", "ADMIN", "ANALYST")
                 body=self._body(environ); code=str(body.get("code","")).strip(); completed=body.get("completed")
                 if not code or not isinstance(completed,bool): raise APIError(422,"VALIDATION_ERROR","code and boolean completed are required")
                 review = self.store.reviews[(user.organization_id, case.review_id)]
-                claims=extract_claims(review); signals=classify_policy_signals(claims); contradictions=self.store.contradictions.get((user.organization_id,cid),[]); suggestions=self.store.fact_suggestions.get((user.organization_id,cid),[])
+                                claims=extract_claims(review); signals=classify_policy_signals(claims); contradictions=self.store.contradictions.get((user.organization_id,
+                    cid),
+                    []); suggestions=self.store.fact_suggestions.get((user.organization_id,
+                    cid),
+                    [])
                 required={}; [required.setdefault(cid2,[]).extend(s.evidence_required) for s in signals for cid2 in s.claim_ids]
                 evidence_rows=[e for (org,_),e in self.store.evidence.items() if org==user.organization_id and e.get("case_id")==cid]
-                evidence=tuple(EvidenceView(e["evidence_id"],e["filename"],e.get("content_type") or "UNKNOWN",e["sha256"],"VERIFIED" if e.get("verified") else "UNVERIFIED") for e in evidence_rows)
-                ws=CaseWorkspace(cid,user.organization_id,case.status,"NORMAL",ReviewSummary(review.review_id,review.rating,review.text,review.published_at),tuple(ClaimView(c.claim_id,c.text,c.claim_type,"UNVERIFIED") for c in claims),tuple(PolicySignalView(s.code,s.status,s.justification) for s in signals),evidence,(),tuple(Contradiction(c["contradiction_id"],c["description"],c["claim_id"],tuple(c["evidence_ids"]),True) for c in contradictions))
+                                evidence=tuple(EvidenceView(e["evidence_id"],
+                    e["filename"],
+                    e.get("content_type") or "UNKNOWN",
+                    e["sha256"],
+                    "VERIFIED" if e.get("verified") else "UNVERIFIED") for e in evidence_rows)
+                                ws=CaseWorkspace(cid,
+                    user.organization_id,
+                    case.status,
+                    "NORMAL",
+                    ReviewSummary(review.review_id,
+                    review.rating,
+                    review.text,
+                    review.published_at),
+                    tuple(ClaimView(c.claim_id,
+                    c.text,
+                    c.claim_type,
+                    "UNVERIFIED") for c in claims),
+                    tuple(PolicySignalView(s.code,
+                    s.status,
+                    s.justification) for s in signals),
+                    evidence,
+                    (),
+                    tuple(Contradiction(c["contradiction_id"],
+                    c["description"],
+                    c["claim_id"],
+                    tuple(c["evidence_ids"]),
+                    True) for c in contradictions))
                 missing=missing_evidence_tasks(ws,required); key=(user.organization_id,cid)
-                self.case_review.ensure_checklist(organization_id=user.organization_id, case_id=cid, has_policy_signals=bool(signals), contradiction_count=len(contradictions), unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")), missing_evidence_count=len(missing))
+                                self.case_review.ensure_checklist(organization_id=user.organization_id,
+                     case_id=cid,
+                     has_policy_signals=bool(signals),
+                     contradiction_count=len(contradictions),
+                     unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")),
+                    missing_evidence_count=len(missing))
                 try:
-                    row=self.case_review.update_item(organization_id=user.organization_id, case_id=cid, code=code, completed=completed, user_id=user.user_id, note=body.get("note"))
+                                        row=self.case_review.update_item(organization_id=user.organization_id,
+                         case_id=cid,
+                         code=code,
+                         completed=completed,
+                         user_id=user.user_id,
+                        note=body.get("note"))
                 except KeyError:
                     raise APIError(404,"NOT_FOUND","checklist item not found")
                 return self._json(200,{"item":row})
@@ -2261,12 +2722,55 @@ class ReviewDefenseAPI:
                 # Same advisory checklist, exposed as a compact readiness contract.
                 status, headers, body = self._json(200,{})
                 # Reuse checklist logic by requiring the checklist endpoint through internal construction below.
-                review=self.store.reviews[(user.organization_id,case.review_id)]; claims=extract_claims(review); signals=classify_policy_signals(claims); contradictions=self.store.contradictions.get((user.organization_id,cid),[]); suggestions=self.store.fact_suggestions.get((user.organization_id,cid),[])
-                evidence_rows=[e for (org,_),e in self.store.evidence.items() if org==user.organization_id and e.get("case_id")==cid]; evidence=tuple(EvidenceView(e["evidence_id"],e["filename"],e.get("content_type") or "UNKNOWN",e["sha256"],"VERIFIED" if e.get("verified") else "UNVERIFIED") for e in evidence_rows)
-                ws=CaseWorkspace(cid,user.organization_id,case.status,"NORMAL",ReviewSummary(review.review_id,review.rating,review.text,review.published_at),tuple(ClaimView(c.claim_id,c.text,c.claim_type,"UNVERIFIED") for c in claims),tuple(PolicySignalView(s.code,s.status,s.justification) for s in signals),evidence,(),tuple(Contradiction(c["contradiction_id"],c["description"],c["claim_id"],tuple(c["evidence_ids"]),True) for c in contradictions)); missing=missing_evidence_tasks(ws,{c.claim_id:[] for c in claims})
+                                review=self.store.reviews[(user.organization_id,
+                    case.review_id)]; claims=extract_claims(review); signals=classify_policy_signals(claims); contradictions=self.store.contradictions.get((user.organization_id,
+                    cid),
+                    []); suggestions=self.store.fact_suggestions.get((user.organization_id,
+                    cid),
+                    [])
+                                evidence_rows=[e for (org,
+                    _),
+                    e in self.store.evidence.items() if org==user.organization_id and e.get("case_id")==cid]; evidence=tuple(EvidenceView(e["evidence_id"],
+                    e["filename"],
+                    e.get("content_type") or "UNKNOWN",
+                    e["sha256"],
+                    "VERIFIED" if e.get("verified") else "UNVERIFIED") for e in evidence_rows)
+                                ws=CaseWorkspace(cid,
+                    user.organization_id,
+                    case.status,
+                    "NORMAL",
+                    ReviewSummary(review.review_id,
+                    review.rating,
+                    review.text,
+                    review.published_at),
+                    tuple(ClaimView(c.claim_id,
+                    c.text,
+                    c.claim_type,
+                    "UNVERIFIED") for c in claims),
+                    tuple(PolicySignalView(s.code,
+                    s.status,
+                    s.justification) for s in signals),
+                    evidence,
+                    (),
+                    tuple(Contradiction(c["contradiction_id"],
+                    c["description"],
+                    c["claim_id"],
+                    tuple(c["evidence_ids"]),
+                    True) for c in contradictions)); missing=missing_evidence_tasks(ws,
+                    {c.claim_id:[] for c in claims})
                 key=(user.organization_id,cid)
-                items=self.case_review.ensure_checklist(organization_id=user.organization_id, case_id=cid, has_policy_signals=bool(signals), contradiction_count=len(contradictions), unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")), missing_evidence_count=len(missing))
-                readiness=self.case_review.readiness(case_id=cid, organization_id=user.organization_id, items=items, contradiction_count=len(contradictions), unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")), missing_evidence_count=len(missing))
+                                items=self.case_review.ensure_checklist(organization_id=user.organization_id,
+                     case_id=cid,
+                     has_policy_signals=bool(signals),
+                     contradiction_count=len(contradictions),
+                     unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")),
+                    missing_evidence_count=len(missing))
+                                readiness=self.case_review.readiness(case_id=cid,
+                     organization_id=user.organization_id,
+                     items=items,
+                     contradiction_count=len(contradictions),
+                     unverified_fact_count=sum(1 for x in suggestions if not x.get("verified")),
+                    missing_evidence_count=len(missing))
                 return self._json(200,{"readiness":asdict(readiness),"human_review_required":True})
             if method == "GET" and len(parts) == 5 and parts[4] == "contradictions":
                 rows = self.store.contradictions.get((user.organization_id, cid), [])
@@ -2295,10 +2799,15 @@ class ReviewDefenseAPI:
                 except KeyError as exc:
                     raise APIError(404,"NOT_FOUND",str(exc)) from exc
                 return self._json(200,{"case_id":cid,"matrix":matrix,"count":len(matrix),"requires_human_review":True})
-            if method == "GET" and len(parts) == 6 and parts[4] == "contradictions" and parts[5] in {x["contradiction_id"] for x in self.store.contradictions.get((user.organization_id,cid), [])}:
+                        if method == "GET" and len(parts) == 6 and parts[4] == "contradictions" and parts[5] in {x["contradiction_id"] for x in self.store.contradictions.get((user.organization_id,
+                cid),
+                [])}:
                 contradiction_id=parts[5]
                 row=next(x for x in self.store.contradictions[(user.organization_id,cid)] if x["contradiction_id"]==contradiction_id)
-                return self._json(200,{"contradiction":row,"disposition":self.store.contradiction_dispositions.get((user.organization_id,contradiction_id))})
+                                return self._json(200,
+                    {"contradiction":row,
+                    "disposition":self.store.contradiction_dispositions.get((user.organization_id,
+                    contradiction_id))})
             if method == "POST" and len(parts) == 7 and parts[4] == "contradictions" and parts[6] == "disposition":
                 self._require_role(user, "OWNER", "ADMIN", "ANALYST")
                 contradiction_id=parts[5]
@@ -2340,7 +2849,10 @@ class ReviewDefenseAPI:
                 return self._json(200, {"decision": asdict(decision), "snapshot_sha256": snap.sha256})
             if method == "POST" and len(parts) == 5 and parts[4] == "approve":
                 self._require_role(user, "OWNER", "ADMIN")
-                if not case.decision_id or (user.organization_id, cid) not in self.store.snapshots: raise APIError(409, "STATE_CONFLICT", "frozen decision required")
+                                if not case.decision_id or (user.organization_id,
+                     cid) not in self.store.snapshots: raise APIError(409,
+                     "STATE_CONFLICT",
+                    "frozen decision required")
                 try:
                     approved, event = self.case_decisions.approve(
                         case=case,
@@ -2370,7 +2882,11 @@ class ReviewDefenseAPI:
                 if self.repository is not None:
                     self.repository.revoke_session(user.organization_id, th)
                     if hasattr(self.repository, "security_event"):
-                        self.repository.security_event(user.organization_id, user.user_id, "LOGOUT", user.user_id, {"ip_hash": self._client_ip_hash(environ)})
+                                                self.repository.security_event(user.organization_id,
+                             user.user_id,
+                             "LOGOUT",
+                             user.user_id,
+                            {"ip_hash": self._client_ip_hash(environ)})
                 self.store.audit_event(user.organization_id, user.user_id, "LOGOUT", "session")
             return self._json(200, {"status": "logged_out"})
         raise APIError(404, "NOT_FOUND", "route not found")
@@ -2419,7 +2935,13 @@ class ReviewDefenseAPI:
             # Public marketing and authentication deep links use the same stable frontend shell.
             # Serving index.html here keeps direct navigation and refreshes working.
             path = "/index.html"
-        if path in {"/index.html", "/landing.html", "/workspace.html", "/workspace.js", "/workspace.css", "/styles.css", "/script.js"} or path.startswith("/assets/"):
+                if path in {"/index.html",
+             "/landing.html",
+             "/workspace.html",
+             "/workspace.js",
+             "/workspace.css",
+             "/styles.css",
+            "/script.js"} or path.startswith("/assets/"):
             from pathlib import Path
             import mimetypes
             root = Path(__file__).resolve().parents[1] / "frontend"
@@ -2445,7 +2967,22 @@ class ReviewDefenseAPI:
             status, headers, body = self._json(exc.status, {"error": {"code": exc.code, "message": exc.message, "details": exc.details}})
         except Exception:
             status, headers, body = self._json(500, {"error": {"code": "INTERNAL_ERROR", "message": "internal server error"}})
-        phrase = {200:"OK",201:"Created",302:"Found",400:"Bad Request",401:"Unauthorized",403:"Forbidden",404:"Not Found",409:"Conflict",413:"Payload Too Large",415:"Unsupported Media Type",422:"Unprocessable Entity",429:"Too Many Requests",500:"Internal Server Error",502:"Bad Gateway",503:"Service Unavailable"}.get(status,"Error")
+                phrase = {200:"OK",
+            201:"Created",
+            302:"Found",
+            400:"Bad Request",
+            401:"Unauthorized",
+            403:"Forbidden",
+            404:"Not Found",
+            409:"Conflict",
+            413:"Payload Too Large",
+            415:"Unsupported Media Type",
+            422:"Unprocessable Entity",
+            429:"Too Many Requests",
+            500:"Internal Server Error",
+            502:"Bad Gateway",
+            503:"Service Unavailable"}.get(status,
+            "Error")
         elapsed = (_time.perf_counter() - started) * 1000
         self.telemetry.increment("http_requests_total", labels={"method": environ.get("REQUEST_METHOD", "GET"), "path": path, "status": str(status)})
         self.telemetry.observe_ms("http_request_duration_ms", elapsed, labels={"method": environ.get("REQUEST_METHOD", "GET"), "path": path})

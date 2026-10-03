@@ -63,7 +63,13 @@ class NotificationWorker:
                 allowed, reason = evaluate(self.policy, level=n.escalation_level, channel=n.channel, now=now)
                 if not allowed:
                     skipped += 1
-                    if audit: audit(organization_id, actor_id, "ESCALATION_NOTIFICATION_BLOCKED", f"case:{n.case_id}", notification_id=n.notification_id, reason=reason, worker=True)
+                                        if audit: audit(organization_id,
+                         actor_id,
+                         "ESCALATION_NOTIFICATION_BLOCKED",
+                         f"case:{n.case_id}",
+                         notification_id=n.notification_id,
+                         reason=reason,
+                        worker=True)
                     continue
             processed += 1
             n.delivery_attempts = getattr(n, "delivery_attempts", 0) + 1
@@ -76,11 +82,24 @@ class NotificationWorker:
                     n.dead_lettered_at = now.isoformat()
                     n.next_attempt_at = None
                     dead += 1
-                    if audit: audit(organization_id, actor_id, "ESCALATION_NOTIFICATION_DEAD_LETTERED", f"case:{n.case_id}", notification_id=n.notification_id, attempts=n.delivery_attempts, error=str(exc))
+                                        if audit: audit(organization_id,
+                         actor_id,
+                         "ESCALATION_NOTIFICATION_DEAD_LETTERED",
+                         f"case:{n.case_id}",
+                         notification_id=n.notification_id,
+                         attempts=n.delivery_attempts,
+                        error=str(exc))
                 else:
                     n.next_attempt_at = (now + timedelta(seconds=backoff_seconds(n.delivery_attempts))).isoformat()
                     retried += 1
-                    if audit: audit(organization_id, actor_id, "ESCALATION_NOTIFICATION_RETRY_SCHEDULED", f"case:{n.case_id}", notification_id=n.notification_id, attempts=n.delivery_attempts, next_attempt_at=n.next_attempt_at, error=str(exc))
+                                        if audit: audit(organization_id,
+                         actor_id,
+                         "ESCALATION_NOTIFICATION_RETRY_SCHEDULED",
+                         f"case:{n.case_id}",
+                         notification_id=n.notification_id,
+                         attempts=n.delivery_attempts,
+                         next_attempt_at=n.next_attempt_at,
+                        error=str(exc))
                 if persist: persist(n)
                 continue
             n.status = "SENT"
@@ -89,6 +108,13 @@ class NotificationWorker:
             n.delivery_error = None
             n.next_attempt_at = None
             sent += 1
-            if audit: audit(organization_id, actor_id, "ESCALATION_NOTIFICATION_DELIVERED", f"case:{n.case_id}", notification_id=n.notification_id, channel=n.channel, provider=result.provider, worker=True)
+                        if audit: audit(organization_id,
+                 actor_id,
+                 "ESCALATION_NOTIFICATION_DELIVERED",
+                 f"case:{n.case_id}",
+                 notification_id=n.notification_id,
+                 channel=n.channel,
+                 provider=result.provider,
+                worker=True)
             if persist: persist(n)
         return WorkerResult(processed, sent, retried, dead, skipped)
