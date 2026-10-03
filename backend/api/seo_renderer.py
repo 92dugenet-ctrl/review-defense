@@ -270,17 +270,36 @@ def render_page(path: str) -> bytes:
         "text":a}} for q,
         a in faq]})
     schema={"@context":"https://schema.org","@graph":schema_graph}
-    doc=f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{html.escape(_title_tag(slug,title))}</title><meta name="description" content="{html.escape(meta)}">
+    doc=f(
+        f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{html.escape(_title_tag(slug,title))}</title>'''
+        f'''<meta name="description" content="{html.escape(meta)}">
 <link rel="canonical" href="{html.escape(canonical)}"><meta name="robots" content="index,follow,max-image-preview:large">
-<meta property="og:type" content="article"><meta property="og:title" content="{html.escape(_title_tag(slug,title))}"><meta property="og:description" content="{html.escape(meta)}"><meta property="og:url" content="{html.escape(canonical)}">
-<link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css?v=6500"><link rel="stylesheet" href="/assets/seo.css?v=6500"><style>{_RD_HEADER_CSS}</style>
-<script type="application/ld+json">{json.dumps(schema,ensure_ascii=False,separators=(",",":"))}</script></head><body>
-<div class="marketing"><header class="rd-top"><a class="rd-brand" href="/"><span class="rd-mark">◆</span> Review Defense</a><nav class="rd-nav" aria-label="Navigation principale"><a href="/services">Services</a><a href="/fonctionnement">Fonctionnement</a><a href="/resources">Resources</a><a href="/about">About</a><a href="/tarif">Tarif</a></nav><div class="rd-actions"><a class="rd-search" href="/resources">⌕</a><a class="rd-btn rd-btn-blue" href="/inscription">Analyser un avis</a></div><button class="rd-menu" aria-label="Menu">☰</button></header>
-<main class="seo-main"><nav class="breadcrumbs"><a href="/">Accueil</a><span>›</span><a href="/{hub_slug}/">{html.escape(hub_title)}</a><span>›</span><span>{html.escape(title)}</span></nav><header class="seo-hero"><div class="seo-hero-copy"><span>{html.escape(_cluster(slug).upper())}</span><h1>{html.escape(title)}</h1><p>{html.escape(meta)}</p><div class="seo-keyword">Sujet : {html.escape(keyword)}</div></div><div class="seo-hero-visual" style="background-image:url('{_article_visual(slug)}')" aria-hidden="true"></div></header>{_body(slug,
+<meta property="og:type" content="article">'''
+        f'''<meta property="og:title" content="{html.escape(_title_tag(slug,title))}"><meta property="og:description" content="{html.escape(meta)}">'''
+        f'''<meta property="og:url" content="{html.escape(canonical)}">
+<link rel="stylesheet" href="/assets/app.css"><link rel="stylesheet" href="/assets/public.css?v=6500">'''
+        f'''<link rel="stylesheet" href="/assets/seo.css?v=6500"><style>{_RD_HEADER_CSS}</style>
+<script type="application/ld+json">{json.dumps(schema,ensure_ascii=False,separators=(",",":"))}</script>'''
+        f'''</head><body>
+<div class="marketing"><header class="rd-top"><a class="rd-brand" href="/"><span class="rd-mark">◆</span> Review Defense</a>'''
+        f'''<nav class="rd-nav" aria-label="Navigation principale"><a href="/services">Services</a><a href="/fonctionnement">Fonctionnement</a>'''
+        f'''<a href="/resources">Resources</a><a href="/about">About</a><a href="/tarif">Tarif</a></nav><div class="rd-actions">'''
+        f'''<a class="rd-search" href="/resources">⌕</a><a class="rd-btn rd-btn-blue" href="/inscription">Analyser un avis</a></div>'''
+        f'''<button class="rd-menu" aria-label="Menu">☰</button></header>
+<main class="seo-main"><nav class="breadcrumbs"><a href="/">Accueil</a>'''
+        f'''<span>›</span><a href="/{hub_slug}/">{html.escape(hub_title)}</a><span>›</span><span>{html.escape(title)}</span></nav>'''
+        f'''<header class="seo-hero"><div class="seo-hero-copy"><span>{html.escape(_cluster(slug).upper())}</span><h1>{html.escape(title)}</h1>'''
+        f'''<p>{html.escape(meta)}</p><div class="seo-keyword">Sujet : {html.escape(keyword)}</div></div><div class="seo-hero-visual" style="background-image:url('{_article_visual(slug)}')" aria-hidden="true">'''
+        f'''</div></header>{_body(slug,
     title,
-    keyword)}<aside class="seo-related"><h2>À lire ensuite</h2><ul>{related_html}</ul></aside></main>
-<footer class="public-footer"><div><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a><p>Analyse, qualification et accompagnement autour des avis en ligne.</p></div><div><b>Produit</b><a href="/produit/">Fonctionnalités</a><a href="/tarifs/">Tarifs</a></div><div><b>Ressources</b><a href="/ressources/">Guides</a><a href="/inscription">Analyser un avis</a></div></footer></div></body></html>'''
+    keyword)}<aside class="seo-related"><h2>À lire ensuite</h2><ul>{related_html}</ul>'''
+        f'''</aside></main>
+<footer class="public-footer"><div><a class="public-brand" href="/"><b class="brand-mark">◆</b> Review Defense</a>'''
+        f'''<p>Analyse, qualification et accompagnement autour des avis en ligne.</p></div><div><b>Produit</b><a href="/produit/">Fonctionnalités</a>'''
+        f'''<a href="/tarifs/">Tarifs</a></div><div><b>Ressources</b><a href="/ressources/">Guides</a><a href="/inscription">Analyser un avis</a>'''
+        f'''</div></footer></div></body></html>'''
+    )
     return doc.encode("utf-8")
 
 def sitemap() -> bytes:
