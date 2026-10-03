@@ -2,18 +2,18 @@
 
 ## Rôle
 
-Composants réutilisables du site vitrine : navigation, pied de page, animations et assemblage des blocs de page.
+Zone de transition contenant uniquement des variantes publiques historiques qui ne sont pas les composants canoniques du build React.
 
 ## Organisation
 
-- `PublicHeader.tsx` et `PublicFooter.tsx` : chrome commun du site.
-- `MuseMotion.tsx` : comportement/animation transversale.
-- `muse/` : sections et compositions propres aux pages Home, Product, Method, Pricing, Security et Contact.
+- `muse/pricing/PricingCatalog.tsx` : ancienne variante du catalogue de tarifs. Elle ne doit pas être confondue avec la version active sous `src/components/public/muse/pricing/`, qui comprend aussi le parcours d'abonnement PayPal.
+
+Les composants `PublicHeader.tsx` et `PublicFooter.tsx` ont été retirés de ce dossier car ils étaient strictement identiques aux composants canoniques `src/components/layout/PublicHeader.tsx` et `PublicFooter.tsx`.
 
 ## Dépendances
 
-Les composants dépendent de React et des styles/assets du site public. Ils ont un équivalent parallèle sous `src/components/public/`; vérifier les écarts avant toute fusion ou suppression.
+Le build Vite utilise `src/main.tsx` et le routeur actif importe les composants depuis `src/`. Ne pas réintroduire ici des copies de composants déjà présents dans `src/`.
 
 ## État
 
-Structure cible/copie de transition. Le build Vite configuré utilise actuellement `src/main.tsx`, pas un point d'entrée autonome dans ce dossier.
+Contenu conservé à titre historique. `PricingCatalog.tsx` est une variante ancienne non compilée par la configuration Vite actuelle.
