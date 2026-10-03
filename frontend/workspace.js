@@ -560,7 +560,7 @@ async function clientMonitoring(el){
    location_id:button.dataset.location});el.querySelector("#client-document-status").textContent=(result.reviews_synced||0) +
       " avis synchronisés.";
      await clientMonitoring(el)}catch(err){button.disabled=false;
-     el.querySelector("#client-document-status").textContent=err.message}});
+     el.querySelector("#client-document-status").textContent=err.message}}});
  const upload=el.querySelector("#client-document-input");
     if(upload)upload.onchange=async()=>{const status=el.querySelector("#client-document-status");
     for(const file of upload.files||[]){try{if(file.size>25*1024*1024)throw Error("Chaque document doit faire 25 Mo maximum.");
