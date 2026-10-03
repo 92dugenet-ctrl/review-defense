@@ -1810,17 +1810,21 @@ class ReviewDefenseAPI:
             if self.repository is not None:
                 if hasattr(self.repository, "revoke_all_sessions"): self.repository.revoke_all_sessions(user.organization_id, user.user_id)
                 if hasattr(self.repository, "update_password"): self.repository.update_password(user.organization_id, user.user_id, new_hash)
-                                if hasattr(self.repository,
-                     "put_session"): self.repository.put_session(user.organization_id,
-                     fresh.token_hash,
-                     user.user_id,
-                     user.role,
-                    fresh.expires_at.isoformat())
-                                if hasattr(self.repository,
-                     "security_event"): self.repository.security_event(user.organization_id,
-                     user.user_id,
-                     "PASSWORD_CHANGED",
-                    user.user_id)
+                if hasattr(self.repository, "put_session"):
+                    self.repository.put_session(
+                        user.organization_id,
+                        fresh.token_hash,
+                        user.user_id,
+                        user.role,
+                        fresh.expires_at.isoformat(),
+                    )
+                if hasattr(self.repository, "security_event"):
+                    self.repository.security_event(
+                        user.organization_id,
+                        user.user_id,
+                        "PASSWORD_CHANGED",
+                        user.user_id,
+                    )
             self.store.audit_event(user.organization_id, user.user_id, "PASSWORD_CHANGED", f"user:{user.user_id}")
             return self._json(200, {"status":"password_changed", "access_token":raw, "token_type":"Bearer", "expires_at":fresh.expires_at.isoformat()})
         if method == "POST" and path == "/v1/auth/rotate":
