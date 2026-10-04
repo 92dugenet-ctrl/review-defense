@@ -9,7 +9,7 @@ from .notification_outbox import Notification, create_notification
 from ..analysis.notification_policy import evaluate, validate_policy
 from .notification_observability import build_notification_metrics
 from .notification_worker import NotificationWorker, WorkerResult
-from .security_hardening import utc_now
+from ..authentication.security_hardening import utc_now
 
 
 class NotificationService:
