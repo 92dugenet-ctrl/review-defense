@@ -2074,11 +2074,13 @@ class ReviewDefenseAPI:
                     row["details"] = details
                     row["response_note"] = None
             self.store.privacy_requests[request_id] = row
-                        self.store.audit_event(user.organization_id,
-                 user.user_id,
-                 "PRIVACY_REQUEST_CREATED",
-                 f"privacy_request:{row['id']}",
-                request_type=request_type)
+            self.store.audit_event(
+                user.organization_id,
+                user.user_id,
+                "PRIVACY_REQUEST_CREATED",
+                f"privacy_request:{row['id']}",
+                request_type=request_type,
+            )
             return self._json(201, {"request": row})
 
         if method == "GET" and path == "/v1/privacy/consents":
