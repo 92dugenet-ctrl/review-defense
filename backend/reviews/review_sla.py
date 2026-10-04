@@ -2,7 +2,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from .business_calendar import BusinessCalendar, default_calendar
+from ..api.business_calendar import BusinessCalendar, default_calendar
 
 SLA_HOURS = {"CRITICAL": 4, "HIGH": 12, "NORMAL": 24, "LOW": 72}
 

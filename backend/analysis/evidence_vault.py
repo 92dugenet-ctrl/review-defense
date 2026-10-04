@@ -12,7 +12,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Protocol
 
-from .security_hardening import validate_upload
+from ..authentication.security_hardening import validate_upload
 
 MAX_PRESIGNED_SECONDS = 15 * 60
 

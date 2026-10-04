@@ -8,7 +8,7 @@ from hashlib import sha256
 from typing import Any, Callable, Iterable
 from .contradiction_engine import EvidenceFact, detect_contradictions
 from .contradiction_disposition import make_disposition
-from .security_hardening import utc_now
+from ..authentication.security_hardening import utc_now
 
 class CaseContradictionService:
     def __init__(self, *, repository: Any = None, audit_event: Callable[..., Any] | None = None,

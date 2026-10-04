@@ -19,8 +19,8 @@ from .decision_workspace import (
     freeze_dossier,
     request_approval,
 )
-from .review_workspace import classify_policy_signals, extract_claims
-from .security_hardening import utc_now
+from ..reviews.review_workspace import classify_policy_signals, extract_claims
+from ..authentication.security_hardening import utc_now
 
 
 class CaseDecisionService:

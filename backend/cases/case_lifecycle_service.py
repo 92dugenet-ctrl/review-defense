@@ -9,7 +9,7 @@ import uuid
 from typing import Any, Callable
 
 from .case_service import Case, CaseService
-from .security_hardening import utc_now
+from ..authentication.security_hardening import utc_now
 
 
 class CaseLifecycleService:

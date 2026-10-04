@@ -13,7 +13,7 @@ from datetime import datetime, timezone, timedelta
 from typing import Callable, Iterable
 
 from .notification_delivery import DeliveryError, deliver
-from .notification_policy import NotificationPolicy, evaluate
+from ..analysis.notification_policy import NotificationPolicy, evaluate
 
 
 @dataclass(frozen=True)

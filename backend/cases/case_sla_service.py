@@ -7,9 +7,9 @@ from __future__ import annotations
 
 from typing import Any, Callable
 
-from .review_sla import SLAStatus, calculate_sla
-from .security_hardening import utc_now
-from .business_calendar import BusinessCalendar
+from ..reviews.review_sla import SLAStatus, calculate_sla
+from ..authentication.security_hardening import utc_now
+from ..api.business_calendar import BusinessCalendar
 
 
 class CaseSLAService:

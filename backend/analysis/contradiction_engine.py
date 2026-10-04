@@ -12,7 +12,7 @@ from hashlib import sha256
 import re
 from typing import Iterable
 
-from .review_workspace import ReviewClaim
+from ..reviews.review_workspace import ReviewClaim
 
 
 @dataclass(frozen=True)

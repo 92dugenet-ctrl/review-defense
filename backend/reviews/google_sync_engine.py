@@ -17,7 +17,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Callable, Mapping
 
-from .background_jobs import SQLiteJobQueue, JobWorker
+from ..api.background_jobs import SQLiteJobQueue, JobWorker
 from .google_business_profile import GoogleBusinessProfileClient, ReviewCache, ReviewSyncItem
 
 

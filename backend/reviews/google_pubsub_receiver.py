@@ -7,7 +7,7 @@ import base64,json
 from dataclasses import dataclass
 from typing import Any,Callable,Mapping
 from .google_sync_engine import ReviewEventParser
-from .postgres_sync import PostgresSyncRepository, PubSubReceipt
+from ..api.postgres_sync import PostgresSyncRepository, PubSubReceipt
 
 class PubSubAuthenticationError(PermissionError): pass
 @dataclass(frozen=True)

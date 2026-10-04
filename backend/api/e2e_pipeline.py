@@ -10,22 +10,22 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Callable
 
-from .decision_workspace import (
+from ..cases.decision_workspace import (
     approve_decision, attach_snapshot, create_decision, freeze_dossier,
     invalidate_if_modified, request_approval, snapshot_matches,
 )
-from .evidence_vault import InMemoryObjectStore, verify_integrity
+from ..analysis.evidence_vault import InMemoryObjectStore, verify_integrity
 from .operations_ui import (
     CaseWorkspace, ClaimView, EvidenceView, PolicySignalView, ReviewSummary,
     case_requires_human_review, create_evidence_document, missing_evidence_tasks,
     role_can_verify_evidence,
 )
-from .outcome_workspace import record_outcome
-from .review_workspace import ReviewContext, build_review_workspace
-from .security_hardening import (
+from ..analysis.outcome_workspace import record_outcome
+from ..reviews.review_workspace import ReviewContext, build_review_workspace
+from ..authentication.security_hardening import (
     Session, generate_session_token, require_tenant, utc_now as security_now,
 )
-from .submission_workspace import (
+from ..cases.submission_workspace import (
     approve_submission, create_submission, mark_submitted, prepare_submission,
     request_approval as request_submission_approval,
 )

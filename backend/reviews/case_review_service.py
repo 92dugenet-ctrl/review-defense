@@ -14,7 +14,7 @@ from .case_review import (
     assess_readiness,
     build_checklist,
 )
-from .security_hardening import utc_now
+from ..authentication.security_hardening import utc_now
 
 
 class CaseReviewService:

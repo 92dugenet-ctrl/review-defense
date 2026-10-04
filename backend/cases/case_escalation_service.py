@@ -7,14 +7,14 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import Any, Callable
 from .escalation_workflow import Escalation, signal_from_sla
-from .security_hardening import utc_now
+from ..authentication.security_hardening import utc_now
 from .case_sla_service import CaseSLAService
-from .operations_ui import (
+from ..api.operations_ui import (
     ReviewSummary, ClaimView, PolicySignalView, EvidenceView,
     Contradiction, CaseWorkspace, missing_evidence_tasks,
 )
-from .review_workspace import extract_claims, classify_policy_signals
-from .review_queue import score_case
+from ..reviews.review_workspace import extract_claims, classify_policy_signals
+from ..reviews.review_queue import score_case
 
 class CaseEscalationService:
     def __init__(self, *, store: Any, repository: Any = None,

@@ -6,7 +6,7 @@ from typing import Any, Callable
 
 from .notification_delivery import DeliveryError
 from .notification_outbox import Notification, create_notification
-from .notification_policy import evaluate, validate_policy
+from ..analysis.notification_policy import evaluate, validate_policy
 from .notification_observability import build_notification_metrics
 from .notification_worker import NotificationWorker, WorkerResult
 from .security_hardening import utc_now

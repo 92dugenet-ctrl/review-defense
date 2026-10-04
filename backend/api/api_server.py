@@ -18,50 +18,50 @@ from dataclasses import asdict, dataclass
 from typing import Any, Callable, Mapping
 from urllib.parse import parse_qs, urlsplit
 
-from .evidence_vault import FilesystemObjectStore, InMemoryObjectStore, sign_download_url, verify_integrity
-from .security_hardening import RateLimiter, Session, generate_session_token, hash_password, verify_password, utc_now, hash_token
+from ..analysis.evidence_vault import FilesystemObjectStore, InMemoryObjectStore, sign_download_url, verify_integrity
+from ..authentication.security_hardening import RateLimiter, Session, generate_session_token, hash_password, verify_password, utc_now, hash_token
 from .app_shell import SessionContext, can_access
-from .case_service import Case, CaseService
-from .case_lifecycle_service import CaseLifecycleService
-from .case_workspace_service import CaseWorkspaceService
-from .case_decision_service import CaseDecisionService
-from .case_submission_service import CaseSubmissionService
-from .case_approval_service import CaseApprovalService
-from .case_evidence_matrix_service import CaseEvidenceMatrixService
-from .case_operations_service import CaseOperationsService
-from .case_escalation_service import CaseEscalationService
-from .review_workspace import ReviewContext, extract_claims, classify_policy_signals
-from .contradiction_engine import EvidenceFact, detect_contradictions
-from .evidence_extraction import extract_text_fact_suggestions
-from .evidence_ocr import extract_readable_text, ExtractionError
-from .review_queue import score_case, sort_queue
-from .case_sla_service import CaseSLAService
+from ..cases.case_service import Case, CaseService
+from ..cases.case_lifecycle_service import CaseLifecycleService
+from ..cases.case_workspace_service import CaseWorkspaceService
+from ..cases.case_decision_service import CaseDecisionService
+from ..cases.case_submission_service import CaseSubmissionService
+from ..cases.case_approval_service import CaseApprovalService
+from ..analysis.case_evidence_matrix_service import CaseEvidenceMatrixService
+from ..cases.case_operations_service import CaseOperationsService
+from ..cases.case_escalation_service import CaseEscalationService
+from ..reviews.review_workspace import ReviewContext, extract_claims, classify_policy_signals
+from ..analysis.contradiction_engine import EvidenceFact, detect_contradictions
+from ..analysis.evidence_extraction import extract_text_fact_suggestions
+from ..analysis.evidence_ocr import extract_readable_text, ExtractionError
+from ..reviews.review_queue import score_case, sort_queue
+from ..cases.case_sla_service import CaseSLAService
 from .business_calendar import calendar_from_dict, default_calendar
-from .escalation_workflow import Escalation, signal_from_sla
-from .notification_outbox import Notification
-from .notification_service import NotificationService
-from .notification_delivery import deliver, DeliveryError
-from .notification_worker import NotificationWorker
-from .notification_policy import NotificationPolicy, validate_policy, evaluate
-from .notification_observability import build_notification_metrics
-from .case_review import ReviewChecklistItem, build_checklist, assess_readiness
-from .case_review_service import CaseReviewService
-from .case_contradiction_service import CaseContradictionService
-from .case_review_matrix import build_evidence_matrix
+from ..cases.escalation_workflow import Escalation, signal_from_sla
+from ..notifications.notification_outbox import Notification
+from ..notifications.notification_service import NotificationService
+from ..notifications.notification_delivery import deliver, DeliveryError
+from ..notifications.notification_worker import NotificationWorker
+from ..analysis.notification_policy import NotificationPolicy, validate_policy, evaluate
+from ..notifications.notification_observability import build_notification_metrics
+from ..reviews.case_review import ReviewChecklistItem, build_checklist, assess_readiness
+from ..reviews.case_review_service import CaseReviewService
+from ..analysis.case_contradiction_service import CaseContradictionService
+from ..reviews.case_review_matrix import build_evidence_matrix
 from .operations_ui import (
     ReviewSummary, ClaimView, PolicySignalView, EvidenceView, TimelineEvent,
     Contradiction, CaseWorkspace, missing_evidence_tasks, case_requires_human_review,
 )
-from .identity import normalize_email, validate_role, issue_session, can_manage_org
+from ..authentication.identity import normalize_email, validate_role, issue_session, can_manage_org
 from .production_config import ProductionConfig
-from .mfa import generate_secret, verify_totp, totp_code, otpauth_uri, encrypt_secret, decrypt_secret, recovery_token
-from .recovery_email import SMTPConfig, send_recovery_email, send_verification_email, RecoveryEmailError
+from ..authentication.mfa import generate_secret, verify_totp, totp_code, otpauth_uri, encrypt_secret, decrypt_secret, recovery_token
+from ..authentication.recovery_email import SMTPConfig, send_recovery_email, send_verification_email, RecoveryEmailError
 from .deployment import DeploymentConfig, security_headers
 from .observability import InMemoryTelemetry, TraceContext, health_check
 from .seo_renderer import is_seo_path, render_page, sitemap, robots
-from .billing_catalog import PAYPAL_SUBSCRIPTION_CLIENT_ID, get_offer, paypal_plan_id, public_catalog
-from .billing_service import account_status, plan_for_offer, public_plans
-from .paypal_client import configured as paypal_configured, configuration_status as paypal_configuration_status, verify_webhook as paypal_verify_webhook, request_json as paypal_request_json, access_token as paypal_access_token, PayPalError
+from ..billing.billing_catalog import PAYPAL_SUBSCRIPTION_CLIENT_ID, get_offer, paypal_plan_id, public_catalog
+from ..billing.billing_service import account_status, plan_for_offer, public_plans
+from ..billing.paypal_client import configured as paypal_configured, configuration_status as paypal_configuration_status, verify_webhook as paypal_verify_webhook, request_json as paypal_request_json, access_token as paypal_access_token, PayPalError
 
 
 class APIError(Exception):

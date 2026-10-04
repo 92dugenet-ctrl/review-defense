@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import uuid
 
-from .postgres_api_repository import PostgresAPIRepository
+from ..api.postgres_api_repository import PostgresAPIRepository
 
 
 class IdentityRepository(PostgresAPIRepository):

@@ -3,8 +3,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from .case_review_matrix import build_evidence_matrix
-from .review_workspace import extract_claims
+from ..reviews.case_review_matrix import build_evidence_matrix
+from ..reviews.review_workspace import extract_claims
 
 
 class CaseEvidenceMatrixService:

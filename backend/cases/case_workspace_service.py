@@ -7,8 +7,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from .review_workspace import extract_claims, classify_policy_signals
-from .operations_ui import (
+from ..reviews.review_workspace import extract_claims, classify_policy_signals
+from ..api.operations_ui import (
     ReviewSummary, ClaimView, PolicySignalView, EvidenceView, TimelineEvent,
     Contradiction, CaseWorkspace, missing_evidence_tasks,
 )
