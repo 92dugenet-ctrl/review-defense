@@ -1603,7 +1603,7 @@ class ReviewDefenseAPI:
                 # A bare hostname may omit its scheme, but a URI scheme such as
                 # javascript: must never be reinterpreted as a hostname.
                 scheme_like = re.match(r"^[a-z][a-z0-9+.-]*:", website, re.IGNORECASE)
-                host_with_port = re.match(r"^[a-z0-9.-]+:\\d+(?:/|$)", website, re.IGNORECASE)
+                host_with_port = re.match(r"^[a-z0-9.-]+:\d+(?:/|$)", website, re.IGNORECASE)
                 if scheme_like and "://" not in website and not host_with_port:
                     raise APIError(422, "VALIDATION_ERROR", "website must be a valid http(s) URL")
                 parsed = urlsplit(website if "://" in website else "https://" + website)
@@ -1953,11 +1953,16 @@ class ReviewDefenseAPI:
                 raise APIError(401,"MFA_INVALID","invalid MFA code")
             state={"enabled":True,"secret_enc":state["secret_enc"]}
             self.store.mfa[user.user_id]=state
-                        if self.repository is not None and hasattr(self.repository,
-                "set_mfa_secret"): self.repository.set_mfa_secret(user.organization_id,
-                user.user_id,
-                state["secret_enc"],
-                True)
+            if self.repository is not None and hasattr(
+                self.repository,
+                "set_mfa_secret",
+            ):
+                self.repository.set_mfa_secret(
+                    user.organization_id,
+                    user.user_id,
+                    state["secret_enc"],
+                    True,
+                )
             self.store.audit_event(user.organization_id,user.user_id,"MFA_ENABLED",f"user:{user.user_id}")
             return self._json(200,{"status":"enabled"})
 
