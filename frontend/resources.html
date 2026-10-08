@@ -161,6 +161,28 @@ body{background:#fff;color:var(--resources-ink)}
 .footer-grid a:hover{color:var(--resources-blue)}
 @media(prefers-reduced-motion:no-preference){.resources-grid .card .media{transition:border-color .2s,box-shadow .2s}.resources-grid .card:hover .media{border-color:#b7d2ee;box-shadow:0 10px 28px rgba(23,105,194,.08)}}
 </style>
+<style id="rd-guides-mosaic-css">
+.rd-guides{padding:88px max(24px,6.2vw) 110px;background:#f5f7f9;border-top:1px solid #e2e7eb}
+.rd-guides-heading{max-width:840px;margin:0 auto 48px;text-align:center}
+.rd-guides-eyebrow{margin:0 0 14px;color:#0878ee;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.rd-guides-heading h2{margin:0;color:#1f2d36;font-size:clamp(32px,4vw,48px);line-height:1.12;letter-spacing:-1.5px;font-weight:500}
+.rd-guides-heading>p:not(.rd-guides-eyebrow){max-width:760px;margin:22px auto 0;color:#586975;font-size:17px;line-height:1.65}
+.rd-guides-count{display:inline-flex;margin-top:20px;padding:8px 14px;border:1px solid #dce3e8;border-radius:999px;color:#52616b;background:#fff;font-size:13px}
+.rd-guides-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;max-width:1440px;margin:0 auto}
+.rd-guide-card{min-width:0;background:#fff;border:1px solid #e0e6eb;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.rd-guide-card:hover{transform:translateY(-3px);border-color:#b8d7f7;box-shadow:0 14px 35px rgba(25,55,85,.08)}
+.rd-guide-media{position:relative;display:block;background:#edf3f8;aspect-ratio:16/9;padding:22px;overflow:hidden}
+.rd-guide-media img{display:block;width:100%;height:100%;object-fit:contain}
+.rd-guide-number{position:absolute;left:16px;top:14px;color:#0878ee;font-size:12px;font-weight:700;letter-spacing:.08em}
+.rd-guide-copy{display:flex;flex-direction:column;align-items:flex-start;padding:23px 23px 25px;flex:1}
+.rd-guide-kicker{margin:0 0 12px;color:#657681;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.rd-guide-copy h3{margin:0;font-size:21px;line-height:1.3;font-weight:600;letter-spacing:-.3px;color:#1f2d36}
+.rd-guide-copy h3 a:hover{color:#0878ee}
+.rd-guide-copy>p:not(.rd-guide-kicker){margin:14px 0 22px;color:#5a6a75;font-size:14px;line-height:1.6}
+.rd-guide-link{display:inline-flex;gap:9px;align-items:center;margin-top:auto;color:#0878ee;font-size:14px;font-weight:700}
+@media(max-width:1050px){.rd-guides-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.rd-guides{padding:60px 18px 72px}.rd-guides-grid{grid-template-columns:1fr;gap:16px}.rd-guide-copy{padding:20px}.rd-guide-copy h3{font-size:20px}}
+</style>
 </head>
 <body>
 <header class="rd-top">
@@ -174,13 +196,705 @@ body{background:#fff;color:var(--resources-ink)}
 <main>
 <section class="hero" id="resources"><p class="eyebrow">Review Defense</p><h1>Tout ce qu’il faut pour<br/>comprendre et défendre<br/>votre réputation</h1><p class="hero-copy">Découvrez les ressources qui accompagnent Review Defense : analyse des avis, préparation des réponses, dossiers, suivi, sécurité et méthodes pour garder chaque décision sous votre contrôle.</p></section>
 <section class="container resources-grid"><div class="grid">
-<article class="card"><img alt="Chef d'entreprise examinant des résultats de recherche" class="media" src="/assets/review-defense-audit-e-reputation-photo.svg"/><h2>Audit e-réputation : la méthode complète pour dirigeants</h2><p>Un audit d’e-réputation identifie où et comment votre organisation apparaît en ligne, priorise les risques et fournit un plan d’actions concret.</p><a class="explore" href="/resources/audit-e-reputation.html"><span class="arrow">→</span>Lire l’article</a></article>
+<article class="card"><img alt="Chef d'entreprise examinant des résultats de recherche" class="media" src="/assets/review-defense-audit-e-reputation-photo.svg"/><h2>Audit e-réputation : la méthode complète pour dirigeants</h2><p>Un audit d’e-réputation identifie où et comment votre organisation apparaît en ligne, priorise les risques et fournit un plan d’actions concret.</p><a class="explore" href="#guides-articles"><span class="arrow">→</span>Lire l’article</a></article>
 <article class="card"><img alt="Responsable marketing en train d'analyser les avis des clients" class="media" src="/assets/review-defense-gestion-avis-photo.svg"/><h2>Gestion des avis : le guide pratique pour protéger votre réputation</h2><p>La gestion des avis permet de surveiller, collecter, analyser et répondre aux retours clients pour protéger votre réputation et améliorer votre offre.</p><a class="explore" href="/resources/gestion-des-avis.html"><span class="arrow">→</span>Lire l’article</a></article>
 <article class="card"><img alt="Dossiers & éléments — Review Defense" class="media" src="/assets/resources-dossier.svg"/><h2>Dossiers & éléments</h2><p>Centralisez l’avis, son contexte et les éléments disponibles dans un dossier clair. Retrouvez les informations utiles sans disperser le suivi.</p><a class="explore" href="/fonctionnement"><span class="arrow">→</span>Découvrir les dossiers</a></article>
 <article class="card"><img alt="Suivi & validation — Review Defense" class="media" src="/assets/resources-suivi.svg"/><h2>Suivi & validation</h2><p>Suivez chaque étape d’un dossier, de l’analyse à la validation puis au suivi. Les décisions importantes restent visibles et sous votre contrôle.</p><a class="explore" href="/fonctionnement"><span class="arrow">→</span>Voir le fonctionnement</a></article>
 <article class="card"><img alt="Sécurité & confidentialité — Review Defense" class="media" src="/assets/resources-securite.svg"/><h2>Sécurité & confidentialité</h2><p>Retrouvez les informations utiles dans un espace organisé et gardez la maîtrise des accès et des actions importantes selon les fonctionnalités disponibles.</p><a class="explore" href="/about"><span class="arrow">→</span>Découvrir la sécurité</a></article>
 <article class="card"><img alt="Publications & analyses — Review Defense" class="media" src="/assets/resources-publications.svg"/><h2>Publications & analyses</h2><p>Retrouvez les contenus consacrés aux avis en ligne, à l’analyse, à la réputation, à l’IA et aux méthodes utilisées par Review Defense.</p><a class="explore" href="/resources/audit-e-reputation.html"><span class="arrow">→</span>Audit e-réputation</a><a class="explore" href="/resources/gestion-des-avis.html"><span class="arrow">→</span>Gestion des avis</a></article>
 </div></section>
+<section class="rd-guides" id="guides-articles" aria-labelledby="rd-guides-title">
+  <div class="rd-guides-heading">
+    <p class="rd-guides-eyebrow">Centre de ressources</p>
+    <h2 id="rd-guides-title">Guides &amp; analyses sur les avis en ligne</h2>
+    <p>Explorez les sujets par article : détection des avis suspects, réponses aux avis négatifs, signalement, cadre juridique et gestion de la réputation. Un avis négatif n’est pas automatiquement un faux avis, et un score de suspicion ne constitue pas une preuve.</p>
+    <div class="rd-guides-count">62 guides disponibles dans le catalogue éditorial actuel</div>
+  </div>
+  <div class="rd-guides-grid">
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/suppression-avis-google/" aria-label="Suppression d'avis Google : guide complet">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">01</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/suppression-avis-google/">Suppression d'avis Google : guide complet</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/suppression-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/peut-on-supprimer-un-avis-google/" aria-label="Peut-on supprimer un avis Google ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">02</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/peut-on-supprimer-un-avis-google/">Peut-on supprimer un avis Google ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/peut-on-supprimer-un-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/comment-supprimer-un-avis-google/" aria-label="Comment supprimer un avis Google ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">03</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/comment-supprimer-un-avis-google/">Comment supprimer un avis Google ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/comment-supprimer-un-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/faux-avis-google/" aria-label="Faux avis Google : comment les reconnaître et les signaler ?">
+    <img src="/assets/resources-analyse.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">04</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/faux-avis-google/">Faux avis Google : comment les reconnaître et les signaler ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/faux-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/comment-reconnaitre-un-faux-avis-google/" aria-label="Comment reconnaître un faux avis Google ?">
+    <img src="/assets/resources-analyse.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">05</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/comment-reconnaitre-un-faux-avis-google/">Comment reconnaître un faux avis Google ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/comment-reconnaitre-un-faux-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/comment-prouver-qu-un-avis-google-est-faux/" aria-label="Comment prouver qu’un avis Google est faux ?">
+    <img src="/assets/resources-analyse.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">06</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/comment-prouver-qu-un-avis-google-est-faux/">Comment prouver qu’un avis Google est faux ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/comment-prouver-qu-un-avis-google-est-faux/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/comment-constituer-un-dossier-contre-un-faux-avis-google/" aria-label="Comment constituer un dossier contre un faux avis Google ?">
+    <img src="/assets/resources-analyse.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">07</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/comment-constituer-un-dossier-contre-un-faux-avis-google/">Comment constituer un dossier contre un faux avis Google ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/comment-constituer-un-dossier-contre-un-faux-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-faux-client/" aria-label="Avis Google d’un faux client : que faire ?">
+    <img src="/assets/resources-analyse.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">08</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-faux-client/">Avis Google d’un faux client : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-faux-client/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-personne-jamais-cliente/" aria-label="Avis Google d’une personne qui n’a jamais été cliente : que faire ?">
+    <img src="/assets/resources-reponse.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">09</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-personne-jamais-cliente/">Avis Google d’une personne qui n’a jamais été cliente : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-personne-jamais-cliente/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-concurrent/" aria-label="Avis Google publié par un concurrent : que faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">10</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-concurrent/">Avis Google publié par un concurrent : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-concurrent/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-ancien-salarie/" aria-label="Avis Google publié par un ancien salarié : que faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">11</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-ancien-salarie/">Avis Google publié par un ancien salarié : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-ancien-salarie/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-mensonger/" aria-label="Avis Google mensonger : que faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">12</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-mensonger/">Avis Google mensonger : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-mensonger/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-accusation-mensongere/" aria-label="Avis Google avec une accusation mensongère : que faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">13</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-accusation-mensongere/">Avis Google avec une accusation mensongère : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-accusation-mensongere/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-diffamatoire/" aria-label="Avis Google diffamatoire : que peut-on faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">14</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-diffamatoire/">Avis Google diffamatoire : que peut-on faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-diffamatoire/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-insultant/" aria-label="Avis Google insultant : comment le signaler ?">
+    <img src="/assets/resources-dossier.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">15</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-insultant/">Avis Google insultant : comment le signaler ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-insultant/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-discriminatoire/" aria-label="Avis Google avec des propos discriminatoires : que faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">16</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-discriminatoire/">Avis Google avec des propos discriminatoires : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-discriminatoire/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-hors-sujet/" aria-label="Avis Google hors sujet : que faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">17</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-hors-sujet/">Avis Google hors sujet : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-hors-sujet/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-informations-personnelles/" aria-label="Avis Google contenant des informations personnelles : que faire ?">
+    <img src="/assets/resources-securite.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">18</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-informations-personnelles/">Avis Google contenant des informations personnelles : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-informations-personnelles/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-mauvais-etablissement/" aria-label="Avis Google publié sur le mauvais établissement : que faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">19</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-mauvais-etablissement/">Avis Google publié sur le mauvais établissement : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-mauvais-etablissement/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-fausse-identite/" aria-label="Avis Google publié sous une fausse identité : que faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">20</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-fausse-identite/">Avis Google publié sous une fausse identité : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-fausse-identite/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/plusieurs-faux-avis-google/" aria-label="Plusieurs faux avis Google : que faire ?">
+    <img src="/assets/resources-analyse.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">21</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/plusieurs-faux-avis-google/">Plusieurs faux avis Google : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/plusieurs-faux-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/plusieurs-comptes-google-avis-similaires/" aria-label="Plusieurs comptes Google publient des avis similaires : que faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">22</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/plusieurs-comptes-google-avis-similaires/">Plusieurs comptes Google publient des avis similaires : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/plusieurs-comptes-google-avis-similaires/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-argent-ou-avantage/" aria-label="Avis Google en échange d’argent ou d’un avantage : que faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">23</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-argent-ou-avantage/">Avis Google en échange d’argent ou d’un avantage : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-argent-ou-avantage/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-contenu-promotionnel/" aria-label="Avis Google avec contenu promotionnel : que faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">24</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-contenu-promotionnel/">Avis Google avec contenu promotionnel : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-contenu-promotionnel/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-chantage/" aria-label="Avis Google qui fait du chantage : que faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">25</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-chantage/">Avis Google qui fait du chantage : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-chantage/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-menace/" aria-label="Avis Google qui menace une entreprise : que faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">26</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-menace/">Avis Google qui menace une entreprise : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-menace/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-conflit-client/" aria-label="Avis Google après un conflit client : que faire ?">
+    <img src="/assets/resources-reponse.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">27</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-conflit-client/">Avis Google après un conflit client : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-conflit-client/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-litige/" aria-label="Avis Google après un litige : que faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">28</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-litige/">Avis Google après un litige : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-litige/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-ancien-client/" aria-label="Avis Google publié par un ancien client : peut-il être supprimé ?">
+    <img src="/assets/resources-reponse.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">29</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-ancien-client/">Avis Google publié par un ancien client : peut-il être supprimé ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-ancien-client/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/signaler-un-avis-google/" aria-label="Comment signaler un avis Google ? Guide complet">
+    <img src="/assets/resources-dossier.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">30</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/signaler-un-avis-google/">Comment signaler un avis Google ? Guide complet</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/signaler-un-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/comment-signaler-un-avis-google-etape-par-etape/" aria-label="Comment signaler un avis Google étape par étape ?">
+    <img src="/assets/resources-dossier.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">31</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/comment-signaler-un-avis-google-etape-par-etape/">Comment signaler un avis Google étape par étape ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/comment-signaler-un-avis-google-etape-par-etape/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/comment-signaler-un-avis-google-google-maps/" aria-label="Comment signaler un avis Google depuis Google Maps ?">
+    <img src="/assets/resources-dossier.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">32</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/comment-signaler-un-avis-google-google-maps/">Comment signaler un avis Google depuis Google Maps ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/comment-signaler-un-avis-google-google-maps/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/comment-signaler-un-avis-google-business-profile/" aria-label="Comment signaler un avis Google depuis Google Business Profile ?">
+    <img src="/assets/resources-dossier.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">33</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/comment-signaler-un-avis-google-business-profile/">Comment signaler un avis Google depuis Google Business Profile ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/comment-signaler-un-avis-google-business-profile/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/comment-signaler-plusieurs-avis-google/" aria-label="Comment signaler plusieurs avis Google ?">
+    <img src="/assets/resources-dossier.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">34</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/comment-signaler-plusieurs-avis-google/">Comment signaler plusieurs avis Google ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/comment-signaler-plusieurs-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/comment-preparer-un-dossier-de-signalement-d-un-avis-google/" aria-label="Comment préparer un dossier de signalement d’un avis Google ?">
+    <img src="/assets/resources-dossier.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">35</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/comment-preparer-un-dossier-de-signalement-d-un-avis-google/">Comment préparer un dossier de signalement d’un avis Google ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/comment-preparer-un-dossier-de-signalement-d-un-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/combien-de-temps-suppression-avis-google/" aria-label="Combien de temps faut-il pour supprimer un avis Google ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">36</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/combien-de-temps-suppression-avis-google/">Combien de temps faut-il pour supprimer un avis Google ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/combien-de-temps-suppression-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/comment-savoir-si-google-a-accepte-mon-signalement/" aria-label="Comment savoir si Google a accepté mon signalement d’avis ?">
+    <img src="/assets/resources-dossier.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">37</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/comment-savoir-si-google-a-accepte-mon-signalement/">Comment savoir si Google a accepté mon signalement d’avis ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/comment-savoir-si-google-a-accepte-mon-signalement/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/comment-suivre-un-signalement-avis-google/" aria-label="Comment suivre un signalement d’avis Google ?">
+    <img src="/assets/resources-dossier.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">38</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/comment-suivre-un-signalement-avis-google/">Comment suivre un signalement d’avis Google ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/comment-suivre-un-signalement-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/que-faire-si-google-ne-repond-pas-a-mon-signalement/" aria-label="Que faire si Google ne répond pas à mon signalement d’avis ?">
+    <img src="/assets/resources-reponse.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">39</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/que-faire-si-google-ne-repond-pas-a-mon-signalement/">Que faire si Google ne répond pas à mon signalement d’avis ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/que-faire-si-google-ne-repond-pas-a-mon-signalement/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/que-faire-quand-google-refuse-de-supprimer-un-avis/" aria-label="Que faire quand Google refuse de supprimer un avis ?">
+    <img src="/assets/resources-dossier.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">40</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/que-faire-quand-google-refuse-de-supprimer-un-avis/">Que faire quand Google refuse de supprimer un avis ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/que-faire-quand-google-refuse-de-supprimer-un-avis/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/pourquoi-mon-avis-google-reste-en-ligne/" aria-label="Pourquoi mon avis Google reste en ligne ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">41</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/pourquoi-mon-avis-google-reste-en-ligne/">Pourquoi mon avis Google reste en ligne ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/pourquoi-mon-avis-google-reste-en-ligne/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/google-refuse-de-supprimer-mon-faux-avis-que-faire/" aria-label="Google refuse de supprimer mon faux avis : que faire ?">
+    <img src="/assets/resources-analyse.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">42</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/google-refuse-de-supprimer-mon-faux-avis-que-faire/">Google refuse de supprimer mon faux avis : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/google-refuse-de-supprimer-mon-faux-avis-que-faire/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/comment-faire-appel-apres-refus-suppression-avis-google/" aria-label="Comment faire appel après un refus de suppression d’un avis Google ?">
+    <img src="/assets/resources-dossier.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">43</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/comment-faire-appel-apres-refus-suppression-avis-google/">Comment faire appel après un refus de suppression d’un avis Google ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/comment-faire-appel-apres-refus-suppression-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/comment-contester-une-decision-concernant-un-avis-google/" aria-label="Comment contester une décision concernant un avis Google ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">44</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/comment-contester-une-decision-concernant-un-avis-google/">Comment contester une décision concernant un avis Google ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/comment-contester-une-decision-concernant-un-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-signalement-ou-reponse-publique/" aria-label="Avis Google : signalement ou réponse publique ?">
+    <img src="/assets/resources-reponse.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">45</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-signalement-ou-reponse-publique/">Avis Google : signalement ou réponse publique ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-signalement-ou-reponse-publique/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/comment-faire-supprimer-un-avis-google-qui-me-semble-faux/" aria-label="Comment faire supprimer un avis Google qui me semble faux ?">
+    <img src="/assets/resources-analyse.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">46</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/comment-faire-supprimer-un-avis-google-qui-me-semble-faux/">Comment faire supprimer un avis Google qui me semble faux ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/comment-faire-supprimer-un-avis-google-qui-me-semble-faux/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/que-faire-si-quelqu-un-a-laisse-un-avis-sans-etre-client/" aria-label="Que faire si quelqu’un a laissé un avis Google sans être client ?">
+    <img src="/assets/resources-reponse.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">47</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/que-faire-si-quelqu-un-a-laisse-un-avis-sans-etre-client/">Que faire si quelqu’un a laissé un avis Google sans être client ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/que-faire-si-quelqu-un-a-laisse-un-avis-sans-etre-client/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/google-refuse-de-supprimer-mon-faux-avis/" aria-label="Google refuse de supprimer mon faux avis : que faire ?">
+    <img src="/assets/resources-analyse.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">48</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/google-refuse-de-supprimer-mon-faux-avis/">Google refuse de supprimer mon faux avis : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/google-refuse-de-supprimer-mon-faux-avis/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/pourquoi-mon-avis-google-reste-en-ligne-conversationnel/" aria-label="Pourquoi mon avis Google reste en ligne ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">49</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/pourquoi-mon-avis-google-reste-en-ligne-conversationnel/">Pourquoi mon avis Google reste en ligne ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/pourquoi-mon-avis-google-reste-en-ligne-conversationnel/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/comment-savoir-si-un-avis-google-peut-etre-supprime/" aria-label="Comment savoir si un avis Google peut être supprimé ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">50</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/comment-savoir-si-un-avis-google-peut-etre-supprime/">Comment savoir si un avis Google peut être supprimé ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/comment-savoir-si-un-avis-google-peut-etre-supprime/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/que-faire-si-un-client-me-menace-avec-un-avis-google/" aria-label="Que faire si un client me menace avec un avis Google ?">
+    <img src="/assets/resources-reponse.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">51</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/que-faire-si-un-client-me-menace-avec-un-avis-google/">Que faire si un client me menace avec un avis Google ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/que-faire-si-un-client-me-menace-avec-un-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/peut-on-supprimer-un-avis-google-diffamatoire/" aria-label="Peut-on supprimer un avis Google diffamatoire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">52</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/peut-on-supprimer-un-avis-google-diffamatoire/">Peut-on supprimer un avis Google diffamatoire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/peut-on-supprimer-un-avis-google-diffamatoire/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/comment-faire-supprimer-plusieurs-faux-avis-google/" aria-label="Comment faire supprimer plusieurs faux avis Google ?">
+    <img src="/assets/resources-analyse.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">53</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/comment-faire-supprimer-plusieurs-faux-avis-google/">Comment faire supprimer plusieurs faux avis Google ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/comment-faire-supprimer-plusieurs-faux-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-menace-entreprise/" aria-label="Avis Google qui menace une entreprise : que faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">54</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-menace-entreprise/">Avis Google qui menace une entreprise : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-menace-entreprise/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-propos-discriminatoires/" aria-label="Avis Google avec propos discriminatoires : que faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">55</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-propos-discriminatoires/">Avis Google avec propos discriminatoires : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-propos-discriminatoires/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/avis-google-argent-avantage/" aria-label="Avis Google en échange d’argent ou d’un avantage : que faire ?">
+    <img src="/assets/resources-publications.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">56</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/avis-google-argent-avantage/">Avis Google en échange d’argent ou d’un avantage : que faire ?</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/avis-google-argent-avantage/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/analyse-avis-google/" aria-label="Analyse d’avis Google | Analyse et accompagnement">
+    <img src="/assets/resources-suivi.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">57</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/analyse-avis-google/">Analyse d’avis Google | Analyse et accompagnement</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/analyse-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/service-suppression-avis-google/" aria-label="Service de suppression d’avis Google | Analyse et accompagnement">
+    <img src="/assets/resources-suivi.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">58</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/service-suppression-avis-google/">Service de suppression d’avis Google | Analyse et accompagnement</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/service-suppression-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/agence-suppression-avis-google/" aria-label="Agence de suppression d’avis Google | Accompagnement">
+    <img src="/assets/resources-suivi.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">59</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/agence-suppression-avis-google/">Agence de suppression d’avis Google | Accompagnement</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/agence-suppression-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/expert-suppression-avis-google/" aria-label="Expert en suppression d’avis Google | Analyse de dossier">
+    <img src="/assets/resources-dossier.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">60</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/expert-suppression-avis-google/">Expert en suppression d’avis Google | Analyse de dossier</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/expert-suppression-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/faire-supprimer-avis-google/" aria-label="Faire supprimer un avis Google | Analyse et accompagnement">
+    <img src="/assets/resources-suivi.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">61</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/faire-supprimer-avis-google/">Faire supprimer un avis Google | Analyse et accompagnement</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/faire-supprimer-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<article class="rd-guide-card">
+  <a class="rd-guide-media" href="/prix-suppression-avis-google/" aria-label="Prix de la suppression d’un avis Google | Tarifs et analyse">
+    <img src="/assets/resources-suivi.svg" alt="" loading="lazy" width="640" height="360"/>
+    <span class="rd-guide-number">62</span>
+  </a>
+  <div class="rd-guide-copy"><p class="rd-guide-kicker">Guide pratique · Review Defense</p>
+    <h3><a href="/prix-suppression-avis-google/">Prix de la suppression d’un avis Google | Tarifs et analyse</a></h3>
+    <p>Repères, vérifications et étapes utiles pour traiter cette situation avec méthode, sans confondre un doute avec une preuve.</p>
+    <a class="rd-guide-link" href="/prix-suppression-avis-google/">Lire le guide <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+  </div>
+</section>
 </main>
 <footer><div class="footer-grid"><div class="footer-brand"><span class="logo-mark">◆</span>Review Defense</div><div><h4>Services</h4><a href="/services">Analyse des avis</a><a href="/fonctionnement">Protection</a></div><div><h4>Fonctionnement</h4><a href="/resources">Ressources</a><a href="/about">Review Defense</a></div><div><h4>About</h4><a href="/about">Sécurité</a><a href="/about">Confidentialité</a></div></div><small>© 2026 Review Defense</small></footer>
 <script src="script.js"></script>
