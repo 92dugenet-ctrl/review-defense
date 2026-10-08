@@ -1,0 +1,19 @@
+{
+  "id": "035",
+  "slug": "comment-constituer-un-dossier-probatoire-partir-d-un-score-de-suspicion",
+  "title": "Comment Constituer Un Dossier Probatoire Partir D Un Score De Suspicion",
+  "route": "/ressources/comment-constituer-un-dossier-probatoire-partir-d-un-score-de-suspicion/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/035-comment-constituer-un-dossier-probatoire-partir-d-un-score-de-suspicion.html",
+    "markdown": "articles/markdown/035-comment-constituer-un-dossier-probatoire-partir-d-un-score-de-suspicion.md",
+    "illustration": "illustrations/035-comment-constituer-un-dossier-probatoire-partir-d-un-score-de-suspicion.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

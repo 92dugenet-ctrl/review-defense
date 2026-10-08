@@ -1,0 +1,19 @@
+{
+  "id": "041",
+  "slug": "comment-documenter-les-signalements-effectu-s-sur-plusieurs-avis",
+  "title": "Comment Documenter Les Signalements Effectu S Sur Plusieurs Avis",
+  "route": "/ressources/comment-documenter-les-signalements-effectu-s-sur-plusieurs-avis/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/041-comment-documenter-les-signalements-effectu-s-sur-plusieurs-avis.html",
+    "markdown": "articles/markdown/041-comment-documenter-les-signalements-effectu-s-sur-plusieurs-avis.md",
+    "illustration": "illustrations/041-comment-documenter-les-signalements-effectu-s-sur-plusieurs-avis.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

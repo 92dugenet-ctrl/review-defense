@@ -1,0 +1,19 @@
+{
+  "id": "023",
+  "slug": "quels-motifs-permettent-r-ellement-de-demander-la-suppression-d-un-avis-google",
+  "title": "Quels Motifs Permettent R Ellement De Demander La Suppression D Un Avis Google",
+  "route": "/ressources/quels-motifs-permettent-r-ellement-de-demander-la-suppression-d-un-avis-google/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/023-quels-motifs-permettent-r-ellement-de-demander-la-suppression-d-un-avis-google.html",
+    "markdown": "articles/markdown/023-quels-motifs-permettent-r-ellement-de-demander-la-suppression-d-un-avis-google.md",
+    "illustration": "illustrations/023-quels-motifs-permettent-r-ellement-de-demander-la-suppression-d-un-avis-google.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

@@ -1,0 +1,17 @@
+{
+  "id": "001",
+  "slug": "example-slug",
+  "title": "Titre éditorial à importer",
+  "route": "/ressources/example-slug/",
+  "category": "à-classer",
+  "status": "draft",
+  "sourceFiles": {
+    "html": "articles/html/001-example-slug.html",
+    "markdown": "articles/markdown/001-example-slug.md",
+    "illustration": "illustrations/001-example-slug.svg"
+  },
+  "rendering": {
+    "entry": "article.md",
+    "illustration": "illustration.svg"
+  }
+}

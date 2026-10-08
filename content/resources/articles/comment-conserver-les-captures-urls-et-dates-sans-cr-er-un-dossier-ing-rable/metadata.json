@@ -1,0 +1,19 @@
+{
+  "id": "069",
+  "slug": "comment-conserver-les-captures-urls-et-dates-sans-cr-er-un-dossier-ing-rable",
+  "title": "Comment Conserver Les Captures Urls Et Dates Sans Cr Er Un Dossier Ing Rable",
+  "route": "/ressources/comment-conserver-les-captures-urls-et-dates-sans-cr-er-un-dossier-ing-rable/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/069-comment-conserver-les-captures-urls-et-dates-sans-cr-er-un-dossier-ing-rable.html",
+    "markdown": "articles/markdown/069-comment-conserver-les-captures-urls-et-dates-sans-cr-er-un-dossier-ing-rable.md",
+    "illustration": "illustrations/069-comment-conserver-les-captures-urls-et-dates-sans-cr-er-un-dossier-ing-rable.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "045",
+  "slug": "comment-surveiller-sa-r-putation-sans-passer-ses-journ-es-consulter-google",
+  "title": "Comment Surveiller Sa R Putation Sans Passer Ses Journ Es Consulter Google",
+  "route": "/ressources/comment-surveiller-sa-r-putation-sans-passer-ses-journ-es-consulter-google/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/045-comment-surveiller-sa-r-putation-sans-passer-ses-journ-es-consulter-google.html",
+    "markdown": "articles/markdown/045-comment-surveiller-sa-r-putation-sans-passer-ses-journ-es-consulter-google.md",
+    "illustration": "illustrations/045-comment-surveiller-sa-r-putation-sans-passer-ses-journ-es-consulter-google.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

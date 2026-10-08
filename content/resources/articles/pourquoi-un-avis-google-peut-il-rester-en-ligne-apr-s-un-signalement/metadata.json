@@ -1,0 +1,19 @@
+{
+  "id": "022",
+  "slug": "pourquoi-un-avis-google-peut-il-rester-en-ligne-apr-s-un-signalement",
+  "title": "Pourquoi Un Avis Google Peut Il Rester En Ligne Apr S Un Signalement",
+  "route": "/ressources/pourquoi-un-avis-google-peut-il-rester-en-ligne-apr-s-un-signalement/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/022-pourquoi-un-avis-google-peut-il-rester-en-ligne-apr-s-un-signalement.html",
+    "markdown": "articles/markdown/022-pourquoi-un-avis-google-peut-il-rester-en-ligne-apr-s-un-signalement.md",
+    "illustration": "illustrations/022-pourquoi-un-avis-google-peut-il-rester-en-ligne-apr-s-un-signalement.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

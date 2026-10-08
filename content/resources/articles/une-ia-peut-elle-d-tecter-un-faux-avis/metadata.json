@@ -1,0 +1,19 @@
+{
+  "id": "051",
+  "slug": "une-ia-peut-elle-d-tecter-un-faux-avis",
+  "title": "Une Ia Peut Elle D Tecter Un Faux Avis",
+  "route": "/ressources/une-ia-peut-elle-d-tecter-un-faux-avis/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/051-une-ia-peut-elle-d-tecter-un-faux-avis.html",
+    "markdown": "articles/markdown/051-une-ia-peut-elle-d-tecter-un-faux-avis.md",
+    "illustration": "illustrations/051-une-ia-peut-elle-d-tecter-un-faux-avis.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

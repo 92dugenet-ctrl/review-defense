@@ -1,0 +1,19 @@
+{
+  "id": "040",
+  "slug": "quelle-diff-rence-entre-signaler-un-avis-un-profil-et-un-probl-me-juridique",
+  "title": "Quelle Diff Rence Entre Signaler Un Avis Un Profil Et Un Probl Me Juridique",
+  "route": "/ressources/quelle-diff-rence-entre-signaler-un-avis-un-profil-et-un-probl-me-juridique/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/040-quelle-diff-rence-entre-signaler-un-avis-un-profil-et-un-probl-me-juridique.html",
+    "markdown": "articles/markdown/040-quelle-diff-rence-entre-signaler-un-avis-un-profil-et-un-probl-me-juridique.md",
+    "illustration": "illustrations/040-quelle-diff-rence-entre-signaler-un-avis-un-profil-et-un-probl-me-juridique.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

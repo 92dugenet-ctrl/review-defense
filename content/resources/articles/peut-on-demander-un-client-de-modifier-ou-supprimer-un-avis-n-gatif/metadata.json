@@ -1,0 +1,19 @@
+{
+  "id": "081",
+  "slug": "peut-on-demander-un-client-de-modifier-ou-supprimer-un-avis-n-gatif",
+  "title": "Peut On Demander Un Client De Modifier Ou Supprimer Un Avis N Gatif",
+  "route": "/ressources/peut-on-demander-un-client-de-modifier-ou-supprimer-un-avis-n-gatif/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/081-peut-on-demander-un-client-de-modifier-ou-supprimer-un-avis-n-gatif.html",
+    "markdown": "articles/markdown/081-peut-on-demander-un-client-de-modifier-ou-supprimer-un-avis-n-gatif.md",
+    "illustration": "illustrations/081-peut-on-demander-un-client-de-modifier-ou-supprimer-un-avis-n-gatif.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

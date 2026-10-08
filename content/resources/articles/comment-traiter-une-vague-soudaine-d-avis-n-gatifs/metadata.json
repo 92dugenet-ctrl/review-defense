@@ -1,0 +1,19 @@
+{
+  "id": "012",
+  "slug": "comment-traiter-une-vague-soudaine-d-avis-n-gatifs",
+  "title": "Comment Traiter Une Vague Soudaine D Avis N Gatifs",
+  "route": "/ressources/comment-traiter-une-vague-soudaine-d-avis-n-gatifs/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/012-comment-traiter-une-vague-soudaine-d-avis-n-gatifs.html",
+    "markdown": "articles/markdown/012-comment-traiter-une-vague-soudaine-d-avis-n-gatifs.md",
+    "illustration": "illustrations/012-comment-traiter-une-vague-soudaine-d-avis-n-gatifs.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

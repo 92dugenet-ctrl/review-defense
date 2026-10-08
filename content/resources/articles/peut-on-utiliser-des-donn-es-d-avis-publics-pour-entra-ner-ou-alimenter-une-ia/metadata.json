@@ -1,0 +1,19 @@
+{
+  "id": "053",
+  "slug": "peut-on-utiliser-des-donn-es-d-avis-publics-pour-entra-ner-ou-alimenter-une-ia",
+  "title": "Peut On Utiliser Des Donn Es D Avis Publics Pour Entra Ner Ou Alimenter Une Ia",
+  "route": "/ressources/peut-on-utiliser-des-donn-es-d-avis-publics-pour-entra-ner-ou-alimenter-une-ia/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/053-peut-on-utiliser-des-donn-es-d-avis-publics-pour-entra-ner-ou-alimenter-une-ia.html",
+    "markdown": "articles/markdown/053-peut-on-utiliser-des-donn-es-d-avis-publics-pour-entra-ner-ou-alimenter-une-ia.md",
+    "illustration": "illustrations/053-peut-on-utiliser-des-donn-es-d-avis-publics-pour-entra-ner-ou-alimenter-une-ia.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

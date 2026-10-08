@@ -1,0 +1,19 @@
+{
+  "id": "039",
+  "slug": "comment-pr-parer-un-signalement-solide-avant-de-contacter-google",
+  "title": "Comment Pr Parer Un Signalement Solide Avant De Contacter Google",
+  "route": "/ressources/comment-pr-parer-un-signalement-solide-avant-de-contacter-google/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/039-comment-pr-parer-un-signalement-solide-avant-de-contacter-google.html",
+    "markdown": "articles/markdown/039-comment-pr-parer-un-signalement-solide-avant-de-contacter-google.md",
+    "illustration": "illustrations/039-comment-pr-parer-un-signalement-solide-avant-de-contacter-google.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

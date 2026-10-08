@@ -1,0 +1,19 @@
+{
+  "id": "031",
+  "slug": "pourquoi-un-score-de-suspicion-ne-doit-il-pas-tre-pr-sent-comme-une-certitude",
+  "title": "Pourquoi Un Score De Suspicion Ne Doit Il Pas Tre Pr Sent Comme Une Certitude",
+  "route": "/ressources/pourquoi-un-score-de-suspicion-ne-doit-il-pas-tre-pr-sent-comme-une-certitude/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/031-pourquoi-un-score-de-suspicion-ne-doit-il-pas-tre-pr-sent-comme-une-certitude.html",
+    "markdown": "articles/markdown/031-pourquoi-un-score-de-suspicion-ne-doit-il-pas-tre-pr-sent-comme-une-certitude.md",
+    "illustration": "illustrations/031-pourquoi-un-score-de-suspicion-ne-doit-il-pas-tre-pr-sent-comme-une-certitude.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

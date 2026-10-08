@@ -1,0 +1,19 @@
+{
+  "id": "008",
+  "slug": "faut-il-r-pondre-tous-les-avis-n-gatifs",
+  "title": "Faut Il R Pondre Tous Les Avis N Gatifs",
+  "route": "/ressources/faut-il-r-pondre-tous-les-avis-n-gatifs/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/008-faut-il-r-pondre-tous-les-avis-n-gatifs.html",
+    "markdown": "articles/markdown/008-faut-il-r-pondre-tous-les-avis-n-gatifs.md",
+    "illustration": "illustrations/008-faut-il-r-pondre-tous-les-avis-n-gatifs.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

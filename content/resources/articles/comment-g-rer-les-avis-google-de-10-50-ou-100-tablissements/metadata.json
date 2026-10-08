@@ -1,0 +1,19 @@
+{
+  "id": "071",
+  "slug": "comment-g-rer-les-avis-google-de-10-50-ou-100-tablissements",
+  "title": "Comment G Rer Les Avis Google De 10 50 Ou 100 Tablissements",
+  "route": "/ressources/comment-g-rer-les-avis-google-de-10-50-ou-100-tablissements/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/071-comment-g-rer-les-avis-google-de-10-50-ou-100-tablissements.html",
+    "markdown": "articles/markdown/071-comment-g-rer-les-avis-google-de-10-50-ou-100-tablissements.md",
+    "illustration": "illustrations/071-comment-g-rer-les-avis-google-de-10-50-ou-100-tablissements.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

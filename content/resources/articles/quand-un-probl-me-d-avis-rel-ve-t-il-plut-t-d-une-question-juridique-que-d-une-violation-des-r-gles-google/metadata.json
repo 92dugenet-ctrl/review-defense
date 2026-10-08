@@ -1,0 +1,19 @@
+{
+  "id": "042",
+  "slug": "quand-un-probl-me-d-avis-rel-ve-t-il-plut-t-d-une-question-juridique-que-d-une-violation-des-r-gles-google",
+  "title": "Quand Un Probl Me D Avis Rel Ve T Il Plut T D Une Question Juridique Que D Une Violation Des R Gles Google",
+  "route": "/ressources/quand-un-probl-me-d-avis-rel-ve-t-il-plut-t-d-une-question-juridique-que-d-une-violation-des-r-gles-google/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/042-quand-un-probl-me-d-avis-rel-ve-t-il-plut-t-d-une-question-juridique-que-d-une-violation-des-r-gles-google.html",
+    "markdown": "articles/markdown/042-quand-un-probl-me-d-avis-rel-ve-t-il-plut-t-d-une-question-juridique-que-d-une-violation-des-r-gles-google.md",
+    "illustration": "illustrations/042-quand-un-probl-me-d-avis-rel-ve-t-il-plut-t-d-une-question-juridique-que-d-une-violation-des-r-gles-google.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

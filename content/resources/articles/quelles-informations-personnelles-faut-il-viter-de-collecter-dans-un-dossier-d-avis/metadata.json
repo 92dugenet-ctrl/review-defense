@@ -1,0 +1,19 @@
+{
+  "id": "068",
+  "slug": "quelles-informations-personnelles-faut-il-viter-de-collecter-dans-un-dossier-d-avis",
+  "title": "Quelles Informations Personnelles Faut Il Viter De Collecter Dans Un Dossier D Avis",
+  "route": "/ressources/quelles-informations-personnelles-faut-il-viter-de-collecter-dans-un-dossier-d-avis/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/068-quelles-informations-personnelles-faut-il-viter-de-collecter-dans-un-dossier-d-avis.html",
+    "markdown": "articles/markdown/068-quelles-informations-personnelles-faut-il-viter-de-collecter-dans-un-dossier-d-avis.md",
+    "illustration": "illustrations/068-quelles-informations-personnelles-faut-il-viter-de-collecter-dans-un-dossier-d-avis.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

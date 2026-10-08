@@ -1,0 +1,19 @@
+{
+  "id": "082",
+  "slug": "quelles-sont-les-limites-juridiques-d-une-r-ponse-un-avis-en-france",
+  "title": "Quelles Sont Les Limites Juridiques D Une R Ponse Un Avis En France",
+  "route": "/ressources/quelles-sont-les-limites-juridiques-d-une-r-ponse-un-avis-en-france/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/082-quelles-sont-les-limites-juridiques-d-une-r-ponse-un-avis-en-france.html",
+    "markdown": "articles/markdown/082-quelles-sont-les-limites-juridiques-d-une-r-ponse-un-avis-en-france.md",
+    "illustration": "illustrations/082-quelles-sont-les-limites-juridiques-d-une-r-ponse-un-avis-en-france.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

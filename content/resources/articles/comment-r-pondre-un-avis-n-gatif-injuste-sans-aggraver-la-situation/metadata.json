@@ -1,0 +1,19 @@
+{
+  "id": "009",
+  "slug": "comment-r-pondre-un-avis-n-gatif-injuste-sans-aggraver-la-situation",
+  "title": "Comment R Pondre Un Avis N Gatif Injuste Sans Aggraver La Situation",
+  "route": "/ressources/comment-r-pondre-un-avis-n-gatif-injuste-sans-aggraver-la-situation/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/009-comment-r-pondre-un-avis-n-gatif-injuste-sans-aggraver-la-situation.html",
+    "markdown": "articles/markdown/009-comment-r-pondre-un-avis-n-gatif-injuste-sans-aggraver-la-situation.md",
+    "illustration": "illustrations/009-comment-r-pondre-un-avis-n-gatif-injuste-sans-aggraver-la-situation.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

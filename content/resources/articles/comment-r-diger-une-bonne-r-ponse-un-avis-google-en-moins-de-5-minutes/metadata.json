@@ -1,0 +1,19 @@
+{
+  "id": "015",
+  "slug": "comment-r-diger-une-bonne-r-ponse-un-avis-google-en-moins-de-5-minutes",
+  "title": "Comment R Diger Une Bonne R Ponse Un Avis Google En Moins De 5 Minutes",
+  "route": "/ressources/comment-r-diger-une-bonne-r-ponse-un-avis-google-en-moins-de-5-minutes/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/015-comment-r-diger-une-bonne-r-ponse-un-avis-google-en-moins-de-5-minutes.html",
+    "markdown": "articles/markdown/015-comment-r-diger-une-bonne-r-ponse-un-avis-google-en-moins-de-5-minutes.md",
+    "illustration": "illustrations/015-comment-r-diger-une-bonne-r-ponse-un-avis-google-en-moins-de-5-minutes.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

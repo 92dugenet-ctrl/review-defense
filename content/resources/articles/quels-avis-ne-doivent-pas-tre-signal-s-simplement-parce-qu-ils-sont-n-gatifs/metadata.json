@@ -1,0 +1,19 @@
+{
+  "id": "037",
+  "slug": "quels-avis-ne-doivent-pas-tre-signal-s-simplement-parce-qu-ils-sont-n-gatifs",
+  "title": "Quels Avis Ne Doivent Pas Tre Signal S Simplement Parce Qu Ils Sont N Gatifs",
+  "route": "/ressources/quels-avis-ne-doivent-pas-tre-signal-s-simplement-parce-qu-ils-sont-n-gatifs/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/037-quels-avis-ne-doivent-pas-tre-signal-s-simplement-parce-qu-ils-sont-n-gatifs.html",
+    "markdown": "articles/markdown/037-quels-avis-ne-doivent-pas-tre-signal-s-simplement-parce-qu-ils-sont-n-gatifs.md",
+    "illustration": "illustrations/037-quels-avis-ne-doivent-pas-tre-signal-s-simplement-parce-qu-ils-sont-n-gatifs.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

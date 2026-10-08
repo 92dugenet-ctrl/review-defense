@@ -1,0 +1,19 @@
+{
+  "id": "077",
+  "slug": "comment-d-ployer-une-analyse-ia-des-avis-grande-chelle-tout-en-gardant-un-contr-le-humain",
+  "title": "Comment D Ployer Une Analyse Ia Des Avis Grande Chelle Tout En Gardant Un Contr Le Humain",
+  "route": "/ressources/comment-d-ployer-une-analyse-ia-des-avis-grande-chelle-tout-en-gardant-un-contr-le-humain/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/077-comment-d-ployer-une-analyse-ia-des-avis-grande-chelle-tout-en-gardant-un-contr-le-humain.html",
+    "markdown": "articles/markdown/077-comment-d-ployer-une-analyse-ia-des-avis-grande-chelle-tout-en-gardant-un-contr-le-humain.md",
+    "illustration": "illustrations/077-comment-d-ployer-une-analyse-ia-des-avis-grande-chelle-tout-en-gardant-un-contr-le-humain.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

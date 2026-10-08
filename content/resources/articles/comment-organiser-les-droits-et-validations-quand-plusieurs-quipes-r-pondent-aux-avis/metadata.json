@@ -1,0 +1,19 @@
+{
+  "id": "075",
+  "slug": "comment-organiser-les-droits-et-validations-quand-plusieurs-quipes-r-pondent-aux-avis",
+  "title": "Comment Organiser Les Droits Et Validations Quand Plusieurs Quipes R Pondent Aux Avis",
+  "route": "/ressources/comment-organiser-les-droits-et-validations-quand-plusieurs-quipes-r-pondent-aux-avis/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/075-comment-organiser-les-droits-et-validations-quand-plusieurs-quipes-r-pondent-aux-avis.html",
+    "markdown": "articles/markdown/075-comment-organiser-les-droits-et-validations-quand-plusieurs-quipes-r-pondent-aux-avis.md",
+    "illustration": "illustrations/075-comment-organiser-les-droits-et-validations-quand-plusieurs-quipes-r-pondent-aux-avis.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

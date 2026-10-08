@@ -1,0 +1,19 @@
+{
+  "id": "010",
+  "slug": "comment-r-pondre-un-avis-n-gatif-qui-d-crit-pourtant-une-vraie-exp-rience",
+  "title": "Comment R Pondre Un Avis N Gatif Qui D Crit Pourtant Une Vraie Exp Rience",
+  "route": "/ressources/comment-r-pondre-un-avis-n-gatif-qui-d-crit-pourtant-une-vraie-exp-rience/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/010-comment-r-pondre-un-avis-n-gatif-qui-d-crit-pourtant-une-vraie-exp-rience.html",
+    "markdown": "articles/markdown/010-comment-r-pondre-un-avis-n-gatif-qui-d-crit-pourtant-une-vraie-exp-rience.md",
+    "illustration": "illustrations/010-comment-r-pondre-un-avis-n-gatif-qui-d-crit-pourtant-une-vraie-exp-rience.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

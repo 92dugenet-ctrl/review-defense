@@ -1,0 +1,19 @@
+{
+  "id": "055",
+  "slug": "pourquoi-faut-il-expliquer-les-crit-res-utilis-s-par-une-ia-de-scoring",
+  "title": "Pourquoi Faut Il Expliquer Les Crit Res Utilis S Par Une Ia De Scoring",
+  "route": "/ressources/pourquoi-faut-il-expliquer-les-crit-res-utilis-s-par-une-ia-de-scoring/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/055-pourquoi-faut-il-expliquer-les-crit-res-utilis-s-par-une-ia-de-scoring.html",
+    "markdown": "articles/markdown/055-pourquoi-faut-il-expliquer-les-crit-res-utilis-s-par-une-ia-de-scoring.md",
+    "illustration": "illustrations/055-pourquoi-faut-il-expliquer-les-crit-res-utilis-s-par-une-ia-de-scoring.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

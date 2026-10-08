@@ -1,0 +1,19 @@
+{
+  "id": "085",
+  "slug": "un-restaurant-re-oit-20-avis-n-gatifs-en-une-heure-comment-analyser-le-cas",
+  "title": "Un Restaurant Re Oit 20 Avis N Gatifs En Une Heure Comment Analyser Le Cas",
+  "route": "/ressources/un-restaurant-re-oit-20-avis-n-gatifs-en-une-heure-comment-analyser-le-cas/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/085-un-restaurant-re-oit-20-avis-n-gatifs-en-une-heure-comment-analyser-le-cas.html",
+    "markdown": "articles/markdown/085-un-restaurant-re-oit-20-avis-n-gatifs-en-une-heure-comment-analyser-le-cas.md",
+    "illustration": "illustrations/085-un-restaurant-re-oit-20-avis-n-gatifs-en-une-heure-comment-analyser-le-cas.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

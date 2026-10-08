@@ -1,0 +1,19 @@
+{
+  "id": "029",
+  "slug": "comment-construire-un-score-de-suspicion-pour-un-avis",
+  "title": "Comment Construire Un Score De Suspicion Pour Un Avis",
+  "route": "/ressources/comment-construire-un-score-de-suspicion-pour-un-avis/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/029-comment-construire-un-score-de-suspicion-pour-un-avis.html",
+    "markdown": "articles/markdown/029-comment-construire-un-score-de-suspicion-pour-un-avis.md",
+    "illustration": "illustrations/029-comment-construire-un-score-de-suspicion-pour-un-avis.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

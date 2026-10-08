@@ -1,0 +1,1556 @@
+{
+  "version": 1,
+  "baseRoute": "/ressources/",
+  "articleCount": 91,
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "status": "scaffold-awaiting-content-import",
+  "articles": [
+    {
+      "id": "001",
+      "slug": "comment-reconna-tre-un-faux-avis-google-sans-se-fier-uniquement-au-texte",
+      "title": "Comment Reconna Tre Un Faux Avis Google Sans Se Fier Uniquement Au Texte",
+      "route": "/ressources/comment-reconna-tre-un-faux-avis-google-sans-se-fier-uniquement-au-texte/",
+      "directory": "content/resources/articles/comment-reconna-tre-un-faux-avis-google-sans-se-fier-uniquement-au-texte/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/001-comment-reconna-tre-un-faux-avis-google-sans-se-fier-uniquement-au-texte.html",
+        "markdown": "articles/markdown/001-comment-reconna-tre-un-faux-avis-google-sans-se-fier-uniquement-au-texte.md",
+        "illustration": "illustrations/001-comment-reconna-tre-un-faux-avis-google-sans-se-fier-uniquement-au-texte.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "002",
+      "slug": "quels-signaux-permettent-de-rep-rer-un-profil-d-avis-suspect",
+      "title": "Quels Signaux Permettent De Rep Rer Un Profil D Avis Suspect",
+      "route": "/ressources/quels-signaux-permettent-de-rep-rer-un-profil-d-avis-suspect/",
+      "directory": "content/resources/articles/quels-signaux-permettent-de-rep-rer-un-profil-d-avis-suspect/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/002-quels-signaux-permettent-de-rep-rer-un-profil-d-avis-suspect.html",
+        "markdown": "articles/markdown/002-quels-signaux-permettent-de-rep-rer-un-profil-d-avis-suspect.md",
+        "illustration": "illustrations/002-quels-signaux-permettent-de-rep-rer-un-profil-d-avis-suspect.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "003",
+      "slug": "une-s-rie-d-avis-5-toiles-publi-s-en-quelques-heures-est-elle-forc-ment-suspecte",
+      "title": "Une S Rie D Avis 5 Toiles Publi S En Quelques Heures Est Elle Forc Ment Suspecte",
+      "route": "/ressources/une-s-rie-d-avis-5-toiles-publi-s-en-quelques-heures-est-elle-forc-ment-suspecte/",
+      "directory": "content/resources/articles/une-s-rie-d-avis-5-toiles-publi-s-en-quelques-heures-est-elle-forc-ment-suspecte/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/003-une-s-rie-d-avis-5-toiles-publi-s-en-quelques-heures-est-elle-forc-ment-suspecte.html",
+        "markdown": "articles/markdown/003-une-s-rie-d-avis-5-toiles-publi-s-en-quelques-heures-est-elle-forc-ment-suspecte.md",
+        "illustration": "illustrations/003-une-s-rie-d-avis-5-toiles-publi-s-en-quelques-heures-est-elle-forc-ment-suspecte.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "004",
+      "slug": "comment-distinguer-un-avis-tr-s-enthousiaste-d-un-avis-r-ellement-fictif",
+      "title": "Comment Distinguer Un Avis Tr S Enthousiaste D Un Avis R Ellement Fictif",
+      "route": "/ressources/comment-distinguer-un-avis-tr-s-enthousiaste-d-un-avis-r-ellement-fictif/",
+      "directory": "content/resources/articles/comment-distinguer-un-avis-tr-s-enthousiaste-d-un-avis-r-ellement-fictif/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/004-comment-distinguer-un-avis-tr-s-enthousiaste-d-un-avis-r-ellement-fictif.html",
+        "markdown": "articles/markdown/004-comment-distinguer-un-avis-tr-s-enthousiaste-d-un-avis-r-ellement-fictif.md",
+        "illustration": "illustrations/004-comment-distinguer-un-avis-tr-s-enthousiaste-d-un-avis-r-ellement-fictif.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "005",
+      "slug": "les-faux-avis-n-gatifs-existent-ils-vraiment-et-comment-les-identifier",
+      "title": "Les Faux Avis N Gatifs Existent Ils Vraiment Et Comment Les Identifier",
+      "route": "/ressources/les-faux-avis-n-gatifs-existent-ils-vraiment-et-comment-les-identifier/",
+      "directory": "content/resources/articles/les-faux-avis-n-gatifs-existent-ils-vraiment-et-comment-les-identifier/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/005-les-faux-avis-n-gatifs-existent-ils-vraiment-et-comment-les-identifier.html",
+        "markdown": "articles/markdown/005-les-faux-avis-n-gatifs-existent-ils-vraiment-et-comment-les-identifier.md",
+        "illustration": "illustrations/005-les-faux-avis-n-gatifs-existent-ils-vraiment-et-comment-les-identifier.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "006",
+      "slug": "que-dit-la-loi-fran-aise-sur-les-faux-avis-de-consommateurs",
+      "title": "Que Dit La Loi Fran Aise Sur Les Faux Avis De Consommateurs",
+      "route": "/ressources/que-dit-la-loi-fran-aise-sur-les-faux-avis-de-consommateurs/",
+      "directory": "content/resources/articles/que-dit-la-loi-fran-aise-sur-les-faux-avis-de-consommateurs/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/006-que-dit-la-loi-fran-aise-sur-les-faux-avis-de-consommateurs.html",
+        "markdown": "articles/markdown/006-que-dit-la-loi-fran-aise-sur-les-faux-avis-de-consommateurs.md",
+        "illustration": "illustrations/006-que-dit-la-loi-fran-aise-sur-les-faux-avis-de-consommateurs.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "007",
+      "slug": "que-faire-lorsqu-on-soup-onne-un-faux-avis-mais-qu-on-n-a-pas-de-preuve-directe",
+      "title": "Que Faire Lorsqu On Soup Onne Un Faux Avis Mais Qu On N A Pas De Preuve Directe",
+      "route": "/ressources/que-faire-lorsqu-on-soup-onne-un-faux-avis-mais-qu-on-n-a-pas-de-preuve-directe/",
+      "directory": "content/resources/articles/que-faire-lorsqu-on-soup-onne-un-faux-avis-mais-qu-on-n-a-pas-de-preuve-directe/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/007-que-faire-lorsqu-on-soup-onne-un-faux-avis-mais-qu-on-n-a-pas-de-preuve-directe.html",
+        "markdown": "articles/markdown/007-que-faire-lorsqu-on-soup-onne-un-faux-avis-mais-qu-on-n-a-pas-de-preuve-directe.md",
+        "illustration": "illustrations/007-que-faire-lorsqu-on-soup-onne-un-faux-avis-mais-qu-on-n-a-pas-de-preuve-directe.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "008",
+      "slug": "faut-il-r-pondre-tous-les-avis-n-gatifs",
+      "title": "Faut Il R Pondre Tous Les Avis N Gatifs",
+      "route": "/ressources/faut-il-r-pondre-tous-les-avis-n-gatifs/",
+      "directory": "content/resources/articles/faut-il-r-pondre-tous-les-avis-n-gatifs/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/008-faut-il-r-pondre-tous-les-avis-n-gatifs.html",
+        "markdown": "articles/markdown/008-faut-il-r-pondre-tous-les-avis-n-gatifs.md",
+        "illustration": "illustrations/008-faut-il-r-pondre-tous-les-avis-n-gatifs.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "009",
+      "slug": "comment-r-pondre-un-avis-n-gatif-injuste-sans-aggraver-la-situation",
+      "title": "Comment R Pondre Un Avis N Gatif Injuste Sans Aggraver La Situation",
+      "route": "/ressources/comment-r-pondre-un-avis-n-gatif-injuste-sans-aggraver-la-situation/",
+      "directory": "content/resources/articles/comment-r-pondre-un-avis-n-gatif-injuste-sans-aggraver-la-situation/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/009-comment-r-pondre-un-avis-n-gatif-injuste-sans-aggraver-la-situation.html",
+        "markdown": "articles/markdown/009-comment-r-pondre-un-avis-n-gatif-injuste-sans-aggraver-la-situation.md",
+        "illustration": "illustrations/009-comment-r-pondre-un-avis-n-gatif-injuste-sans-aggraver-la-situation.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "010",
+      "slug": "comment-r-pondre-un-avis-n-gatif-qui-d-crit-pourtant-une-vraie-exp-rience",
+      "title": "Comment R Pondre Un Avis N Gatif Qui D Crit Pourtant Une Vraie Exp Rience",
+      "route": "/ressources/comment-r-pondre-un-avis-n-gatif-qui-d-crit-pourtant-une-vraie-exp-rience/",
+      "directory": "content/resources/articles/comment-r-pondre-un-avis-n-gatif-qui-d-crit-pourtant-une-vraie-exp-rience/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/010-comment-r-pondre-un-avis-n-gatif-qui-d-crit-pourtant-une-vraie-exp-rience.html",
+        "markdown": "articles/markdown/010-comment-r-pondre-un-avis-n-gatif-qui-d-crit-pourtant-une-vraie-exp-rience.md",
+        "illustration": "illustrations/010-comment-r-pondre-un-avis-n-gatif-qui-d-crit-pourtant-une-vraie-exp-rience.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "011",
+      "slug": "que-faire-lorsqu-un-avis-n-gatif-contient-des-accusations-pr-cises",
+      "title": "Que Faire Lorsqu Un Avis N Gatif Contient Des Accusations Pr Cises",
+      "route": "/ressources/que-faire-lorsqu-un-avis-n-gatif-contient-des-accusations-pr-cises/",
+      "directory": "content/resources/articles/que-faire-lorsqu-un-avis-n-gatif-contient-des-accusations-pr-cises/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/011-que-faire-lorsqu-un-avis-n-gatif-contient-des-accusations-pr-cises.html",
+        "markdown": "articles/markdown/011-que-faire-lorsqu-un-avis-n-gatif-contient-des-accusations-pr-cises.md",
+        "illustration": "illustrations/011-que-faire-lorsqu-un-avis-n-gatif-contient-des-accusations-pr-cises.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "012",
+      "slug": "comment-traiter-une-vague-soudaine-d-avis-n-gatifs",
+      "title": "Comment Traiter Une Vague Soudaine D Avis N Gatifs",
+      "route": "/ressources/comment-traiter-une-vague-soudaine-d-avis-n-gatifs/",
+      "directory": "content/resources/articles/comment-traiter-une-vague-soudaine-d-avis-n-gatifs/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/012-comment-traiter-une-vague-soudaine-d-avis-n-gatifs.html",
+        "markdown": "articles/markdown/012-comment-traiter-une-vague-soudaine-d-avis-n-gatifs.md",
+        "illustration": "illustrations/012-comment-traiter-une-vague-soudaine-d-avis-n-gatifs.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "013",
+      "slug": "avis-n-gatif-faut-il-chercher-le-supprimer-ou-d-abord-y-r-pondre",
+      "title": "Avis N Gatif Faut Il Chercher Le Supprimer Ou D Abord Y R Pondre",
+      "route": "/ressources/avis-n-gatif-faut-il-chercher-le-supprimer-ou-d-abord-y-r-pondre/",
+      "directory": "content/resources/articles/avis-n-gatif-faut-il-chercher-le-supprimer-ou-d-abord-y-r-pondre/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/013-avis-n-gatif-faut-il-chercher-le-supprimer-ou-d-abord-y-r-pondre.html",
+        "markdown": "articles/markdown/013-avis-n-gatif-faut-il-chercher-le-supprimer-ou-d-abord-y-r-pondre.md",
+        "illustration": "illustrations/013-avis-n-gatif-faut-il-chercher-le-supprimer-ou-d-abord-y-r-pondre.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "014",
+      "slug": "comment-transformer-une-r-ponse-un-avis-n-gatif-en-signal-de-confiance-pour-les-futurs-clients",
+      "title": "Comment Transformer Une R Ponse Un Avis N Gatif En Signal De Confiance Pour Les Futurs Clients",
+      "route": "/ressources/comment-transformer-une-r-ponse-un-avis-n-gatif-en-signal-de-confiance-pour-les-futurs-clients/",
+      "directory": "content/resources/articles/comment-transformer-une-r-ponse-un-avis-n-gatif-en-signal-de-confiance-pour-les-futurs-clients/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/014-comment-transformer-une-r-ponse-un-avis-n-gatif-en-signal-de-confiance-pour-les-futurs-clients.html",
+        "markdown": "articles/markdown/014-comment-transformer-une-r-ponse-un-avis-n-gatif-en-signal-de-confiance-pour-les-futurs-clients.md",
+        "illustration": "illustrations/014-comment-transformer-une-r-ponse-un-avis-n-gatif-en-signal-de-confiance-pour-les-futurs-clients.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "015",
+      "slug": "comment-r-diger-une-bonne-r-ponse-un-avis-google-en-moins-de-5-minutes",
+      "title": "Comment R Diger Une Bonne R Ponse Un Avis Google En Moins De 5 Minutes",
+      "route": "/ressources/comment-r-diger-une-bonne-r-ponse-un-avis-google-en-moins-de-5-minutes/",
+      "directory": "content/resources/articles/comment-r-diger-une-bonne-r-ponse-un-avis-google-en-moins-de-5-minutes/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/015-comment-r-diger-une-bonne-r-ponse-un-avis-google-en-moins-de-5-minutes.html",
+        "markdown": "articles/markdown/015-comment-r-diger-une-bonne-r-ponse-un-avis-google-en-moins-de-5-minutes.md",
+        "illustration": "illustrations/015-comment-r-diger-une-bonne-r-ponse-un-avis-google-en-moins-de-5-minutes.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "016",
+      "slug": "que-faut-il-viter-de-dire-dans-une-r-ponse-un-avis-n-gatif",
+      "title": "Que Faut Il Viter De Dire Dans Une R Ponse Un Avis N Gatif",
+      "route": "/ressources/que-faut-il-viter-de-dire-dans-une-r-ponse-un-avis-n-gatif/",
+      "directory": "content/resources/articles/que-faut-il-viter-de-dire-dans-une-r-ponse-un-avis-n-gatif/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/016-que-faut-il-viter-de-dire-dans-une-r-ponse-un-avis-n-gatif.html",
+        "markdown": "articles/markdown/016-que-faut-il-viter-de-dire-dans-une-r-ponse-un-avis-n-gatif.md",
+        "illustration": "illustrations/016-que-faut-il-viter-de-dire-dans-une-r-ponse-un-avis-n-gatif.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "017",
+      "slug": "comment-r-pondre-un-client-en-col-re-sans-r-pondre-sur-le-m-me-ton",
+      "title": "Comment R Pondre Un Client En Col Re Sans R Pondre Sur Le M Me Ton",
+      "route": "/ressources/comment-r-pondre-un-client-en-col-re-sans-r-pondre-sur-le-m-me-ton/",
+      "directory": "content/resources/articles/comment-r-pondre-un-client-en-col-re-sans-r-pondre-sur-le-m-me-ton/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/017-comment-r-pondre-un-client-en-col-re-sans-r-pondre-sur-le-m-me-ton.html",
+        "markdown": "articles/markdown/017-comment-r-pondre-un-client-en-col-re-sans-r-pondre-sur-le-m-me-ton.md",
+        "illustration": "illustrations/017-comment-r-pondre-un-client-en-col-re-sans-r-pondre-sur-le-m-me-ton.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "018",
+      "slug": "comment-r-pondre-lorsqu-on-ne-retrouve-pas-le-client-dans-ses-dossiers",
+      "title": "Comment R Pondre Lorsqu On Ne Retrouve Pas Le Client Dans Ses Dossiers",
+      "route": "/ressources/comment-r-pondre-lorsqu-on-ne-retrouve-pas-le-client-dans-ses-dossiers/",
+      "directory": "content/resources/articles/comment-r-pondre-lorsqu-on-ne-retrouve-pas-le-client-dans-ses-dossiers/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/018-comment-r-pondre-lorsqu-on-ne-retrouve-pas-le-client-dans-ses-dossiers.html",
+        "markdown": "articles/markdown/018-comment-r-pondre-lorsqu-on-ne-retrouve-pas-le-client-dans-ses-dossiers.md",
+        "illustration": "illustrations/018-comment-r-pondre-lorsqu-on-ne-retrouve-pas-le-client-dans-ses-dossiers.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "019",
+      "slug": "faut-il-proposer-une-solution-publiquement-ou-d-placer-l-change-en-priv",
+      "title": "Faut Il Proposer Une Solution Publiquement Ou D Placer L Change En Priv",
+      "route": "/ressources/faut-il-proposer-une-solution-publiquement-ou-d-placer-l-change-en-priv/",
+      "directory": "content/resources/articles/faut-il-proposer-une-solution-publiquement-ou-d-placer-l-change-en-priv/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/019-faut-il-proposer-une-solution-publiquement-ou-d-placer-l-change-en-priv.html",
+        "markdown": "articles/markdown/019-faut-il-proposer-une-solution-publiquement-ou-d-placer-l-change-en-priv.md",
+        "illustration": "illustrations/019-faut-il-proposer-une-solution-publiquement-ou-d-placer-l-change-en-priv.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "020",
+      "slug": "comment-r-pondre-plusieurs-avis-similaires-sans-publier-des-r-ponses-copi-es-coll-es",
+      "title": "Comment R Pondre Plusieurs Avis Similaires Sans Publier Des R Ponses Copi Es Coll Es",
+      "route": "/ressources/comment-r-pondre-plusieurs-avis-similaires-sans-publier-des-r-ponses-copi-es-coll-es/",
+      "directory": "content/resources/articles/comment-r-pondre-plusieurs-avis-similaires-sans-publier-des-r-ponses-copi-es-coll-es/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/020-comment-r-pondre-plusieurs-avis-similaires-sans-publier-des-r-ponses-copi-es-coll-es.html",
+        "markdown": "articles/markdown/020-comment-r-pondre-plusieurs-avis-similaires-sans-publier-des-r-ponses-copi-es-coll-es.md",
+        "illustration": "illustrations/020-comment-r-pondre-plusieurs-avis-similaires-sans-publier-des-r-ponses-copi-es-coll-es.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "021",
+      "slug": "comment-industrialiser-les-r-ponses-aux-avis-tout-en-gardant-une-validation-humaine",
+      "title": "Comment Industrialiser Les R Ponses Aux Avis Tout En Gardant Une Validation Humaine",
+      "route": "/ressources/comment-industrialiser-les-r-ponses-aux-avis-tout-en-gardant-une-validation-humaine/",
+      "directory": "content/resources/articles/comment-industrialiser-les-r-ponses-aux-avis-tout-en-gardant-une-validation-humaine/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/021-comment-industrialiser-les-r-ponses-aux-avis-tout-en-gardant-une-validation-humaine.html",
+        "markdown": "articles/markdown/021-comment-industrialiser-les-r-ponses-aux-avis-tout-en-gardant-une-validation-humaine.md",
+        "illustration": "illustrations/021-comment-industrialiser-les-r-ponses-aux-avis-tout-en-gardant-une-validation-humaine.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "022",
+      "slug": "pourquoi-un-avis-google-peut-il-rester-en-ligne-apr-s-un-signalement",
+      "title": "Pourquoi Un Avis Google Peut Il Rester En Ligne Apr S Un Signalement",
+      "route": "/ressources/pourquoi-un-avis-google-peut-il-rester-en-ligne-apr-s-un-signalement/",
+      "directory": "content/resources/articles/pourquoi-un-avis-google-peut-il-rester-en-ligne-apr-s-un-signalement/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/022-pourquoi-un-avis-google-peut-il-rester-en-ligne-apr-s-un-signalement.html",
+        "markdown": "articles/markdown/022-pourquoi-un-avis-google-peut-il-rester-en-ligne-apr-s-un-signalement.md",
+        "illustration": "illustrations/022-pourquoi-un-avis-google-peut-il-rester-en-ligne-apr-s-un-signalement.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "023",
+      "slug": "quels-motifs-permettent-r-ellement-de-demander-la-suppression-d-un-avis-google",
+      "title": "Quels Motifs Permettent R Ellement De Demander La Suppression D Un Avis Google",
+      "route": "/ressources/quels-motifs-permettent-r-ellement-de-demander-la-suppression-d-un-avis-google/",
+      "directory": "content/resources/articles/quels-motifs-permettent-r-ellement-de-demander-la-suppression-d-un-avis-google/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/023-quels-motifs-permettent-r-ellement-de-demander-la-suppression-d-un-avis-google.html",
+        "markdown": "articles/markdown/023-quels-motifs-permettent-r-ellement-de-demander-la-suppression-d-un-avis-google.md",
+        "illustration": "illustrations/023-quels-motifs-permettent-r-ellement-de-demander-la-suppression-d-un-avis-google.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "024",
+      "slug": "comment-faire-appel-apr-s-le-refus-de-suppression-d-un-avis-google",
+      "title": "Comment Faire Appel Apr S Le Refus De Suppression D Un Avis Google",
+      "route": "/ressources/comment-faire-appel-apr-s-le-refus-de-suppression-d-un-avis-google/",
+      "directory": "content/resources/articles/comment-faire-appel-apr-s-le-refus-de-suppression-d-un-avis-google/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/024-comment-faire-appel-apr-s-le-refus-de-suppression-d-un-avis-google.html",
+        "markdown": "articles/markdown/024-comment-faire-appel-apr-s-le-refus-de-suppression-d-un-avis-google.md",
+        "illustration": "illustrations/024-comment-faire-appel-apr-s-le-refus-de-suppression-d-un-avis-google.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "025",
+      "slug": "combien-de-temps-faut-il-conserver-les-l-ments-li-s-un-avis-signal",
+      "title": "Combien De Temps Faut Il Conserver Les L Ments Li S Un Avis Signal",
+      "route": "/ressources/combien-de-temps-faut-il-conserver-les-l-ments-li-s-un-avis-signal/",
+      "directory": "content/resources/articles/combien-de-temps-faut-il-conserver-les-l-ments-li-s-un-avis-signal/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/025-combien-de-temps-faut-il-conserver-les-l-ments-li-s-un-avis-signal.html",
+        "markdown": "articles/markdown/025-combien-de-temps-faut-il-conserver-les-l-ments-li-s-un-avis-signal.md",
+        "illustration": "illustrations/025-combien-de-temps-faut-il-conserver-les-l-ments-li-s-un-avis-signal.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "026",
+      "slug": "pourquoi-google-supprime-parfois-des-avis-l-gitimes",
+      "title": "Pourquoi Google Supprime Parfois Des Avis L Gitimes",
+      "route": "/ressources/pourquoi-google-supprime-parfois-des-avis-l-gitimes/",
+      "directory": "content/resources/articles/pourquoi-google-supprime-parfois-des-avis-l-gitimes/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/026-pourquoi-google-supprime-parfois-des-avis-l-gitimes.html",
+        "markdown": "articles/markdown/026-pourquoi-google-supprime-parfois-des-avis-l-gitimes.md",
+        "illustration": "illustrations/026-pourquoi-google-supprime-parfois-des-avis-l-gitimes.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "027",
+      "slug": "comment-fonctionne-la-d-tection-automatique-des-faux-avis-sur-google-maps",
+      "title": "Comment Fonctionne La D Tection Automatique Des Faux Avis Sur Google Maps",
+      "route": "/ressources/comment-fonctionne-la-d-tection-automatique-des-faux-avis-sur-google-maps/",
+      "directory": "content/resources/articles/comment-fonctionne-la-d-tection-automatique-des-faux-avis-sur-google-maps/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/027-comment-fonctionne-la-d-tection-automatique-des-faux-avis-sur-google-maps.html",
+        "markdown": "articles/markdown/027-comment-fonctionne-la-d-tection-automatique-des-faux-avis-sur-google-maps.md",
+        "illustration": "illustrations/027-comment-fonctionne-la-d-tection-automatique-des-faux-avis-sur-google-maps.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "028",
+      "slug": "que-faire-en-cas-de-vague-d-avis-n-gatifs-ou-de-tentative-d-extorsion-sur-google",
+      "title": "Que Faire En Cas De Vague D Avis N Gatifs Ou De Tentative D Extorsion Sur Google",
+      "route": "/ressources/que-faire-en-cas-de-vague-d-avis-n-gatifs-ou-de-tentative-d-extorsion-sur-google/",
+      "directory": "content/resources/articles/que-faire-en-cas-de-vague-d-avis-n-gatifs-ou-de-tentative-d-extorsion-sur-google/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/028-que-faire-en-cas-de-vague-d-avis-n-gatifs-ou-de-tentative-d-extorsion-sur-google.html",
+        "markdown": "articles/markdown/028-que-faire-en-cas-de-vague-d-avis-n-gatifs-ou-de-tentative-d-extorsion-sur-google.md",
+        "illustration": "illustrations/028-que-faire-en-cas-de-vague-d-avis-n-gatifs-ou-de-tentative-d-extorsion-sur-google.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "029",
+      "slug": "comment-construire-un-score-de-suspicion-pour-un-avis",
+      "title": "Comment Construire Un Score De Suspicion Pour Un Avis",
+      "route": "/ressources/comment-construire-un-score-de-suspicion-pour-un-avis/",
+      "directory": "content/resources/articles/comment-construire-un-score-de-suspicion-pour-un-avis/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/029-comment-construire-un-score-de-suspicion-pour-un-avis.html",
+        "markdown": "articles/markdown/029-comment-construire-un-score-de-suspicion-pour-un-avis.md",
+        "illustration": "illustrations/029-comment-construire-un-score-de-suspicion-pour-un-avis.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "030",
+      "slug": "quels-signaux-peuvent-entrer-dans-un-score-de-suspicion-sans-devenir-une-preuve-automatique",
+      "title": "Quels Signaux Peuvent Entrer Dans Un Score De Suspicion Sans Devenir Une Preuve Automatique",
+      "route": "/ressources/quels-signaux-peuvent-entrer-dans-un-score-de-suspicion-sans-devenir-une-preuve-automatique/",
+      "directory": "content/resources/articles/quels-signaux-peuvent-entrer-dans-un-score-de-suspicion-sans-devenir-une-preuve-automatique/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/030-quels-signaux-peuvent-entrer-dans-un-score-de-suspicion-sans-devenir-une-preuve-automatique.html",
+        "markdown": "articles/markdown/030-quels-signaux-peuvent-entrer-dans-un-score-de-suspicion-sans-devenir-une-preuve-automatique.md",
+        "illustration": "illustrations/030-quels-signaux-peuvent-entrer-dans-un-score-de-suspicion-sans-devenir-une-preuve-automatique.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "031",
+      "slug": "pourquoi-un-score-de-suspicion-ne-doit-il-pas-tre-pr-sent-comme-une-certitude",
+      "title": "Pourquoi Un Score De Suspicion Ne Doit Il Pas Tre Pr Sent Comme Une Certitude",
+      "route": "/ressources/pourquoi-un-score-de-suspicion-ne-doit-il-pas-tre-pr-sent-comme-une-certitude/",
+      "directory": "content/resources/articles/pourquoi-un-score-de-suspicion-ne-doit-il-pas-tre-pr-sent-comme-une-certitude/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/031-pourquoi-un-score-de-suspicion-ne-doit-il-pas-tre-pr-sent-comme-une-certitude.html",
+        "markdown": "articles/markdown/031-pourquoi-un-score-de-suspicion-ne-doit-il-pas-tre-pr-sent-comme-une-certitude.md",
+        "illustration": "illustrations/031-pourquoi-un-score-de-suspicion-ne-doit-il-pas-tre-pr-sent-comme-une-certitude.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "032",
+      "slug": "comment-expliquer-un-utilisateur-pourquoi-un-avis-est-consid-r-comme-suspect",
+      "title": "Comment Expliquer Un Utilisateur Pourquoi Un Avis Est Consid R Comme Suspect",
+      "route": "/ressources/comment-expliquer-un-utilisateur-pourquoi-un-avis-est-consid-r-comme-suspect/",
+      "directory": "content/resources/articles/comment-expliquer-un-utilisateur-pourquoi-un-avis-est-consid-r-comme-suspect/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/032-comment-expliquer-un-utilisateur-pourquoi-un-avis-est-consid-r-comme-suspect.html",
+        "markdown": "articles/markdown/032-comment-expliquer-un-utilisateur-pourquoi-un-avis-est-consid-r-comme-suspect.md",
+        "illustration": "illustrations/032-comment-expliquer-un-utilisateur-pourquoi-un-avis-est-consid-r-comme-suspect.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "033",
+      "slug": "comment-viter-les-faux-positifs-dans-la-d-tection-d-avis-suspects",
+      "title": "Comment Viter Les Faux Positifs Dans La D Tection D Avis Suspects",
+      "route": "/ressources/comment-viter-les-faux-positifs-dans-la-d-tection-d-avis-suspects/",
+      "directory": "content/resources/articles/comment-viter-les-faux-positifs-dans-la-d-tection-d-avis-suspects/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/033-comment-viter-les-faux-positifs-dans-la-d-tection-d-avis-suspects.html",
+        "markdown": "articles/markdown/033-comment-viter-les-faux-positifs-dans-la-d-tection-d-avis-suspects.md",
+        "illustration": "illustrations/033-comment-viter-les-faux-positifs-dans-la-d-tection-d-avis-suspects.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "034",
+      "slug": "peut-on-d-tecter-une-campagne-d-avis-en-analysant-des-volumes-et-des-temporalit-s",
+      "title": "Peut On D Tecter Une Campagne D Avis En Analysant Des Volumes Et Des Temporalit S",
+      "route": "/ressources/peut-on-d-tecter-une-campagne-d-avis-en-analysant-des-volumes-et-des-temporalit-s/",
+      "directory": "content/resources/articles/peut-on-d-tecter-une-campagne-d-avis-en-analysant-des-volumes-et-des-temporalit-s/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/034-peut-on-d-tecter-une-campagne-d-avis-en-analysant-des-volumes-et-des-temporalit-s.html",
+        "markdown": "articles/markdown/034-peut-on-d-tecter-une-campagne-d-avis-en-analysant-des-volumes-et-des-temporalit-s.md",
+        "illustration": "illustrations/034-peut-on-d-tecter-une-campagne-d-avis-en-analysant-des-volumes-et-des-temporalit-s.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "035",
+      "slug": "comment-constituer-un-dossier-probatoire-partir-d-un-score-de-suspicion",
+      "title": "Comment Constituer Un Dossier Probatoire Partir D Un Score De Suspicion",
+      "route": "/ressources/comment-constituer-un-dossier-probatoire-partir-d-un-score-de-suspicion/",
+      "directory": "content/resources/articles/comment-constituer-un-dossier-probatoire-partir-d-un-score-de-suspicion/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/035-comment-constituer-un-dossier-probatoire-partir-d-un-score-de-suspicion.html",
+        "markdown": "articles/markdown/035-comment-constituer-un-dossier-probatoire-partir-d-un-score-de-suspicion.md",
+        "illustration": "illustrations/035-comment-constituer-un-dossier-probatoire-partir-d-un-score-de-suspicion.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "036",
+      "slug": "comment-signaler-correctement-un-avis-google-qui-viole-les-r-gles",
+      "title": "Comment Signaler Correctement Un Avis Google Qui Viole Les R Gles",
+      "route": "/ressources/comment-signaler-correctement-un-avis-google-qui-viole-les-r-gles/",
+      "directory": "content/resources/articles/comment-signaler-correctement-un-avis-google-qui-viole-les-r-gles/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/036-comment-signaler-correctement-un-avis-google-qui-viole-les-r-gles.html",
+        "markdown": "articles/markdown/036-comment-signaler-correctement-un-avis-google-qui-viole-les-r-gles.md",
+        "illustration": "illustrations/036-comment-signaler-correctement-un-avis-google-qui-viole-les-r-gles.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "037",
+      "slug": "quels-avis-ne-doivent-pas-tre-signal-s-simplement-parce-qu-ils-sont-n-gatifs",
+      "title": "Quels Avis Ne Doivent Pas Tre Signal S Simplement Parce Qu Ils Sont N Gatifs",
+      "route": "/ressources/quels-avis-ne-doivent-pas-tre-signal-s-simplement-parce-qu-ils-sont-n-gatifs/",
+      "directory": "content/resources/articles/quels-avis-ne-doivent-pas-tre-signal-s-simplement-parce-qu-ils-sont-n-gatifs/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/037-quels-avis-ne-doivent-pas-tre-signal-s-simplement-parce-qu-ils-sont-n-gatifs.html",
+        "markdown": "articles/markdown/037-quels-avis-ne-doivent-pas-tre-signal-s-simplement-parce-qu-ils-sont-n-gatifs.md",
+        "illustration": "illustrations/037-quels-avis-ne-doivent-pas-tre-signal-s-simplement-parce-qu-ils-sont-n-gatifs.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "038",
+      "slug": "que-faire-si-google-refuse-de-supprimer-un-avis-signal",
+      "title": "Que Faire Si Google Refuse De Supprimer Un Avis Signal",
+      "route": "/ressources/que-faire-si-google-refuse-de-supprimer-un-avis-signal/",
+      "directory": "content/resources/articles/que-faire-si-google-refuse-de-supprimer-un-avis-signal/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/038-que-faire-si-google-refuse-de-supprimer-un-avis-signal.html",
+        "markdown": "articles/markdown/038-que-faire-si-google-refuse-de-supprimer-un-avis-signal.md",
+        "illustration": "illustrations/038-que-faire-si-google-refuse-de-supprimer-un-avis-signal.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "039",
+      "slug": "comment-pr-parer-un-signalement-solide-avant-de-contacter-google",
+      "title": "Comment Pr Parer Un Signalement Solide Avant De Contacter Google",
+      "route": "/ressources/comment-pr-parer-un-signalement-solide-avant-de-contacter-google/",
+      "directory": "content/resources/articles/comment-pr-parer-un-signalement-solide-avant-de-contacter-google/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/039-comment-pr-parer-un-signalement-solide-avant-de-contacter-google.html",
+        "markdown": "articles/markdown/039-comment-pr-parer-un-signalement-solide-avant-de-contacter-google.md",
+        "illustration": "illustrations/039-comment-pr-parer-un-signalement-solide-avant-de-contacter-google.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "040",
+      "slug": "quelle-diff-rence-entre-signaler-un-avis-un-profil-et-un-probl-me-juridique",
+      "title": "Quelle Diff Rence Entre Signaler Un Avis Un Profil Et Un Probl Me Juridique",
+      "route": "/ressources/quelle-diff-rence-entre-signaler-un-avis-un-profil-et-un-probl-me-juridique/",
+      "directory": "content/resources/articles/quelle-diff-rence-entre-signaler-un-avis-un-profil-et-un-probl-me-juridique/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/040-quelle-diff-rence-entre-signaler-un-avis-un-profil-et-un-probl-me-juridique.html",
+        "markdown": "articles/markdown/040-quelle-diff-rence-entre-signaler-un-avis-un-profil-et-un-probl-me-juridique.md",
+        "illustration": "illustrations/040-quelle-diff-rence-entre-signaler-un-avis-un-profil-et-un-probl-me-juridique.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "041",
+      "slug": "comment-documenter-les-signalements-effectu-s-sur-plusieurs-avis",
+      "title": "Comment Documenter Les Signalements Effectu S Sur Plusieurs Avis",
+      "route": "/ressources/comment-documenter-les-signalements-effectu-s-sur-plusieurs-avis/",
+      "directory": "content/resources/articles/comment-documenter-les-signalements-effectu-s-sur-plusieurs-avis/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/041-comment-documenter-les-signalements-effectu-s-sur-plusieurs-avis.html",
+        "markdown": "articles/markdown/041-comment-documenter-les-signalements-effectu-s-sur-plusieurs-avis.md",
+        "illustration": "illustrations/041-comment-documenter-les-signalements-effectu-s-sur-plusieurs-avis.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "042",
+      "slug": "quand-un-probl-me-d-avis-rel-ve-t-il-plut-t-d-une-question-juridique-que-d-une-violation-des-r-gles-google",
+      "title": "Quand Un Probl Me D Avis Rel Ve T Il Plut T D Une Question Juridique Que D Une Violation Des R Gles Google",
+      "route": "/ressources/quand-un-probl-me-d-avis-rel-ve-t-il-plut-t-d-une-question-juridique-que-d-une-violation-des-r-gles-google/",
+      "directory": "content/resources/articles/quand-un-probl-me-d-avis-rel-ve-t-il-plut-t-d-une-question-juridique-que-d-une-violation-des-r-gles-google/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/042-quand-un-probl-me-d-avis-rel-ve-t-il-plut-t-d-une-question-juridique-que-d-une-violation-des-r-gles-google.html",
+        "markdown": "articles/markdown/042-quand-un-probl-me-d-avis-rel-ve-t-il-plut-t-d-une-question-juridique-que-d-une-violation-des-r-gles-google.md",
+        "illustration": "illustrations/042-quand-un-probl-me-d-avis-rel-ve-t-il-plut-t-d-une-question-juridique-que-d-une-violation-des-r-gles-google.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "043",
+      "slug": "comment-mesurer-la-r-putation-en-ligne-d-une-entreprise",
+      "title": "Comment Mesurer La R Putation En Ligne D Une Entreprise",
+      "route": "/ressources/comment-mesurer-la-r-putation-en-ligne-d-une-entreprise/",
+      "directory": "content/resources/articles/comment-mesurer-la-r-putation-en-ligne-d-une-entreprise/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/043-comment-mesurer-la-r-putation-en-ligne-d-une-entreprise.html",
+        "markdown": "articles/markdown/043-comment-mesurer-la-r-putation-en-ligne-d-une-entreprise.md",
+        "illustration": "illustrations/043-comment-mesurer-la-r-putation-en-ligne-d-une-entreprise.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "044",
+      "slug": "pourquoi-les-avis-en-ligne-influencent-ils-la-confiance-envers-une-entreprise",
+      "title": "Pourquoi Les Avis En Ligne Influencent Ils La Confiance Envers Une Entreprise",
+      "route": "/ressources/pourquoi-les-avis-en-ligne-influencent-ils-la-confiance-envers-une-entreprise/",
+      "directory": "content/resources/articles/pourquoi-les-avis-en-ligne-influencent-ils-la-confiance-envers-une-entreprise/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/044-pourquoi-les-avis-en-ligne-influencent-ils-la-confiance-envers-une-entreprise.html",
+        "markdown": "articles/markdown/044-pourquoi-les-avis-en-ligne-influencent-ils-la-confiance-envers-une-entreprise.md",
+        "illustration": "illustrations/044-pourquoi-les-avis-en-ligne-influencent-ils-la-confiance-envers-une-entreprise.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "045",
+      "slug": "comment-surveiller-sa-r-putation-sans-passer-ses-journ-es-consulter-google",
+      "title": "Comment Surveiller Sa R Putation Sans Passer Ses Journ Es Consulter Google",
+      "route": "/ressources/comment-surveiller-sa-r-putation-sans-passer-ses-journ-es-consulter-google/",
+      "directory": "content/resources/articles/comment-surveiller-sa-r-putation-sans-passer-ses-journ-es-consulter-google/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/045-comment-surveiller-sa-r-putation-sans-passer-ses-journ-es-consulter-google.html",
+        "markdown": "articles/markdown/045-comment-surveiller-sa-r-putation-sans-passer-ses-journ-es-consulter-google.md",
+        "illustration": "illustrations/045-comment-surveiller-sa-r-putation-sans-passer-ses-journ-es-consulter-google.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "046",
+      "slug": "que-faire-lorsqu-un-contenu-n-gatif-domine-les-r-sultats-associ-s-une-entreprise",
+      "title": "Que Faire Lorsqu Un Contenu N Gatif Domine Les R Sultats Associ S Une Entreprise",
+      "route": "/ressources/que-faire-lorsqu-un-contenu-n-gatif-domine-les-r-sultats-associ-s-une-entreprise/",
+      "directory": "content/resources/articles/que-faire-lorsqu-un-contenu-n-gatif-domine-les-r-sultats-associ-s-une-entreprise/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/046-que-faire-lorsqu-un-contenu-n-gatif-domine-les-r-sultats-associ-s-une-entreprise.html",
+        "markdown": "articles/markdown/046-que-faire-lorsqu-un-contenu-n-gatif-domine-les-r-sultats-associ-s-une-entreprise.md",
+        "illustration": "illustrations/046-que-faire-lorsqu-un-contenu-n-gatif-domine-les-r-sultats-associ-s-une-entreprise.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "047",
+      "slug": "comment-distinguer-une-vraie-crise-de-r-putation-d-un-pisode-ponctuel-d-avis-n-gatifs",
+      "title": "Comment Distinguer Une Vraie Crise De R Putation D Un Pisode Ponctuel D Avis N Gatifs",
+      "route": "/ressources/comment-distinguer-une-vraie-crise-de-r-putation-d-un-pisode-ponctuel-d-avis-n-gatifs/",
+      "directory": "content/resources/articles/comment-distinguer-une-vraie-crise-de-r-putation-d-un-pisode-ponctuel-d-avis-n-gatifs/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/047-comment-distinguer-une-vraie-crise-de-r-putation-d-un-pisode-ponctuel-d-avis-n-gatifs.html",
+        "markdown": "articles/markdown/047-comment-distinguer-une-vraie-crise-de-r-putation-d-un-pisode-ponctuel-d-avis-n-gatifs.md",
+        "illustration": "illustrations/047-comment-distinguer-une-vraie-crise-de-r-putation-d-un-pisode-ponctuel-d-avis-n-gatifs.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "048",
+      "slug": "quels-indicateurs-suivre-pour-piloter-une-r-putation-multi-canal",
+      "title": "Quels Indicateurs Suivre Pour Piloter Une R Putation Multi Canal",
+      "route": "/ressources/quels-indicateurs-suivre-pour-piloter-une-r-putation-multi-canal/",
+      "directory": "content/resources/articles/quels-indicateurs-suivre-pour-piloter-une-r-putation-multi-canal/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/048-quels-indicateurs-suivre-pour-piloter-une-r-putation-multi-canal.html",
+        "markdown": "articles/markdown/048-quels-indicateurs-suivre-pour-piloter-une-r-putation-multi-canal.md",
+        "illustration": "illustrations/048-quels-indicateurs-suivre-pour-piloter-une-r-putation-multi-canal.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "049",
+      "slug": "peut-on-am-liorer-sa-r-putation-sans-chercher-supprimer-tous-les-avis-n-gatifs",
+      "title": "Peut On Am Liorer Sa R Putation Sans Chercher Supprimer Tous Les Avis N Gatifs",
+      "route": "/ressources/peut-on-am-liorer-sa-r-putation-sans-chercher-supprimer-tous-les-avis-n-gatifs/",
+      "directory": "content/resources/articles/peut-on-am-liorer-sa-r-putation-sans-chercher-supprimer-tous-les-avis-n-gatifs/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/049-peut-on-am-liorer-sa-r-putation-sans-chercher-supprimer-tous-les-avis-n-gatifs.html",
+        "markdown": "articles/markdown/049-peut-on-am-liorer-sa-r-putation-sans-chercher-supprimer-tous-les-avis-n-gatifs.md",
+        "illustration": "illustrations/049-peut-on-am-liorer-sa-r-putation-sans-chercher-supprimer-tous-les-avis-n-gatifs.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "050",
+      "slug": "comment-utiliser-l-ia-pour-analyser-des-avis-clients-sans-remplacer-le-jugement-humain",
+      "title": "Comment Utiliser L Ia Pour Analyser Des Avis Clients Sans Remplacer Le Jugement Humain",
+      "route": "/ressources/comment-utiliser-l-ia-pour-analyser-des-avis-clients-sans-remplacer-le-jugement-humain/",
+      "directory": "content/resources/articles/comment-utiliser-l-ia-pour-analyser-des-avis-clients-sans-remplacer-le-jugement-humain/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/050-comment-utiliser-l-ia-pour-analyser-des-avis-clients-sans-remplacer-le-jugement-humain.html",
+        "markdown": "articles/markdown/050-comment-utiliser-l-ia-pour-analyser-des-avis-clients-sans-remplacer-le-jugement-humain.md",
+        "illustration": "illustrations/050-comment-utiliser-l-ia-pour-analyser-des-avis-clients-sans-remplacer-le-jugement-humain.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "051",
+      "slug": "une-ia-peut-elle-d-tecter-un-faux-avis",
+      "title": "Une Ia Peut Elle D Tecter Un Faux Avis",
+      "route": "/ressources/une-ia-peut-elle-d-tecter-un-faux-avis/",
+      "directory": "content/resources/articles/une-ia-peut-elle-d-tecter-un-faux-avis/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/051-une-ia-peut-elle-d-tecter-un-faux-avis.html",
+        "markdown": "articles/markdown/051-une-ia-peut-elle-d-tecter-un-faux-avis.md",
+        "illustration": "illustrations/051-une-ia-peut-elle-d-tecter-un-faux-avis.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "052",
+      "slug": "comment-viter-les-hallucinations-d-une-ia-qui-analyse-des-avis",
+      "title": "Comment Viter Les Hallucinations D Une Ia Qui Analyse Des Avis",
+      "route": "/ressources/comment-viter-les-hallucinations-d-une-ia-qui-analyse-des-avis/",
+      "directory": "content/resources/articles/comment-viter-les-hallucinations-d-une-ia-qui-analyse-des-avis/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/052-comment-viter-les-hallucinations-d-une-ia-qui-analyse-des-avis.html",
+        "markdown": "articles/markdown/052-comment-viter-les-hallucinations-d-une-ia-qui-analyse-des-avis.md",
+        "illustration": "illustrations/052-comment-viter-les-hallucinations-d-une-ia-qui-analyse-des-avis.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "053",
+      "slug": "peut-on-utiliser-des-donn-es-d-avis-publics-pour-entra-ner-ou-alimenter-une-ia",
+      "title": "Peut On Utiliser Des Donn Es D Avis Publics Pour Entra Ner Ou Alimenter Une Ia",
+      "route": "/ressources/peut-on-utiliser-des-donn-es-d-avis-publics-pour-entra-ner-ou-alimenter-une-ia/",
+      "directory": "content/resources/articles/peut-on-utiliser-des-donn-es-d-avis-publics-pour-entra-ner-ou-alimenter-une-ia/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/053-peut-on-utiliser-des-donn-es-d-avis-publics-pour-entra-ner-ou-alimenter-une-ia.html",
+        "markdown": "articles/markdown/053-peut-on-utiliser-des-donn-es-d-avis-publics-pour-entra-ner-ou-alimenter-une-ia.md",
+        "illustration": "illustrations/053-peut-on-utiliser-des-donn-es-d-avis-publics-pour-entra-ner-ou-alimenter-une-ia.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "054",
+      "slug": "comment-prot-ger-les-donn-es-personnelles-contenues-dans-les-avis-lors-d-une-analyse-ia",
+      "title": "Comment Prot Ger Les Donn Es Personnelles Contenues Dans Les Avis Lors D Une Analyse Ia",
+      "route": "/ressources/comment-prot-ger-les-donn-es-personnelles-contenues-dans-les-avis-lors-d-une-analyse-ia/",
+      "directory": "content/resources/articles/comment-prot-ger-les-donn-es-personnelles-contenues-dans-les-avis-lors-d-une-analyse-ia/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/054-comment-prot-ger-les-donn-es-personnelles-contenues-dans-les-avis-lors-d-une-analyse-ia.html",
+        "markdown": "articles/markdown/054-comment-prot-ger-les-donn-es-personnelles-contenues-dans-les-avis-lors-d-une-analyse-ia.md",
+        "illustration": "illustrations/054-comment-prot-ger-les-donn-es-personnelles-contenues-dans-les-avis-lors-d-une-analyse-ia.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "055",
+      "slug": "pourquoi-faut-il-expliquer-les-crit-res-utilis-s-par-une-ia-de-scoring",
+      "title": "Pourquoi Faut Il Expliquer Les Crit Res Utilis S Par Une Ia De Scoring",
+      "route": "/ressources/pourquoi-faut-il-expliquer-les-crit-res-utilis-s-par-une-ia-de-scoring/",
+      "directory": "content/resources/articles/pourquoi-faut-il-expliquer-les-crit-res-utilis-s-par-une-ia-de-scoring/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/055-pourquoi-faut-il-expliquer-les-crit-res-utilis-s-par-une-ia-de-scoring.html",
+        "markdown": "articles/markdown/055-pourquoi-faut-il-expliquer-les-crit-res-utilis-s-par-une-ia-de-scoring.md",
+        "illustration": "illustrations/055-pourquoi-faut-il-expliquer-les-crit-res-utilis-s-par-une-ia-de-scoring.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "056",
+      "slug": "comment-concevoir-une-ia-de-gestion-des-avis-avec-validation-humaine",
+      "title": "Comment Concevoir Une Ia De Gestion Des Avis Avec Validation Humaine",
+      "route": "/ressources/comment-concevoir-une-ia-de-gestion-des-avis-avec-validation-humaine/",
+      "directory": "content/resources/articles/comment-concevoir-une-ia-de-gestion-des-avis-avec-validation-humaine/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/056-comment-concevoir-une-ia-de-gestion-des-avis-avec-validation-humaine.html",
+        "markdown": "articles/markdown/056-comment-concevoir-une-ia-de-gestion-des-avis-avec-validation-humaine.md",
+        "illustration": "illustrations/056-comment-concevoir-une-ia-de-gestion-des-avis-avec-validation-humaine.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "057",
+      "slug": "que-faire-dans-les-premi-res-heures-d-une-crise-d-avis-n-gatifs",
+      "title": "Que Faire Dans Les Premi Res Heures D Une Crise D Avis N Gatifs",
+      "route": "/ressources/que-faire-dans-les-premi-res-heures-d-une-crise-d-avis-n-gatifs/",
+      "directory": "content/resources/articles/que-faire-dans-les-premi-res-heures-d-une-crise-d-avis-n-gatifs/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/057-que-faire-dans-les-premi-res-heures-d-une-crise-d-avis-n-gatifs.html",
+        "markdown": "articles/markdown/057-que-faire-dans-les-premi-res-heures-d-une-crise-d-avis-n-gatifs.md",
+        "illustration": "illustrations/057-que-faire-dans-les-premi-res-heures-d-une-crise-d-avis-n-gatifs.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "058",
+      "slug": "comment-savoir-si-une-vague-d-avis-n-gatifs-est-organique-ou-coordonn-e",
+      "title": "Comment Savoir Si Une Vague D Avis N Gatifs Est Organique Ou Coordonn E",
+      "route": "/ressources/comment-savoir-si-une-vague-d-avis-n-gatifs-est-organique-ou-coordonn-e/",
+      "directory": "content/resources/articles/comment-savoir-si-une-vague-d-avis-n-gatifs-est-organique-ou-coordonn-e/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/058-comment-savoir-si-une-vague-d-avis-n-gatifs-est-organique-ou-coordonn-e.html",
+        "markdown": "articles/markdown/058-comment-savoir-si-une-vague-d-avis-n-gatifs-est-organique-ou-coordonn-e.md",
+        "illustration": "illustrations/058-comment-savoir-si-une-vague-d-avis-n-gatifs-est-organique-ou-coordonn-e.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "059",
+      "slug": "faut-il-r-pondre-pendant-une-crise-r-putationnelle-ou-attendre",
+      "title": "Faut Il R Pondre Pendant Une Crise R Putationnelle Ou Attendre",
+      "route": "/ressources/faut-il-r-pondre-pendant-une-crise-r-putationnelle-ou-attendre/",
+      "directory": "content/resources/articles/faut-il-r-pondre-pendant-une-crise-r-putationnelle-ou-attendre/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/059-faut-il-r-pondre-pendant-une-crise-r-putationnelle-ou-attendre.html",
+        "markdown": "articles/markdown/059-faut-il-r-pondre-pendant-une-crise-r-putationnelle-ou-attendre.md",
+        "illustration": "illustrations/059-faut-il-r-pondre-pendant-une-crise-r-putationnelle-ou-attendre.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "060",
+      "slug": "comment-organiser-une-cellule-de-crise-autour-des-avis-clients",
+      "title": "Comment Organiser Une Cellule De Crise Autour Des Avis Clients",
+      "route": "/ressources/comment-organiser-une-cellule-de-crise-autour-des-avis-clients/",
+      "directory": "content/resources/articles/comment-organiser-une-cellule-de-crise-autour-des-avis-clients/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/060-comment-organiser-une-cellule-de-crise-autour-des-avis-clients.html",
+        "markdown": "articles/markdown/060-comment-organiser-une-cellule-de-crise-autour-des-avis-clients.md",
+        "illustration": "illustrations/060-comment-organiser-une-cellule-de-crise-autour-des-avis-clients.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "061",
+      "slug": "comment-constituer-une-chronologie-des-v-nements-pendant-une-crise-d-avis",
+      "title": "Comment Constituer Une Chronologie Des V Nements Pendant Une Crise D Avis",
+      "route": "/ressources/comment-constituer-une-chronologie-des-v-nements-pendant-une-crise-d-avis/",
+      "directory": "content/resources/articles/comment-constituer-une-chronologie-des-v-nements-pendant-une-crise-d-avis/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/061-comment-constituer-une-chronologie-des-v-nements-pendant-une-crise-d-avis.html",
+        "markdown": "articles/markdown/061-comment-constituer-une-chronologie-des-v-nements-pendant-une-crise-d-avis.md",
+        "illustration": "illustrations/061-comment-constituer-une-chronologie-des-v-nements-pendant-une-crise-d-avis.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "062",
+      "slug": "que-faire-si-la-crise-touche-plusieurs-tablissements-en-m-me-temps",
+      "title": "Que Faire Si La Crise Touche Plusieurs Tablissements En M Me Temps",
+      "route": "/ressources/que-faire-si-la-crise-touche-plusieurs-tablissements-en-m-me-temps/",
+      "directory": "content/resources/articles/que-faire-si-la-crise-touche-plusieurs-tablissements-en-m-me-temps/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/062-que-faire-si-la-crise-touche-plusieurs-tablissements-en-m-me-temps.html",
+        "markdown": "articles/markdown/062-que-faire-si-la-crise-touche-plusieurs-tablissements-en-m-me-temps.md",
+        "illustration": "illustrations/062-que-faire-si-la-crise-touche-plusieurs-tablissements-en-m-me-temps.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "063",
+      "slug": "comment-sortir-d-une-crise-r-putationnelle-sans-donner-l-impression-de-manipuler-les-avis",
+      "title": "Comment Sortir D Une Crise R Putationnelle Sans Donner L Impression De Manipuler Les Avis",
+      "route": "/ressources/comment-sortir-d-une-crise-r-putationnelle-sans-donner-l-impression-de-manipuler-les-avis/",
+      "directory": "content/resources/articles/comment-sortir-d-une-crise-r-putationnelle-sans-donner-l-impression-de-manipuler-les-avis/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/063-comment-sortir-d-une-crise-r-putationnelle-sans-donner-l-impression-de-manipuler-les-avis.html",
+        "markdown": "articles/markdown/063-comment-sortir-d-une-crise-r-putationnelle-sans-donner-l-impression-de-manipuler-les-avis.md",
+        "illustration": "illustrations/063-comment-sortir-d-une-crise-r-putationnelle-sans-donner-l-impression-de-manipuler-les-avis.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "064",
+      "slug": "quelles-preuves-conserver-lorsqu-un-avis-para-t-frauduleux",
+      "title": "Quelles Preuves Conserver Lorsqu Un Avis Para T Frauduleux",
+      "route": "/ressources/quelles-preuves-conserver-lorsqu-un-avis-para-t-frauduleux/",
+      "directory": "content/resources/articles/quelles-preuves-conserver-lorsqu-un-avis-para-t-frauduleux/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/064-quelles-preuves-conserver-lorsqu-un-avis-para-t-frauduleux.html",
+        "markdown": "articles/markdown/064-quelles-preuves-conserver-lorsqu-un-avis-para-t-frauduleux.md",
+        "illustration": "illustrations/064-quelles-preuves-conserver-lorsqu-un-avis-para-t-frauduleux.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "065",
+      "slug": "comment-construire-un-dossier-de-signalement-clair-et-chronologique",
+      "title": "Comment Construire Un Dossier De Signalement Clair Et Chronologique",
+      "route": "/ressources/comment-construire-un-dossier-de-signalement-clair-et-chronologique/",
+      "directory": "content/resources/articles/comment-construire-un-dossier-de-signalement-clair-et-chronologique/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/065-comment-construire-un-dossier-de-signalement-clair-et-chronologique.html",
+        "markdown": "articles/markdown/065-comment-construire-un-dossier-de-signalement-clair-et-chronologique.md",
+        "illustration": "illustrations/065-comment-construire-un-dossier-de-signalement-clair-et-chronologique.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "066",
+      "slug": "quelle-diff-rence-entre-un-indice-une-suspicion-et-une-preuve",
+      "title": "Quelle Diff Rence Entre Un Indice Une Suspicion Et Une Preuve",
+      "route": "/ressources/quelle-diff-rence-entre-un-indice-une-suspicion-et-une-preuve/",
+      "directory": "content/resources/articles/quelle-diff-rence-entre-un-indice-une-suspicion-et-une-preuve/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/066-quelle-diff-rence-entre-un-indice-une-suspicion-et-une-preuve.html",
+        "markdown": "articles/markdown/066-quelle-diff-rence-entre-un-indice-une-suspicion-et-une-preuve.md",
+        "illustration": "illustrations/066-quelle-diff-rence-entre-un-indice-une-suspicion-et-une-preuve.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "067",
+      "slug": "comment-documenter-une-campagne-coordonn-e-d-avis",
+      "title": "Comment Documenter Une Campagne Coordonn E D Avis",
+      "route": "/ressources/comment-documenter-une-campagne-coordonn-e-d-avis/",
+      "directory": "content/resources/articles/comment-documenter-une-campagne-coordonn-e-d-avis/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/067-comment-documenter-une-campagne-coordonn-e-d-avis.html",
+        "markdown": "articles/markdown/067-comment-documenter-une-campagne-coordonn-e-d-avis.md",
+        "illustration": "illustrations/067-comment-documenter-une-campagne-coordonn-e-d-avis.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "068",
+      "slug": "quelles-informations-personnelles-faut-il-viter-de-collecter-dans-un-dossier-d-avis",
+      "title": "Quelles Informations Personnelles Faut Il Viter De Collecter Dans Un Dossier D Avis",
+      "route": "/ressources/quelles-informations-personnelles-faut-il-viter-de-collecter-dans-un-dossier-d-avis/",
+      "directory": "content/resources/articles/quelles-informations-personnelles-faut-il-viter-de-collecter-dans-un-dossier-d-avis/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/068-quelles-informations-personnelles-faut-il-viter-de-collecter-dans-un-dossier-d-avis.html",
+        "markdown": "articles/markdown/068-quelles-informations-personnelles-faut-il-viter-de-collecter-dans-un-dossier-d-avis.md",
+        "illustration": "illustrations/068-quelles-informations-personnelles-faut-il-viter-de-collecter-dans-un-dossier-d-avis.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "069",
+      "slug": "comment-conserver-les-captures-urls-et-dates-sans-cr-er-un-dossier-ing-rable",
+      "title": "Comment Conserver Les Captures Urls Et Dates Sans Cr Er Un Dossier Ing Rable",
+      "route": "/ressources/comment-conserver-les-captures-urls-et-dates-sans-cr-er-un-dossier-ing-rable/",
+      "directory": "content/resources/articles/comment-conserver-les-captures-urls-et-dates-sans-cr-er-un-dossier-ing-rable/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/069-comment-conserver-les-captures-urls-et-dates-sans-cr-er-un-dossier-ing-rable.html",
+        "markdown": "articles/markdown/069-comment-conserver-les-captures-urls-et-dates-sans-cr-er-un-dossier-ing-rable.md",
+        "illustration": "illustrations/069-comment-conserver-les-captures-urls-et-dates-sans-cr-er-un-dossier-ing-rable.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "070",
+      "slug": "comment-pr-senter-un-dossier-une-plateforme-ou-un-conseil-juridique",
+      "title": "Comment Pr Senter Un Dossier Une Plateforme Ou Un Conseil Juridique",
+      "route": "/ressources/comment-pr-senter-un-dossier-une-plateforme-ou-un-conseil-juridique/",
+      "directory": "content/resources/articles/comment-pr-senter-un-dossier-une-plateforme-ou-un-conseil-juridique/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/070-comment-pr-senter-un-dossier-une-plateforme-ou-un-conseil-juridique.html",
+        "markdown": "articles/markdown/070-comment-pr-senter-un-dossier-une-plateforme-ou-un-conseil-juridique.md",
+        "illustration": "illustrations/070-comment-pr-senter-un-dossier-une-plateforme-ou-un-conseil-juridique.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "071",
+      "slug": "comment-g-rer-les-avis-google-de-10-50-ou-100-tablissements",
+      "title": "Comment G Rer Les Avis Google De 10 50 Ou 100 Tablissements",
+      "route": "/ressources/comment-g-rer-les-avis-google-de-10-50-ou-100-tablissements/",
+      "directory": "content/resources/articles/comment-g-rer-les-avis-google-de-10-50-ou-100-tablissements/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/071-comment-g-rer-les-avis-google-de-10-50-ou-100-tablissements.html",
+        "markdown": "articles/markdown/071-comment-g-rer-les-avis-google-de-10-50-ou-100-tablissements.md",
+        "illustration": "illustrations/071-comment-g-rer-les-avis-google-de-10-50-ou-100-tablissements.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "072",
+      "slug": "comment-centraliser-les-avis-de-plusieurs-tablissements-sans-perdre-le-contexte-local",
+      "title": "Comment Centraliser Les Avis De Plusieurs Tablissements Sans Perdre Le Contexte Local",
+      "route": "/ressources/comment-centraliser-les-avis-de-plusieurs-tablissements-sans-perdre-le-contexte-local/",
+      "directory": "content/resources/articles/comment-centraliser-les-avis-de-plusieurs-tablissements-sans-perdre-le-contexte-local/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/072-comment-centraliser-les-avis-de-plusieurs-tablissements-sans-perdre-le-contexte-local.html",
+        "markdown": "articles/markdown/072-comment-centraliser-les-avis-de-plusieurs-tablissements-sans-perdre-le-contexte-local.md",
+        "illustration": "illustrations/072-comment-centraliser-les-avis-de-plusieurs-tablissements-sans-perdre-le-contexte-local.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "073",
+      "slug": "comment-comparer-la-r-putation-de-plusieurs-tablissements",
+      "title": "Comment Comparer La R Putation De Plusieurs Tablissements",
+      "route": "/ressources/comment-comparer-la-r-putation-de-plusieurs-tablissements/",
+      "directory": "content/resources/articles/comment-comparer-la-r-putation-de-plusieurs-tablissements/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/073-comment-comparer-la-r-putation-de-plusieurs-tablissements.html",
+        "markdown": "articles/markdown/073-comment-comparer-la-r-putation-de-plusieurs-tablissements.md",
+        "illustration": "illustrations/073-comment-comparer-la-r-putation-de-plusieurs-tablissements.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "074",
+      "slug": "comment-d-tecter-une-campagne-d-avis-qui-touche-plusieurs-tablissements",
+      "title": "Comment D Tecter Une Campagne D Avis Qui Touche Plusieurs Tablissements",
+      "route": "/ressources/comment-d-tecter-une-campagne-d-avis-qui-touche-plusieurs-tablissements/",
+      "directory": "content/resources/articles/comment-d-tecter-une-campagne-d-avis-qui-touche-plusieurs-tablissements/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/074-comment-d-tecter-une-campagne-d-avis-qui-touche-plusieurs-tablissements.html",
+        "markdown": "articles/markdown/074-comment-d-tecter-une-campagne-d-avis-qui-touche-plusieurs-tablissements.md",
+        "illustration": "illustrations/074-comment-d-tecter-une-campagne-d-avis-qui-touche-plusieurs-tablissements.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "075",
+      "slug": "comment-organiser-les-droits-et-validations-quand-plusieurs-quipes-r-pondent-aux-avis",
+      "title": "Comment Organiser Les Droits Et Validations Quand Plusieurs Quipes R Pondent Aux Avis",
+      "route": "/ressources/comment-organiser-les-droits-et-validations-quand-plusieurs-quipes-r-pondent-aux-avis/",
+      "directory": "content/resources/articles/comment-organiser-les-droits-et-validations-quand-plusieurs-quipes-r-pondent-aux-avis/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/075-comment-organiser-les-droits-et-validations-quand-plusieurs-quipes-r-pondent-aux-avis.html",
+        "markdown": "articles/markdown/075-comment-organiser-les-droits-et-validations-quand-plusieurs-quipes-r-pondent-aux-avis.md",
+        "illustration": "illustrations/075-comment-organiser-les-droits-et-validations-quand-plusieurs-quipes-r-pondent-aux-avis.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "076",
+      "slug": "comment-construire-un-tableau-de-bord-de-r-putation-pour-un-r-seau-d-tablissements",
+      "title": "Comment Construire Un Tableau De Bord De R Putation Pour Un R Seau D Tablissements",
+      "route": "/ressources/comment-construire-un-tableau-de-bord-de-r-putation-pour-un-r-seau-d-tablissements/",
+      "directory": "content/resources/articles/comment-construire-un-tableau-de-bord-de-r-putation-pour-un-r-seau-d-tablissements/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/076-comment-construire-un-tableau-de-bord-de-r-putation-pour-un-r-seau-d-tablissements.html",
+        "markdown": "articles/markdown/076-comment-construire-un-tableau-de-bord-de-r-putation-pour-un-r-seau-d-tablissements.md",
+        "illustration": "illustrations/076-comment-construire-un-tableau-de-bord-de-r-putation-pour-un-r-seau-d-tablissements.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "077",
+      "slug": "comment-d-ployer-une-analyse-ia-des-avis-grande-chelle-tout-en-gardant-un-contr-le-humain",
+      "title": "Comment D Ployer Une Analyse Ia Des Avis Grande Chelle Tout En Gardant Un Contr Le Humain",
+      "route": "/ressources/comment-d-ployer-une-analyse-ia-des-avis-grande-chelle-tout-en-gardant-un-contr-le-humain/",
+      "directory": "content/resources/articles/comment-d-ployer-une-analyse-ia-des-avis-grande-chelle-tout-en-gardant-un-contr-le-humain/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/077-comment-d-ployer-une-analyse-ia-des-avis-grande-chelle-tout-en-gardant-un-contr-le-humain.html",
+        "markdown": "articles/markdown/077-comment-d-ployer-une-analyse-ia-des-avis-grande-chelle-tout-en-gardant-un-contr-le-humain.md",
+        "illustration": "illustrations/077-comment-d-ployer-une-analyse-ia-des-avis-grande-chelle-tout-en-gardant-un-contr-le-humain.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "078",
+      "slug": "quelles-sont-les-r-gles-de-google-concernant-les-faux-avis",
+      "title": "Quelles Sont Les R Gles De Google Concernant Les Faux Avis",
+      "route": "/ressources/quelles-sont-les-r-gles-de-google-concernant-les-faux-avis/",
+      "directory": "content/resources/articles/quelles-sont-les-r-gles-de-google-concernant-les-faux-avis/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/078-quelles-sont-les-r-gles-de-google-concernant-les-faux-avis.html",
+        "markdown": "articles/markdown/078-quelles-sont-les-r-gles-de-google-concernant-les-faux-avis.md",
+        "illustration": "illustrations/078-quelles-sont-les-r-gles-de-google-concernant-les-faux-avis.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "079",
+      "slug": "peut-on-demander-ses-clients-de-laisser-un-avis-positif",
+      "title": "Peut On Demander Ses Clients De Laisser Un Avis Positif",
+      "route": "/ressources/peut-on-demander-ses-clients-de-laisser-un-avis-positif/",
+      "directory": "content/resources/articles/peut-on-demander-ses-clients-de-laisser-un-avis-positif/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/079-peut-on-demander-ses-clients-de-laisser-un-avis-positif.html",
+        "markdown": "articles/markdown/079-peut-on-demander-ses-clients-de-laisser-un-avis-positif.md",
+        "illustration": "illustrations/079-peut-on-demander-ses-clients-de-laisser-un-avis-positif.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "080",
+      "slug": "peut-on-offrir-une-remise-en-change-d-un-avis",
+      "title": "Peut On Offrir Une Remise En Change D Un Avis",
+      "route": "/ressources/peut-on-offrir-une-remise-en-change-d-un-avis/",
+      "directory": "content/resources/articles/peut-on-offrir-une-remise-en-change-d-un-avis/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/080-peut-on-offrir-une-remise-en-change-d-un-avis.html",
+        "markdown": "articles/markdown/080-peut-on-offrir-une-remise-en-change-d-un-avis.md",
+        "illustration": "illustrations/080-peut-on-offrir-une-remise-en-change-d-un-avis.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "081",
+      "slug": "peut-on-demander-un-client-de-modifier-ou-supprimer-un-avis-n-gatif",
+      "title": "Peut On Demander Un Client De Modifier Ou Supprimer Un Avis N Gatif",
+      "route": "/ressources/peut-on-demander-un-client-de-modifier-ou-supprimer-un-avis-n-gatif/",
+      "directory": "content/resources/articles/peut-on-demander-un-client-de-modifier-ou-supprimer-un-avis-n-gatif/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/081-peut-on-demander-un-client-de-modifier-ou-supprimer-un-avis-n-gatif.html",
+        "markdown": "articles/markdown/081-peut-on-demander-un-client-de-modifier-ou-supprimer-un-avis-n-gatif.md",
+        "illustration": "illustrations/081-peut-on-demander-un-client-de-modifier-ou-supprimer-un-avis-n-gatif.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "082",
+      "slug": "quelles-sont-les-limites-juridiques-d-une-r-ponse-un-avis-en-france",
+      "title": "Quelles Sont Les Limites Juridiques D Une R Ponse Un Avis En France",
+      "route": "/ressources/quelles-sont-les-limites-juridiques-d-une-r-ponse-un-avis-en-france/",
+      "directory": "content/resources/articles/quelles-sont-les-limites-juridiques-d-une-r-ponse-un-avis-en-france/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/082-quelles-sont-les-limites-juridiques-d-une-r-ponse-un-avis-en-france.html",
+        "markdown": "articles/markdown/082-quelles-sont-les-limites-juridiques-d-une-r-ponse-un-avis-en-france.md",
+        "illustration": "illustrations/082-quelles-sont-les-limites-juridiques-d-une-r-ponse-un-avis-en-france.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "083",
+      "slug": "quelles-obligations-europ-ennes-concernent-la-pr-sentation-et-la-v-rification-des-avis",
+      "title": "Quelles Obligations Europ Ennes Concernent La Pr Sentation Et La V Rification Des Avis",
+      "route": "/ressources/quelles-obligations-europ-ennes-concernent-la-pr-sentation-et-la-v-rification-des-avis/",
+      "directory": "content/resources/articles/quelles-obligations-europ-ennes-concernent-la-pr-sentation-et-la-v-rification-des-avis/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/083-quelles-obligations-europ-ennes-concernent-la-pr-sentation-et-la-v-rification-des-avis.html",
+        "markdown": "articles/markdown/083-quelles-obligations-europ-ennes-concernent-la-pr-sentation-et-la-v-rification-des-avis.md",
+        "illustration": "illustrations/083-quelles-obligations-europ-ennes-concernent-la-pr-sentation-et-la-v-rification-des-avis.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "084",
+      "slug": "quelles-sont-les-limites-d-une-solution-ia-qui-analyse-des-avis-clients",
+      "title": "Quelles Sont Les Limites D Une Solution Ia Qui Analyse Des Avis Clients",
+      "route": "/ressources/quelles-sont-les-limites-d-une-solution-ia-qui-analyse-des-avis-clients/",
+      "directory": "content/resources/articles/quelles-sont-les-limites-d-une-solution-ia-qui-analyse-des-avis-clients/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/084-quelles-sont-les-limites-d-une-solution-ia-qui-analyse-des-avis-clients.html",
+        "markdown": "articles/markdown/084-quelles-sont-les-limites-d-une-solution-ia-qui-analyse-des-avis-clients.md",
+        "illustration": "illustrations/084-quelles-sont-les-limites-d-une-solution-ia-qui-analyse-des-avis-clients.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "085",
+      "slug": "un-restaurant-re-oit-20-avis-n-gatifs-en-une-heure-comment-analyser-le-cas",
+      "title": "Un Restaurant Re Oit 20 Avis N Gatifs En Une Heure Comment Analyser Le Cas",
+      "route": "/ressources/un-restaurant-re-oit-20-avis-n-gatifs-en-une-heure-comment-analyser-le-cas/",
+      "directory": "content/resources/articles/un-restaurant-re-oit-20-avis-n-gatifs-en-une-heure-comment-analyser-le-cas/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/085-un-restaurant-re-oit-20-avis-n-gatifs-en-une-heure-comment-analyser-le-cas.html",
+        "markdown": "articles/markdown/085-un-restaurant-re-oit-20-avis-n-gatifs-en-une-heure-comment-analyser-le-cas.md",
+        "illustration": "illustrations/085-un-restaurant-re-oit-20-avis-n-gatifs-en-une-heure-comment-analyser-le-cas.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "086",
+      "slug": "une-entreprise-re-oit-des-avis-de-personnes-qu-elle-ne-retrouve-pas-que-faire",
+      "title": "Une Entreprise Re Oit Des Avis De Personnes Qu Elle Ne Retrouve Pas Que Faire",
+      "route": "/ressources/une-entreprise-re-oit-des-avis-de-personnes-qu-elle-ne-retrouve-pas-que-faire/",
+      "directory": "content/resources/articles/une-entreprise-re-oit-des-avis-de-personnes-qu-elle-ne-retrouve-pas-que-faire/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/086-une-entreprise-re-oit-des-avis-de-personnes-qu-elle-ne-retrouve-pas-que-faire.html",
+        "markdown": "articles/markdown/086-une-entreprise-re-oit-des-avis-de-personnes-qu-elle-ne-retrouve-pas-que-faire.md",
+        "illustration": "illustrations/086-une-entreprise-re-oit-des-avis-de-personnes-qu-elle-ne-retrouve-pas-que-faire.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "087",
+      "slug": "un-concurrent-semble-publier-des-avis-n-gatifs-comment-documenter-sans-accuser-trop-vite",
+      "title": "Un Concurrent Semble Publier Des Avis N Gatifs Comment Documenter Sans Accuser Trop Vite",
+      "route": "/ressources/un-concurrent-semble-publier-des-avis-n-gatifs-comment-documenter-sans-accuser-trop-vite/",
+      "directory": "content/resources/articles/un-concurrent-semble-publier-des-avis-n-gatifs-comment-documenter-sans-accuser-trop-vite/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/087-un-concurrent-semble-publier-des-avis-n-gatifs-comment-documenter-sans-accuser-trop-vite.html",
+        "markdown": "articles/markdown/087-un-concurrent-semble-publier-des-avis-n-gatifs-comment-documenter-sans-accuser-trop-vite.md",
+        "illustration": "illustrations/087-un-concurrent-semble-publier-des-avis-n-gatifs-comment-documenter-sans-accuser-trop-vite.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "088",
+      "slug": "une-cha-ne-de-magasins-re-oit-une-vague-d-avis-sur-plusieurs-villes-comment-r-agir",
+      "title": "Une Cha Ne De Magasins Re Oit Une Vague D Avis Sur Plusieurs Villes Comment R Agir",
+      "route": "/ressources/une-cha-ne-de-magasins-re-oit-une-vague-d-avis-sur-plusieurs-villes-comment-r-agir/",
+      "directory": "content/resources/articles/une-cha-ne-de-magasins-re-oit-une-vague-d-avis-sur-plusieurs-villes-comment-r-agir/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/088-une-cha-ne-de-magasins-re-oit-une-vague-d-avis-sur-plusieurs-villes-comment-r-agir.html",
+        "markdown": "articles/markdown/088-une-cha-ne-de-magasins-re-oit-une-vague-d-avis-sur-plusieurs-villes-comment-r-agir.md",
+        "illustration": "illustrations/088-une-cha-ne-de-magasins-re-oit-une-vague-d-avis-sur-plusieurs-villes-comment-r-agir.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "089",
+      "slug": "un-avis-est-n-gatif-mais-d-crit-une-exp-rience-r-elle-pourquoi-ne-faut-il-pas-chercher-automatiquement-le-supprimer",
+      "title": "Un Avis Est N Gatif Mais D Crit Une Exp Rience R Elle Pourquoi Ne Faut Il Pas Chercher Automatiquement Le Supprimer",
+      "route": "/ressources/un-avis-est-n-gatif-mais-d-crit-une-exp-rience-r-elle-pourquoi-ne-faut-il-pas-chercher-automatiquement-le-supprimer/",
+      "directory": "content/resources/articles/un-avis-est-n-gatif-mais-d-crit-une-exp-rience-r-elle-pourquoi-ne-faut-il-pas-chercher-automatiquement-le-supprimer/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/089-un-avis-est-n-gatif-mais-d-crit-une-exp-rience-r-elle-pourquoi-ne-faut-il-pas-chercher-automatiquement-le-supprimer.html",
+        "markdown": "articles/markdown/089-un-avis-est-n-gatif-mais-d-crit-une-exp-rience-r-elle-pourquoi-ne-faut-il-pas-chercher-automatiquement-le-supprimer.md",
+        "illustration": "illustrations/089-un-avis-est-n-gatif-mais-d-crit-une-exp-rience-r-elle-pourquoi-ne-faut-il-pas-chercher-automatiquement-le-supprimer.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "090",
+      "slug": "une-entreprise-veut-automatiser-l-analyse-de-10-000-avis-quelles-pr-cautions-prendre",
+      "title": "Une Entreprise Veut Automatiser L Analyse De 10 000 Avis Quelles Pr Cautions Prendre",
+      "route": "/ressources/une-entreprise-veut-automatiser-l-analyse-de-10-000-avis-quelles-pr-cautions-prendre/",
+      "directory": "content/resources/articles/une-entreprise-veut-automatiser-l-analyse-de-10-000-avis-quelles-pr-cautions-prendre/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/090-une-entreprise-veut-automatiser-l-analyse-de-10-000-avis-quelles-pr-cautions-prendre.html",
+        "markdown": "articles/markdown/090-une-entreprise-veut-automatiser-l-analyse-de-10-000-avis-quelles-pr-cautions-prendre.md",
+        "illustration": "illustrations/090-une-entreprise-veut-automatiser-l-analyse-de-10-000-avis-quelles-pr-cautions-prendre.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    },
+    {
+      "id": "091",
+      "slug": "apr-s-un-refus-de-google-comment-d-cider-entre-appel-r-ponse-publique-et-voie-juridique",
+      "title": "Apr S Un Refus De Google Comment D Cider Entre Appel R Ponse Publique Et Voie Juridique",
+      "route": "/ressources/apr-s-un-refus-de-google-comment-d-cider-entre-appel-r-ponse-publique-et-voie-juridique/",
+      "directory": "content/resources/articles/apr-s-un-refus-de-google-comment-d-cider-entre-appel-r-ponse-publique-et-voie-juridique/",
+      "files": {
+        "content": "article.md",
+        "metadata": "metadata.json"
+      },
+      "sourceFiles": {
+        "html": "articles/html/091-apr-s-un-refus-de-google-comment-d-cider-entre-appel-r-ponse-publique-et-voie-juridique.html",
+        "markdown": "articles/markdown/091-apr-s-un-refus-de-google-comment-d-cider-entre-appel-r-ponse-publique-et-voie-juridique.md",
+        "illustration": "illustrations/091-apr-s-un-refus-de-google-comment-d-cider-entre-appel-r-ponse-publique-et-voie-juridique.svg"
+      },
+      "status": "scaffold-awaiting-content-import"
+    }
+  ]
+}

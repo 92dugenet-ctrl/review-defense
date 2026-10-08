@@ -1,0 +1,19 @@
+{
+  "id": "067",
+  "slug": "comment-documenter-une-campagne-coordonn-e-d-avis",
+  "title": "Comment Documenter Une Campagne Coordonn E D Avis",
+  "route": "/ressources/comment-documenter-une-campagne-coordonn-e-d-avis/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/067-comment-documenter-une-campagne-coordonn-e-d-avis.html",
+    "markdown": "articles/markdown/067-comment-documenter-une-campagne-coordonn-e-d-avis.md",
+    "illustration": "illustrations/067-comment-documenter-une-campagne-coordonn-e-d-avis.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

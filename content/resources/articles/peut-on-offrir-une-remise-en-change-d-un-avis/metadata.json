@@ -1,0 +1,19 @@
+{
+  "id": "080",
+  "slug": "peut-on-offrir-une-remise-en-change-d-un-avis",
+  "title": "Peut On Offrir Une Remise En Change D Un Avis",
+  "route": "/ressources/peut-on-offrir-une-remise-en-change-d-un-avis/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/080-peut-on-offrir-une-remise-en-change-d-un-avis.html",
+    "markdown": "articles/markdown/080-peut-on-offrir-une-remise-en-change-d-un-avis.md",
+    "illustration": "illustrations/080-peut-on-offrir-une-remise-en-change-d-un-avis.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

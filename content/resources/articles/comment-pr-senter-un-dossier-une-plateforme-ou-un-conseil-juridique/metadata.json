@@ -1,0 +1,19 @@
+{
+  "id": "070",
+  "slug": "comment-pr-senter-un-dossier-une-plateforme-ou-un-conseil-juridique",
+  "title": "Comment Pr Senter Un Dossier Une Plateforme Ou Un Conseil Juridique",
+  "route": "/ressources/comment-pr-senter-un-dossier-une-plateforme-ou-un-conseil-juridique/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/070-comment-pr-senter-un-dossier-une-plateforme-ou-un-conseil-juridique.html",
+    "markdown": "articles/markdown/070-comment-pr-senter-un-dossier-une-plateforme-ou-un-conseil-juridique.md",
+    "illustration": "illustrations/070-comment-pr-senter-un-dossier-une-plateforme-ou-un-conseil-juridique.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

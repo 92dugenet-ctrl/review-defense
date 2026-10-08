@@ -1,0 +1,19 @@
+{
+  "id": "074",
+  "slug": "comment-d-tecter-une-campagne-d-avis-qui-touche-plusieurs-tablissements",
+  "title": "Comment D Tecter Une Campagne D Avis Qui Touche Plusieurs Tablissements",
+  "route": "/ressources/comment-d-tecter-une-campagne-d-avis-qui-touche-plusieurs-tablissements/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/074-comment-d-tecter-une-campagne-d-avis-qui-touche-plusieurs-tablissements.html",
+    "markdown": "articles/markdown/074-comment-d-tecter-une-campagne-d-avis-qui-touche-plusieurs-tablissements.md",
+    "illustration": "illustrations/074-comment-d-tecter-une-campagne-d-avis-qui-touche-plusieurs-tablissements.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

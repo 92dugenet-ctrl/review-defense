@@ -1,0 +1,19 @@
+{
+  "id": "024",
+  "slug": "comment-faire-appel-apr-s-le-refus-de-suppression-d-un-avis-google",
+  "title": "Comment Faire Appel Apr S Le Refus De Suppression D Un Avis Google",
+  "route": "/ressources/comment-faire-appel-apr-s-le-refus-de-suppression-d-un-avis-google/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/024-comment-faire-appel-apr-s-le-refus-de-suppression-d-un-avis-google.html",
+    "markdown": "articles/markdown/024-comment-faire-appel-apr-s-le-refus-de-suppression-d-un-avis-google.md",
+    "illustration": "illustrations/024-comment-faire-appel-apr-s-le-refus-de-suppression-d-un-avis-google.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

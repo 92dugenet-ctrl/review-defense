@@ -1,0 +1,19 @@
+{
+  "id": "054",
+  "slug": "comment-prot-ger-les-donn-es-personnelles-contenues-dans-les-avis-lors-d-une-analyse-ia",
+  "title": "Comment Prot Ger Les Donn Es Personnelles Contenues Dans Les Avis Lors D Une Analyse Ia",
+  "route": "/ressources/comment-prot-ger-les-donn-es-personnelles-contenues-dans-les-avis-lors-d-une-analyse-ia/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/054-comment-prot-ger-les-donn-es-personnelles-contenues-dans-les-avis-lors-d-une-analyse-ia.html",
+    "markdown": "articles/markdown/054-comment-prot-ger-les-donn-es-personnelles-contenues-dans-les-avis-lors-d-une-analyse-ia.md",
+    "illustration": "illustrations/054-comment-prot-ger-les-donn-es-personnelles-contenues-dans-les-avis-lors-d-une-analyse-ia.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "090",
+  "slug": "une-entreprise-veut-automatiser-l-analyse-de-10-000-avis-quelles-pr-cautions-prendre",
+  "title": "Une Entreprise Veut Automatiser L Analyse De 10 000 Avis Quelles Pr Cautions Prendre",
+  "route": "/ressources/une-entreprise-veut-automatiser-l-analyse-de-10-000-avis-quelles-pr-cautions-prendre/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/090-une-entreprise-veut-automatiser-l-analyse-de-10-000-avis-quelles-pr-cautions-prendre.html",
+    "markdown": "articles/markdown/090-une-entreprise-veut-automatiser-l-analyse-de-10-000-avis-quelles-pr-cautions-prendre.md",
+    "illustration": "illustrations/090-une-entreprise-veut-automatiser-l-analyse-de-10-000-avis-quelles-pr-cautions-prendre.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

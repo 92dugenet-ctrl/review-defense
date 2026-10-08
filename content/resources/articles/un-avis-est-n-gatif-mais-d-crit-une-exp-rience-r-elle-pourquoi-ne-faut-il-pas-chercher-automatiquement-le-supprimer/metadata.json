@@ -1,0 +1,19 @@
+{
+  "id": "089",
+  "slug": "un-avis-est-n-gatif-mais-d-crit-une-exp-rience-r-elle-pourquoi-ne-faut-il-pas-chercher-automatiquement-le-supprimer",
+  "title": "Un Avis Est N Gatif Mais D Crit Une Exp Rience R Elle Pourquoi Ne Faut Il Pas Chercher Automatiquement Le Supprimer",
+  "route": "/ressources/un-avis-est-n-gatif-mais-d-crit-une-exp-rience-r-elle-pourquoi-ne-faut-il-pas-chercher-automatiquement-le-supprimer/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/089-un-avis-est-n-gatif-mais-d-crit-une-exp-rience-r-elle-pourquoi-ne-faut-il-pas-chercher-automatiquement-le-supprimer.html",
+    "markdown": "articles/markdown/089-un-avis-est-n-gatif-mais-d-crit-une-exp-rience-r-elle-pourquoi-ne-faut-il-pas-chercher-automatiquement-le-supprimer.md",
+    "illustration": "illustrations/089-un-avis-est-n-gatif-mais-d-crit-une-exp-rience-r-elle-pourquoi-ne-faut-il-pas-chercher-automatiquement-le-supprimer.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

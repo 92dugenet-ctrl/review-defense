@@ -1,0 +1,19 @@
+{
+  "id": "011",
+  "slug": "que-faire-lorsqu-un-avis-n-gatif-contient-des-accusations-pr-cises",
+  "title": "Que Faire Lorsqu Un Avis N Gatif Contient Des Accusations Pr Cises",
+  "route": "/ressources/que-faire-lorsqu-un-avis-n-gatif-contient-des-accusations-pr-cises/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/011-que-faire-lorsqu-un-avis-n-gatif-contient-des-accusations-pr-cises.html",
+    "markdown": "articles/markdown/011-que-faire-lorsqu-un-avis-n-gatif-contient-des-accusations-pr-cises.md",
+    "illustration": "illustrations/011-que-faire-lorsqu-un-avis-n-gatif-contient-des-accusations-pr-cises.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

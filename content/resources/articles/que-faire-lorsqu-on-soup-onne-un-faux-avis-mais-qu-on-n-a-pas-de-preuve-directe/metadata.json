@@ -1,0 +1,19 @@
+{
+  "id": "007",
+  "slug": "que-faire-lorsqu-on-soup-onne-un-faux-avis-mais-qu-on-n-a-pas-de-preuve-directe",
+  "title": "Que Faire Lorsqu On Soup Onne Un Faux Avis Mais Qu On N A Pas De Preuve Directe",
+  "route": "/ressources/que-faire-lorsqu-on-soup-onne-un-faux-avis-mais-qu-on-n-a-pas-de-preuve-directe/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/007-que-faire-lorsqu-on-soup-onne-un-faux-avis-mais-qu-on-n-a-pas-de-preuve-directe.html",
+    "markdown": "articles/markdown/007-que-faire-lorsqu-on-soup-onne-un-faux-avis-mais-qu-on-n-a-pas-de-preuve-directe.md",
+    "illustration": "illustrations/007-que-faire-lorsqu-on-soup-onne-un-faux-avis-mais-qu-on-n-a-pas-de-preuve-directe.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

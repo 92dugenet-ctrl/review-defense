@@ -1,0 +1,19 @@
+{
+  "id": "005",
+  "slug": "les-faux-avis-n-gatifs-existent-ils-vraiment-et-comment-les-identifier",
+  "title": "Les Faux Avis N Gatifs Existent Ils Vraiment Et Comment Les Identifier",
+  "route": "/ressources/les-faux-avis-n-gatifs-existent-ils-vraiment-et-comment-les-identifier/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/005-les-faux-avis-n-gatifs-existent-ils-vraiment-et-comment-les-identifier.html",
+    "markdown": "articles/markdown/005-les-faux-avis-n-gatifs-existent-ils-vraiment-et-comment-les-identifier.md",
+    "illustration": "illustrations/005-les-faux-avis-n-gatifs-existent-ils-vraiment-et-comment-les-identifier.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

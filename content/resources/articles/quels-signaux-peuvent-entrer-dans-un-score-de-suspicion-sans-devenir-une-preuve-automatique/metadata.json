@@ -1,0 +1,19 @@
+{
+  "id": "030",
+  "slug": "quels-signaux-peuvent-entrer-dans-un-score-de-suspicion-sans-devenir-une-preuve-automatique",
+  "title": "Quels Signaux Peuvent Entrer Dans Un Score De Suspicion Sans Devenir Une Preuve Automatique",
+  "route": "/ressources/quels-signaux-peuvent-entrer-dans-un-score-de-suspicion-sans-devenir-une-preuve-automatique/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/030-quels-signaux-peuvent-entrer-dans-un-score-de-suspicion-sans-devenir-une-preuve-automatique.html",
+    "markdown": "articles/markdown/030-quels-signaux-peuvent-entrer-dans-un-score-de-suspicion-sans-devenir-une-preuve-automatique.md",
+    "illustration": "illustrations/030-quels-signaux-peuvent-entrer-dans-un-score-de-suspicion-sans-devenir-une-preuve-automatique.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

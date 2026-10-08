@@ -1,0 +1,19 @@
+{
+  "id": "047",
+  "slug": "comment-distinguer-une-vraie-crise-de-r-putation-d-un-pisode-ponctuel-d-avis-n-gatifs",
+  "title": "Comment Distinguer Une Vraie Crise De R Putation D Un Pisode Ponctuel D Avis N Gatifs",
+  "route": "/ressources/comment-distinguer-une-vraie-crise-de-r-putation-d-un-pisode-ponctuel-d-avis-n-gatifs/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/047-comment-distinguer-une-vraie-crise-de-r-putation-d-un-pisode-ponctuel-d-avis-n-gatifs.html",
+    "markdown": "articles/markdown/047-comment-distinguer-une-vraie-crise-de-r-putation-d-un-pisode-ponctuel-d-avis-n-gatifs.md",
+    "illustration": "illustrations/047-comment-distinguer-une-vraie-crise-de-r-putation-d-un-pisode-ponctuel-d-avis-n-gatifs.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

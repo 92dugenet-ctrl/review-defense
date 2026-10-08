@@ -1,0 +1,19 @@
+{
+  "id": "027",
+  "slug": "comment-fonctionne-la-d-tection-automatique-des-faux-avis-sur-google-maps",
+  "title": "Comment Fonctionne La D Tection Automatique Des Faux Avis Sur Google Maps",
+  "route": "/ressources/comment-fonctionne-la-d-tection-automatique-des-faux-avis-sur-google-maps/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/027-comment-fonctionne-la-d-tection-automatique-des-faux-avis-sur-google-maps.html",
+    "markdown": "articles/markdown/027-comment-fonctionne-la-d-tection-automatique-des-faux-avis-sur-google-maps.md",
+    "illustration": "illustrations/027-comment-fonctionne-la-d-tection-automatique-des-faux-avis-sur-google-maps.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

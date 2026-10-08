@@ -1,0 +1,19 @@
+{
+  "id": "086",
+  "slug": "une-entreprise-re-oit-des-avis-de-personnes-qu-elle-ne-retrouve-pas-que-faire",
+  "title": "Une Entreprise Re Oit Des Avis De Personnes Qu Elle Ne Retrouve Pas Que Faire",
+  "route": "/ressources/une-entreprise-re-oit-des-avis-de-personnes-qu-elle-ne-retrouve-pas-que-faire/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/086-une-entreprise-re-oit-des-avis-de-personnes-qu-elle-ne-retrouve-pas-que-faire.html",
+    "markdown": "articles/markdown/086-une-entreprise-re-oit-des-avis-de-personnes-qu-elle-ne-retrouve-pas-que-faire.md",
+    "illustration": "illustrations/086-une-entreprise-re-oit-des-avis-de-personnes-qu-elle-ne-retrouve-pas-que-faire.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "025",
+  "slug": "combien-de-temps-faut-il-conserver-les-l-ments-li-s-un-avis-signal",
+  "title": "Combien De Temps Faut Il Conserver Les L Ments Li S Un Avis Signal",
+  "route": "/ressources/combien-de-temps-faut-il-conserver-les-l-ments-li-s-un-avis-signal/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/025-combien-de-temps-faut-il-conserver-les-l-ments-li-s-un-avis-signal.html",
+    "markdown": "articles/markdown/025-combien-de-temps-faut-il-conserver-les-l-ments-li-s-un-avis-signal.md",
+    "illustration": "illustrations/025-combien-de-temps-faut-il-conserver-les-l-ments-li-s-un-avis-signal.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

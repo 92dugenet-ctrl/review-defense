@@ -1,0 +1,19 @@
+{
+  "id": "072",
+  "slug": "comment-centraliser-les-avis-de-plusieurs-tablissements-sans-perdre-le-contexte-local",
+  "title": "Comment Centraliser Les Avis De Plusieurs Tablissements Sans Perdre Le Contexte Local",
+  "route": "/ressources/comment-centraliser-les-avis-de-plusieurs-tablissements-sans-perdre-le-contexte-local/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/072-comment-centraliser-les-avis-de-plusieurs-tablissements-sans-perdre-le-contexte-local.html",
+    "markdown": "articles/markdown/072-comment-centraliser-les-avis-de-plusieurs-tablissements-sans-perdre-le-contexte-local.md",
+    "illustration": "illustrations/072-comment-centraliser-les-avis-de-plusieurs-tablissements-sans-perdre-le-contexte-local.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

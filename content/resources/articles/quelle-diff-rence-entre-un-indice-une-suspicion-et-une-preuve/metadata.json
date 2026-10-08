@@ -1,0 +1,19 @@
+{
+  "id": "066",
+  "slug": "quelle-diff-rence-entre-un-indice-une-suspicion-et-une-preuve",
+  "title": "Quelle Diff Rence Entre Un Indice Une Suspicion Et Une Preuve",
+  "route": "/ressources/quelle-diff-rence-entre-un-indice-une-suspicion-et-une-preuve/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/066-quelle-diff-rence-entre-un-indice-une-suspicion-et-une-preuve.html",
+    "markdown": "articles/markdown/066-quelle-diff-rence-entre-un-indice-une-suspicion-et-une-preuve.md",
+    "illustration": "illustrations/066-quelle-diff-rence-entre-un-indice-une-suspicion-et-une-preuve.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

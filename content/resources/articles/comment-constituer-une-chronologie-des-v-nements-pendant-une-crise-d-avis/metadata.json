@@ -1,0 +1,19 @@
+{
+  "id": "061",
+  "slug": "comment-constituer-une-chronologie-des-v-nements-pendant-une-crise-d-avis",
+  "title": "Comment Constituer Une Chronologie Des V Nements Pendant Une Crise D Avis",
+  "route": "/ressources/comment-constituer-une-chronologie-des-v-nements-pendant-une-crise-d-avis/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/061-comment-constituer-une-chronologie-des-v-nements-pendant-une-crise-d-avis.html",
+    "markdown": "articles/markdown/061-comment-constituer-une-chronologie-des-v-nements-pendant-une-crise-d-avis.md",
+    "illustration": "illustrations/061-comment-constituer-une-chronologie-des-v-nements-pendant-une-crise-d-avis.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

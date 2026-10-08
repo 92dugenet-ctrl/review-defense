@@ -1,0 +1,19 @@
+{
+  "id": "062",
+  "slug": "que-faire-si-la-crise-touche-plusieurs-tablissements-en-m-me-temps",
+  "title": "Que Faire Si La Crise Touche Plusieurs Tablissements En M Me Temps",
+  "route": "/ressources/que-faire-si-la-crise-touche-plusieurs-tablissements-en-m-me-temps/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/062-que-faire-si-la-crise-touche-plusieurs-tablissements-en-m-me-temps.html",
+    "markdown": "articles/markdown/062-que-faire-si-la-crise-touche-plusieurs-tablissements-en-m-me-temps.md",
+    "illustration": "illustrations/062-que-faire-si-la-crise-touche-plusieurs-tablissements-en-m-me-temps.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

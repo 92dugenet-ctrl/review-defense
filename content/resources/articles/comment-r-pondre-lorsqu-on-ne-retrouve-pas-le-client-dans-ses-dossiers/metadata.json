@@ -1,0 +1,19 @@
+{
+  "id": "018",
+  "slug": "comment-r-pondre-lorsqu-on-ne-retrouve-pas-le-client-dans-ses-dossiers",
+  "title": "Comment R Pondre Lorsqu On Ne Retrouve Pas Le Client Dans Ses Dossiers",
+  "route": "/ressources/comment-r-pondre-lorsqu-on-ne-retrouve-pas-le-client-dans-ses-dossiers/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/018-comment-r-pondre-lorsqu-on-ne-retrouve-pas-le-client-dans-ses-dossiers.html",
+    "markdown": "articles/markdown/018-comment-r-pondre-lorsqu-on-ne-retrouve-pas-le-client-dans-ses-dossiers.md",
+    "illustration": "illustrations/018-comment-r-pondre-lorsqu-on-ne-retrouve-pas-le-client-dans-ses-dossiers.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

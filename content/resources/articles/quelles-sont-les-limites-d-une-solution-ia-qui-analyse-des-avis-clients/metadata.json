@@ -1,0 +1,19 @@
+{
+  "id": "084",
+  "slug": "quelles-sont-les-limites-d-une-solution-ia-qui-analyse-des-avis-clients",
+  "title": "Quelles Sont Les Limites D Une Solution Ia Qui Analyse Des Avis Clients",
+  "route": "/ressources/quelles-sont-les-limites-d-une-solution-ia-qui-analyse-des-avis-clients/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/084-quelles-sont-les-limites-d-une-solution-ia-qui-analyse-des-avis-clients.html",
+    "markdown": "articles/markdown/084-quelles-sont-les-limites-d-une-solution-ia-qui-analyse-des-avis-clients.md",
+    "illustration": "illustrations/084-quelles-sont-les-limites-d-une-solution-ia-qui-analyse-des-avis-clients.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

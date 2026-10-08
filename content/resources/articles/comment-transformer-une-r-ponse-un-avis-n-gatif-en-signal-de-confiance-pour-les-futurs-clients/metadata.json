@@ -1,0 +1,19 @@
+{
+  "id": "014",
+  "slug": "comment-transformer-une-r-ponse-un-avis-n-gatif-en-signal-de-confiance-pour-les-futurs-clients",
+  "title": "Comment Transformer Une R Ponse Un Avis N Gatif En Signal De Confiance Pour Les Futurs Clients",
+  "route": "/ressources/comment-transformer-une-r-ponse-un-avis-n-gatif-en-signal-de-confiance-pour-les-futurs-clients/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/014-comment-transformer-une-r-ponse-un-avis-n-gatif-en-signal-de-confiance-pour-les-futurs-clients.html",
+    "markdown": "articles/markdown/014-comment-transformer-une-r-ponse-un-avis-n-gatif-en-signal-de-confiance-pour-les-futurs-clients.md",
+    "illustration": "illustrations/014-comment-transformer-une-r-ponse-un-avis-n-gatif-en-signal-de-confiance-pour-les-futurs-clients.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

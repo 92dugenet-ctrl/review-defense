@@ -1,0 +1,19 @@
+{
+  "id": "032",
+  "slug": "comment-expliquer-un-utilisateur-pourquoi-un-avis-est-consid-r-comme-suspect",
+  "title": "Comment Expliquer Un Utilisateur Pourquoi Un Avis Est Consid R Comme Suspect",
+  "route": "/ressources/comment-expliquer-un-utilisateur-pourquoi-un-avis-est-consid-r-comme-suspect/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/032-comment-expliquer-un-utilisateur-pourquoi-un-avis-est-consid-r-comme-suspect.html",
+    "markdown": "articles/markdown/032-comment-expliquer-un-utilisateur-pourquoi-un-avis-est-consid-r-comme-suspect.md",
+    "illustration": "illustrations/032-comment-expliquer-un-utilisateur-pourquoi-un-avis-est-consid-r-comme-suspect.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

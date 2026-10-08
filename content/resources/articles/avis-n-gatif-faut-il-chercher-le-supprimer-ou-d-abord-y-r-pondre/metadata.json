@@ -1,0 +1,19 @@
+{
+  "id": "013",
+  "slug": "avis-n-gatif-faut-il-chercher-le-supprimer-ou-d-abord-y-r-pondre",
+  "title": "Avis N Gatif Faut Il Chercher Le Supprimer Ou D Abord Y R Pondre",
+  "route": "/ressources/avis-n-gatif-faut-il-chercher-le-supprimer-ou-d-abord-y-r-pondre/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/013-avis-n-gatif-faut-il-chercher-le-supprimer-ou-d-abord-y-r-pondre.html",
+    "markdown": "articles/markdown/013-avis-n-gatif-faut-il-chercher-le-supprimer-ou-d-abord-y-r-pondre.md",
+    "illustration": "illustrations/013-avis-n-gatif-faut-il-chercher-le-supprimer-ou-d-abord-y-r-pondre.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "060",
+  "slug": "comment-organiser-une-cellule-de-crise-autour-des-avis-clients",
+  "title": "Comment Organiser Une Cellule De Crise Autour Des Avis Clients",
+  "route": "/ressources/comment-organiser-une-cellule-de-crise-autour-des-avis-clients/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/060-comment-organiser-une-cellule-de-crise-autour-des-avis-clients.html",
+    "markdown": "articles/markdown/060-comment-organiser-une-cellule-de-crise-autour-des-avis-clients.md",
+    "illustration": "illustrations/060-comment-organiser-une-cellule-de-crise-autour-des-avis-clients.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

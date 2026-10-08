@@ -1,0 +1,19 @@
+{
+  "id": "048",
+  "slug": "quels-indicateurs-suivre-pour-piloter-une-r-putation-multi-canal",
+  "title": "Quels Indicateurs Suivre Pour Piloter Une R Putation Multi Canal",
+  "route": "/ressources/quels-indicateurs-suivre-pour-piloter-une-r-putation-multi-canal/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/048-quels-indicateurs-suivre-pour-piloter-une-r-putation-multi-canal.html",
+    "markdown": "articles/markdown/048-quels-indicateurs-suivre-pour-piloter-une-r-putation-multi-canal.md",
+    "illustration": "illustrations/048-quels-indicateurs-suivre-pour-piloter-une-r-putation-multi-canal.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

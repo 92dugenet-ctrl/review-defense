@@ -1,0 +1,19 @@
+{
+  "id": "064",
+  "slug": "quelles-preuves-conserver-lorsqu-un-avis-para-t-frauduleux",
+  "title": "Quelles Preuves Conserver Lorsqu Un Avis Para T Frauduleux",
+  "route": "/ressources/quelles-preuves-conserver-lorsqu-un-avis-para-t-frauduleux/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/064-quelles-preuves-conserver-lorsqu-un-avis-para-t-frauduleux.html",
+    "markdown": "articles/markdown/064-quelles-preuves-conserver-lorsqu-un-avis-para-t-frauduleux.md",
+    "illustration": "illustrations/064-quelles-preuves-conserver-lorsqu-un-avis-para-t-frauduleux.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

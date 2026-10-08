@@ -1,0 +1,19 @@
+{
+  "id": "034",
+  "slug": "peut-on-d-tecter-une-campagne-d-avis-en-analysant-des-volumes-et-des-temporalit-s",
+  "title": "Peut On D Tecter Une Campagne D Avis En Analysant Des Volumes Et Des Temporalit S",
+  "route": "/ressources/peut-on-d-tecter-une-campagne-d-avis-en-analysant-des-volumes-et-des-temporalit-s/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/034-peut-on-d-tecter-une-campagne-d-avis-en-analysant-des-volumes-et-des-temporalit-s.html",
+    "markdown": "articles/markdown/034-peut-on-d-tecter-une-campagne-d-avis-en-analysant-des-volumes-et-des-temporalit-s.md",
+    "illustration": "illustrations/034-peut-on-d-tecter-une-campagne-d-avis-en-analysant-des-volumes-et-des-temporalit-s.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

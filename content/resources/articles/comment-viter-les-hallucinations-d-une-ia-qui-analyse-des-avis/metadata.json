@@ -1,0 +1,19 @@
+{
+  "id": "052",
+  "slug": "comment-viter-les-hallucinations-d-une-ia-qui-analyse-des-avis",
+  "title": "Comment Viter Les Hallucinations D Une Ia Qui Analyse Des Avis",
+  "route": "/ressources/comment-viter-les-hallucinations-d-une-ia-qui-analyse-des-avis/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/052-comment-viter-les-hallucinations-d-une-ia-qui-analyse-des-avis.html",
+    "markdown": "articles/markdown/052-comment-viter-les-hallucinations-d-une-ia-qui-analyse-des-avis.md",
+    "illustration": "illustrations/052-comment-viter-les-hallucinations-d-une-ia-qui-analyse-des-avis.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

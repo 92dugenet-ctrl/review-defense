@@ -1,0 +1,19 @@
+{
+  "id": "036",
+  "slug": "comment-signaler-correctement-un-avis-google-qui-viole-les-r-gles",
+  "title": "Comment Signaler Correctement Un Avis Google Qui Viole Les R Gles",
+  "route": "/ressources/comment-signaler-correctement-un-avis-google-qui-viole-les-r-gles/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/036-comment-signaler-correctement-un-avis-google-qui-viole-les-r-gles.html",
+    "markdown": "articles/markdown/036-comment-signaler-correctement-un-avis-google-qui-viole-les-r-gles.md",
+    "illustration": "illustrations/036-comment-signaler-correctement-un-avis-google-qui-viole-les-r-gles.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "087",
+  "slug": "un-concurrent-semble-publier-des-avis-n-gatifs-comment-documenter-sans-accuser-trop-vite",
+  "title": "Un Concurrent Semble Publier Des Avis N Gatifs Comment Documenter Sans Accuser Trop Vite",
+  "route": "/ressources/un-concurrent-semble-publier-des-avis-n-gatifs-comment-documenter-sans-accuser-trop-vite/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/087-un-concurrent-semble-publier-des-avis-n-gatifs-comment-documenter-sans-accuser-trop-vite.html",
+    "markdown": "articles/markdown/087-un-concurrent-semble-publier-des-avis-n-gatifs-comment-documenter-sans-accuser-trop-vite.md",
+    "illustration": "illustrations/087-un-concurrent-semble-publier-des-avis-n-gatifs-comment-documenter-sans-accuser-trop-vite.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "079",
+  "slug": "peut-on-demander-ses-clients-de-laisser-un-avis-positif",
+  "title": "Peut On Demander Ses Clients De Laisser Un Avis Positif",
+  "route": "/ressources/peut-on-demander-ses-clients-de-laisser-un-avis-positif/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/079-peut-on-demander-ses-clients-de-laisser-un-avis-positif.html",
+    "markdown": "articles/markdown/079-peut-on-demander-ses-clients-de-laisser-un-avis-positif.md",
+    "illustration": "illustrations/079-peut-on-demander-ses-clients-de-laisser-un-avis-positif.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

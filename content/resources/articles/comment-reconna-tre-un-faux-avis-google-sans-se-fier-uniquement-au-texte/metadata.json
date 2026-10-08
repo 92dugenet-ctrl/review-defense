@@ -1,0 +1,19 @@
+{
+  "id": "001",
+  "slug": "comment-reconna-tre-un-faux-avis-google-sans-se-fier-uniquement-au-texte",
+  "title": "Comment Reconna Tre Un Faux Avis Google Sans Se Fier Uniquement Au Texte",
+  "route": "/ressources/comment-reconna-tre-un-faux-avis-google-sans-se-fier-uniquement-au-texte/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/001-comment-reconna-tre-un-faux-avis-google-sans-se-fier-uniquement-au-texte.html",
+    "markdown": "articles/markdown/001-comment-reconna-tre-un-faux-avis-google-sans-se-fier-uniquement-au-texte.md",
+    "illustration": "illustrations/001-comment-reconna-tre-un-faux-avis-google-sans-se-fier-uniquement-au-texte.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

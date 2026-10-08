@@ -1,0 +1,19 @@
+{
+  "id": "065",
+  "slug": "comment-construire-un-dossier-de-signalement-clair-et-chronologique",
+  "title": "Comment Construire Un Dossier De Signalement Clair Et Chronologique",
+  "route": "/ressources/comment-construire-un-dossier-de-signalement-clair-et-chronologique/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/065-comment-construire-un-dossier-de-signalement-clair-et-chronologique.html",
+    "markdown": "articles/markdown/065-comment-construire-un-dossier-de-signalement-clair-et-chronologique.md",
+    "illustration": "illustrations/065-comment-construire-un-dossier-de-signalement-clair-et-chronologique.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

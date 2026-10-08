@@ -1,0 +1,19 @@
+{
+  "id": "057",
+  "slug": "que-faire-dans-les-premi-res-heures-d-une-crise-d-avis-n-gatifs",
+  "title": "Que Faire Dans Les Premi Res Heures D Une Crise D Avis N Gatifs",
+  "route": "/ressources/que-faire-dans-les-premi-res-heures-d-une-crise-d-avis-n-gatifs/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/057-que-faire-dans-les-premi-res-heures-d-une-crise-d-avis-n-gatifs.html",
+    "markdown": "articles/markdown/057-que-faire-dans-les-premi-res-heures-d-une-crise-d-avis-n-gatifs.md",
+    "illustration": "illustrations/057-que-faire-dans-les-premi-res-heures-d-une-crise-d-avis-n-gatifs.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

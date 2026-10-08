@@ -1,0 +1,19 @@
+{
+  "id": "017",
+  "slug": "comment-r-pondre-un-client-en-col-re-sans-r-pondre-sur-le-m-me-ton",
+  "title": "Comment R Pondre Un Client En Col Re Sans R Pondre Sur Le M Me Ton",
+  "route": "/ressources/comment-r-pondre-un-client-en-col-re-sans-r-pondre-sur-le-m-me-ton/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/017-comment-r-pondre-un-client-en-col-re-sans-r-pondre-sur-le-m-me-ton.html",
+    "markdown": "articles/markdown/017-comment-r-pondre-un-client-en-col-re-sans-r-pondre-sur-le-m-me-ton.md",
+    "illustration": "illustrations/017-comment-r-pondre-un-client-en-col-re-sans-r-pondre-sur-le-m-me-ton.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "076",
+  "slug": "comment-construire-un-tableau-de-bord-de-r-putation-pour-un-r-seau-d-tablissements",
+  "title": "Comment Construire Un Tableau De Bord De R Putation Pour Un R Seau D Tablissements",
+  "route": "/ressources/comment-construire-un-tableau-de-bord-de-r-putation-pour-un-r-seau-d-tablissements/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/076-comment-construire-un-tableau-de-bord-de-r-putation-pour-un-r-seau-d-tablissements.html",
+    "markdown": "articles/markdown/076-comment-construire-un-tableau-de-bord-de-r-putation-pour-un-r-seau-d-tablissements.md",
+    "illustration": "illustrations/076-comment-construire-un-tableau-de-bord-de-r-putation-pour-un-r-seau-d-tablissements.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

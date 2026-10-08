@@ -1,0 +1,19 @@
+{
+  "id": "006",
+  "slug": "que-dit-la-loi-fran-aise-sur-les-faux-avis-de-consommateurs",
+  "title": "Que Dit La Loi Fran Aise Sur Les Faux Avis De Consommateurs",
+  "route": "/ressources/que-dit-la-loi-fran-aise-sur-les-faux-avis-de-consommateurs/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/006-que-dit-la-loi-fran-aise-sur-les-faux-avis-de-consommateurs.html",
+    "markdown": "articles/markdown/006-que-dit-la-loi-fran-aise-sur-les-faux-avis-de-consommateurs.md",
+    "illustration": "illustrations/006-que-dit-la-loi-fran-aise-sur-les-faux-avis-de-consommateurs.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "083",
+  "slug": "quelles-obligations-europ-ennes-concernent-la-pr-sentation-et-la-v-rification-des-avis",
+  "title": "Quelles Obligations Europ Ennes Concernent La Pr Sentation Et La V Rification Des Avis",
+  "route": "/ressources/quelles-obligations-europ-ennes-concernent-la-pr-sentation-et-la-v-rification-des-avis/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/083-quelles-obligations-europ-ennes-concernent-la-pr-sentation-et-la-v-rification-des-avis.html",
+    "markdown": "articles/markdown/083-quelles-obligations-europ-ennes-concernent-la-pr-sentation-et-la-v-rification-des-avis.md",
+    "illustration": "illustrations/083-quelles-obligations-europ-ennes-concernent-la-pr-sentation-et-la-v-rification-des-avis.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

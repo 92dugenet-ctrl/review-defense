@@ -1,0 +1,19 @@
+{
+  "id": "058",
+  "slug": "comment-savoir-si-une-vague-d-avis-n-gatifs-est-organique-ou-coordonn-e",
+  "title": "Comment Savoir Si Une Vague D Avis N Gatifs Est Organique Ou Coordonn E",
+  "route": "/ressources/comment-savoir-si-une-vague-d-avis-n-gatifs-est-organique-ou-coordonn-e/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/058-comment-savoir-si-une-vague-d-avis-n-gatifs-est-organique-ou-coordonn-e.html",
+    "markdown": "articles/markdown/058-comment-savoir-si-une-vague-d-avis-n-gatifs-est-organique-ou-coordonn-e.md",
+    "illustration": "illustrations/058-comment-savoir-si-une-vague-d-avis-n-gatifs-est-organique-ou-coordonn-e.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

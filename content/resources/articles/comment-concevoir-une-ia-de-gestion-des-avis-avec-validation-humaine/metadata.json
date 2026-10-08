@@ -1,0 +1,19 @@
+{
+  "id": "056",
+  "slug": "comment-concevoir-une-ia-de-gestion-des-avis-avec-validation-humaine",
+  "title": "Comment Concevoir Une Ia De Gestion Des Avis Avec Validation Humaine",
+  "route": "/ressources/comment-concevoir-une-ia-de-gestion-des-avis-avec-validation-humaine/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/056-comment-concevoir-une-ia-de-gestion-des-avis-avec-validation-humaine.html",
+    "markdown": "articles/markdown/056-comment-concevoir-une-ia-de-gestion-des-avis-avec-validation-humaine.md",
+    "illustration": "illustrations/056-comment-concevoir-une-ia-de-gestion-des-avis-avec-validation-humaine.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

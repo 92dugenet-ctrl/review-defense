@@ -1,0 +1,19 @@
+{
+  "id": "003",
+  "slug": "une-s-rie-d-avis-5-toiles-publi-s-en-quelques-heures-est-elle-forc-ment-suspecte",
+  "title": "Une S Rie D Avis 5 Toiles Publi S En Quelques Heures Est Elle Forc Ment Suspecte",
+  "route": "/ressources/une-s-rie-d-avis-5-toiles-publi-s-en-quelques-heures-est-elle-forc-ment-suspecte/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/003-une-s-rie-d-avis-5-toiles-publi-s-en-quelques-heures-est-elle-forc-ment-suspecte.html",
+    "markdown": "articles/markdown/003-une-s-rie-d-avis-5-toiles-publi-s-en-quelques-heures-est-elle-forc-ment-suspecte.md",
+    "illustration": "illustrations/003-une-s-rie-d-avis-5-toiles-publi-s-en-quelques-heures-est-elle-forc-ment-suspecte.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

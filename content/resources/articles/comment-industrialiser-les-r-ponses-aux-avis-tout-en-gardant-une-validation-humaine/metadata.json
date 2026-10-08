@@ -1,0 +1,19 @@
+{
+  "id": "021",
+  "slug": "comment-industrialiser-les-r-ponses-aux-avis-tout-en-gardant-une-validation-humaine",
+  "title": "Comment Industrialiser Les R Ponses Aux Avis Tout En Gardant Une Validation Humaine",
+  "route": "/ressources/comment-industrialiser-les-r-ponses-aux-avis-tout-en-gardant-une-validation-humaine/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/021-comment-industrialiser-les-r-ponses-aux-avis-tout-en-gardant-une-validation-humaine.html",
+    "markdown": "articles/markdown/021-comment-industrialiser-les-r-ponses-aux-avis-tout-en-gardant-une-validation-humaine.md",
+    "illustration": "illustrations/021-comment-industrialiser-les-r-ponses-aux-avis-tout-en-gardant-une-validation-humaine.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "038",
+  "slug": "que-faire-si-google-refuse-de-supprimer-un-avis-signal",
+  "title": "Que Faire Si Google Refuse De Supprimer Un Avis Signal",
+  "route": "/ressources/que-faire-si-google-refuse-de-supprimer-un-avis-signal/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/038-que-faire-si-google-refuse-de-supprimer-un-avis-signal.html",
+    "markdown": "articles/markdown/038-que-faire-si-google-refuse-de-supprimer-un-avis-signal.md",
+    "illustration": "illustrations/038-que-faire-si-google-refuse-de-supprimer-un-avis-signal.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "004",
+  "slug": "comment-distinguer-un-avis-tr-s-enthousiaste-d-un-avis-r-ellement-fictif",
+  "title": "Comment Distinguer Un Avis Tr S Enthousiaste D Un Avis R Ellement Fictif",
+  "route": "/ressources/comment-distinguer-un-avis-tr-s-enthousiaste-d-un-avis-r-ellement-fictif/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/004-comment-distinguer-un-avis-tr-s-enthousiaste-d-un-avis-r-ellement-fictif.html",
+    "markdown": "articles/markdown/004-comment-distinguer-un-avis-tr-s-enthousiaste-d-un-avis-r-ellement-fictif.md",
+    "illustration": "illustrations/004-comment-distinguer-un-avis-tr-s-enthousiaste-d-un-avis-r-ellement-fictif.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

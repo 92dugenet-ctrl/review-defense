@@ -1,0 +1,19 @@
+{
+  "id": "091",
+  "slug": "apr-s-un-refus-de-google-comment-d-cider-entre-appel-r-ponse-publique-et-voie-juridique",
+  "title": "Apr S Un Refus De Google Comment D Cider Entre Appel R Ponse Publique Et Voie Juridique",
+  "route": "/ressources/apr-s-un-refus-de-google-comment-d-cider-entre-appel-r-ponse-publique-et-voie-juridique/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/091-apr-s-un-refus-de-google-comment-d-cider-entre-appel-r-ponse-publique-et-voie-juridique.html",
+    "markdown": "articles/markdown/091-apr-s-un-refus-de-google-comment-d-cider-entre-appel-r-ponse-publique-et-voie-juridique.md",
+    "illustration": "illustrations/091-apr-s-un-refus-de-google-comment-d-cider-entre-appel-r-ponse-publique-et-voie-juridique.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

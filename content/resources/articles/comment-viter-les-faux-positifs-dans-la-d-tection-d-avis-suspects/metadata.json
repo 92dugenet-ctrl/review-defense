@@ -1,0 +1,19 @@
+{
+  "id": "033",
+  "slug": "comment-viter-les-faux-positifs-dans-la-d-tection-d-avis-suspects",
+  "title": "Comment Viter Les Faux Positifs Dans La D Tection D Avis Suspects",
+  "route": "/ressources/comment-viter-les-faux-positifs-dans-la-d-tection-d-avis-suspects/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/033-comment-viter-les-faux-positifs-dans-la-d-tection-d-avis-suspects.html",
+    "markdown": "articles/markdown/033-comment-viter-les-faux-positifs-dans-la-d-tection-d-avis-suspects.md",
+    "illustration": "illustrations/033-comment-viter-les-faux-positifs-dans-la-d-tection-d-avis-suspects.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

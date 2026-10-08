@@ -1,0 +1,19 @@
+{
+  "id": "020",
+  "slug": "comment-r-pondre-plusieurs-avis-similaires-sans-publier-des-r-ponses-copi-es-coll-es",
+  "title": "Comment R Pondre Plusieurs Avis Similaires Sans Publier Des R Ponses Copi Es Coll Es",
+  "route": "/ressources/comment-r-pondre-plusieurs-avis-similaires-sans-publier-des-r-ponses-copi-es-coll-es/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/020-comment-r-pondre-plusieurs-avis-similaires-sans-publier-des-r-ponses-copi-es-coll-es.html",
+    "markdown": "articles/markdown/020-comment-r-pondre-plusieurs-avis-similaires-sans-publier-des-r-ponses-copi-es-coll-es.md",
+    "illustration": "illustrations/020-comment-r-pondre-plusieurs-avis-similaires-sans-publier-des-r-ponses-copi-es-coll-es.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

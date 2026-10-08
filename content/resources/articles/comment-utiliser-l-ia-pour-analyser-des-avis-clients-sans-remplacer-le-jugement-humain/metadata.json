@@ -1,0 +1,19 @@
+{
+  "id": "050",
+  "slug": "comment-utiliser-l-ia-pour-analyser-des-avis-clients-sans-remplacer-le-jugement-humain",
+  "title": "Comment Utiliser L Ia Pour Analyser Des Avis Clients Sans Remplacer Le Jugement Humain",
+  "route": "/ressources/comment-utiliser-l-ia-pour-analyser-des-avis-clients-sans-remplacer-le-jugement-humain/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/050-comment-utiliser-l-ia-pour-analyser-des-avis-clients-sans-remplacer-le-jugement-humain.html",
+    "markdown": "articles/markdown/050-comment-utiliser-l-ia-pour-analyser-des-avis-clients-sans-remplacer-le-jugement-humain.md",
+    "illustration": "illustrations/050-comment-utiliser-l-ia-pour-analyser-des-avis-clients-sans-remplacer-le-jugement-humain.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

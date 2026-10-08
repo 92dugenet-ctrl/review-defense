@@ -1,0 +1,19 @@
+{
+  "id": "063",
+  "slug": "comment-sortir-d-une-crise-r-putationnelle-sans-donner-l-impression-de-manipuler-les-avis",
+  "title": "Comment Sortir D Une Crise R Putationnelle Sans Donner L Impression De Manipuler Les Avis",
+  "route": "/ressources/comment-sortir-d-une-crise-r-putationnelle-sans-donner-l-impression-de-manipuler-les-avis/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/063-comment-sortir-d-une-crise-r-putationnelle-sans-donner-l-impression-de-manipuler-les-avis.html",
+    "markdown": "articles/markdown/063-comment-sortir-d-une-crise-r-putationnelle-sans-donner-l-impression-de-manipuler-les-avis.md",
+    "illustration": "illustrations/063-comment-sortir-d-une-crise-r-putationnelle-sans-donner-l-impression-de-manipuler-les-avis.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

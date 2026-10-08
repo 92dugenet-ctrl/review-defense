@@ -1,0 +1,19 @@
+{
+  "id": "046",
+  "slug": "que-faire-lorsqu-un-contenu-n-gatif-domine-les-r-sultats-associ-s-une-entreprise",
+  "title": "Que Faire Lorsqu Un Contenu N Gatif Domine Les R Sultats Associ S Une Entreprise",
+  "route": "/ressources/que-faire-lorsqu-un-contenu-n-gatif-domine-les-r-sultats-associ-s-une-entreprise/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/046-que-faire-lorsqu-un-contenu-n-gatif-domine-les-r-sultats-associ-s-une-entreprise.html",
+    "markdown": "articles/markdown/046-que-faire-lorsqu-un-contenu-n-gatif-domine-les-r-sultats-associ-s-une-entreprise.md",
+    "illustration": "illustrations/046-que-faire-lorsqu-un-contenu-n-gatif-domine-les-r-sultats-associ-s-une-entreprise.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

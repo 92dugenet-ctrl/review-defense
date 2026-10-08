@@ -1,0 +1,19 @@
+{
+  "id": "044",
+  "slug": "pourquoi-les-avis-en-ligne-influencent-ils-la-confiance-envers-une-entreprise",
+  "title": "Pourquoi Les Avis En Ligne Influencent Ils La Confiance Envers Une Entreprise",
+  "route": "/ressources/pourquoi-les-avis-en-ligne-influencent-ils-la-confiance-envers-une-entreprise/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/044-pourquoi-les-avis-en-ligne-influencent-ils-la-confiance-envers-une-entreprise.html",
+    "markdown": "articles/markdown/044-pourquoi-les-avis-en-ligne-influencent-ils-la-confiance-envers-une-entreprise.md",
+    "illustration": "illustrations/044-pourquoi-les-avis-en-ligne-influencent-ils-la-confiance-envers-une-entreprise.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

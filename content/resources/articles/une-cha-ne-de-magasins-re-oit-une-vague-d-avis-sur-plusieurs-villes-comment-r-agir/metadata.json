@@ -1,0 +1,19 @@
+{
+  "id": "088",
+  "slug": "une-cha-ne-de-magasins-re-oit-une-vague-d-avis-sur-plusieurs-villes-comment-r-agir",
+  "title": "Une Cha Ne De Magasins Re Oit Une Vague D Avis Sur Plusieurs Villes Comment R Agir",
+  "route": "/ressources/une-cha-ne-de-magasins-re-oit-une-vague-d-avis-sur-plusieurs-villes-comment-r-agir/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/088-une-cha-ne-de-magasins-re-oit-une-vague-d-avis-sur-plusieurs-villes-comment-r-agir.html",
+    "markdown": "articles/markdown/088-une-cha-ne-de-magasins-re-oit-une-vague-d-avis-sur-plusieurs-villes-comment-r-agir.md",
+    "illustration": "illustrations/088-une-cha-ne-de-magasins-re-oit-une-vague-d-avis-sur-plusieurs-villes-comment-r-agir.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}

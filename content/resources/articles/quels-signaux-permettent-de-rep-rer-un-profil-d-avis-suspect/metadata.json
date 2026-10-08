@@ -1,0 +1,19 @@
+{
+  "id": "002",
+  "slug": "quels-signaux-permettent-de-rep-rer-un-profil-d-avis-suspect",
+  "title": "Quels Signaux Permettent De Rep Rer Un Profil D Avis Suspect",
+  "route": "/ressources/quels-signaux-permettent-de-rep-rer-un-profil-d-avis-suspect/",
+  "status": "scaffold-awaiting-content-import",
+  "sourcePackage": "Review_Defense_91_Articles_Complete_Site_Package.zip",
+  "sourceFiles": {
+    "html": "articles/html/002-quels-signaux-permettent-de-rep-rer-un-profil-d-avis-suspect.html",
+    "markdown": "articles/markdown/002-quels-signaux-permettent-de-rep-rer-un-profil-d-avis-suspect.md",
+    "illustration": "illustrations/002-quels-signaux-permettent-de-rep-rer-un-profil-d-avis-suspect.svg"
+  },
+  "localFiles": {
+    "content": "article.md",
+    "html": "index.html",
+    "illustration": "illustration.svg"
+  },
+  "routeConnector": "content/resources/articles/registry.json"
+}
