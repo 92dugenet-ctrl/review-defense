@@ -9,6 +9,7 @@ from pathlib import Path
 import mimetypes
 
 from src.api_server import create_app
+from src.resource_articles import is_resource_article_path, resolve_resource_article
 
 
 _application = create_app()
@@ -110,6 +111,37 @@ def _frontend_response(path, start_response):
     return [body]
 
 
+
+def _resource_article_response(path, start_response):
+    """Serve one article from the resource registry, using its canonical slug."""
+    if not is_resource_article_path(path):
+        return None
+    slug = path.strip("/").removeprefix("ressources/").strip("/")
+    article = resolve_resource_article(slug)
+    if article is None:
+        return _json_404(start_response)
+    candidate = article["html_path"].resolve()
+    try:
+        candidate.relative_to((ROOT / "content" / "resources" / "articles").resolve())
+    except ValueError:
+        return _json_404(start_response)
+    if not candidate.is_file():
+        return _json_404(start_response)
+    body = candidate.read_bytes()
+    start_response(
+        "200 OK",
+        [
+            ("Content-Type", "text/html; charset=utf-8"),
+            ("Content-Length", str(len(body))),
+            ("Cache-Control", "no-cache"),
+            ("X-Content-Type-Options", "nosniff"),
+            ("X-Frame-Options", "DENY"),
+            ("Referrer-Policy", "strict-origin-when-cross-origin"),
+        ],
+    )
+    return [body]
+
+
 def app(environ, start_response):
     path = environ.get("PATH_INFO", "/") or "/"
     method = environ.get("REQUEST_METHOD", "GET").upper()
@@ -117,6 +149,9 @@ def app(environ, start_response):
     if method == "GET":
         if path in {"/services/", "/resources/", "/services.html", "/resources.html", "/ressources/"}:
             return _redirect("/resources" if path in {"/resources/", "/resources.html", "/ressources/"} else "/services", start_response)
+        article_response = _resource_article_response(path, start_response)
+        if article_response is not None:
+            return article_response
         frontend = _frontend_response(path, start_response)
         if frontend is not None:
             return frontend
