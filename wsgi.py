@@ -81,7 +81,7 @@ def _frontend_response(path, start_response):
         if len(parts) != 2 or not re.fullmatch(r"[a-z0-9-]+", parts[1]):
             return None
         relative = f"ressources/{parts[1]}/index.html"
-    else:
+    else
         return None
 
     candidate = (FRONTEND_ROOT / relative).resolve()
