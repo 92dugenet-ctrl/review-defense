@@ -7,6 +7,7 @@ canonical root paths.
 
 from pathlib import Path
 import mimetypes
+import re
 
 from src.api_server import create_app
 
@@ -75,6 +76,11 @@ def _frontend_response(path, start_response):
         relative = path.lstrip("/")
     elif path.startswith("/assets/"):
         relative = path.lstrip("/")
+    elif path.startswith("/ressources/"):
+        parts = path.strip("/").split("/")
+        if len(parts) != 2 or not re.fullmatch(r"[a-z0-9-]+", parts[1]):
+            return None
+        relative = f"ressources/{parts[1]}/index.html"
     else:
         return None
 
