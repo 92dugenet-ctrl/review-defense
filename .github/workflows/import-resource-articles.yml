@@ -73,11 +73,13 @@ jobs:
         run: rm -- "$SOURCE_ZIP"
 
       - name: Commit imported content on the selected branch
+        env:
+          SOURCE_ZIP: ${{ inputs.source_zip }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add frontend/ressources frontend/assets/articles content/resources/articles
-          git add -u -- "${{ inputs.source_zip }}"
+          git add -u -- "$SOURCE_ZIP"
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
