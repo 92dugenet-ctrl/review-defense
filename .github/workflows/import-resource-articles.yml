@@ -1,0 +1,94 @@
+name: Import Review Defense articles
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_zip:
+        description: "ZIP path committed on the selected branch"
+        required: true
+        default: "imports/Review_Defense_91_Articles_Complete_Site_Package.zip"
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: import-review-defense-articles-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  import:
+    name: Validate and import 91 articles
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out selected branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify source package exists
+        env:
+          SOURCE_ZIP: ${{ inputs.source_zip }}
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          p = Path(os.environ["SOURCE_ZIP"])
+          if p.is_absolute() or ".." in p.parts or not p.is_file() or p.suffix.lower() != ".zip":
+              raise SystemExit(f"Refusing invalid ZIP path: {p}")
+          print(f"Using source package: {p} ({p.stat().st_size:,} bytes)")
+          PY
+
+      - name: Import and validate source files
+        env:
+          SOURCE_ZIP: ${{ inputs.source_zip }}
+        run: python scripts/import_resource_articles.py --zip "$SOURCE_ZIP"
+
+      - name: Verify imported article count and HTML entrypoints
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          registry = json.loads(Path("content/resources/articles/registry.json").read_text(encoding="utf-8"))
+          articles = registry.get("articles", [])
+          assert len(articles) == 91, f"Expected 91 articles, found {len(articles)}"
+          assert len({a["slug"] for a in articles}) == 91, "Duplicate article slugs"
+          for article in articles:
+              assert Path(article["html"]).is_file(), f"Missing HTML: {article['slug']}"
+              assert Path(article["markdown"]).is_file(), f"Missing Markdown: {article['slug']}"
+              assert Path(article["illustration"]).is_file(), f"Missing SVG: {article['slug']}"
+          print("PASS: 91 articles, 91 HTML files, 91 Markdown files, 91 SVG files.")
+          PY
+
+      - name: Remove uploaded ZIP from the working branch
+        env:
+          SOURCE_ZIP: ${{ inputs.source_zip }}
+        run: rm -- "$SOURCE_ZIP"
+
+      - name: Commit imported content on the selected branch
+        env:
+          SOURCE_ZIP: ${{ inputs.source_zip }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add frontend/ressources frontend/assets/articles content/resources/articles
+          git add -u -- "$SOURCE_ZIP"
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Import validated Review Defense resource articles"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Summarize result
+        if: success()
+        run: |
+          echo "Import succeeded on branch ${GITHUB_REF_NAME}." >> "$GITHUB_STEP_SUMMARY"
+          echo "Review the branch and open a pull request to main; this workflow does not publish the import directly to production." >> "$GITHUB_STEP_SUMMARY"
